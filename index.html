@@ -162,6 +162,32 @@ nav.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: 
 .note .when { color: var(--muted); font-size: 12px; }
 .note button.go { align-self: flex-start; margin-top: 6px; border: 0; background: none; color: var(--leaf); padding: 6px 0; font-size: 13px; font-weight: 600; min-height: 32px; }
 
+.acct { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.acct .who { font-size: 13px; color: var(--muted); max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+dialog.dlg { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); color: var(--ink); padding: 0; width: min(440px, calc(100vw - 32px)); max-height: calc(100vh - 32px); }
+dialog.dlg::backdrop { background: rgb(10 20 14 / .45); }
+.dlg form { display: flex; flex-direction: column; gap: 14px; padding: 20px; }
+.dlg h2 { font-family: var(--font-display); font-size: 21px; }
+.dlg p.lead { margin: 0; color: var(--muted); font-size: 14px; }
+.field { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--muted); }
+.field input, .field textarea { font: inherit; font-size: 15px; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; min-height: 44px; }
+.field textarea { min-height: 88px; resize: vertical; }
+.dlg .row { display: flex; gap: 8px; flex-wrap: wrap; }
+.dlg .row .btn { flex: 1 1 auto; justify-content: center; }
+.dlg .msg { font-size: 14px; min-height: 1.4em; }
+.dlg .msg.err { color: var(--pepper); }
+.tagset { display: flex; flex-wrap: wrap; gap: 6px; }
+.tagbtn { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 6px 12px; font: inherit; font-size: 13px; min-height: 36px; cursor: pointer; }
+.tagbtn[aria-pressed="true"] { background: var(--leaf); border-color: var(--leaf); color: var(--bg); }
+.starset { display: flex; gap: 2px; }
+.starset button { border: 0; background: none; font-size: 26px; line-height: 1; color: var(--line); width: 40px; height: 40px; cursor: pointer; }
+.starset button.on { color: var(--pepper); }
+.addtag { display: flex; gap: 6px; }
+.addtag input { flex: 1; min-width: 0; font: inherit; font-size: 14px; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; min-height: 36px; }
+.linkish { border: 0; background: none; padding: 0; font: inherit; font-weight: 600; color: var(--ink); text-align: left; cursor: pointer; overflow-wrap: anywhere; }
+.linkish:hover { color: var(--leaf); }
+.mini { border: 1px solid var(--line); background: var(--surface); color: var(--leaf); border-radius: 999px; padding: 2px 10px; font: inherit; font-size: 12px; font-weight: 600; min-height: 28px; margin-top: 4px; cursor: pointer; }
+.note .acts { display: flex; gap: 12px; align-items: center; }
 footer { color: var(--muted); font-size: 12px; text-align: center; padding-top: 8px; }
 .loading { padding: 60px 16px; text-align: center; color: var(--muted); }
 
@@ -225,6 +251,7 @@ body { margin: 0; }
       </label>
       <input type="file" id="file" accept=".db,application/octet-stream">
       <button class="btn" id="sampleBtn" type="button" hidden>예시 다시 보기</button>
+      <div class="acct" id="acct"></div>
     </div>
   </header>
 
@@ -305,7 +332,40 @@ body { margin: 0; }
     </div>
   </div>
 
-  <footer>백업 파일은 이 브라우저 안에서만 열려요. 어디로도 올라가지 않아요.</footer>
+  <footer>로그인하면 내 계정의 기록만 보여요. 백업 파일은 이 브라우저 안에서만 열려요.</footer>
+
+  <dialog class="dlg" id="loginDlg" aria-labelledby="loginTitle">
+    <form id="loginForm" novalidate>
+      <h2 id="loginTitle">제피 로그인</h2>
+      <p class="lead">폰의 제피 앱 <b>설정 → 내 계정 · 클라우드</b>와 같은 계정으로 로그인하면 폰에서 올린 기록이 보여요.</p>
+      <label class="field" for="loginEmail">이메일<input id="loginEmail" type="email" autocomplete="email" required></label>
+      <label class="field" for="loginPw">비밀번호 (6자 이상)<input id="loginPw" type="password" autocomplete="current-password" minlength="6" required></label>
+      <div class="msg" id="loginMsg" role="status"></div>
+      <div class="row">
+        <button class="btn primary" type="submit" id="loginGo">로그인</button>
+        <button class="btn" type="button" id="signupGo">처음이에요 · 가입</button>
+        <button class="btn" type="button" id="loginClose">닫기</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="dlg" id="noteDlg" aria-labelledby="noteTitle">
+    <form id="noteForm" novalidate>
+      <h2 id="noteTitle">장소 메모</h2>
+      <p class="lead" id="noteWhere"></p>
+      <div class="field"><span>태그</span><div class="tagset" id="noteTags"></div>
+        <div class="addtag"><input id="noteNewTag" placeholder="새 태그 (예: 뷰맛집)" aria-label="새 태그"><button class="tagbtn" type="button" id="noteAddTag">추가</button></div>
+      </div>
+      <div class="field"><span>별점</span><div class="starset" id="noteStars"></div></div>
+      <label class="field" for="noteMemo">메모<textarea id="noteMemo" maxlength="500"></textarea></label>
+      <div class="msg" id="noteMsg" role="status"></div>
+      <div class="row">
+        <button class="btn primary" type="submit" id="noteSave">저장</button>
+        <button class="btn" type="button" id="noteDel">메모 지우기</button>
+        <button class="btn" type="button" id="noteClose">닫기</button>
+      </div>
+    </form>
+  </dialog>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-asm-memory-growth.js"></script>
@@ -390,9 +450,40 @@ body { margin: 0; }
         if (!sidoOrder.includes(r.s)) sidoOrder.push(r.s);
       }
       await naverP;
-      await loadSample();
+      loadSession();
+      const fromLink = await readAuthHash();
+      renderAccount();
+      if (session) {
+        await loadCloud();
+        if (!D) {
+          const why = $("noticeText").innerHTML, bad = $("notice").classList.contains("err");
+          await loadSample();
+          setNotice(why + " 지금은 예시 데이터를 보여 드려요.", bad);
+        }
+        if (fromLink) setNotice(fromLink + " " + $("noticeText").innerHTML);
+      } else {
+        await loadSample();
+        if (fromLink) setNotice(fromLink, true);
+      }
     } catch (e) {
       setNotice("페이지를 준비하지 못했어요. 새로고침해 주세요. (" + esc(e.message || e) + ")", true);
+    }
+  }
+
+  // 가입 확인 메일의 링크로 돌아왔을 때 (#access_token=...)
+  async function readAuthHash() {
+    const h = location.hash.slice(1);
+    if (!/access_token=|error=/.test(h)) return null;
+    const q = new URLSearchParams(h);
+    try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+    if (q.get("error")) return "확인 링크가 만료됐거나 이미 쓰였어요. 로그인해 보시고, 안 되면 다시 가입해 주세요.";
+    try {
+      const j = { access_token: q.get("access_token"), refresh_token: q.get("refresh_token"), expires_in: +q.get("expires_in") || 3600 };
+      j.user = await authFetch("user", undefined, j.access_token);
+      takeSession(j);
+      return "이메일 확인이 끝났어요. 로그인됐어요.";
+    } catch (e) {
+      return "로그인 확인 중 문제가 생겼어요. 다시 로그인해 주세요.";
     }
   }
 
@@ -402,36 +493,46 @@ body { margin: 0; }
     openDb(new Uint8Array(buf), true);
   }
 
+  let source = "sample"; // sample | file | cloud
+
+  function showData(data, html) {
+    D = data;
+    dayCache.clear();
+    setNotice(html);
+    $("main").hidden = false;
+    renderAll();
+  }
+
   function openDb(bytes, isSample, fileName) {
     const head = new TextDecoder().decode(bytes.slice(0, 15));
     if (head !== "SQLite format 3") {
       setNotice("제피 백업 파일이 아니에요. 앱의 <strong>설정 → 기록 백업</strong>으로 만든 <strong>.db</strong> 파일을 골라 주세요.", true);
       return;
     }
-    let db;
+    let db, data;
     try {
       db = new SQL.Database(bytes);
-      D = readAll(db);
+      data = readAll(db);
     } catch (e) {
       setNotice("파일을 읽지 못했어요. 앱에서 백업을 다시 만들어 주세요. (" + esc(e.message || e) + ")", true);
       return;
     } finally {
       if (db) db.close();
     }
-    dayCache.clear();
-    if (!D.days.length) {
+    if (!data.days.length) {
       setNotice("이 백업에는 아직 이동 기록이 없어요.", true);
       return;
     }
-    if (isSample) {
-      setNotice("<strong>예시 데이터</strong>를 보고 있어요. 폰의 제피 앱 <strong>설정 → 기록 백업</strong>으로 만든 파일을 열면 내 기록으로 바뀌어요. 파일을 이 화면에 끌어다 놓아도 돼요.");
-    } else {
-      setNotice("<strong>" + esc(fileName || "내 백업") + "</strong>을 열었어요. 지점 " + fmtInt.format(D.n) + "개, " +
-        fmtDayShort(D.days[0]) + "부터 " + fmtDayShort(D.days[D.days.length - 1]) + "까지예요.");
-    }
+    source = isSample ? "sample" : "file";
     $("sampleBtn").hidden = isSample;
-    $("main").hidden = false;
-    renderAll();
+    if (isSample) {
+      showData(data, session
+        ? "<strong>예시 데이터</strong>를 보고 있어요."
+        : "<strong>예시 데이터</strong>를 보고 있어요. 오른쪽 위 <strong>로그인</strong>을 누르면 폰에서 올린 내 기록이 보여요. 백업 파일(.db)을 열거나 끌어다 놓아도 돼요.");
+    } else {
+      showData(data, "<strong>" + esc(fileName || "내 백업") + "</strong>을 열었어요. 지점 " + fmtInt.format(data.n) + "개, " +
+        fmtDayShort(data.days[0]) + "부터 " + fmtDayShort(data.days[data.days.length - 1]) + "까지예요.");
+    }
   }
 
   function rows(db, sql) {
@@ -456,35 +557,52 @@ body { margin: 0; }
       i++;
     }
     st.free();
+    return buildData({
+      n: i, ts, lat, lng, acc,
+      places: rows(db, "SELECT key, name FROM places"),
+      notes: rows(db, "SELECT * FROM place_notes"),
+      regionDays: rows(db, "SELECT code, day, stay_ms, night FROM region_days"),
+      visits: rows(db, "SELECT code, first_ts, last_ts, days FROM region_visits"),
+      manual: rows(db, "SELECT code FROM manual_regions").map((r) => r.code),
+      photo: rows(db, "SELECT code, day, first_ts, last_ts FROM photo_days"),
+    });
+  }
 
+  const TAG_RENAME = { "캠핑": "캠핑지", "숙소": "숙박", "낚시": "낚시 포인트", "맛집": "먹거리", "카페": "마실거리" };
+  function noteFromRow(r) {
+    return {
+      key: r.key, lat: +r.lat, lng: +r.lng, rating: +r.rating || 0, memo: r.memo || "", updated: +r.updated || 0,
+      tags: [...new Set(String(r.tags || "").split(",").filter(Boolean).map((t) => TAG_RENAME[t] || t))],
+    };
+  }
+  const noteIsEmpty = (n) => !n.tags.length && !n.rating && !n.memo.trim();
+
+  function buildData(p) {
+    const { n, ts, lat, lng, acc } = p;
     // 날짜별 구간
     const dayIdx = new Map(), days = [];
     let j = 0;
-    while (j < i) {
+    while (j < n) {
       const d = new Date(ts[j]);
       const k = dayKeyOf(d);
       const next = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1).getTime();
       let e = j;
-      while (e < i && ts[e] < next) e++;
-      dayIdx.set(k, [j, e]);
-      days.push(k);
+      while (e < n && ts[e] < next) e++;
+      if (dayIdx.has(k)) dayIdx.get(k)[1] = e; else { dayIdx.set(k, [j, e]); days.push(k); }
       j = e;
     }
 
-    const places = new Map(rows(db, "SELECT key, name FROM places").map((r) => [r.key, r.name]));
-    const notes = rows(db, "SELECT * FROM place_notes ORDER BY updated DESC").map((r) => ({
-      key: r.key, lat: r.lat, lng: r.lng, rating: r.rating || 0, memo: r.memo || "", updated: r.updated,
-      tags: String(r.tags || "").split(",").filter(Boolean).map((t) => ({ "캠핑": "캠핑지", "숙소": "숙박", "낚시": "낚시 포인트", "맛집": "먹거리", "카페": "마실거리" }[t] || t)),
-    }));
+    const places = new Map(p.places.map((r) => [r.key, r.name]));
+    const notes = p.notes.map(noteFromRow).filter((x) => !noteIsEmpty(x)).sort((a, b) => b.updated - a.updated);
     const regionDays = new Map();
-    for (const r of rows(db, "SELECT code, day, stay_ms, night FROM region_days")) {
+    for (const r of p.regionDays) {
       if (!regionDays.has(r.code)) regionDays.set(r.code, new Map());
-      regionDays.get(r.code).set(r.day, { ms: r.stay_ms, night: r.night === 1 });
+      regionDays.get(r.code).set(r.day, { ms: r.stay_ms, night: r.night === 1 || r.night === true });
     }
-    const visits = new Map(rows(db, "SELECT code, first_ts, last_ts, days FROM region_visits").map((r) => [r.code, r]));
-    const manual = new Set(rows(db, "SELECT code FROM manual_regions").map((r) => r.code));
+    const visits = new Map(p.visits.map((r) => [r.code, r]));
+    const manual = new Set(p.manual);
     const photoDays = new Map();
-    for (const r of rows(db, "SELECT code, day, first_ts, last_ts FROM photo_days")) {
+    for (const r of p.photo) {
       if (!photoDays.has(r.code)) photoDays.set(r.code, new Map());
       photoDays.get(r.code).set(r.day, [r.first_ts, r.last_ts]);
     }
@@ -517,8 +635,135 @@ body { margin: 0; }
       for (const [k, v] of m) if (v.night) awayNights.add(k);
     }
 
-    return { n: i, ts, lat, lng, acc, dayIdx, days, places, notes, regionDays, visits, manual, photoDays, conq, home, awayNights };
+    return { n, ts, lat, lng, acc, dayIdx, days, places, notes, regionDays, visits, manual, photoDays, conq, home, awayNights };
   }
+
+  // ---------- 제피 클라우드 (Supabase) ----------
+  const SB_URL = "https://xkhfannbztgvarxqhzno.supabase.co";
+  const SB_KEY = "sb_publishable__uulkrUbHekv5cxsE-UyHw_oXkR7wtM";
+  let session = null; // { access, refresh, exp, email, uid }
+
+  function saveSession() {
+    try { session ? localStorage.setItem("jepi.session", JSON.stringify(session)) : localStorage.removeItem("jepi.session"); } catch (e) {}
+  }
+  function loadSession() {
+    try { const s = JSON.parse(localStorage.getItem("jepi.session") || "null"); if (s && s.refresh && s.uid) session = s; } catch (e) {}
+  }
+  function takeSession(j) {
+    const u = j.user || {};
+    session = {
+      access: j.access_token, refresh: j.refresh_token,
+      exp: Date.now() + (+j.expires_in || 3600) * 1000,
+      email: u.email || (session && session.email) || "", uid: u.id || (session && session.uid) || "",
+    };
+    saveSession();
+    renderAccount();
+  }
+  function authMsg(j, status) {
+    const c = j.error_code || j.error || "";
+    const m = {
+      invalid_credentials: "이메일이나 비밀번호가 맞지 않아요.",
+      invalid_grant: "이메일이나 비밀번호가 맞지 않아요.",
+      email_not_confirmed: "메일함에서 확인 링크를 먼저 눌러 주세요.",
+      user_already_exists: "이미 가입한 이메일이에요. 로그인해 주세요.",
+      email_exists: "이미 가입한 이메일이에요. 로그인해 주세요.",
+      weak_password: "비밀번호를 6자 이상으로 정해 주세요.",
+      over_email_send_rate_limit: "요청이 많아요. 잠시 뒤에 다시 해 주세요.",
+      over_request_rate_limit: "요청이 많아요. 잠시 뒤에 다시 해 주세요.",
+      validation_failed: "이메일 주소를 확인해 주세요.",
+      email_address_invalid: "이메일 주소를 확인해 주세요.",
+    }[c];
+    return m || (j.msg || j.error_description || j.message ? "로그인 오류: " + (j.msg || j.error_description || j.message) : "로그인 오류 (" + status + ")");
+  }
+  async function authFetch(path, body, bearer) {
+    const headers = { apikey: SB_KEY, "Content-Type": "application/json" };
+    if (bearer) headers.Authorization = "Bearer " + bearer;
+    const r = await fetch(SB_URL + "/auth/v1/" + path, { method: body === undefined ? "GET" : "POST", headers, body: body === undefined ? undefined : JSON.stringify(body) });
+    let j = {};
+    try { j = await r.json(); } catch (e) {}
+    if (!r.ok) throw new Error(authMsg(j, r.status));
+    return j;
+  }
+  async function token() {
+    if (!session) throw new Error("로그인이 필요해요.");
+    if (Date.now() < session.exp - 60000) return session.access;
+    try {
+      takeSession(await authFetch("token?grant_type=refresh_token", { refresh_token: session.refresh }));
+    } catch (e) {
+      session = null; saveSession(); renderAccount();
+      throw new Error("로그인이 풀렸어요. 다시 로그인해 주세요.");
+    }
+    return session.access;
+  }
+  async function sb(path, opts) {
+    opts = opts || {};
+    const r = await fetch(SB_URL + "/rest/v1/" + path, {
+      method: opts.method || "GET",
+      headers: Object.assign({ apikey: SB_KEY, Authorization: "Bearer " + (await token()), "Content-Type": "application/json" }, opts.headers || {}),
+      body: opts.body,
+    });
+    if (!r.ok) throw new Error("서버 오류 (" + r.status + ")");
+    const txt = await r.text();
+    return txt ? JSON.parse(txt) : null;
+  }
+
+  async function loadCloud() {
+    if (!session) return;
+    setNotice("클라우드에서 내 기록을 불러오는 중이에요…");
+    try {
+      const [blobs, notes] = await Promise.all([
+        sb("blobs?select=name,data"),
+        sb("place_notes?select=key,lat,lng,tags,rating,memo,updated"),
+      ]);
+      const tracks = [];
+      for (let off = 0; ; ) {
+        const part = await sb("day_tracks?select=day,pts&order=day.asc&limit=40&offset=" + off);
+        tracks.push(...part);
+        off += part.length;
+        setNotice("클라우드에서 불러오는 중이에요… " + fmtInt.format(off) + "일");
+        if (part.length < 40) break;
+      }
+      const decoded = [];
+      let n = 0;
+      for (const t of tracks) {
+        try { const j = JSON.parse(t.pts); decoded.push(j); n += j.p.length; } catch (e) {}
+      }
+      const ts = new Float64Array(n), lat = new Float64Array(n), lng = new Float64Array(n), acc = new Float32Array(n);
+      let i = 0;
+      for (const j of decoded) for (const q of j.p) { ts[i] = j.t0 + q[0] * 1000; lat[i] = q[1] / 1e5; lng[i] = q[2] / 1e5; acc[i] = q[3] || 0; i++; }
+      const B = {};
+      for (const b of blobs) { try { B[b.name] = JSON.parse(b.data); } catch (e) {} }
+      const data = buildData({
+        n: i, ts, lat, lng, acc,
+        places: Object.entries(B.places || {}).map(([key, name]) => ({ key, name })),
+        notes,
+        regionDays: (B.region_days || []).map(([code, day, stay_ms, night]) => ({ code, day, stay_ms, night })),
+        visits: (B.region_visits || []).map(([code, first_ts, last_ts, days]) => ({ code, first_ts, last_ts, days })),
+        manual: B.manual_regions || [],
+        photo: (B.photo_days || []).map(([code, day, first_ts, last_ts]) => ({ code, day, first_ts, last_ts })),
+      });
+      if (!data.days.length) {
+        setNotice("<strong>" + esc(session.email) + "</strong>으로 로그인했어요. 아직 올라온 기록이 없어요. 폰의 제피 앱 <strong>설정 → 내 계정 · 클라우드</strong>에서 같은 계정으로 로그인하면 자동으로 올라와요.");
+        return;
+      }
+      source = "cloud";
+      $("sampleBtn").hidden = false;
+      showData(data, "<strong>" + esc(session.email) + "</strong> 계정의 기록이에요. " + fmtDayShort(data.days[0]) + "부터 " +
+        fmtDayShort(data.days[data.days.length - 1]) + "까지, " + fmtInt.format(data.days.length) + "일. 장소 메모는 여기서 고치면 폰에도 반영돼요.");
+    } catch (e) {
+      setNotice("클라우드에서 불러오지 못했어요. " + esc(e.message || e), true);
+    }
+  }
+
+  function renderAccount() {
+    $("acct").innerHTML = session
+      ? '<span class="who" title="' + esc(session.email) + '">' + esc(session.email) + '</span>' +
+        (source !== "cloud" ? '<button class="btn" type="button" data-acct="load">내 기록 보기</button>' : '<button class="btn" type="button" data-acct="load">새로고침</button>') +
+        '<button class="btn" type="button" data-acct="out">로그아웃</button>'
+      : '<button class="btn" type="button" data-acct="in">로그인</button>';
+  }
+  const canEdit = () => source === "cloud" && !!session;
+
   function addSet(map, key, v) { if (!map.has(key)) map.set(key, new Set()); map.get(key).add(v); }
 
   // ---------- 계산 (geo.dart를 그대로 옮겼어요) ----------
@@ -640,6 +885,7 @@ body { margin: 0; }
   }
 
   function renderAll() {
+    renderAccount();
     renderStats();
     curDay = D.days[D.days.length - 1];
     calMonth = Math.floor(curDay / 100);
@@ -739,9 +985,10 @@ body { margin: 0; }
         const note = noteNear(it.lat, it.lng);
         const nm = shortName(full) || "이름 모르는 곳";
         h += '<li class="stay"><span class="t">' + hm(it.start) + '</span><span class="rail"><span class="dot"></span></span>' +
-          '<div class="body" data-stay="' + i + '" tabindex="0" role="button" title="' + esc(full || "") + '"><div class="nm">' + esc(nm) + '</div><div class="sub">' +
+          '<div class="body"><button type="button" class="linkish nm" data-stay="' + i + '" title="' + esc(full || "") + '">' + esc(nm) + '</button><div class="sub">' +
           hm(it.start) + "–" + hm(it.end) + " · " + durText(it.end - it.start) + "</div>" +
-          (note ? note.tags.map((t) => '<span class="chip">' + esc(t) + "</span>").join("") + (note.memo ? '<div class="memo">' + esc(note.memo) + "</div>" : "") : "") +
+          (note ? note.tags.map((t) => '<span class="chip">' + esc(t) + "</span>").join("") + (note.rating ? ' <span class="chip">' + "★".repeat(note.rating) + "</span>" : "") + (note.memo ? '<div class="memo">' + esc(note.memo) + "</div>" : "") : "") +
+          (canEdit() ? '<div><button type="button" class="mini" data-note-stay="' + i + '">' + (note ? "메모 고치기" : "메모 남기기") + "</button></div>" : "") +
           "</div></li>";
       } else {
         const kmh = (it.m / 1000) / ((it.end - it.start) / 3600000);
@@ -959,7 +1206,7 @@ body { margin: 0; }
   function renderNotes() {
     const list = D.notes.filter((n) => !n.tags.includes("집") && !n.tags.includes("회사"));
     if (!list.length) {
-      $("notesList").innerHTML = '<div class="panel empty">앱에서 장소에 태그나 메모를 남기면 여기에 모여요.</div>';
+      $("notesList").innerHTML = '<div class="panel empty">' + (canEdit() ? "하루 화면의 타임라인에서 머문 곳의 <b>메모 남기기</b>를 누르거나, 앱에서 태그·메모를 남기면 여기에 모여요." : "앱에서 장소에 태그나 메모를 남기면 여기에 모여요.") + "</div>";
       return;
     }
     $("notesList").innerHTML = list.map((n, i) => {
@@ -970,7 +1217,8 @@ body { margin: 0; }
         "<div>" + n.tags.map((t) => '<span class="chip">' + esc(t) + "</span>").join("") + "</div>" +
         (n.memo ? '<div class="memo">' + esc(n.memo) + "</div>" : "") +
         '<div class="when">' + (days.length ? "다녀온 날 " + days.length + "일 · 마지막 " + fmtDayShort(days[days.length - 1]) : "기록에 남은 방문 없음") + "</div>" +
-        (days.length ? '<button class="go" type="button" data-go="' + days[days.length - 1] + '">그날 지도 보기</button>' : "") +
+        '<div class="acts">' + (days.length ? '<button class="go" type="button" data-go="' + days[days.length - 1] + '">그날 지도 보기</button>' : "") +
+        (canEdit() ? '<button class="go" type="button" data-edit="' + esc(n.key) + '">고치기</button>' : "") + "</div>" +
         "</article>";
     }).join("");
   }
@@ -1017,9 +1265,153 @@ body { margin: 0; }
     }
   });
   $("timeline").addEventListener("click", (e) => { const b = e.target.closest("[data-stay]"); if (b) focusStay(+b.dataset.stay); });
-  $("timeline").addEventListener("keydown", (e) => { const b = e.target.closest("[data-stay]"); if (b && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); focusStay(+b.dataset.stay); } });
+  $("timeline").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-note-stay]");
+    if (!b) return;
+    const it = timelineOf(curDay).items[+b.dataset.noteStay];
+    if (!it) return;
+    const near = noteNear(it.lat, it.lng);
+    openNote(near || { key: it.lat.toFixed(3) + "," + it.lng.toFixed(3), lat: it.lat, lng: it.lng, tags: [], rating: 0, memo: "", updated: 0 });
+  });
   $("yearSel").addEventListener("click", (e) => { const b = e.target.closest("[data-year]"); if (b) renderReport(+b.dataset.year); });
-  $("notesList").addEventListener("click", (e) => { const b = e.target.closest("[data-go]"); if (b) { showTab("day"); goDay(+b.dataset.go); } });
+  $("notesList").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-go]");
+    if (b) { showTab("day"); goDay(+b.dataset.go); return; }
+    const ed = e.target.closest("[data-edit]");
+    if (ed) { const n = D.notes.find((x) => x.key === ed.dataset.edit); if (n) openNote(n); }
+  });
+
+  // ---------- 로그인 창 ----------
+  const loginDlg = $("loginDlg");
+  function loginMsg(t, err) { $("loginMsg").textContent = t || ""; $("loginMsg").classList.toggle("err", !!err); }
+  function loginBusy(on) { for (const id of ["loginGo", "signupGo"]) $(id).disabled = on; }
+  function loginInputs() {
+    const email = $("loginEmail").value.trim(), pw = $("loginPw").value;
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { loginMsg("이메일 주소를 확인해 주세요.", true); return null; }
+    if (pw.length < 6) { loginMsg("비밀번호는 6자 이상이에요.", true); return null; }
+    return { email, password: pw };
+  }
+  $("acct").addEventListener("click", async (e) => {
+    const b = e.target.closest("[data-acct]");
+    if (!b) return;
+    if (b.dataset.acct === "in") { loginMsg(""); loginDlg.showModal(); $("loginEmail").focus(); }
+    if (b.dataset.acct === "load") await loadCloud();
+    if (b.dataset.acct === "out") {
+      try { await authFetch("logout", {}, await token()); } catch (err) {}
+      session = null; saveSession();
+      if (source === "cloud") await loadSample();
+      renderAccount();
+      setNotice("로그아웃했어요. 지금은 예시 데이터를 보고 있어요.");
+    }
+  });
+  $("loginClose").addEventListener("click", () => loginDlg.close());
+  $("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const v = loginInputs();
+    if (!v) return;
+    loginBusy(true); loginMsg("로그인하는 중이에요…");
+    try {
+      takeSession(await authFetch("token?grant_type=password", v));
+      $("loginPw").value = "";
+      loginDlg.close();
+      await loadCloud();
+    } catch (err) { loginMsg(err.message, true); }
+    finally { loginBusy(false); }
+  });
+  $("signupGo").addEventListener("click", async () => {
+    const v = loginInputs();
+    if (!v) return;
+    loginBusy(true); loginMsg("가입하는 중이에요…");
+    try {
+      const j = await authFetch("signup", v);
+      if (j.access_token) { takeSession(j); loginDlg.close(); await loadCloud(); }
+      else loginMsg("확인 메일을 보냈어요. 메일의 링크를 누르면 이 페이지로 돌아와 로그인돼요.");
+    } catch (err) { loginMsg(err.message, true); }
+    finally { loginBusy(false); }
+  });
+
+  // ---------- 메모 편집 창 ----------
+  const PRESET_TAGS = ["캠핑지", "숙박", "낚시 포인트", "먹거리", "마실거리", "문화생활", "다시 갈 곳", "집", "회사"];
+  const noteDlg = $("noteDlg");
+  let editing = null; // { key, lat, lng, tags:Set, rating, memo }
+  function noteMsg(t, err) { $("noteMsg").textContent = t || ""; $("noteMsg").classList.toggle("err", !!err); }
+  function drawNoteTags() {
+    const used = new Set(PRESET_TAGS);
+    for (const n of D.notes) for (const t of n.tags) used.add(t);
+    for (const t of editing.tags) used.add(t);
+    $("noteTags").innerHTML = [...used].map((t) => '<button type="button" class="tagbtn" data-tag="' + esc(t) + '" aria-pressed="' + editing.tags.has(t) + '">' + esc(t) + "</button>").join("");
+  }
+  function drawNoteStars() {
+    let h = "";
+    for (let i = 1; i <= 5; i++) h += '<button type="button" data-star="' + i + '" class="' + (i <= editing.rating ? "on" : "") + '" aria-label="별점 ' + i + '점" aria-pressed="' + (i <= editing.rating) + '">★</button>';
+    $("noteStars").innerHTML = h;
+  }
+  function openNote(n) {
+    if (!canEdit()) return;
+    editing = { key: n.key, lat: n.lat, lng: n.lng, tags: new Set(n.tags), rating: n.rating, memo: n.memo, exists: D.notes.some((x) => x.key === n.key) };
+    $("noteWhere").textContent = placeName(n.lat, n.lng) || n.lat.toFixed(4) + ", " + n.lng.toFixed(4);
+    $("noteMemo").value = n.memo;
+    $("noteNewTag").value = "";
+    $("noteDel").hidden = !editing.exists;
+    noteMsg("");
+    drawNoteTags();
+    drawNoteStars();
+    noteDlg.showModal();
+  }
+  $("noteTags").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-tag]");
+    if (!b) return;
+    const t = b.dataset.tag;
+    editing.tags.has(t) ? editing.tags.delete(t) : editing.tags.add(t);
+    b.setAttribute("aria-pressed", String(editing.tags.has(t)));
+  });
+  function addTag() {
+    const t = $("noteNewTag").value.replace(/,/g, " ").trim().slice(0, 20);
+    if (!t) return;
+    editing.tags.add(t);
+    $("noteNewTag").value = "";
+    drawNoteTags();
+  }
+  $("noteAddTag").addEventListener("click", addTag);
+  $("noteNewTag").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); addTag(); } });
+  $("noteStars").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-star]");
+    if (!b) return;
+    const v = +b.dataset.star;
+    editing.rating = editing.rating === v ? 0 : v;
+    drawNoteStars();
+  });
+  $("noteClose").addEventListener("click", () => noteDlg.close());
+  async function putNote(del) {
+    const row = {
+      user_id: session.uid, key: editing.key, lat: editing.lat, lng: editing.lng,
+      tags: del ? "" : [...editing.tags].join(","), rating: del ? 0 : editing.rating,
+      memo: del ? "" : $("noteMemo").value.trim(), updated: Date.now(),
+    };
+    for (const id of ["noteSave", "noteDel"]) $(id).disabled = true;
+    noteMsg("저장하는 중이에요…");
+    try {
+      await sb("place_notes?on_conflict=user_id,key", {
+        method: "POST",
+        headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
+        body: JSON.stringify([row]),
+      });
+      const n = noteFromRow(row);
+      D.notes = D.notes.filter((x) => x.key !== row.key);
+      if (!noteIsEmpty(n)) D.notes.unshift(n);
+      noteDlg.close();
+      renderNotes();
+      renderTimeline(timelineOf(curDay));
+      renderReport(repYear);
+      setNotice(del ? "메모를 지웠어요. 폰에는 다음에 앱을 열 때 반영돼요." : "저장했어요. 폰에는 다음에 앱을 열 때 반영돼요.");
+    } catch (err) {
+      noteMsg("저장하지 못했어요. " + err.message, true);
+    } finally {
+      for (const id of ["noteSave", "noteDel"]) $(id).disabled = false;
+    }
+  }
+  $("noteForm").addEventListener("submit", (e) => { e.preventDefault(); putNote(false); });
+  $("noteDel").addEventListener("click", () => putNote(true));
   document.addEventListener("keydown", (e) => {
     if (!D || $("view-day").hidden || e.target.closest("input, button, [role=button]")) return;
     if (e.key === "ArrowLeft") $("prevDay").click();
@@ -1037,7 +1429,7 @@ body { margin: 0; }
     }
   }
   $("file").addEventListener("change", (e) => { openFile(e.target.files[0]); e.target.value = ""; });
-  $("sampleBtn").addEventListener("click", () => loadSample());
+  $("sampleBtn").addEventListener("click", async () => { await loadSample(); renderAccount(); });
   const app = $("app");
   app.addEventListener("dragover", (e) => { e.preventDefault(); app.classList.add("drop-on"); });
   app.addEventListener("dragleave", (e) => { if (!app.contains(e.relatedTarget)) app.classList.remove("drop-on"); });
