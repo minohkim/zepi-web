@@ -195,6 +195,9 @@ footer { color: var(--muted); font-size: 12px; text-align: center; padding-top: 
 .leaflet-bar a + a { border-top: 1px solid var(--line); }
 .leaflet-bar a.leaflet-disabled { color: var(--muted); cursor: default; }
 .leaflet-tooltip { position: absolute; padding: 6px 9px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; white-space: nowrap; pointer-events: none; font-size: 13px; box-shadow: 0 2px 8px rgb(0 0 0 / .12); }
+.nm-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--pepper); border: 2px solid #fff; box-shadow: 0 1px 4px rgb(0 0 0 / .35); }
+.nm-tip { padding: 8px 10px; font: 13px/1.45 var(--font-body); color: #17201A; white-space: nowrap; }
+.nm-tip b { font-weight: 600; }
 @media (prefers-reduced-motion: reduce) { .leaflet-zoom-anim .leaflet-zoom-animated { transition: none; } }
 [hidden] { display: none !important; }
 html { -webkit-text-size-adjust: 100%; }
@@ -345,6 +348,31 @@ body { margin: 0; }
   let dayMap = null, conqMap = null, dayLayers = null, conqLayer = null;
   const dayCache = new Map();
 
+  // 네이버 지도 (앱과 같은 Client ID, Web 서비스 URL에 minohkim.github.io 등록)
+  const NAVER_KEY_ID = "e6cj9cl5th";
+  let naverOk = false, nMap = null, nOverlays = [], nInfo = null, nStayMarks = [];
+  function loadNaver() {
+    return new Promise((resolve) => {
+      let done = false;
+      const finish = () => { if (!done) { done = true; resolve(); } };
+      window.navermap_authFailure = () => {
+        // 키나 등록 주소가 맞지 않으면 경계선 지도로 돌아가요
+        naverOk = false;
+        if (nMap) { try { nMap.destroy(); } catch (e) {} nMap = null; }
+        $("dayMap").innerHTML = "";
+        dayMap = null;
+        if (D) drawDayMap(timelineOf(curDay));
+        finish();
+      };
+      const s = document.createElement("script");
+      s.src = "https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=" + NAVER_KEY_ID;
+      s.onload = () => { naverOk = !!(window.naver && naver.maps); finish(); };
+      s.onerror = finish;
+      document.head.appendChild(s);
+      setTimeout(finish, 6000);
+    });
+  }
+
   // ---------- 불러오기 ----------
   function setNotice(html, err) {
     $("noticeText").innerHTML = html;
@@ -353,6 +381,7 @@ body { margin: 0; }
 
   async function boot() {
     try {
+      const naverP = loadNaver();
       SQL = await initSqlJs();
       const res = await fetch("sigungu.json");
       regions = await res.json();
@@ -360,6 +389,7 @@ body { margin: 0; }
         regionByCode.set(r.c, r);
         if (!sidoOrder.includes(r.s)) sidoOrder.push(r.s);
       }
+      await naverP;
       await loadSample();
     } catch (e) {
       setNotice("페이지를 준비하지 못했어요. 새로고침해 주세요. (" + esc(e.message || e) + ")", true);
@@ -724,6 +754,7 @@ body { margin: 0; }
 
   function drawDayMap(tl) {
     if ($("view-day").hidden) return;
+    if (naverOk) return drawDayNaver(tl);
     if (!dayMap) {
       dayMap = makeMap($("dayMap"));
       dayMap._base = baseLayer().addTo(dayMap);
@@ -750,9 +781,56 @@ body { margin: 0; }
     if (all.length) dayMap.fitBounds(L.latLngBounds(all).pad(0.15), { maxZoom: 15, animate: false });
   }
 
+  function drawDayNaver(tl) {
+    const N = naver.maps, el = $("dayMap");
+    if (!nMap) {
+      nMap = new N.Map(el, {
+        center: new N.LatLng(36.2, 127.8), zoom: 7, minZoom: 6,
+        scaleControl: true, mapDataControl: false, logoControlOptions: { position: N.Position.BOTTOM_LEFT },
+        zoomControl: true, zoomControlOptions: { position: N.Position.TOP_LEFT, style: N.ZoomControlStyle.SMALL },
+      });
+      nInfo = new N.InfoWindow({ borderWidth: 1, borderColor: "#C3CCBF", backgroundColor: "#fff", anchorSize: new N.Size(10, 8), disableAutoPan: false });
+    } else {
+      nMap.setSize(new N.Size(el.clientWidth, el.clientHeight));
+    }
+    for (const o of nOverlays) o.setMap(null);
+    nOverlays = []; nStayMarks = [];
+    nInfo.close();
+    const leaf = css("--leaf");
+    let bounds = null;
+    const grow = (ll) => { if (!bounds) bounds = new N.LatLngBounds(ll, ll); else bounds.extend(ll); };
+    for (const seg of segments(tl.path)) {
+      const path = seg.map((p) => new N.LatLng(p.lat, p.lng));
+      path.forEach(grow);
+      nOverlays.push(new N.Polyline({ map: nMap, path, strokeColor: leaf, strokeWeight: 5, strokeOpacity: 0.85, strokeLineJoin: "round", strokeLineCap: "round" }));
+    }
+    tl.items.forEach((it, i) => {
+      if (it.kind !== "stay") return;
+      const pos = new N.LatLng(it.lat, it.lng);
+      grow(pos);
+      const nm = shortName(placeName(it.lat, it.lng)) || "이름 모르는 곳";
+      const mk = new N.Marker({ map: nMap, position: pos, title: nm, icon: { content: '<div class="nm-dot"></div>', anchor: new N.Point(9, 9) } });
+      const html = '<div class="nm-tip"><b>' + esc(nm) + "</b><br>" + hm(it.start) + "–" + hm(it.end) + " · " + durText(it.end - it.start) + "</div>";
+      mk._html = html;
+      N.Event.addListener(mk, "click", () => { nInfo.setContent(html); nInfo.open(nMap, mk); });
+      nOverlays.push(mk);
+      nStayMarks[i] = mk;
+    });
+    if (bounds) {
+      nMap.fitBounds(bounds, { top: 40, right: 40, bottom: 40, left: 40 });
+      if (nMap.getZoom() > 16) nMap.setZoom(16, false);
+    }
+  }
+
   function focusStay(i) {
     const tl = timelineOf(curDay);
     const it = tl.items[i];
+    if (it && naverOk && nMap) {
+      nMap.morph(new naver.maps.LatLng(it.lat, it.lng), Math.max(nMap.getZoom(), 15));
+      const mk = nStayMarks[i];
+      if (mk) { nInfo.setContent(mk._html); nInfo.open(nMap, mk); }
+      return;
+    }
     if (!it || !dayMap) return;
     dayMap.setView([it.lat, it.lng], Math.max(dayMap.getZoom(), 14));
     dayLayers.eachLayer((l) => { if (l._stayIdx === i) l.openTooltip(); });
@@ -968,7 +1046,8 @@ body { margin: 0; }
   // 테마가 바뀌면 지도 색도 다시
   function retheme() {
     if (!D) return;
-    if (dayMap) { dayMap._base.remove(); dayMap._base = baseLayer().addTo(dayMap); drawDayMap(timelineOf(curDay)); }
+    if (dayMap) { dayMap._base.remove(); dayMap._base = baseLayer().addTo(dayMap); }
+    if (dayMap || nMap) drawDayMap(timelineOf(curDay));
     if (conqMap) drawConqMap();
   }
   try { matchMedia("(prefers-color-scheme: dark)").addEventListener("change", retheme); } catch (e) {}
