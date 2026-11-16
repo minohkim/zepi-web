@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>제피 웹</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap">
+<style>
+/* 레이아웃: 위에 요약 띠, 아래 탭. "하루"는 넓은 화면에서 왼쪽 지도 · 오른쪽 타임라인 (폴드 펼친 화면과 같은 배치) */
+:root {
+  --bg: #F5F7F1;
+  --surface: #FFFFFF;
+  --ink: #17201A;
+  --muted: #56615A;
+  --line: #D8DED4;
+  --leaf: #1F6B3A;
+  --leaf-soft: #DCE9DD;
+  --pepper: #A8402A;
+  --land: #ECF0E7;
+  --land-line: #C3CCBF;
+  --passed: #CFE0CB;
+  --font-display: "Gowun Batang", "Nanum Myeongjo", serif;
+  --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --font-num: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1411; --surface: #161D18; --ink: #E5EBE3; --muted: #9AA69D; --line: #29332C;
+    --leaf: #62BE84; --leaf-soft: #1D3324; --pepper: #E5805F; --land: #19211C; --land-line: #34413A; --passed: #2A3B2F;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1411; --surface: #161D18; --ink: #E5EBE3; --muted: #9AA69D; --line: #29332C;
+  --leaf: #62BE84; --leaf-soft: #1D3324; --pepper: #E5805F; --land: #19211C; --land-line: #34413A; --passed: #2A3B2F;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 16px 40px;
+}
+.wrap { max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+.num { font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+button, label.btn { font: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--leaf); outline-offset: 2px; }
+
+header.top { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; justify-content: space-between; }
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand svg { width: 34px; height: 34px; flex: none; }
+.brand h1 { font-family: var(--font-display); font-size: 26px; letter-spacing: -0.01em; }
+.brand p { margin: 0; color: var(--muted); font-size: 13px; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.btn { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font-size: 14px; }
+.btn.primary { background: var(--leaf); border-color: var(--leaf); color: var(--bg); font-weight: 600; }
+.btn:hover { border-color: var(--leaf); }
+#file { position: absolute; width: 1px; height: 1px; opacity: 0; }
+
+.notice { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; padding: 10px 14px; border-radius: var(--radius); background: var(--leaf-soft); font-size: 14px; }
+.notice strong { font-weight: 600; }
+.notice.err { background: color-mix(in srgb, var(--pepper) 16%, var(--surface)); }
+.drop-on { outline: 2px dashed var(--leaf); outline-offset: 6px; border-radius: var(--radius); }
+
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.stat { background: var(--surface); padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.stat .k { font-size: 12px; color: var(--muted); letter-spacing: 0.02em; }
+.stat .v { font-family: var(--font-num); font-size: 22px; font-variant-numeric: tabular-nums; }
+.stat .v small { font-family: var(--font-body); font-size: 13px; color: var(--muted); margin-left: 3px; }
+@media (max-width: 640px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+nav.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); overflow-x: auto; }
+nav.tabs button { border: 0; background: none; color: var(--muted); padding: 10px 14px; font-size: 15px; border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; min-height: 44px; }
+nav.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--leaf); font-weight: 600; }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.day { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 860px) { .day { grid-template-columns: minmax(0, 1fr); } }
+.mapbox { height: 560px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); background: var(--bg); }
+@media (max-width: 860px) { .mapbox { height: 380px; } }
+.side { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+
+.daynav { display: flex; align-items: center; gap: 8px; padding: 10px 12px; }
+.daynav .label { flex: 1; text-align: center; min-width: 0; }
+.daynav .label b { font-family: var(--font-display); font-size: 19px; }
+.daynav .label span { display: block; color: var(--muted); font-size: 13px; }
+.iconbtn { width: 40px; height: 40px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); display: grid; place-items: center; }
+.iconbtn:disabled { opacity: .35; cursor: default; }
+.iconbtn svg { width: 18px; height: 18px; }
+
+.cal { padding: 4px 12px 12px; }
+.cal-head { display: flex; justify-content: space-between; align-items: center; padding: 4px 0 8px; }
+.cal-head b { font-size: 14px; }
+.cal-head .iconbtn { width: 32px; height: 32px; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; text-align: center; font-size: 13px; }
+.cal-grid .dow { color: var(--muted); font-size: 11px; padding: 2px 0; }
+.cal-grid button { position: relative; border: 0; background: none; color: var(--muted); border-radius: 8px; min-height: 34px; font-family: var(--font-num); font-variant-numeric: tabular-nums; font-size: 13px; }
+.cal-grid button.has { color: var(--ink); }
+.cal-grid button.has::after { content: ""; position: absolute; left: 50%; bottom: 3px; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: var(--leaf); }
+.cal-grid button.away::after { background: var(--pepper); width: 6px; margin-left: -3px; border-radius: 3px; }
+.cal-grid button.sel { background: var(--leaf); color: var(--bg); }
+.cal-grid button.sel::after { background: var(--bg); }
+.cal-grid button:disabled { cursor: default; opacity: .45; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--muted); padding: 0 12px 12px; }
+.legend i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; vertical-align: 1px; }
+
+.tl { list-style: none; margin: 0; padding: 8px 0; }
+.tl li { display: grid; grid-template-columns: 54px 18px minmax(0, 1fr); gap: 0 8px; padding: 0 14px; }
+.tl .t { font-family: var(--font-num); font-size: 13px; color: var(--muted); padding-top: 9px; text-align: right; }
+.tl .rail { position: relative; }
+.tl .rail::before { content: ""; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: var(--line); }
+.tl li:first-child .rail::before { top: 14px; }
+.tl li:last-child .rail::before { bottom: calc(100% - 14px); }
+.tl .dot { position: absolute; left: 3px; top: 11px; width: 12px; height: 12px; border-radius: 50%; background: var(--pepper); border: 2px solid var(--surface); }
+.tl .move .dot { display: none; }
+.tl .body { padding: 6px 0 10px; min-width: 0; }
+.tl .stay .body { cursor: pointer; }
+.tl .stay .body:hover .nm { color: var(--leaf); }
+.tl .nm { font-weight: 600; overflow-wrap: anywhere; }
+.tl .sub { color: var(--muted); font-size: 13px; }
+.tl .move .body { color: var(--muted); font-size: 13px; padding: 2px 0 6px; }
+.chip { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 999px; background: var(--leaf-soft); color: var(--ink); margin: 3px 4px 0 0; }
+.memo { font-size: 13px; color: var(--ink); margin-top: 3px; }
+.empty { padding: 28px 16px; text-align: center; color: var(--muted); }
+
+.conq { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 860px) { .conq { grid-template-columns: minmax(0, 1fr); } }
+.conq .mapbox { height: 640px; }
+@media (max-width: 860px) { .conq .mapbox { height: 460px; } }
+.sido { list-style: none; margin: 0; padding: 6px 0; }
+.sido li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; padding: 8px 14px; align-items: center; }
+.sido .bar { grid-column: 1 / -1; height: 6px; background: var(--land); border-radius: 3px; overflow: hidden; }
+.sido .bar i { display: block; height: 100%; background: var(--leaf); }
+.sido .n { font-family: var(--font-num); font-size: 13px; color: var(--muted); }
+.scale { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 12px 14px; border-bottom: 1px solid var(--line); font-size: 12px; color: var(--muted); }
+.scale i { display: inline-block; width: 14px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; border: 1px solid var(--land-line); }
+
+.report { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 860px) { .report { grid-template-columns: minmax(0, 1fr); } }
+.report .wide { grid-column: 1 / -1; }
+.card-h { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 14px 16px 4px; }
+.card-h h2 { font-family: var(--font-display); font-size: 18px; }
+.card-h span { color: var(--muted); font-size: 13px; }
+.yearsel { display: flex; gap: 6px; flex-wrap: wrap; }
+.yearsel button { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 6px 14px; font-family: var(--font-num); min-height: 36px; }
+.yearsel button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chart { padding: 8px 12px 12px; overflow-x: auto; }
+.chart svg { display: block; width: 100%; min-width: 480px; height: auto; }
+.rank { list-style: none; margin: 0; padding: 4px 0 10px; counter-reset: r; }
+.rank li { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; gap: 8px; padding: 8px 16px; align-items: baseline; }
+.rank li::before { counter-increment: r; content: counter(r); font-family: var(--font-num); color: var(--muted); font-size: 13px; }
+.rank .v { font-family: var(--font-num); font-size: 13px; color: var(--muted); }
+.rank .nm { overflow-wrap: anywhere; }
+
+.notes { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.note { padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
+.note .nm { font-weight: 600; overflow-wrap: anywhere; }
+.note .stars { color: var(--pepper); letter-spacing: 1px; font-size: 14px; }
+.note .when { color: var(--muted); font-size: 12px; }
+.note button.go { align-self: flex-start; margin-top: 6px; border: 0; background: none; color: var(--leaf); padding: 6px 0; font-size: 13px; font-weight: 600; min-height: 32px; }
+
+footer { color: var(--muted); font-size: 12px; text-align: center; padding-top: 8px; }
+.loading { padding: 60px 16px; text-align: center; color: var(--muted); }
+
+/* Leaflet 기본 배치 (타일 없이 시군구 경계만 그려요) */
+.leaflet-container { position: relative; overflow: hidden; background: var(--bg); font-family: var(--font-body); -webkit-tap-highlight-color: transparent; outline: 0; }
+.leaflet-pane, .leaflet-map-pane canvas, .leaflet-map-pane svg, .leaflet-layer, .leaflet-marker-icon { position: absolute; left: 0; top: 0; }
+.leaflet-pane { z-index: 400; }
+.leaflet-overlay-pane { z-index: 400; }
+.leaflet-marker-pane { z-index: 600; }
+.leaflet-tooltip-pane { z-index: 650; }
+.leaflet-popup-pane { z-index: 700; }
+.leaflet-map-pane canvas { z-index: 100; }
+.leaflet-map-pane svg { z-index: 200; }
+.leaflet-touch-drag { touch-action: none; }
+.leaflet-touch-zoom { touch-action: none; }
+.leaflet-grab { cursor: grab; }
+.leaflet-dragging .leaflet-grab, .leaflet-dragging .leaflet-interactive { cursor: grabbing; }
+.leaflet-interactive { cursor: pointer; }
+.leaflet-zoom-animated { transform-origin: 0 0; }
+.leaflet-zoom-anim .leaflet-zoom-animated { transition: transform .25s cubic-bezier(0,0,.25,1); }
+.leaflet-zoom-anim .leaflet-zoom-hide { visibility: hidden; }
+.leaflet-top, .leaflet-bottom { position: absolute; z-index: 1000; pointer-events: none; }
+.leaflet-top { top: 0; } .leaflet-bottom { bottom: 0; } .leaflet-left { left: 0; } .leaflet-right { right: 0; }
+.leaflet-control { position: relative; z-index: 800; pointer-events: auto; float: left; clear: both; }
+.leaflet-right .leaflet-control { float: right; }
+.leaflet-top .leaflet-control { margin-top: 10px; }
+.leaflet-left .leaflet-control { margin-left: 10px; }
+.leaflet-right .leaflet-control { margin-right: 10px; }
+.leaflet-bar { border-radius: 8px; border: 1px solid var(--line); overflow: hidden; background: var(--surface); }
+.leaflet-bar a { display: block; width: 36px; height: 36px; line-height: 34px; text-align: center; text-decoration: none; color: var(--ink); font-size: 20px; background: var(--surface); }
+.leaflet-bar a + a { border-top: 1px solid var(--line); }
+.leaflet-bar a.leaflet-disabled { color: var(--muted); cursor: default; }
+.leaflet-tooltip { position: absolute; padding: 6px 9px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; white-space: nowrap; pointer-events: none; font-size: 13px; box-shadow: 0 2px 8px rgb(0 0 0 / .12); }
+@media (prefers-reduced-motion: reduce) { .leaflet-zoom-anim .leaflet-zoom-animated { transition: none; } }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; }
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <header class="top">
+    <div class="brand">
+      <svg viewBox="0 0 40 40" aria-hidden="true">
+        <circle cx="18" cy="23" r="11" fill="var(--pepper)"/>
+        <path d="M22 13c2-6 8-8 13-7-1 6-6 10-13 7z" fill="var(--leaf)"/>
+        <path d="M20 13c0-2 1-4 2-5" stroke="var(--leaf)" stroke-width="2" fill="none" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <h1>제피</h1>
+        <p>폰에 쌓인 발자취를 큰 화면으로</p>
+      </div>
+    </div>
+    <div class="actions">
+      <label class="btn primary" for="file">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg>
+        백업 파일 열기
+      </label>
+      <input type="file" id="file" accept=".db,application/octet-stream">
+      <button class="btn" id="sampleBtn" type="button" hidden>예시 다시 보기</button>
+    </div>
+  </header>
+
+  <div class="notice" id="notice">
+    <span id="noticeText">준비하는 중이에요…</span>
+  </div>
+
+  <div id="main" hidden>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <section class="stats" id="stats" aria-label="요약"></section>
+
+      <nav class="tabs" role="tablist" aria-label="보기">
+        <button role="tab" id="tab-day" aria-selected="true" aria-controls="view-day">하루</button>
+        <button role="tab" id="tab-conquest" aria-selected="false" aria-controls="view-conquest">정복 지도</button>
+        <button role="tab" id="tab-report" aria-selected="false" aria-controls="view-report">올해의 발자취</button>
+        <button role="tab" id="tab-notes" aria-selected="false" aria-controls="view-notes">장소 메모</button>
+      </nav>
+
+      <section id="view-day" role="tabpanel" aria-labelledby="tab-day">
+        <div class="day">
+          <div class="mapbox" id="dayMap" aria-label="그날의 이동 지도"></div>
+          <div class="side">
+            <div class="panel">
+              <div class="daynav">
+                <button class="iconbtn" id="prevDay" type="button" aria-label="이전 기록한 날"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+                <div class="label"><b id="dayTitle">-</b><span id="daySub"></span></div>
+                <button class="iconbtn" id="nextDay" type="button" aria-label="다음 기록한 날"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+              </div>
+              <div class="cal" id="cal"></div>
+              <div class="legend"><span><i style="background:var(--leaf)"></i>기록한 날</span><span><i style="background:var(--pepper);border-radius:3px;width:12px"></i>집 밖에서 잔 날</span></div>
+            </div>
+            <div class="panel">
+              <ol class="tl" id="timeline"></ol>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-conquest" role="tabpanel" aria-labelledby="tab-conquest" hidden>
+        <div class="conq">
+          <div class="mapbox" id="conqMap" aria-label="시군구 정복 지도"></div>
+          <div class="panel">
+            <div class="scale">
+              <span><i style="background:var(--passed)"></i>지나감</span>
+              <span><i style="background:var(--leaf);opacity:.45"></i>정복 1일</span>
+              <span><i style="background:var(--leaf)"></i>자주 감</span>
+              <span><i style="background:var(--pepper)"></i>직접 표시</span>
+            </div>
+            <ul class="sido" id="sidoList"></ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-report" role="tabpanel" aria-labelledby="tab-report" hidden>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="yearsel" id="yearSel" role="group" aria-label="연도"></div>
+          <div class="stats" id="yearStats"></div>
+          <div class="report">
+            <div class="panel wide">
+              <div class="card-h"><h2>달마다 이동한 거리</h2><span>km</span></div>
+              <div class="chart" id="monthChart"></div>
+            </div>
+            <div class="panel">
+              <div class="card-h"><h2>가장 오래 머문 곳</h2><span>집·회사는 빼고</span></div>
+              <ol class="rank" id="topPlaces"></ol>
+            </div>
+            <div class="panel">
+              <div class="card-h"><h2>새로 정복한 곳</h2><span id="newCount"></span></div>
+              <ol class="rank" id="newRegions"></ol>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-notes" role="tabpanel" aria-labelledby="tab-notes" hidden>
+        <div class="notes" id="notesList"></div>
+      </section>
+    </div>
+  </div>
+
+  <footer>백업 파일은 이 브라우저 안에서만 열려요. 어디로도 올라가지 않아요.</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-asm-memory-growth.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  // 앱(config.dart)과 같은 기준
+  const STAY_RADIUS = 120, STAY_MIN = 10 * 60000, MAX_ACC = 100, DRAW_ACC = 80;
+  const SEG_GAP = 10 * 60000, CONQUER_MS = 6 * 3600000, MAX_DWELL_GAP = 24 * 3600000;
+
+  const $ = (id) => document.getElementById(id);
+  const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const fmtInt = new Intl.NumberFormat("ko-KR");
+  const DOW = ["일", "월", "화", "수", "목", "금", "토"];
+
+  function dist(lat1, lng1, lat2, lng2) {
+    const r = 6371000, rad = Math.PI / 180;
+    const dLat = (lat2 - lat1) * rad, dLng = (lng2 - lng1) * rad;
+    const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * rad) * Math.cos(lat2 * rad) * Math.sin(dLng / 2) ** 2;
+    return 2 * r * Math.asin(Math.min(1, Math.sqrt(a)));
+  }
+  const dayKeyOf = (d) => d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+  const dateOfKey = (k) => new Date(Math.floor(k / 10000), Math.floor(k / 100) % 100 - 1, k % 100);
+  const hm = (ts) => { const d = new Date(ts); return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0"); };
+  function durText(ms) {
+    const m = Math.round(ms / 60000);
+    if (m < 60) return m + "분";
+    const h = Math.floor(m / 60), r = m % 60;
+    return r ? h + "시간 " + r + "분" : h + "시간";
+  }
+  const km = (m) => (m / 1000).toFixed(m < 10000 ? 1 : 0);
+
+  // ---------- 상태 ----------
+  let SQL = null, regions = null, regionByCode = new Map(), sidoOrder = [];
+  let D = null; // 불러온 데이터
+  let curDay = null, calMonth = null;
+  let dayMap = null, conqMap = null, dayLayers = null, conqLayer = null;
+  const dayCache = new Map();
+
+  // ---------- 불러오기 ----------
+  function setNotice(html, err) {
+    $("noticeText").innerHTML = html;
+    $("notice").classList.toggle("err", !!err);
+  }
+
+  async function boot() {
+    try {
+      SQL = await initSqlJs();
+      const res = await fetch("sigungu.json");
+      regions = await res.json();
+      for (const r of regions) {
+        regionByCode.set(r.c, r);
+        if (!sidoOrder.includes(r.s)) sidoOrder.push(r.s);
+      }
+      await loadSample();
+    } catch (e) {
+      setNotice("페이지를 준비하지 못했어요. 새로고침해 주세요. (" + esc(e.message || e) + ")", true);
+    }
+  }
+
+  async function loadSample() {
+    setNotice("예시 데이터를 여는 중이에요…");
+    const buf = await (await fetch("sample.db")).arrayBuffer();
+    openDb(new Uint8Array(buf), true);
+  }
+
+  function openDb(bytes, isSample, fileName) {
+    const head = new TextDecoder().decode(bytes.slice(0, 15));
+    if (head !== "SQLite format 3") {
+      setNotice("제피 백업 파일이 아니에요. 앱의 <strong>설정 → 기록 백업</strong>으로 만든 <strong>.db</strong> 파일을 골라 주세요.", true);
+      return;
+    }
+    let db;
+    try {
+      db = new SQL.Database(bytes);
+      D = readAll(db);
+    } catch (e) {
+      setNotice("파일을 읽지 못했어요. 앱에서 백업을 다시 만들어 주세요. (" + esc(e.message || e) + ")", true);
+      return;
+    } finally {
+      if (db) db.close();
+    }
+    dayCache.clear();
+    if (!D.days.length) {
+      setNotice("이 백업에는 아직 이동 기록이 없어요.", true);
+      return;
+    }
+    if (isSample) {
+      setNotice("<strong>예시 데이터</strong>를 보고 있어요. 폰의 제피 앱 <strong>설정 → 기록 백업</strong>으로 만든 파일을 열면 내 기록으로 바뀌어요. 파일을 이 화면에 끌어다 놓아도 돼요.");
+    } else {
+      setNotice("<strong>" + esc(fileName || "내 백업") + "</strong>을 열었어요. 지점 " + fmtInt.format(D.n) + "개, " +
+        fmtDayShort(D.days[0]) + "부터 " + fmtDayShort(D.days[D.days.length - 1]) + "까지예요.");
+    }
+    $("sampleBtn").hidden = isSample;
+    $("main").hidden = false;
+    renderAll();
+  }
+
+  function rows(db, sql) {
+    try {
+      const st = db.prepare(sql);
+      const out = [];
+      while (st.step()) out.push(st.getAsObject());
+      st.free();
+      return out;
+    } catch (e) { return []; } // 예전 버전 백업에는 없는 표
+  }
+
+  function readAll(db) {
+    const cnt = rows(db, "SELECT COUNT(*) AS c FROM points")[0];
+    const n = cnt ? cnt.c : 0;
+    const ts = new Float64Array(n), lat = new Float64Array(n), lng = new Float64Array(n), acc = new Float32Array(n);
+    const st = db.prepare("SELECT ts, lat, lng, acc FROM points ORDER BY ts");
+    let i = 0;
+    while (st.step() && i < n) {
+      const r = st.get();
+      ts[i] = r[0]; lat[i] = r[1]; lng[i] = r[2]; acc[i] = r[3] == null ? 0 : r[3];
+      i++;
+    }
+    st.free();
+
+    // 날짜별 구간
+    const dayIdx = new Map(), days = [];
+    let j = 0;
+    while (j < i) {
+      const d = new Date(ts[j]);
+      const k = dayKeyOf(d);
+      const next = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1).getTime();
+      let e = j;
+      while (e < i && ts[e] < next) e++;
+      dayIdx.set(k, [j, e]);
+      days.push(k);
+      j = e;
+    }
+
+    const places = new Map(rows(db, "SELECT key, name FROM places").map((r) => [r.key, r.name]));
+    const notes = rows(db, "SELECT * FROM place_notes ORDER BY updated DESC").map((r) => ({
+      key: r.key, lat: r.lat, lng: r.lng, rating: r.rating || 0, memo: r.memo || "", updated: r.updated,
+      tags: String(r.tags || "").split(",").filter(Boolean).map((t) => ({ "캠핑": "캠핑지", "숙소": "숙박", "낚시": "낚시 포인트", "맛집": "먹거리", "카페": "마실거리" }[t] || t)),
+    }));
+    const regionDays = new Map();
+    for (const r of rows(db, "SELECT code, day, stay_ms, night FROM region_days")) {
+      if (!regionDays.has(r.code)) regionDays.set(r.code, new Map());
+      regionDays.get(r.code).set(r.day, { ms: r.stay_ms, night: r.night === 1 });
+    }
+    const visits = new Map(rows(db, "SELECT code, first_ts, last_ts, days FROM region_visits").map((r) => [r.code, r]));
+    const manual = new Set(rows(db, "SELECT code FROM manual_regions").map((r) => r.code));
+    const photoDays = new Map();
+    for (const r of rows(db, "SELECT code, day, first_ts, last_ts FROM photo_days")) {
+      if (!photoDays.has(r.code)) photoDays.set(r.code, new Map());
+      photoDays.get(r.code).set(r.day, [r.first_ts, r.last_ts]);
+    }
+
+    // 정복한 날 (앱의 RegionTracker와 같은 기준)
+    const conq = new Map();
+    for (const [code, m] of regionDays) {
+      for (const [k, v] of m) if (v.night || v.ms >= CONQUER_MS) addSet(conq, code, k);
+    }
+    for (const [code, m] of photoDays) {
+      for (const [k, [first, last]] of m) {
+        if (last - first >= CONQUER_MS) addSet(conq, code, k);
+        if (new Date(last).getHours() >= 18) {
+          const d = dateOfKey(k);
+          const nx = m.get(dayKeyOf(new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1)));
+          if (nx && new Date(nx[0]).getHours() < 12) addSet(conq, code, k);
+        }
+      }
+    }
+    // 사는 곳: 어느 한 해에 30밤 이상 잔 시군구
+    const home = new Set();
+    for (const [code, m] of regionDays) {
+      const per = {};
+      for (const [k, v] of m) if (v.night) per[Math.floor(k / 10000)] = (per[Math.floor(k / 10000)] || 0) + 1;
+      if (Object.values(per).some((x) => x >= 30)) home.add(code);
+    }
+    const awayNights = new Set();
+    for (const [code, m] of regionDays) {
+      if (home.has(code)) continue;
+      for (const [k, v] of m) if (v.night) awayNights.add(k);
+    }
+
+    return { n: i, ts, lat, lng, acc, dayIdx, days, places, notes, regionDays, visits, manual, photoDays, conq, home, awayNights };
+  }
+  function addSet(map, key, v) { if (!map.has(key)) map.set(key, new Set()); map.get(key).add(v); }
+
+  // ---------- 계산 (geo.dart를 그대로 옮겼어요) ----------
+  function dayPoints(k) {
+    const r = D.dayIdx.get(k);
+    if (!r) return [];
+    const out = [];
+    for (let i = r[0]; i < r[1]; i++) out.push({ ts: D.ts[i], lat: D.lat[i], lng: D.lng[i], acc: D.acc[i] });
+    return out;
+  }
+  function cleanPath(pts) {
+    const a = pts.filter((p) => p.acc <= DRAW_ACC);
+    if (a.length < 3) return a;
+    const out = [a[0]];
+    for (let i = 1; i < a.length; i++) {
+      const prev = out[out.length - 1], cur = a[i];
+      const dt = (cur.ts - prev.ts) / 1000, d = dist(prev.lat, prev.lng, cur.lat, cur.lng);
+      if (dt > 0 && dt < SEG_GAP / 1000 && d / dt > 83) continue;
+      if (i + 1 < a.length) {
+        const nx = a[i + 1];
+        const dPN = dist(prev.lat, prev.lng, nx.lat, nx.lng), dCN = dist(cur.lat, cur.lng, nx.lat, nx.lng);
+        if (d > 50 && dCN > 50 && dPN < (d + dCN) * 0.25) continue;
+      }
+      out.push(cur);
+    }
+    return out;
+  }
+  function segments(pts) {
+    const segs = [];
+    let cur = [];
+    for (const p of pts) {
+      if (cur.length && p.ts - cur[cur.length - 1].ts > SEG_GAP) { segs.push(cur); cur = []; }
+      cur.push(p);
+    }
+    if (cur.length) segs.push(cur);
+    return segs;
+  }
+  function pathLen(pts) {
+    let t = 0;
+    for (const s of segments(pts)) for (let i = 1; i < s.length; i++) t += dist(s[i - 1].lat, s[i - 1].lng, s[i].lat, s[i].lng);
+    return t;
+  }
+  function detectStays(pts) {
+    const g = pts.filter((p) => p.acc <= MAX_ACC);
+    const stays = [];
+    let i = 0;
+    while (i < g.length) {
+      let sLat = g[i].lat, sLng = g[i].lng, n = 1, k = i + 1;
+      while (k < g.length) {
+        if (dist(sLat / n, sLng / n, g[k].lat, g[k].lng) > STAY_RADIUS) break;
+        sLat += g[k].lat; sLng += g[k].lng; n++; k++;
+      }
+      const start = g[i].ts, end = g[k - 1].ts;
+      if (end - start >= STAY_MIN) { stays.push({ start, end, lat: sLat / n, lng: sLng / n }); i = k; } else i++;
+    }
+    return stays;
+  }
+  function placeName(lat, lng) {
+    return D.places.get(lat.toFixed(3) + "," + lng.toFixed(3)) || null;
+  }
+  function shortName(full) {
+    if (!full) return null;
+    const p = full.split(" ");
+    return p.length > 2 ? p.slice(-2).join(" ") : full;
+  }
+  function noteNear(lat, lng) {
+    let best = null, bd = 150;
+    for (const n of D.notes) {
+      const d = dist(lat, lng, n.lat, n.lng);
+      if (d < bd) { bd = d; best = n; }
+    }
+    return best;
+  }
+  function timelineOf(k) {
+    if (dayCache.has(k)) return dayCache.get(k);
+    const pts = dayPoints(k);
+    const path = cleanPath(pts);
+    const stays = detectStays(pts);
+    const items = [];
+    if (pts.length) {
+      let cursor = pts[0].ts;
+      const addMove = (from, to) => {
+        const seg = pts.filter((p) => p.ts >= from && p.ts <= to);
+        const d = pathLen(cleanPath(seg));
+        if (d >= 200 && to > from) items.push({ kind: "move", start: from, end: to, m: d });
+      };
+      for (const s of stays) { addMove(cursor, s.start); items.push({ kind: "stay", ...s }); cursor = s.end; }
+      addMove(cursor, pts[pts.length - 1].ts);
+    }
+    // 이름이 같은 머문 곳이 이어지면 합쳐요
+    const merged = [];
+    let lastName = null, lastIdx = -1;
+    for (const it of items) {
+      if (it.kind !== "stay") { merged.push(it); continue; }
+      const nm = placeName(it.lat, it.lng);
+      if (nm && nm === lastName && lastIdx >= 0) {
+        const prev = merged[lastIdx];
+        const keepPrev = prev.end - prev.start >= it.end - it.start;
+        merged.splice(lastIdx);
+        merged.push({ kind: "stay", start: prev.start, end: it.end, lat: keepPrev ? prev.lat : it.lat, lng: keepPrev ? prev.lng : it.lng });
+      } else merged.push(it);
+      lastIdx = merged.length - 1;
+      lastName = nm;
+    }
+    const total = pathLen(path);
+    const out = { pts, path, items: merged, total };
+    dayCache.set(k, out);
+    return out;
+  }
+
+  // ---------- 그리기 ----------
+  function fmtDay(k) {
+    const d = dateOfKey(k);
+    return (d.getMonth() + 1) + "월 " + d.getDate() + "일 (" + DOW[d.getDay()] + ")";
+  }
+  function fmtDayShort(k) {
+    const d = dateOfKey(k);
+    return d.getFullYear() + ". " + (d.getMonth() + 1) + ". " + d.getDate() + ".";
+  }
+
+  function renderAll() {
+    renderStats();
+    curDay = D.days[D.days.length - 1];
+    calMonth = Math.floor(curDay / 100);
+    renderDay();
+    renderConquest();
+    renderReport(new Date(D.ts[D.n - 1]).getFullYear());
+    renderNotes();
+  }
+
+  function conqueredCount() {
+    let c = 0;
+    for (const r of regions) if (D.manual.has(r.c) || D.conq.has(r.c)) c++;
+    return c;
+  }
+  function renderStats() {
+    let totalM = 0;
+    // 전체 거리: 날마다 정리한 경로 길이의 합 (처음 한 번만 계산)
+    for (const k of D.days) totalM += timelineOf(k).total;
+    const first = D.days[0], last = D.days[D.days.length - 1];
+    $("stats").innerHTML =
+      stat("기록한 날", fmtInt.format(D.days.length), "일") +
+      stat("정복한 시군구", conqueredCount(), "/ " + regions.length) +
+      stat("집 밖에서 잔 밤", D.awayNights.size, "밤") +
+      stat("이동 거리", fmtInt.format(Math.round(totalM / 1000)), "km");
+    $("stats").title = fmtDayShort(first) + " ~ " + fmtDayShort(last);
+  }
+  function stat(k, v, unit) {
+    return '<div class="stat"><span class="k">' + esc(k) + '</span><span class="v">' + esc(v) + "<small>" + esc(unit) + "</small></span></div>";
+  }
+
+  // 지도 공통
+  function regionLatLngs(r) {
+    return r.p.map((poly) => poly.map((ring) => {
+      const out = [];
+      for (let i = 0; i + 1 < ring.length; i += 2) out.push([ring[i + 1], ring[i]]);
+      return out;
+    }));
+  }
+  function makeMap(el) {
+    const m = L.map(el, { preferCanvas: true, attributionControl: false, zoomSnap: 0.5, minZoom: 6, maxZoom: 17 });
+    m.setView([36.2, 127.8], 7);
+    return m;
+  }
+  function baseLayer() {
+    const g = L.layerGroup();
+    for (const r of regions) {
+      L.polygon(regionLatLngs(r), { color: css("--land-line"), weight: 0.8, fillColor: css("--land"), fillOpacity: 1, interactive: false }).addTo(g);
+    }
+    return g;
+  }
+
+  // 하루 보기
+  function renderDay() {
+    const k = curDay;
+    const idx = D.days.indexOf(k);
+    $("prevDay").disabled = idx <= 0;
+    $("nextDay").disabled = idx >= D.days.length - 1;
+    const d = dateOfKey(k);
+    $("dayTitle").textContent = fmtDay(k);
+    const tl = timelineOf(k);
+    const stays = tl.items.filter((x) => x.kind === "stay").length;
+    $("daySub").textContent = d.getFullYear() + "년 · " + km(tl.total) + "km 이동 · 머문 곳 " + stays + "곳" + (D.awayNights.has(k) ? " · 집 밖에서 잠" : "");
+    renderCal();
+    renderTimeline(tl);
+    drawDayMap(tl);
+  }
+
+  function renderCal() {
+    const y = Math.floor(calMonth / 100), mo = calMonth % 100;
+    const first = new Date(y, mo - 1, 1), daysIn = new Date(y, mo, 0).getDate();
+    const minM = Math.floor(D.days[0] / 100), maxM = Math.floor(D.days[D.days.length - 1] / 100);
+    let h = '<div class="cal-head"><button class="iconbtn" type="button" data-cal="-1" aria-label="이전 달"' + (calMonth <= minM ? " disabled" : "") +
+      '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><b>' +
+      y + "년 " + mo + "월</b>" +
+      '<button class="iconbtn" type="button" data-cal="1" aria-label="다음 달"' + (calMonth >= maxM ? " disabled" : "") +
+      '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></div><div class="cal-grid">';
+    for (const w of DOW) h += '<span class="dow">' + w + "</span>";
+    for (let i = 0; i < first.getDay(); i++) h += "<span></span>";
+    for (let dd = 1; dd <= daysIn; dd++) {
+      const k = y * 10000 + mo * 100 + dd;
+      const has = D.dayIdx.has(k);
+      const cls = [has ? "has" : "", D.awayNights.has(k) ? "away" : "", k === curDay ? "sel" : ""].join(" ").trim();
+      h += '<button type="button" class="' + cls + '" data-day="' + k + '"' + (has ? "" : " disabled") + ' aria-label="' + mo + "월 " + dd + "일" + (has ? "" : ", 기록 없음") + '">' + dd + "</button>";
+    }
+    $("cal").innerHTML = h + "</div>";
+  }
+
+  function renderTimeline(tl) {
+    if (!tl.items.length) {
+      $("timeline").innerHTML = '<li class="empty" style="display:block">이날은 머문 곳이나 이동이 잡히지 않았어요.</li>';
+      return;
+    }
+    let h = "";
+    tl.items.forEach((it, i) => {
+      if (it.kind === "stay") {
+        const full = placeName(it.lat, it.lng);
+        const note = noteNear(it.lat, it.lng);
+        const nm = shortName(full) || "이름 모르는 곳";
+        h += '<li class="stay"><span class="t">' + hm(it.start) + '</span><span class="rail"><span class="dot"></span></span>' +
+          '<div class="body" data-stay="' + i + '" tabindex="0" role="button" title="' + esc(full || "") + '"><div class="nm">' + esc(nm) + '</div><div class="sub">' +
+          hm(it.start) + "–" + hm(it.end) + " · " + durText(it.end - it.start) + "</div>" +
+          (note ? note.tags.map((t) => '<span class="chip">' + esc(t) + "</span>").join("") + (note.memo ? '<div class="memo">' + esc(note.memo) + "</div>" : "") : "") +
+          "</div></li>";
+      } else {
+        const kmh = (it.m / 1000) / ((it.end - it.start) / 3600000);
+        h += '<li class="move"><span class="t"></span><span class="rail"><span class="dot"></span></span><div class="body">' +
+          km(it.m) + "km 이동 · " + durText(it.end - it.start) + " · 평균 " + Math.round(kmh) + "km/h</div></li>";
+      }
+    });
+    $("timeline").innerHTML = h;
+  }
+
+  function drawDayMap(tl) {
+    if ($("view-day").hidden) return;
+    if (!dayMap) {
+      dayMap = makeMap($("dayMap"));
+      dayMap._base = baseLayer().addTo(dayMap);
+    }
+    if (dayLayers) dayLayers.remove();
+    dayLayers = L.layerGroup().addTo(dayMap);
+    const leaf = css("--leaf"), pepper = css("--pepper"), surf = css("--surface");
+    const all = [];
+    for (const seg of segments(tl.path)) {
+      const ll = seg.map((p) => [p.lat, p.lng]);
+      all.push(...ll);
+      L.polyline(ll, { color: leaf, weight: 4, opacity: 0.9, lineJoin: "round" }).addTo(dayLayers);
+    }
+    tl.items.forEach((it, i) => {
+      if (it.kind !== "stay") return;
+      all.push([it.lat, it.lng]);
+      const nm = shortName(placeName(it.lat, it.lng)) || "이름 모르는 곳";
+      const mk = L.circleMarker([it.lat, it.lng], { radius: 7, color: surf, weight: 2, fillColor: pepper, fillOpacity: 1 })
+        .bindTooltip(nm + " · " + hm(it.start) + " · " + durText(it.end - it.start), { direction: "top", offset: [0, -8] })
+        .addTo(dayLayers);
+      mk._stayIdx = i;
+    });
+    dayMap.invalidateSize();
+    if (all.length) dayMap.fitBounds(L.latLngBounds(all).pad(0.15), { maxZoom: 15, animate: false });
+  }
+
+  function focusStay(i) {
+    const tl = timelineOf(curDay);
+    const it = tl.items[i];
+    if (!it || !dayMap) return;
+    dayMap.setView([it.lat, it.lng], Math.max(dayMap.getZoom(), 14));
+    dayLayers.eachLayer((l) => { if (l._stayIdx === i) l.openTooltip(); });
+  }
+
+  // 정복 지도
+  function renderConquest() {
+    const bySido = new Map();
+    for (const r of regions) {
+      const o = bySido.get(r.s) || { total: 0, done: 0 };
+      o.total++;
+      if (D.manual.has(r.c) || D.conq.has(r.c)) o.done++;
+      bySido.set(r.s, o);
+    }
+    $("sidoList").innerHTML = sidoOrder.map((s) => {
+      const o = bySido.get(s);
+      const pct = Math.round((o.done / o.total) * 100);
+      return "<li><span>" + esc(s) + '</span><span class="n">' + o.done + "/" + o.total + " · " + pct + '%</span><span class="bar"><i style="width:' + pct + '%"></i></span></li>';
+    }).join("");
+    drawConqMap();
+  }
+
+  function drawConqMap() {
+    if ($("view-conquest").hidden) return;
+    if (!conqMap) conqMap = makeMap($("conqMap"));
+    if (conqLayer) conqLayer.remove();
+    conqLayer = L.layerGroup().addTo(conqMap);
+    const leaf = css("--leaf"), pepper = css("--pepper"), passed = css("--passed"), land = css("--land"), line = css("--land-line");
+    for (const r of regions) {
+      const days = D.conq.get(r.c);
+      const n = days ? days.size : 0;
+      const manual = D.manual.has(r.c);
+      const wasThere = D.visits.has(r.c) || D.photoDays.has(r.c);
+      let fill = land, op = 1;
+      if (n > 0) { fill = leaf; op = n >= 10 ? 0.95 : n >= 3 ? 0.72 : 0.45; }
+      else if (manual) { fill = pepper; op = 0.6; }
+      else if (wasThere) { fill = passed; }
+      let tip = "<b>" + esc(r.s + " " + r.n) + "</b>";
+      if (n > 0) {
+        const ks = [...days].sort((a, b) => a - b);
+        tip += "<br>정복 " + n + "일 · 처음 " + fmtDayShort(ks[0]) + (ks.length > 1 ? "<br>마지막 " + fmtDayShort(ks[ks.length - 1]) : "");
+        if (D.home.has(r.c)) tip += "<br>사는 곳";
+      } else if (manual) tip += "<br>직접 표시한 곳";
+      else if (wasThere) tip += "<br>지나가기만 했어요";
+      else tip += "<br>아직 안 가봤어요";
+      L.polygon(regionLatLngs(r), { color: line, weight: 0.8, fillColor: fill, fillOpacity: op })
+        .bindTooltip(tip, { sticky: true }).addTo(conqLayer);
+    }
+    conqMap.invalidateSize();
+  }
+
+  // 올해의 발자취
+  let repYear = null;
+  function renderReport(year) {
+    repYear = year;
+    const years = [...new Set(D.days.map((k) => Math.floor(k / 10000)))];
+    $("yearSel").innerHTML = years.map((y) => '<button type="button" data-year="' + y + '" aria-pressed="' + (y === year) + '">' + y + "</button>").join("");
+
+    const monthM = new Array(12).fill(0);
+    let total = 0, recorded = 0;
+    const placeDur = new Map();
+    for (const k of D.days) {
+      if (Math.floor(k / 10000) !== year) continue;
+      recorded++;
+      const tl = timelineOf(k);
+      total += tl.total;
+      monthM[Math.floor(k / 100) % 100 - 1] += tl.total;
+      for (const it of tl.items) {
+        if (it.kind !== "stay") continue;
+        const note = noteNear(it.lat, it.lng);
+        if (note && (note.tags.includes("집") || note.tags.includes("회사"))) continue;
+        const nm = shortName(placeName(it.lat, it.lng));
+        if (!nm) continue;
+        placeDur.set(nm, (placeDur.get(nm) || 0) + (it.end - it.start));
+      }
+    }
+    let nights = 0;
+    for (const k of D.awayNights) if (Math.floor(k / 10000) === year) nights++;
+    const newRegs = [];
+    for (const [code, set] of D.conq) {
+      const firstK = Math.min(...set);
+      if (Math.floor(firstK / 10000) === year && !D.home.has(code)) newRegs.push([code, firstK]);
+    }
+    newRegs.sort((a, b) => a[1] - b[1]);
+
+    $("yearStats").innerHTML =
+      stat("기록한 날", recorded, "일") + stat("이동 거리", fmtInt.format(Math.round(total / 1000)), "km") +
+      stat("집 밖에서 잔 밤", nights, "밤") + stat("새로 정복", newRegs.length, "곳");
+
+    // 달별 막대
+    const W = 720, H = 220, pl = 40, pb = 28, pt = 16, pr = 8;
+    const maxKm = Math.max(10, ...monthM.map((m) => m / 1000));
+    const step = niceStep(maxKm / 4);
+    const top = Math.ceil(maxKm / step) * step;
+    const bw = (W - pl - pr) / 12;
+    let svg = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + year + '년 달마다 이동한 거리">';
+    for (let v = 0; v <= top + 1e-9; v += step) {
+      const y = pt + (H - pt - pb) * (1 - v / top);
+      svg += '<line x1="' + pl + '" x2="' + (W - pr) + '" y1="' + y + '" y2="' + y + '" stroke="var(--line)" stroke-width="1"/>' +
+        '<text x="' + (pl - 6) + '" y="' + (y + 4) + '" text-anchor="end" font-size="11" fill="var(--muted)" font-family="var(--font-num)">' + fmtInt.format(v) + "</text>";
+    }
+    monthM.forEach((m, i) => {
+      const v = m / 1000, h = (H - pt - pb) * (v / top);
+      const x = pl + i * bw + bw * 0.18, w = bw * 0.64;
+      if (v > 0) svg += '<rect x="' + x + '" y="' + (H - pb - h) + '" width="' + w + '" height="' + h + '" rx="3" fill="var(--leaf)"><title>' + (i + 1) + "월 " + fmtInt.format(Math.round(v)) + "km</title></rect>";
+      svg += '<text x="' + (x + w / 2) + '" y="' + (H - pb + 17) + '" text-anchor="middle" font-size="11" fill="var(--muted)">' + (i + 1) + "월</text>";
+    });
+    $("monthChart").innerHTML = svg + "</svg>";
+
+    const top5 = [...placeDur.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
+    $("topPlaces").innerHTML = top5.length
+      ? top5.map(([nm, ms]) => '<li><span class="nm">' + esc(nm) + '</span><span class="v">' + durText(ms) + "</span></li>").join("")
+      : '<li class="empty" style="display:block">머문 곳이 아직 없어요.</li>';
+    $("newCount").textContent = newRegs.length ? newRegs.length + "곳" : "";
+    $("newRegions").innerHTML = newRegs.length
+      ? newRegs.slice(0, 12).map(([c, k]) => { const r = regionByCode.get(c); return '<li><span class="nm">' + esc(r ? r.s.replace(/(특별자치도|특별자치시|광역시|특별시)$/, "") + " " + r.n : c) + '</span><span class="v">' + fmtDayShort(k) + "</span></li>"; }).join("")
+      : '<li class="empty" style="display:block">' + year + "년에 새로 정복한 곳은 아직 없어요.</li>";
+  }
+  function niceStep(x) {
+    const p = Math.pow(10, Math.floor(Math.log10(x)));
+    const f = x / p;
+    return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * p;
+  }
+
+  // 장소 메모
+  function renderNotes() {
+    const list = D.notes.filter((n) => !n.tags.includes("집") && !n.tags.includes("회사"));
+    if (!list.length) {
+      $("notesList").innerHTML = '<div class="panel empty">앱에서 장소에 태그나 메모를 남기면 여기에 모여요.</div>';
+      return;
+    }
+    $("notesList").innerHTML = list.map((n, i) => {
+      const nm = shortName(placeName(n.lat, n.lng)) || n.lat.toFixed(4) + ", " + n.lng.toFixed(4);
+      const days = visitDaysNear(n.lat, n.lng);
+      return '<article class="panel note"><div class="nm">' + esc(nm) + "</div>" +
+        (n.rating ? '<div class="stars" aria-label="별점 ' + n.rating + '점">' + "★".repeat(n.rating) + '<span style="color:var(--line)">' + "★".repeat(5 - n.rating) + "</span></div>" : "") +
+        "<div>" + n.tags.map((t) => '<span class="chip">' + esc(t) + "</span>").join("") + "</div>" +
+        (n.memo ? '<div class="memo">' + esc(n.memo) + "</div>" : "") +
+        '<div class="when">' + (days.length ? "다녀온 날 " + days.length + "일 · 마지막 " + fmtDayShort(days[days.length - 1]) : "기록에 남은 방문 없음") + "</div>" +
+        (days.length ? '<button class="go" type="button" data-go="' + days[days.length - 1] + '">그날 지도 보기</button>' : "") +
+        "</article>";
+    }).join("");
+  }
+  function visitDaysNear(lat, lng) {
+    const out = [];
+    for (const k of D.days) {
+      const [a, b] = D.dayIdx.get(k);
+      for (let i = a; i < b; i += 1) {
+        if (Math.abs(D.lat[i] - lat) < 0.002 && Math.abs(D.lng[i] - lng) < 0.0025 && dist(lat, lng, D.lat[i], D.lng[i]) <= 150) { out.push(k); break; }
+      }
+    }
+    return out;
+  }
+
+  // ---------- 탭과 이벤트 ----------
+  const TABS = ["day", "conquest", "report", "notes"];
+  function showTab(name) {
+    for (const t of TABS) {
+      $("tab-" + t).setAttribute("aria-selected", String(t === name));
+      $("view-" + t).hidden = t !== name;
+    }
+    if (name === "day") drawDayMap(timelineOf(curDay));
+    if (name === "conquest") drawConqMap();
+    try { localStorage.setItem("jepi.tab", name); } catch (e) {}
+  }
+  for (const t of TABS) $("tab-" + t).addEventListener("click", () => showTab(t));
+
+  function goDay(k) {
+    curDay = k;
+    calMonth = Math.floor(k / 100);
+    renderDay();
+  }
+  $("prevDay").addEventListener("click", () => { const i = D.days.indexOf(curDay); if (i > 0) goDay(D.days[i - 1]); });
+  $("nextDay").addEventListener("click", () => { const i = D.days.indexOf(curDay); if (i < D.days.length - 1) goDay(D.days[i + 1]); });
+  $("cal").addEventListener("click", (e) => {
+    const b = e.target.closest("button");
+    if (!b || b.disabled) return;
+    if (b.dataset.day) goDay(+b.dataset.day);
+    if (b.dataset.cal) {
+      const y = Math.floor(calMonth / 100), m = calMonth % 100 + +b.dataset.cal;
+      const d = new Date(y, m - 1, 1);
+      calMonth = d.getFullYear() * 100 + d.getMonth() + 1;
+      renderCal();
+    }
+  });
+  $("timeline").addEventListener("click", (e) => { const b = e.target.closest("[data-stay]"); if (b) focusStay(+b.dataset.stay); });
+  $("timeline").addEventListener("keydown", (e) => { const b = e.target.closest("[data-stay]"); if (b && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); focusStay(+b.dataset.stay); } });
+  $("yearSel").addEventListener("click", (e) => { const b = e.target.closest("[data-year]"); if (b) renderReport(+b.dataset.year); });
+  $("notesList").addEventListener("click", (e) => { const b = e.target.closest("[data-go]"); if (b) { showTab("day"); goDay(+b.dataset.go); } });
+  document.addEventListener("keydown", (e) => {
+    if (!D || $("view-day").hidden || e.target.closest("input, button, [role=button]")) return;
+    if (e.key === "ArrowLeft") $("prevDay").click();
+    if (e.key === "ArrowRight") $("nextDay").click();
+  });
+
+  async function openFile(f) {
+    if (!f) return;
+    setNotice("<strong>" + esc(f.name) + "</strong>을 여는 중이에요…");
+    try {
+      const buf = new Uint8Array(await f.arrayBuffer());
+      openDb(buf, false, f.name);
+    } catch (e) {
+      setNotice("파일을 읽지 못했어요. (" + esc(e.message || e) + ")", true);
+    }
+  }
+  $("file").addEventListener("change", (e) => { openFile(e.target.files[0]); e.target.value = ""; });
+  $("sampleBtn").addEventListener("click", () => loadSample());
+  const app = $("app");
+  app.addEventListener("dragover", (e) => { e.preventDefault(); app.classList.add("drop-on"); });
+  app.addEventListener("dragleave", (e) => { if (!app.contains(e.relatedTarget)) app.classList.remove("drop-on"); });
+  app.addEventListener("drop", (e) => { e.preventDefault(); app.classList.remove("drop-on"); openFile(e.dataTransfer.files[0]); });
+
+  // 테마가 바뀌면 지도 색도 다시
+  function retheme() {
+    if (!D) return;
+    if (dayMap) { dayMap._base.remove(); dayMap._base = baseLayer().addTo(dayMap); drawDayMap(timelineOf(curDay)); }
+    if (conqMap) drawConqMap();
+  }
+  try { matchMedia("(prefers-color-scheme: dark)").addEventListener("change", retheme); } catch (e) {}
+  new MutationObserver(retheme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
+  let savedTab = "day";
+  try { savedTab = localStorage.getItem("jepi.tab") || "day"; } catch (e) {}
+  boot().then(() => { if (D && TABS.includes(savedTab) && savedTab !== "day") showTab(savedTab); });
+})();
+</script>
+</body>
+</html>
