@@ -1323,7 +1323,7 @@ body { margin: 0; }
     if (!v) return;
     loginBusy(true); loginMsg("가입하는 중이에요…");
     try {
-      const j = await authFetch("signup", v);
+      const j = await authFetch("signup?redirect_to=" + encodeURIComponent(location.origin + location.pathname), v);
       if (j.access_token) { takeSession(j); loginDlg.close(); await loadCloud(); }
       else loginMsg("확인 메일을 보냈어요. 메일의 링크를 누르면 이 페이지로 돌아와 로그인돼요.");
     } catch (err) { loginMsg(err.message, true); }
