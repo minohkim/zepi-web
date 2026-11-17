@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>제피 베타 신청</title>
+<meta name="description" content="J 같은 P의 여행, 제피 베타 테스터를 모아요. 아이폰·갤럭시 모두 신청할 수 있어요.">
+<meta property="og:title" content="제피 베타 테스터 모집">
+<meta property="og:description" content="다닌 길은 조용히 기록하고, 떠날 땐 날씨·물때·휴양림 예약일까지 챙겨주는 여행 앱">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap">
+<style>
+:root {
+  --bg: #F5F7F1; --surface: #FFFFFF; --ink: #17201A; --muted: #56615A; --line: #D8DED4;
+  --leaf: #1F6B3A; --leaf-soft: #DCE9DD; --pepper: #A8402A;
+  --font-display: "Gowun Batang", "Nanum Myeongjo", serif;
+  --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0F1411; --surface: #161D18; --ink: #E5EBE3; --muted: #9AA69D; --line: #29332C;
+    --leaf: #62BE84; --leaf-soft: #1D3324; --pepper: #E5805F; color-scheme: dark; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.6;
+  padding: 28px max(18px, env(safe-area-inset-left, 0px)) 48px; }
+.wrap { max-width: 560px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand svg { width: 44px; height: 44px; flex: none; }
+h1 { font-family: var(--font-display); font-size: 30px; margin: 0; line-height: 1.25; text-wrap: balance; }
+.sub { margin: 4px 0 0; color: var(--muted); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 20px; }
+ul.feat { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+ul.feat li { display: grid; grid-template-columns: 28px 1fr; gap: 4px; }
+ul.feat b { display: block; }
+ul.feat span { color: var(--muted); font-size: 14px; }
+form { display: grid; gap: 16px; }
+label { font-weight: 600; font-size: 14px; display: block; margin-bottom: 6px; }
+input[type=email], input[type=text] { width: 100%; min-height: 48px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line);
+  background: var(--bg); color: var(--ink); font: inherit; }
+input:focus-visible, button:focus-visible { outline: 2px solid var(--leaf); outline-offset: 2px; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg label { margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 64px; border: 1px solid var(--line);
+  border-radius: 12px; cursor: pointer; font-weight: 600; background: var(--bg); }
+.seg label small { font-weight: 400; color: var(--muted); font-size: 12px; }
+.seg input:checked + label { border-color: var(--leaf); background: var(--leaf-soft); }
+.seg input:focus-visible + label { outline: 2px solid var(--leaf); outline-offset: 2px; }
+.hint { color: var(--muted); font-size: 13px; margin: 6px 0 0; }
+.agree { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; font-weight: 400; }
+.agree input { margin-top: 4px; width: 18px; height: 18px; accent-color: var(--leaf); }
+button.go { min-height: 52px; border: 0; border-radius: 999px; background: var(--leaf); color: var(--bg); font: inherit; font-weight: 600; font-size: 17px; cursor: pointer; }
+button.go[disabled] { opacity: .6; cursor: default; }
+.msg { padding: 12px 14px; border-radius: 10px; font-size: 14px; }
+.msg.err { background: color-mix(in srgb, var(--pepper) 14%, transparent); color: var(--pepper); }
+.done h2 { font-family: var(--font-display); margin: 0 0 8px; font-size: 22px; }
+.done ol { padding-left: 20px; margin: 10px 0 0; }
+.done a.btn { display: inline-flex; margin-top: 14px; min-height: 46px; align-items: center; padding: 0 18px; border-radius: 999px; background: var(--leaf); color: var(--bg); text-decoration: none; font-weight: 600; }
+footer { color: var(--muted); font-size: 13px; text-align: center; }
+footer a { color: inherit; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="brand">
+    <svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#1F6B3A"/><circle cx="24" cy="27" r="11" fill="#A8402A"/><circle cx="24" cy="27" r="3.6" fill="#1F6B3A"/><path d="M24 16c3-6 9-8 13-7-1 5-6 9-13 7z" fill="#9FD3A8"/></svg>
+    <div>
+      <h1>제피 베타 테스터 모집</h1>
+      <p class="sub">J 같은 P의 여행</p>
+    </div>
+  </div>
+
+  <section class="card" aria-label="제피가 하는 일">
+    <ul class="feat">
+      <li><span aria-hidden="true">🗺️</span><div><b>다닌 길이 저절로 지도에</b><span>켜두면 하루 종일 조용히 기록해요. "여기 왔었나?"도 바로 찾아요.</span></div></li>
+      <li><span aria-hidden="true">🚩</span><div><b>전국 230개 시군구 정복</b><span>사진첩 위치만으로 예전 여행까지 한 번에 칠해져요.</span></div></li>
+      <li><span aria-hidden="true">🏕️</span><div><b>떠나기 전엔 한 화면에</b><span>날씨·물때·길 막히는 시간, 휴양림·야영장 예약 오픈일까지.</span></div></li>
+    </ul>
+  </section>
+
+  <section class="card" id="formCard">
+    <form id="f" novalidate>
+      <div>
+        <label>쓰는 폰</label>
+        <div class="seg" role="radiogroup" aria-label="쓰는 폰">
+          <input type="radio" name="platform" id="p-ios" value="ios" required>
+          <label for="p-ios">iPhone<small>TestFlight로 설치</small></label>
+          <input type="radio" name="platform" id="p-android" value="android">
+          <label for="p-android">갤럭시 · 안드로이드<small>Play 스토어로 설치</small></label>
+        </div>
+      </div>
+      <div>
+        <label for="email" id="emailLabel">이메일</label>
+        <input type="email" id="email" name="email" autocomplete="email" required maxlength="120" placeholder="you@example.com">
+        <p class="hint" id="emailHint">초대 메일을 이 주소로 보내드려요.</p>
+      </div>
+      <div>
+        <label for="name">이름 또는 별명 <span style="font-weight:400;color:var(--muted)">(선택)</span></label>
+        <input type="text" id="name" name="name" maxlength="40" autocomplete="nickname">
+      </div>
+      <div>
+        <label for="source">어떻게 알게 되셨어요? <span style="font-weight:400;color:var(--muted)">(선택)</span></label>
+        <input type="text" id="source" name="source" maxlength="200" placeholder="친구 소개, 캠핑 카페 등">
+      </div>
+      <label class="agree"><input type="checkbox" id="agree" required>
+        <span>베타 초대와 안내 메일을 받기 위해 이메일을 보관하는 데 동의해요. 베타가 끝나면 지워요.</span></label>
+      <div class="msg err" id="err" role="alert" hidden></div>
+      <button class="go" id="go" type="submit">베타 신청하기</button>
+    </form>
+  </section>
+
+  <section class="card done" id="done" hidden aria-live="polite">
+    <h2>신청됐어요 🎉</h2>
+    <div id="doneBody"></div>
+  </section>
+
+  <footer>
+    <a href="./">제피 웹</a>
+  </footer>
+</main>
+
+<script>
+(() => {
+  // ── 링크가 생기면 여기만 채우면 돼요 ──────────────────────────────
+  // App Store Connect → TestFlight → 외부 그룹 → 공개 링크
+  const TESTFLIGHT_URL = "";
+  // Play Console → 테스트 → 비공개 테스트 → 테스터 → "웹에서 참여" 링크
+  const PLAY_TEST_URL = "";
+  // ────────────────────────────────────────────────────────────────
+
+  const SB_URL = "https://xkhfannbztgvarxqhzno.supabase.co";
+  const SB_KEY = "sb_publishable__uulkrUbHekv5cxsE-UyHw_oXkR7wtM";
+  const $ = (id) => document.getElementById(id);
+  const f = $("f");
+
+  const params = new URLSearchParams(location.search);
+  if (params.get("from")) $("source").value = params.get("from").slice(0, 200);
+
+  f.addEventListener("change", () => {
+    const p = f.platform.value;
+    $("emailLabel").textContent = p === "android" ? "Play 스토어에 쓰는 구글 계정 (Gmail)" : p === "ios" ? "Apple ID 이메일" : "이메일";
+    $("emailHint").textContent = p === "android"
+      ? "갤럭시에서 Play 스토어에 로그인한 그 구글 계정이어야 설치돼요."
+      : p === "ios" ? "TestFlight 초대 메일을 이 주소로 보내드려요." : "초대 메일을 이 주소로 보내드려요.";
+  });
+
+  function showErr(t) { $("err").textContent = t; $("err").hidden = !t; }
+
+  f.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    showErr("");
+    const platform = f.platform.value;
+    const email = $("email").value.trim().toLowerCase();
+    if (!platform) return showErr("쓰는 폰을 골라 주세요.");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showErr("이메일 주소를 확인해 주세요.");
+    if (platform === "android" && !/@(gmail\.com|googlemail\.com)$/.test(email) &&
+        !confirm("Play 스토어 계정이 Gmail이 아니어도 괜찮아요. 다만 Play 스토어에 로그인한 바로 그 계정이어야 해요. 이대로 신청할까요?")) return;
+    if (!$("agree").checked) return showErr("이메일 보관에 동의해 주세요.");
+
+    $("go").disabled = true;
+    $("go").textContent = "보내는 중…";
+    try {
+      const r = await fetch(SB_URL + "/rest/v1/beta_signups?on_conflict=email,platform", {
+        method: "POST",
+        headers: {
+          apikey: SB_KEY, Authorization: "Bearer " + SB_KEY, "Content-Type": "application/json",
+          Prefer: "return=minimal,resolution=ignore-duplicates",
+        },
+        body: JSON.stringify({ email, platform, name: $("name").value.trim().slice(0, 40), source: $("source").value.trim().slice(0, 200) }),
+      });
+      if (!r.ok) {
+        let j = {}; try { j = await r.json(); } catch (x) {}
+        throw new Error(j.message || ("HTTP " + r.status));
+      }
+      showDone(platform);
+    } catch (err) {
+      showErr("신청이 안 됐어요. 잠시 뒤 다시 해 주세요. (" + err.message + ")");
+      $("go").disabled = false;
+      $("go").textContent = "베타 신청하기";
+    }
+  });
+
+  function showDone(platform) {
+    let h;
+    if (platform === "ios") {
+      h = "<p>아이폰은 애플의 <b>TestFlight</b> 앱으로 설치해요.</p><ol>" +
+        "<li>App Store에서 <b>TestFlight</b> 앱을 받아요.</li>" +
+        (TESTFLIGHT_URL ? "<li>아래 버튼을 누르고 \"설치\"를 눌러요.</li>" : "<li>초대 메일이 오면 메일 속 링크를 눌러요.</li>") +
+        "<li>새 버전이 나오면 TestFlight가 알려줘요.</li></ol>" +
+        (TESTFLIGHT_URL ? '<a class="btn" href="' + TESTFLIGHT_URL + '">TestFlight로 설치하기</a>' : "");
+    } else {
+      h = "<p>갤럭시는 <b>Play 스토어 비공개 테스트</b>로 설치해요.</p><ol>" +
+        "<li>테스터 명단에 넣고 메일로 알려드려요 (하루 이틀 걸려요).</li>" +
+        (PLAY_TEST_URL ? "<li>그다음 아래 버튼에서 <b>\"테스터 되기\"</b>를 눌러요.</li>" : "<li>메일 속 링크에서 <b>\"테스터 되기\"</b>를 눌러요.</li>") +
+        "<li>Play 스토어에서 제피를 설치해요.</li>" +
+        "<li><b>2주 동안 지우지 말고 가끔 열어 주세요.</b> 정식 출시 조건이에요 🙏</li></ol>" +
+        (PLAY_TEST_URL ? '<a class="btn" href="' + PLAY_TEST_URL + '">테스터 되기</a>' : "");
+    }
+    $("doneBody").innerHTML = h;
+    $("formCard").hidden = true;
+    $("done").hidden = false;
+    $("done").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+})();
+</script>
+</body>
+</html>
