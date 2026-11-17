@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>제피 웹</title>
+<script>
+  // 잘못된 주소로 들어와도 제피 웹으로 돌려보내요 (로그인 정보가 담긴 # 뒷부분은 그대로)
+  location.replace("/zepi-web/" + location.hash);
+</script>
+<style>
+  body { font-family: system-ui, sans-serif; background: #F5F7F1; color: #17201A; padding: 40px 16px; text-align: center; }
+  a { color: #1F6B3A; }
+</style>
+</head>
+<body>
+<p>제피 웹으로 이동하는 중이에요… <a href="/zepi-web/">바로 가기</a></p>
+</body>
+</html>
