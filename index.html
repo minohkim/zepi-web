@@ -188,6 +188,28 @@ dialog.dlg::backdrop { background: rgb(10 20 14 / .45); }
 .linkish:hover { color: var(--leaf); }
 .mini { border: 1px solid var(--line); background: var(--surface); color: var(--leaf); border-radius: 999px; padding: 2px 10px; font: inherit; font-size: 12px; font-weight: 600; min-height: 28px; margin-top: 4px; cursor: pointer; }
 .note .acts { display: flex; gap: 12px; align-items: center; }
+.io { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
+@media (max-width: 980px) { .io { grid-template-columns: minmax(0, 1fr); } }
+.io .card { padding: 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.io h2 { font-family: var(--font-display); font-size: 19px; }
+.io ol { margin: 0; padding-left: 20px; color: var(--muted); font-size: 14px; display: flex; flex-direction: column; gap: 4px; }
+.io ol b { color: var(--ink); font-weight: 600; }
+.io .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.io input[type=url] { flex: 1 1 220px; min-width: 0; font: inherit; font-size: 14px; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; min-height: 42px; }
+.io .hint { font-size: 13px; color: var(--muted); margin: 0; }
+.io label.chk { display: flex; gap: 8px; align-items: center; font-size: 14px; }
+.io .need { font-size: 13px; padding: 8px 12px; border-radius: 10px; background: var(--leaf-soft); }
+.preview { padding: 16px; display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+.preview .bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; }
+.preview .bar h2 { font-family: var(--font-display); font-size: 19px; }
+.preview .sum { font-size: 14px; color: var(--muted); }
+.ptable { overflow: auto; max-height: 460px; border: 1px solid var(--line); border-radius: 10px; }
+.ptable table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.ptable th, .ptable td { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.ptable th { position: sticky; top: 0; background: var(--surface); font-weight: 600; font-size: 12px; color: var(--muted); }
+.ptable td.st { white-space: nowrap; font-size: 12px; }
+.st-ok { color: var(--leaf); } .st-found { color: var(--leaf); } .st-miss { color: var(--pepper); }
+.ptable td .sub { color: var(--muted); font-size: 12px; }
 footer { color: var(--muted); font-size: 12px; text-align: center; padding-top: 8px; }
 .loading { padding: 60px 16px; text-align: center; color: var(--muted); }
 
@@ -269,6 +291,7 @@ body { margin: 0; }
         <button role="tab" id="tab-conquest" aria-selected="false" aria-controls="view-conquest">정복 지도</button>
         <button role="tab" id="tab-report" aria-selected="false" aria-controls="view-report">올해의 발자취</button>
         <button role="tab" id="tab-notes" aria-selected="false" aria-controls="view-notes">장소 메모</button>
+        <button role="tab" id="tab-io" aria-selected="false" aria-controls="view-io">가져오기 · 내보내기</button>
       </nav>
 
       <section id="view-day" role="tabpanel" aria-labelledby="tab-day">
@@ -329,6 +352,67 @@ body { margin: 0; }
 
       <section id="view-notes" role="tabpanel" aria-labelledby="tab-notes" hidden>
         <div class="notes" id="notesList"></div>
+      </section>
+
+      <section id="view-io" role="tabpanel" aria-labelledby="tab-io" hidden>
+        <div class="io">
+          <div class="panel card">
+            <h2>구글 지도에서 가져오기</h2>
+            <ol>
+              <li><a href="https://takeout.google.com/" target="_blank" rel="noopener">takeout.google.com</a>에서 <b>모두 선택 해제</b></li>
+              <li><b>저장됨</b>과 <b>지도(내 장소)</b>만 체크 → 내보내기 만들기</li>
+              <li>메일로 온 zip 파일을 아래에서 고르기 (압축 안 풀어도 돼요)</li>
+            </ol>
+            <div class="row">
+              <label class="btn primary" for="gFile">테이크아웃 파일 고르기</label>
+              <input type="file" id="gFile" accept=".zip,.csv,.json,.geojson" multiple style="position:absolute;width:1px;height:1px;opacity:0">
+            </div>
+            <p class="hint">좌표가 없는 장소는 네이버 장소 검색으로 위치를 찾아요. 해외 장소는 못 찾을 수 있어요.</p>
+          </div>
+          <div class="panel card">
+            <h2>네이버 지도에서 가져오기</h2>
+            <ol>
+              <li>네이버 지도 앱 → <b>저장</b> → 가져올 리스트</li>
+              <li>리스트를 <b>공개</b>로 바꾸고 <b>공유 → 링크 복사</b></li>
+              <li>아래에 붙여 넣기</li>
+            </ol>
+            <div class="row">
+              <input type="url" id="nUrl" placeholder="https://naver.me/..." aria-label="네이버 지도 리스트 공유 링크">
+              <button class="btn primary" type="button" id="nGo">불러오기</button>
+            </div>
+            <p class="hint">네이버가 공개한 기능이 아니라서, 네이버 쪽이 바뀌면 안 될 수 있어요.</p>
+          </div>
+          <div class="panel card">
+            <h2>구글 내 지도로 내보내기</h2>
+            <ol>
+              <li>아래에서 파일 받기 (KML 추천)</li>
+              <li><a href="https://www.google.com/maps/d/" target="_blank" rel="noopener">구글 내 지도</a> → <b>새 지도 만들기</b> → <b>가져오기</b>에 파일 올리기</li>
+              <li>구글 지도 앱 <b>저장됨 → 지도</b>에서 보여요</li>
+            </ol>
+            <label class="chk"><input type="checkbox" id="exHide" checked> 집·회사 태그는 빼기</label>
+            <div class="row">
+              <button class="btn primary" type="button" id="exKml">KML 받기</button>
+              <button class="btn" type="button" id="exCsv">CSV 받기</button>
+            </div>
+            <p class="hint" id="exHint"></p>
+          </div>
+        </div>
+        <div class="need" id="ioNeed" hidden>가져온 장소를 저장하려면 오른쪽 위 <b>로그인</b>을 해 주세요. 저장하면 폰 앱에도 들어가요.</div>
+        <div class="panel preview" id="ioPreview" hidden>
+          <div class="bar">
+            <h2 id="ioTitle">가져올 장소</h2>
+            <div class="row">
+              <button class="btn" type="button" id="ioFind" hidden>위치 못 찾은 곳 네이버로 찾기</button>
+              <button class="btn primary" type="button" id="ioSave">선택한 장소 저장</button>
+              <button class="btn" type="button" id="ioCancel">취소</button>
+            </div>
+          </div>
+          <div class="sum" id="ioSum" role="status"></div>
+          <div class="ptable"><table>
+            <thead><tr><th><input type="checkbox" id="ioAll" checked aria-label="모두 선택"></th><th>이름</th><th>리스트 → 태그</th><th>메모</th><th>위치</th></tr></thead>
+            <tbody id="ioRows"></tbody>
+          </table></div>
+        </div>
       </section>
     </div>
   </div>
@@ -1235,7 +1319,7 @@ body { margin: 0; }
   }
 
   // ---------- 탭과 이벤트 ----------
-  const TABS = ["day", "conquest", "report", "notes"];
+  const TABS = ["day", "conquest", "report", "notes", "io"];
   function showTab(name) {
     for (const t of TABS) {
       $("tab-" + t).setAttribute("aria-selected", String(t === name));
@@ -1243,9 +1327,288 @@ body { margin: 0; }
     }
     if (name === "day") drawDayMap(timelineOf(curDay));
     if (name === "conquest") drawConqMap();
+    if (name === "io") { updateExHint(); $("ioNeed").hidden = canEdit() || $("ioPreview").hidden; }
     try { localStorage.setItem("jepi.tab", name); } catch (e) {}
   }
   for (const t of TABS) $("tab-" + t).addEventListener("click", () => showTab(t));
+
+  // ---------- 가져오기 · 내보내기 ----------
+  const PROXY = SB_URL + "/functions/v1/jepi-proxy";
+  async function proxy(path) {
+    const r = await fetch(PROXY + path, { headers: { Authorization: "Bearer " + (await token()), apikey: SB_KEY } });
+    let j = {};
+    try { j = await r.json(); } catch (e) {}
+    if (!r.ok) throw new Error((j.error && j.error.message) || "서버 오류 (" + r.status + ")");
+    return j;
+  }
+  function download(name, text, type) {
+    const blob = new Blob([text], { type });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  }
+  const xml = (t) => String(t).replace(/[<>&'"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", "'": "&apos;", '"': "&quot;" }[c]));
+  const csvCell = (t) => { t = String(t == null ? "" : t); return /[",\n\r]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t; };
+  function exportNotes() {
+    if (!D) return [];
+    const hide = $("exHide").checked;
+    return D.notes.filter((n) => !(hide && (n.tags.includes("집") || n.tags.includes("회사"))));
+  }
+  function noteName(n) { return shortName(placeName(n.lat, n.lng)) || n.memo.split("\n")[0].slice(0, 30) || n.tags[0] || "장소"; }
+  function stamp() { const d = new Date(); return d.getFullYear() + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0"); }
+  function updateExHint() {
+    const n = exportNotes().length;
+    $("exHint").textContent = n ? "장소 메모 " + n + "곳을 내보내요." + (source === "sample" ? " (지금은 예시 데이터예요)" : "") : "내보낼 장소 메모가 없어요.";
+    $("exKml").disabled = $("exCsv").disabled = !n;
+  }
+  $("exHide").addEventListener("change", updateExHint);
+  $("exKml").addEventListener("click", () => {
+    const list = exportNotes();
+    const groups = new Map();
+    for (const n of list) { const g = n.tags[0] || "태그 없음"; if (!groups.has(g)) groups.set(g, []); groups.get(g).push(n); }
+    let k = '<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>제피 장소 메모 ' + stamp() + "</name>\n";
+    for (const [g, ns] of groups) {
+      k += "<Folder><name>" + xml(g) + "</name>\n";
+      for (const n of ns) {
+        const desc = [n.tags.length ? "태그: " + n.tags.join(", ") : "", n.rating ? "별점: " + "★".repeat(n.rating) : "", n.memo].filter(Boolean).join("\n");
+        k += "<Placemark><name>" + xml(noteName(n)) + "</name><description>" + xml(desc) + "</description><Point><coordinates>" + n.lng.toFixed(6) + "," + n.lat.toFixed(6) + ",0</coordinates></Point></Placemark>\n";
+      }
+      k += "</Folder>\n";
+    }
+    download("zepi-places-" + stamp() + ".kml", k + "</Document></kml>\n", "application/vnd.google-earth.kml+xml");
+  });
+  $("exCsv").addEventListener("click", () => {
+    const rowsOut = [["이름", "위도", "경도", "태그", "별점", "메모"]];
+    for (const n of exportNotes()) rowsOut.push([noteName(n), n.lat.toFixed(6), n.lng.toFixed(6), n.tags.join(" "), n.rating || "", n.memo]);
+    download("zepi-places-" + stamp() + ".csv", "﻿" + rowsOut.map((r) => r.map(csvCell).join(",")).join("\r\n"), "text/csv;charset=utf-8");
+  });
+
+  // 미리보기 목록: { name, lat, lng, memo, list, sel, st: ok|found|miss|none, sub }
+  let pending = [];
+  const LIST_NAMES = { "want to go": "가고 싶은 곳", "favorites": "즐겨찾기", "favourite places": "즐겨찾기", "favorite places": "즐겨찾기",
+    "starred places": "별표", "saved places": "별표", "flag": "깃발", "flagged places": "깃발", "travel plans": "여행 계획", "default list": "저장" };
+  function tagOf(list) {
+    const t = String(list || "").replace(/\.(csv|json|geojson)$/i, "").replace(/,/g, " ").trim();
+    return (LIST_NAMES[t.toLowerCase()] || t).slice(0, 20);
+  }
+  function showPending(title) {
+    $("ioTitle").textContent = title;
+    $("ioPreview").hidden = false;
+    $("ioNeed").hidden = canEdit();
+    drawPending();
+    $("ioPreview").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  function drawPending() {
+    const ST = { ok: ["st-ok", "좌표 있음"], found: ["st-found", "네이버에서 찾음"], miss: ["st-miss", "못 찾음"], none: ["st-miss", "위치 없음"] };
+    $("ioRows").innerHTML = pending.map((p, i) => {
+      const [cls, label] = ST[p.st];
+      const has = p.st === "ok" || p.st === "found";
+      return "<tr><td><input type='checkbox' data-i='" + i + "' " + (p.sel && has ? "checked" : "") + (has ? "" : " disabled") + " aria-label='" + esc(p.name) + " 선택'></td>" +
+        "<td>" + esc(p.name) + (p.sub ? "<div class='sub'>" + esc(p.sub) + "</div>" : "") + "</td><td>" + esc(p.list) + "</td><td>" + esc(p.memo).slice(0, 120) + "</td>" +
+        "<td class='st " + cls + "'>" + label + "</td></tr>";
+    }).join("");
+    const has = pending.filter((p) => p.st === "ok" || p.st === "found");
+    const sel = has.filter((p) => p.sel).length;
+    const need = pending.filter((p) => p.st === "none").length;
+    const miss = pending.filter((p) => p.st === "miss").length;
+    $("ioSum").textContent = "모두 " + pending.length + "곳 · 위치 있음 " + has.length + "곳" + (need ? " · 위치 찾을 곳 " + need + "곳" : "") + (miss ? " · 못 찾음 " + miss + "곳" : "") + " · 선택 " + sel + "곳";
+    $("ioFind").hidden = !need;
+    $("ioFind").disabled = !canEdit();
+    $("ioSave").disabled = !sel || !canEdit();
+  }
+  $("ioRows").addEventListener("change", (e) => { const c = e.target.closest("[data-i]"); if (c) { pending[+c.dataset.i].sel = c.checked; drawPending(); } });
+  $("ioAll").addEventListener("change", (e) => { for (const p of pending) p.sel = e.target.checked; drawPending(); });
+  $("ioCancel").addEventListener("click", () => { pending = []; $("ioPreview").hidden = true; $("ioNeed").hidden = true; });
+
+  // 구글 지도 주소에서 좌표 꺼내기
+  function coordsFromUrl(u) {
+    u = String(u || "");
+    let m = u.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/) || u.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/) ||
+      u.match(/[?&/](?:q|query|ll|search\/)=?(-?\d{1,2}\.\d+),\+?(-?\d{1,3}\.\d+)/) || u.match(/search\/(-?\d{1,2}\.\d+),\+?(-?\d{1,3}\.\d+)/);
+    if (!m) return null;
+    const lat = +m[1], lng = +m[2];
+    return Math.abs(lat) > 0.01 && Math.abs(lng) > 0.01 ? { lat, lng } : null;
+  }
+  function parseCsv(text) {
+    const out = []; let row = [], cell = "", q = false;
+    text = text.replace(/^﻿/, "");
+    for (let i = 0; i < text.length; i++) {
+      const c = text[i];
+      if (q) {
+        if (c === '"') { if (text[i + 1] === '"') { cell += '"'; i++; } else q = false; } else cell += c;
+      } else if (c === '"') q = true;
+      else if (c === ",") { row.push(cell); cell = ""; }
+      else if (c === "\n" || c === "\r") { if (c === "\r" && text[i + 1] === "\n") i++; row.push(cell); out.push(row); row = []; cell = ""; }
+      else cell += c;
+    }
+    if (cell || row.length) { row.push(cell); out.push(row); }
+    return out.filter((r) => r.some((x) => x.trim()));
+  }
+  function fromCsv(name, text) {
+    const rowsIn = parseCsv(text);
+    if (!rowsIn.length) return [];
+    const head = rowsIn[0].map((h) => h.trim().toLowerCase());
+    const col = (...names) => head.findIndex((h) => names.includes(h));
+    const iT = col("title", "제목", "이름", "name"), iN = col("note", "메모", "notes"), iU = col("url", "주소", "google maps url"), iC = col("comment", "댓글");
+    if (iT < 0 && iU < 0) return [];
+    const list = tagOf(name.split("/").pop());
+    return rowsIn.slice(1).map((r) => {
+      const c = coordsFromUrl(r[iU]);
+      const title = (r[iT] || "").trim();
+      return { name: title || (c ? c.lat.toFixed(5) + ", " + c.lng.toFixed(5) : ""), lat: c && c.lat, lng: c && c.lng, memo: [(r[iN] || "").trim(), (r[iC] || "").trim()].filter(Boolean).join("\n"), list, sel: true, st: c ? "ok" : "none" };
+    }).filter((p) => p.name);
+  }
+  function fromGeoJson(name, text) {
+    let j;
+    try { j = JSON.parse(text); } catch (e) { return []; }
+    if (!j || !Array.isArray(j.features)) return [];
+    const base = name.split("/").pop();
+    if (/labeled/i.test(base) || /reviews?/i.test(base)) return []; // 집·회사 주소와 리뷰는 빼요
+    const list = tagOf(base === "Saved Places.json" ? "Starred places" : base);
+    return j.features.map((f) => {
+      const pr = f.properties || {}, loc = pr.location || pr.Location || {};
+      let [lng, lat] = (f.geometry && f.geometry.coordinates) || [0, 0];
+      const geo = loc["Geo Coordinates"];
+      if ((!lat || !lng) && geo) { lat = +geo.Latitude; lng = +geo.Longitude; }
+      if (!lat || !lng) { const c = coordsFromUrl(pr.google_maps_url || pr["Google Maps URL"]); if (c) { lat = c.lat; lng = c.lng; } }
+      const nm = loc.name || loc["Business Name"] || pr.Title || pr.name || loc.address || loc.Address || "";
+      const ok = Math.abs(lat) > 0.01 && Math.abs(lng) > 0.01;
+      return { name: String(nm).trim(), sub: loc.address || loc.Address || "", lat: ok ? +lat : null, lng: ok ? +lng : null, memo: String(pr.Comment || pr.comment || "").trim(), list, sel: true, st: ok ? "ok" : "none" };
+    }).filter((p) => p.name);
+  }
+  let jszipP = null;
+  function loadJsZip() {
+    if (window.JSZip) return Promise.resolve();
+    if (!jszipP) jszipP = new Promise((res, rej) => {
+      const s = document.createElement("script");
+      s.src = "https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js";
+      s.onload = res; s.onerror = () => rej(new Error("압축 풀기 도구를 불러오지 못했어요"));
+      document.head.appendChild(s);
+    });
+    return jszipP;
+  }
+  function parseOne(name, text) {
+    return /\.csv$/i.test(name) ? fromCsv(name, text) : /\.(geo)?json$/i.test(name) ? fromGeoJson(name, text) : [];
+  }
+  $("gFile").addEventListener("change", async (e) => {
+    const files = [...e.target.files];
+    e.target.value = "";
+    if (!files.length) return;
+    setNotice("구글 파일을 읽는 중이에요…");
+    try {
+      const found = [];
+      for (const f of files) {
+        if (/\.zip$/i.test(f.name)) {
+          await loadJsZip();
+          const zip = await JSZip.loadAsync(f);
+          const entries = Object.values(zip.files).filter((z) => !z.dir && /(^|\/)(Saved|Maps \(your places\)|저장됨|지도 \(내 장소\)|지도\(내 장소\))\//i.test(z.name) && /\.(csv|json)$/i.test(z.name));
+          for (const z of entries) found.push(...parseOne(z.name, await z.async("string")));
+        } else {
+          found.push(...parseOne(f.name, await f.text()));
+        }
+      }
+      // 같은 장소가 여러 리스트에 있으면 하나로 (태그는 모두)
+      const merged = new Map();
+      for (const p of found) {
+        const k = p.lat != null ? p.lat.toFixed(4) + "," + p.lng.toFixed(4) : "n:" + p.name;
+        const o = merged.get(k);
+        if (o) { if (!o.list.split(", ").includes(p.list)) o.list += ", " + p.list; if (p.memo && !o.memo.includes(p.memo)) o.memo = [o.memo, p.memo].filter(Boolean).join("\n"); }
+        else merged.set(k, { ...p });
+      }
+      pending = [...merged.values()];
+      if (!pending.length) { setNotice("가져올 장소를 찾지 못했어요. 테이크아웃에서 <strong>저장됨</strong>과 <strong>지도(내 장소)</strong>를 골랐는지 확인해 주세요.", true); return; }
+      setNotice("구글에서 " + pending.length + "곳을 읽었어요. 아래 목록을 확인하고 저장해 주세요.");
+      showPending("구글 지도에서 가져올 장소");
+    } catch (err) {
+      setNotice("파일을 읽지 못했어요. " + esc(err.message || err), true);
+    }
+  });
+
+  const plain = (t) => String(t || "").replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').trim();
+  $("ioFind").addEventListener("click", async () => {
+    const todo = pending.filter((p) => p.st === "none");
+    $("ioFind").disabled = true;
+    let done = 0, hit = 0;
+    try {
+      for (const p of todo) {
+        const j = await proxy("/naver/search/v1/local?display=1&query=" + encodeURIComponent((p.name + " " + (p.sub || "")).trim().slice(0, 60)));
+        const it = (j.items || [])[0];
+        const cy = it && +it.mapy, cx = it && +it.mapx;
+        if (cy && cx) { p.lat = cy > 1000 ? cy / 1e7 : cy; p.lng = cx > 1000 ? cx / 1e7 : cx; p.st = "found"; p.sub = plain(it.title) + " · " + plain(it.roadAddress || it.address); hit++; }
+        else p.st = "miss";
+        done++;
+        if (done % 5 === 0 || done === todo.length) { drawPending(); $("ioSum").textContent += " · 찾는 중 " + done + "/" + todo.length; }
+      }
+      setNotice("네이버 장소 검색으로 " + todo.length + "곳 중 " + hit + "곳을 찾았어요. 이름이 비슷한 다른 곳일 수 있으니 목록을 한번 봐 주세요.");
+    } catch (err) {
+      setNotice("위치 찾기를 멈췄어요. " + esc(err.message || err), true);
+    } finally {
+      drawPending();
+    }
+  });
+
+  $("nGo").addEventListener("click", async () => {
+    const link = $("nUrl").value.trim();
+    if (!link) { $("nUrl").focus(); return; }
+    if (!canEdit()) { $("ioNeed").hidden = false; setNotice("네이버 리스트를 불러오려면 먼저 로그인해 주세요.", true); return; }
+    $("nGo").disabled = true;
+    setNotice("네이버 리스트를 불러오는 중이에요…");
+    try {
+      const j = await proxy("/navershare?url=" + encodeURIComponent(link));
+      const list = tagOf(j.folder || "네이버 리스트");
+      pending = (j.items || []).map((b) => {
+        const ok = Math.abs(b.lat) > 0.01 && Math.abs(b.lng) > 0.01;
+        return { name: b.name, sub: b.address, lat: ok ? b.lat : null, lng: ok ? b.lng : null, memo: b.memo || "", list, sel: true, st: ok ? "ok" : "none" };
+      });
+      if (!pending.length) { setNotice("리스트에 장소가 없어요.", true); return; }
+      setNotice("네이버 리스트 <strong>" + esc(j.folder || "") + "</strong>에서 " + pending.length + "곳을 읽었어요.");
+      showPending("네이버 지도에서 가져올 장소");
+    } catch (err) {
+      setNotice(esc(err.message || err), true);
+    } finally {
+      $("nGo").disabled = false;
+    }
+  });
+
+  $("ioSave").addEventListener("click", async () => {
+    const picked = pending.filter((p) => p.sel && (p.st === "ok" || p.st === "found"));
+    if (!picked.length || !canEdit()) return;
+    $("ioSave").disabled = true;
+    const now = Date.now();
+    const byKey = new Map(D.notes.map((n) => [n.key, n]));
+    const out = new Map();
+    for (const p of picked) {
+      const key = p.lat.toFixed(3) + "," + p.lng.toFixed(3);
+      const old = out.get(key) || byKey.get(key);
+      const tags = new Set(old ? old.tags : []);
+      for (const t of p.list.split(", ")) if (t) tags.add(t);
+      const memoNew = [p.name, p.memo].filter(Boolean).join(" · ");
+      const memo = old && old.memo ? (old.memo.includes(p.name) ? old.memo : old.memo + "\n" + memoNew) : memoNew;
+      out.set(key, { key, lat: old ? old.lat : p.lat, lng: old ? old.lng : p.lng, tags: [...tags], rating: old ? old.rating : 0, memo: memo.slice(0, 500) });
+    }
+    const rowsUp = [...out.values()].map((n, i) => ({ user_id: session.uid, key: n.key, lat: n.lat, lng: n.lng, tags: n.tags.join(","), rating: n.rating, memo: n.memo, updated: now + i }));
+    try {
+      for (let i = 0; i < rowsUp.length; i += 200) {
+        await sb("place_notes?on_conflict=user_id,key", { method: "POST", headers: { Prefer: "resolution=merge-duplicates,return=minimal" }, body: JSON.stringify(rowsUp.slice(i, i + 200)) });
+        setNotice("저장하는 중이에요… " + Math.min(i + 200, rowsUp.length) + "/" + rowsUp.length);
+      }
+      for (const r of rowsUp) { D.notes = D.notes.filter((x) => x.key !== r.key); D.notes.unshift(noteFromRow(r)); }
+      pending = [];
+      $("ioPreview").hidden = true;
+      renderNotes();
+      renderTimeline(timelineOf(curDay));
+      updateExHint();
+      setNotice(rowsUp.length + "곳을 장소 메모로 저장했어요. 리스트 이름이 태그로 붙었어요. 폰 앱에는 다음에 앱을 열 때 들어가요.");
+      showTab("notes");
+    } catch (err) {
+      setNotice("저장하지 못했어요. " + esc(err.message || err), true);
+    } finally {
+      $("ioSave").disabled = false;
+    }
+  });
 
   function goDay(k) {
     curDay = k;
