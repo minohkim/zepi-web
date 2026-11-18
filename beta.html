@@ -85,7 +85,7 @@ footer a { color: inherit; }
           <input type="radio" name="platform" id="p-ios" value="ios" required>
           <label for="p-ios">iPhone<small>TestFlight로 설치</small></label>
           <input type="radio" name="platform" id="p-android" value="android">
-          <label for="p-android">갤럭시 · 안드로이드<small>Play 스토어로 설치</small></label>
+          <label for="p-android">갤럭시 · 안드로이드<small id="androidHow">초대 메일로 설치</small></label>
         </div>
       </div>
       <div>
@@ -126,20 +126,23 @@ footer a { color: inherit; }
   // Play Console → 테스트 → 비공개 테스트 → 테스터 → "웹에서 참여" 링크
   const PLAY_TEST_URL = "";
   // ────────────────────────────────────────────────────────────────
+  // Play 링크가 없는 동안 갤럭시는 Firebase App Distribution으로 바로 초대해요 (서버 beta-sync)
+  const VIA_FIREBASE = !PLAY_TEST_URL;
 
   const SB_URL = "https://xkhfannbztgvarxqhzno.supabase.co";
   const SB_KEY = "sb_publishable__uulkrUbHekv5cxsE-UyHw_oXkR7wtM";
   const $ = (id) => document.getElementById(id);
   const f = $("f");
+  if (!VIA_FIREBASE) $("androidHow").textContent = "Play 스토어로 설치";
 
   const params = new URLSearchParams(location.search);
   if (params.get("from")) $("source").value = params.get("from").slice(0, 200);
 
   f.addEventListener("change", () => {
     const p = f.platform.value;
-    $("emailLabel").textContent = p === "android" ? "Play 스토어에 쓰는 구글 계정 (Gmail)" : p === "ios" ? "Apple ID 이메일" : "이메일";
+    $("emailLabel").textContent = p === "android" ? (VIA_FIREBASE ? "구글 계정 이메일 (Gmail)" : "Play 스토어에 쓰는 구글 계정 (Gmail)") : p === "ios" ? "Apple ID 이메일" : "이메일";
     $("emailHint").textContent = p === "android"
-      ? "갤럭시에서 Play 스토어에 로그인한 그 구글 계정이어야 설치돼요."
+      ? (VIA_FIREBASE ? "몇 분 안에 이 주소로 설치 초대 메일이 가요. 갤럭시에 로그인한 구글 계정이면 가장 편해요." : "갤럭시에서 Play 스토어에 로그인한 그 구글 계정이어야 설치돼요.")
       : p === "ios" ? "TestFlight 초대 메일을 이 주소로 보내드려요." : "초대 메일을 이 주소로 보내드려요.";
   });
 
@@ -153,7 +156,7 @@ footer a { color: inherit; }
     if (!platform) return showErr("쓰는 폰을 골라 주세요.");
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showErr("이메일 주소를 확인해 주세요.");
     if (platform === "android" && !/@(gmail\.com|googlemail\.com)$/.test(email) &&
-        !confirm("Play 스토어 계정이 Gmail이 아니어도 괜찮아요. 다만 Play 스토어에 로그인한 바로 그 계정이어야 해요. 이대로 신청할까요?")) return;
+        !confirm(VIA_FIREBASE ? "Gmail이 아니어도 되지만, 그 주소로 구글 계정에 로그인할 수 있어야 설치가 편해요. 이대로 신청할까요?" : "Play 스토어 계정이 Gmail이 아니어도 괜찮아요. 다만 Play 스토어에 로그인한 바로 그 계정이어야 해요. 이대로 신청할까요?")) return;
     if (!$("agree").checked) return showErr("이메일 보관에 동의해 주세요.");
 
     $("go").disabled = true;
@@ -172,6 +175,8 @@ footer a { color: inherit; }
         let j = {}; try { j = await r.json(); } catch (x) {}
         throw new Error(j.message || ("HTTP " + r.status));
       }
+      // 갤럭시: 서버가 바로 Firebase 테스터로 넣고 최신 빌드 초대 메일을 보내요 (실패해도 매시간 다시 해요)
+      if (platform === "android" && VIA_FIREBASE) fetch(SB_URL + "/functions/v1/beta-sync", { method: "POST" }).catch(() => {});
       showDone(platform);
     } catch (err) {
       showErr("신청이 안 됐어요. 잠시 뒤 다시 해 주세요. (" + err.message + ")");
@@ -188,6 +193,12 @@ footer a { color: inherit; }
         (TESTFLIGHT_URL ? "<li>아래 버튼을 누르고 \"설치\"를 눌러요.</li>" : "<li>초대 메일이 오면 메일 속 링크를 눌러요.</li>") +
         "<li>새 버전이 나오면 TestFlight가 알려줘요.</li></ol>" +
         (TESTFLIGHT_URL ? '<a class="btn" href="' + TESTFLIGHT_URL + '">TestFlight로 설치하기</a>' : "");
+    } else if (VIA_FIREBASE) {
+      h = "<p>갤럭시는 <b>Firebase 초대 메일</b>로 설치해요.</p><ol>" +
+        "<li>몇 분 안에 <b>Firebase App Distribution</b>에서 초대 메일이 와요. 안 보이면 스팸함도 봐 주세요.</li>" +
+        "<li>갤럭시에서 메일을 열고 <b>시작하기</b>를 눌러 초대를 받아요.</li>" +
+        "<li>안내대로 제피를 내려받아 설치해요. \"출처를 알 수 없는 앱\" 허용을 물으면 허용해 주세요.</li>" +
+        "<li>새 버전이 나오면 메일로 알려드려요.</li></ol>";
     } else {
       h = "<p>갤럭시는 <b>Play 스토어 비공개 테스트</b>로 설치해요.</p><ol>" +
         "<li>테스터 명단에 넣고 메일로 알려드려요 (하루 이틀 걸려요).</li>" +
