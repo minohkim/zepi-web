@@ -159,15 +159,16 @@ footer a { color: inherit; }
     $("go").disabled = true;
     $("go").textContent = "보내는 중…";
     try {
-      const r = await fetch(SB_URL + "/rest/v1/beta_signups?on_conflict=email,platform", {
+      const r = await fetch(SB_URL + "/rest/v1/beta_signups", {
         method: "POST",
         headers: {
           apikey: SB_KEY, Authorization: "Bearer " + SB_KEY, "Content-Type": "application/json",
-          Prefer: "return=minimal,resolution=ignore-duplicates",
+          Prefer: "return=minimal",
         },
         body: JSON.stringify({ email, platform, name: $("name").value.trim().slice(0, 40), source: $("source").value.trim().slice(0, 200) }),
       });
-      if (!r.ok) {
+      // 409 = 이미 같은 이메일·폰으로 신청함 → 신청된 걸로 봐요
+      if (!r.ok && r.status !== 409) {
         let j = {}; try { j = await r.json(); } catch (x) {}
         throw new Error(j.message || ("HTTP " + r.status));
       }
