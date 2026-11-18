@@ -56,6 +56,10 @@ button.go[disabled] { opacity: .6; cursor: default; }
 .done h2 { font-family: var(--font-display); margin: 0 0 8px; font-size: 22px; }
 .done ol { padding-left: 20px; margin: 10px 0 0; }
 .done a.btn { display: inline-flex; margin-top: 14px; min-height: 46px; align-items: center; padding: 0 18px; border-radius: 999px; background: var(--leaf); color: var(--bg); text-decoration: none; font-weight: 600; }
+/* 중국어·일본어는 그 나라 글꼴로 (한국어 글꼴은 한자를 한국식 모양으로 그려요) */
+:root:lang(zh) { --font-display: "Songti SC", "Noto Serif SC", "SimSun", serif; --font-body: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif; }
+:root:lang(ja) { --font-display: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif; --font-body: "Hiragino Sans", "Yu Gothic UI", "Meiryo", "Noto Sans JP", system-ui, sans-serif; }
+:root:lang(en) { --font-display: Georgia, "Times New Roman", serif; }
 footer { color: var(--muted); font-size: 13px; text-align: center; }
 footer a { color: inherit; }
 </style>

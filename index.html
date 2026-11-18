@@ -212,6 +212,10 @@ dialog.dlg::backdrop { background: rgb(10 20 14 / .45); }
 .st-ok { color: var(--leaf); } .st-found { color: var(--leaf); } .st-miss { color: var(--pepper); }
 .ptable td .sub { color: var(--muted); font-size: 12px; }
 .langsel { padding: 0 10px; appearance: auto; }
+/* 중국어·일본어는 그 나라 글꼴로 (한국어 글꼴은 한자를 한국식 모양으로 그려요) */
+:root:lang(zh) { --font-display: "Songti SC", "Noto Serif SC", "SimSun", serif; --font-body: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif; }
+:root:lang(ja) { --font-display: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif; --font-body: "Hiragino Sans", "Yu Gothic UI", "Meiryo", "Noto Sans JP", system-ui, sans-serif; }
+:root:lang(en) { --font-display: Georgia, "Times New Roman", serif; }
 footer { color: var(--muted); font-size: 12px; text-align: center; padding-top: 8px; }
 .loading { padding: 60px 16px; text-align: center; color: var(--muted); }
 
