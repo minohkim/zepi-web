@@ -1,0 +1,1347 @@
+{
+ "제피 웹": [
+  "Zepi Web",
+  "Zepi 网页版",
+  "Zepi Web"
+ ],
+ "제피": [
+  "Zepi",
+  "Zepi",
+  "Zepi"
+ ],
+ "폰에 쌓인 발자취를 큰 화면으로": [
+  "Your phone's footprints, on a big screen",
+  "把手机里的足迹放到大屏幕上看",
+  "スマホにたまった足あとを大きな画面で"
+ ],
+ "백업 파일 열기": [
+  "Open backup file",
+  "打开备份文件",
+  "バックアップを開く"
+ ],
+ "예시 다시 보기": [
+  "Show sample again",
+  "再看示例",
+  "サンプルに戻す"
+ ],
+ "베타 신청": [
+  "Join the beta",
+  "申请内测",
+  "ベータに参加"
+ ],
+ "언어 · Language": [
+  "Language",
+  "语言 · Language",
+  "言語 · Language"
+ ],
+ "준비하는 중이에요…": [
+  "Getting ready…",
+  "正在准备…",
+  "準備しています…"
+ ],
+ "요약": [
+  "Summary",
+  "概要",
+  "概要"
+ ],
+ "보기": [
+  "Views",
+  "视图",
+  "表示"
+ ],
+ "하루": [
+  "Day",
+  "单日",
+  "1日"
+ ],
+ "정복 지도": [
+  "Conquest map",
+  "征服地图",
+  "制覇マップ"
+ ],
+ "올해의 발자취": [
+  "Year in footprints",
+  "年度足迹",
+  "今年の足あと"
+ ],
+ "장소 메모": [
+  "Place notes",
+  "地点备注",
+  "場所メモ"
+ ],
+ "가져오기 · 내보내기": [
+  "Import · Export",
+  "导入 · 导出",
+  "インポート · エクスポート"
+ ],
+ "그날의 이동 지도": [
+  "Map of that day's travels",
+  "当天的移动地图",
+  "その日の移動マップ"
+ ],
+ "이전 기록한 날": [
+  "Previous recorded day",
+  "上一个有记录的日子",
+  "前の記録日"
+ ],
+ "다음 기록한 날": [
+  "Next recorded day",
+  "下一个有记录的日子",
+  "次の記録日"
+ ],
+ "기록한 날": [
+  "Days recorded",
+  "记录天数",
+  "記録した日"
+ ],
+ "여행한 날": [
+  "Travel days",
+  "旅行日",
+  "旅行した日"
+ ],
+ "시군구 정복 지도": [
+  "District conquest map",
+  "市郡区征服地图",
+  "市郡区の制覇マップ"
+ ],
+ "지나감": [
+  "Passed through",
+  "路过",
+  "通過"
+ ],
+ "정복 1일": [
+  "Conquered (1 day)",
+  "征服 1 天",
+  "制覇 1日"
+ ],
+ "자주 감": [
+  "Frequent",
+  "常去",
+  "よく行く"
+ ],
+ "직접 표시": [
+  "Marked by hand",
+  "手动标记",
+  "手動で記録"
+ ],
+ "연도": [
+  "Year",
+  "年份",
+  "年"
+ ],
+ "달마다 이동한 거리": [
+  "Distance by month",
+  "每月移动距离",
+  "月別の移動距離"
+ ],
+ "가장 오래 머문 곳": [
+  "Where you stayed longest",
+  "停留最久的地方",
+  "いちばん長くいた場所"
+ ],
+ "집·회사는 빼고": [
+  "Excluding home and work",
+  "不含家和公司",
+  "自宅・職場を除く"
+ ],
+ "새로 정복한 곳": [
+  "Newly conquered",
+  "新征服的地方",
+  "新しく制覇した場所"
+ ],
+ "구글 지도에서 가져오기": [
+  "Import from Google Maps",
+  "从 Google 地图导入",
+  "Google マップから取り込む"
+ ],
+ "<a href=\"https://takeout.google.com/\" target=\"_blank\" rel=\"noopener\">takeout.google.com</a>에서 <b>모두 선택 해제</b>": [
+  "On <a href=\"https://takeout.google.com/\" target=\"_blank\" rel=\"noopener\">takeout.google.com</a>, click <b>Deselect all</b>",
+  "在 <a href=\"https://takeout.google.com/\" target=\"_blank\" rel=\"noopener\">takeout.google.com</a> 点击<b>取消全选</b>",
+  "<a href=\"https://takeout.google.com/\" target=\"_blank\" rel=\"noopener\">takeout.google.com</a> で<b>選択をすべて解除</b>"
+ ],
+ "<b>저장됨</b>과 <b>지도(내 장소)</b>만 체크 → 내보내기 만들기": [
+  "Tick only <b>Saved</b> and <b>Maps (your places)</b> → Create export",
+  "只勾选<b>已保存</b>和<b>地图（您的地点）</b>→ 创建导出",
+  "<b>保存済み</b>と<b>マップ（マイプレイス）</b>だけにチェック → エクスポートを作成"
+ ],
+ "메일로 온 zip 파일을 아래에서 고르기 (압축 안 풀어도 돼요)": [
+  "Pick the zip file from the email below (no need to unzip it)",
+  "在下方选择邮件里收到的 zip 文件（不用解压）",
+  "メールで届いた zip ファイルを下で選ぶ（解凍しなくて大丈夫）"
+ ],
+ "테이크아웃 파일 고르기": [
+  "Choose Takeout file",
+  "选择 Takeout 文件",
+  "Takeout ファイルを選ぶ"
+ ],
+ "좌표가 없는 장소는 네이버 장소 검색으로 위치를 찾아요. 해외 장소는 못 찾을 수 있어요.": [
+  "Places without coordinates are located with Naver place search. Places outside Korea may not be found.",
+  "没有坐标的地点会用 Naver 地点搜索来定位。韩国以外的地点可能找不到。",
+  "座標のない場所は Naver の場所検索で探します。韓国以外の場所は見つからないことがあります。"
+ ],
+ "네이버 지도에서 가져오기": [
+  "Import from Naver Map",
+  "从 Naver 地图导入",
+  "Naver マップから取り込む"
+ ],
+ "네이버 지도 앱 → <b>저장</b> → 가져올 리스트": [
+  "Naver Map app → <b>Saved</b> → the list to import",
+  "Naver 地图 App → <b>收藏</b> → 要导入的列表",
+  "Naver マップアプリ → <b>保存</b> → 取り込むリスト"
+ ],
+ "리스트를 <b>공개</b>로 바꾸고 <b>공유 → 링크 복사</b>": [
+  "Make the list <b>public</b>, then <b>Share → Copy link</b>",
+  "把列表设为<b>公开</b>，然后<b>分享 → 复制链接</b>",
+  "リストを<b>公開</b>にして<b>共有 → リンクをコピー</b>"
+ ],
+ "아래에 붙여 넣기": [
+  "Paste it below",
+  "粘贴到下方",
+  "下に貼り付け"
+ ],
+ "네이버 지도 리스트 공유 링크": [
+  "Naver Map list share link",
+  "Naver 地图列表分享链接",
+  "Naver マップのリスト共有リンク"
+ ],
+ "불러오기": [
+  "Load",
+  "读取",
+  "読み込む"
+ ],
+ "네이버가 공개한 기능이 아니라서, 네이버 쪽이 바뀌면 안 될 수 있어요.": [
+  "This uses an unofficial Naver feature, so it may stop working if Naver changes it.",
+  "这不是 Naver 公开提供的功能，Naver 改版后可能无法使用。",
+  "Naver の公式機能ではないため、Naver 側が変わると使えなくなることがあります。"
+ ],
+ "구글 내 지도로 내보내기": [
+  "Export to Google My Maps",
+  "导出到 Google 我的地图",
+  "Google マイマップへ書き出す"
+ ],
+ "아래에서 파일 받기 (KML 추천)": [
+  "Download a file below (KML recommended)",
+  "在下方下载文件（推荐 KML）",
+  "下でファイルをダウンロード（KML がおすすめ）"
+ ],
+ "<a href=\"https://www.google.com/maps/d/\" target=\"_blank\" rel=\"noopener\">구글 내 지도</a> → <b>새 지도 만들기</b> → <b>가져오기</b>에 파일 올리기": [
+  "<a href=\"https://www.google.com/maps/d/\" target=\"_blank\" rel=\"noopener\">Google My Maps</a> → <b>Create a new map</b> → upload the file under <b>Import</b>",
+  "<a href=\"https://www.google.com/maps/d/\" target=\"_blank\" rel=\"noopener\">Google 我的地图</a> → <b>创建新地图</b> → 在<b>导入</b>中上传文件",
+  "<a href=\"https://www.google.com/maps/d/\" target=\"_blank\" rel=\"noopener\">Google マイマップ</a> → <b>新しい地図を作成</b> → <b>インポート</b>でファイルをアップロード"
+ ],
+ "구글 지도 앱 <b>저장됨 → 지도</b>에서 보여요": [
+  "It shows up in the Google Maps app under <b>Saved → Maps</b>",
+  "会显示在 Google 地图 App 的<b>已保存 → 地图</b>里",
+  "Google マップアプリの<b>保存済み → マップ</b>に表示されます"
+ ],
+ "집·회사 태그는 빼기": [
+  "Leave out Home and Work tags",
+  "不导出“家”和“公司”标签",
+  "自宅・職場タグは除く"
+ ],
+ "KML 받기": [
+  "Download KML",
+  "下载 KML",
+  "KML をダウンロード"
+ ],
+ "CSV 받기": [
+  "Download CSV",
+  "下载 CSV",
+  "CSV をダウンロード"
+ ],
+ "가져온 장소를 저장하려면 오른쪽 위 <b>로그인</b>을 해 주세요. 저장하면 폰 앱에도 들어가요.": [
+  "To save imported places, <b>log in</b> at the top right. Saved places also appear in the phone app.",
+  "要保存导入的地点，请先在右上角<b>登录</b>。保存后手机 App 里也会出现。",
+  "取り込んだ場所を保存するには右上で<b>ログイン</b>してください。保存するとスマホアプリにも入ります。"
+ ],
+ "가져올 장소": [
+  "Places to import",
+  "要导入的地点",
+  "取り込む場所"
+ ],
+ "위치 못 찾은 곳 네이버로 찾기": [
+  "Find missing locations with Naver",
+  "用 Naver 查找缺少位置的地点",
+  "見つからない場所を Naver で探す"
+ ],
+ "선택한 장소 저장": [
+  "Save selected places",
+  "保存所选地点",
+  "選んだ場所を保存"
+ ],
+ "취소": [
+  "Cancel",
+  "取消",
+  "キャンセル"
+ ],
+ "모두 선택": [
+  "Select all",
+  "全选",
+  "すべて選択"
+ ],
+ "이름": [
+  "Name",
+  "名称",
+  "名前"
+ ],
+ "리스트 → 태그": [
+  "List → tag",
+  "列表 → 标签",
+  "リスト → タグ"
+ ],
+ "메모": [
+  "Note",
+  "备注",
+  "メモ"
+ ],
+ "위치": [
+  "Location",
+  "位置",
+  "位置"
+ ],
+ "로그인하면 내 계정의 기록만 보여요. 백업 파일은 이 브라우저 안에서만 열려요.": [
+  "When you log in, only your own account's records are shown. Backup files are opened only inside this browser.",
+  "登录后只显示你自己账号的记录。备份文件只在这个浏览器里打开。",
+  "ログインすると自分のアカウントの記録だけが表示されます。バックアップファイルはこのブラウザの中だけで開きます。"
+ ],
+ "제피 로그인": [
+  "Log in to Zepi",
+  "登录 Zepi",
+  "Zepi にログイン"
+ ],
+ "폰의 제피 앱 <b>설정 → 내 계정 · 클라우드</b>와 같은 계정으로 로그인하면 폰에서 올린 기록이 보여요.": [
+  "Log in with the same account as in the Zepi app (<b>Settings → My account · Cloud</b>) to see what your phone has uploaded.",
+  "用与手机 Zepi App（<b>设置 → 我的账号 · 云端</b>）相同的账号登录，就能看到手机上传的记录。",
+  "スマホの Zepi アプリ（<b>設定 → マイアカウント · クラウド</b>）と同じアカウントでログインすると、スマホからアップロードした記録が見られます。"
+ ],
+ "이메일": [
+  "Email",
+  "邮箱",
+  "メールアドレス"
+ ],
+ "비밀번호 (6자 이상)": [
+  "Password (6+ characters)",
+  "密码（至少 6 位）",
+  "パスワード（6文字以上）"
+ ],
+ "로그인": [
+  "Log in",
+  "登录",
+  "ログイン"
+ ],
+ "처음이에요 · 가입": [
+  "New here? Sign up",
+  "第一次用 · 注册",
+  "はじめて · 新規登録"
+ ],
+ "닫기": [
+  "Close",
+  "关闭",
+  "閉じる"
+ ],
+ "태그": [
+  "Tags",
+  "标签",
+  "タグ"
+ ],
+ "새 태그 (예: 뷰맛집)": [
+  "New tag (e.g. great view)",
+  "新标签（例：风景好）",
+  "新しいタグ（例：眺めがいい）"
+ ],
+ "새 태그": [
+  "New tag",
+  "新标签",
+  "新しいタグ"
+ ],
+ "추가": [
+  "Add",
+  "添加",
+  "追加"
+ ],
+ "별점": [
+  "Rating",
+  "评分",
+  "評価"
+ ],
+ "저장": [
+  "Save",
+  "保存",
+  "保存"
+ ],
+ "메모 지우기": [
+  "Delete note",
+  "删除备注",
+  "メモを削除"
+ ],
+ "{m}분": [
+  "{m} min",
+  "{m} 分钟",
+  "{m}分"
+ ],
+ "{h}시간 {m}분": [
+  "{h} h {m} min",
+  "{h} 小时 {m} 分钟",
+  "{h}時間{m}分"
+ ],
+ "{h}시간": [
+  "{h} h",
+  "{h} 小时",
+  "{h}時間"
+ ],
+ "일": [
+  "days",
+  "天",
+  "日"
+ ],
+ "곳": [
+  "places",
+  "处",
+  "か所"
+ ],
+ "{n}곳": [
+  "{n} places",
+  "{n} 处",
+  "{n}か所"
+ ],
+ "{km}km 이동": [
+  "{km} km traveled",
+  "移动 {km} km",
+  "{km}km 移動"
+ ],
+ "머문 곳 {n}곳": [
+  "{n} stops",
+  "停留 {n} 处",
+  "滞在 {n}か所"
+ ],
+ "평균 {v}km/h": [
+  "avg {v} km/h",
+  "平均 {v} km/h",
+  "平均 {v}km/h"
+ ],
+ "지금은 예시 데이터를 보여 드려요.": [
+  "For now, showing sample data.",
+  "现在先显示示例数据。",
+  "いまはサンプルデータを表示しています。"
+ ],
+ "페이지를 준비하지 못했어요. 새로고침해 주세요.": [
+  "The page couldn't load. Please refresh.",
+  "页面没能准备好，请刷新。",
+  "ページを準備できませんでした。再読み込みしてください。"
+ ],
+ "확인 링크가 만료됐거나 이미 쓰였어요. 로그인해 보시고, 안 되면 다시 가입해 주세요.": [
+  "That confirmation link has expired or was already used. Try logging in; if that fails, sign up again.",
+  "确认链接已过期或已被使用。请先尝试登录，不行的话再重新注册。",
+  "確認リンクの期限が切れたか、すでに使われています。ログインしてみて、だめなら登録し直してください。"
+ ],
+ "이메일 확인이 끝났어요. 로그인됐어요.": [
+  "Email confirmed. You're logged in.",
+  "邮箱已确认，已登录。",
+  "メールの確認が完了し、ログインしました。"
+ ],
+ "로그인 확인 중 문제가 생겼어요. 다시 로그인해 주세요.": [
+  "Something went wrong while logging you in. Please log in again.",
+  "登录确认时出了问题，请重新登录。",
+  "ログインの確認中に問題が起きました。もう一度ログインしてください。"
+ ],
+ "예시 데이터를 여는 중이에요…": [
+  "Opening sample data…",
+  "正在打开示例数据…",
+  "サンプルデータを開いています…"
+ ],
+ "제피 백업 파일이 아니에요. 앱의 <strong>설정 → 기록 백업</strong>으로 만든 <strong>.db</strong> 파일을 골라 주세요.": [
+  "That's not a Zepi backup. Choose the <strong>.db</strong> file made with <strong>Settings → Back up records</strong> in the app.",
+  "这不是 Zepi 备份文件。请选择在 App 的<strong>设置 → 备份记录</strong>中生成的 <strong>.db</strong> 文件。",
+  "Zepi のバックアップファイルではありません。アプリの<strong>設定 → 記録のバックアップ</strong>で作った <strong>.db</strong> ファイルを選んでください。"
+ ],
+ "파일을 읽지 못했어요. 앱에서 백업을 다시 만들어 주세요.": [
+  "Couldn't read the file. Please make a new backup in the app.",
+  "无法读取文件。请在 App 中重新备份。",
+  "ファイルを読めませんでした。アプリでバックアップを作り直してください。"
+ ],
+ "이 백업에는 아직 이동 기록이 없어요.": [
+  "This backup has no travel records yet.",
+  "这个备份里还没有移动记录。",
+  "このバックアップにはまだ移動の記録がありません。"
+ ],
+ "<strong>예시 데이터</strong>를 보고 있어요.": [
+  "You're looking at <strong>sample data</strong>.",
+  "你正在看<strong>示例数据</strong>。",
+  "<strong>サンプルデータ</strong>を表示しています。"
+ ],
+ "<strong>예시 데이터</strong>를 보고 있어요. 오른쪽 위 <strong>로그인</strong>을 누르면 폰에서 올린 내 기록이 보여요. 백업 파일(.db)을 열거나 끌어다 놓아도 돼요.": [
+  "You're looking at <strong>sample data</strong>. <strong>Log in</strong> at the top right to see the records your phone uploaded. You can also open or drop a backup file (.db).",
+  "你正在看<strong>示例数据</strong>。点右上角<strong>登录</strong>即可看到手机上传的记录。也可以打开或拖入备份文件（.db）。",
+  "<strong>サンプルデータ</strong>を表示しています。右上の<strong>ログイン</strong>を押すと、スマホからアップロードした記録が見られます。バックアップファイル（.db）を開くか、ドラッグしてもOKです。"
+ ],
+ "<strong>{file}</strong>을 열었어요. 지점 {n}개, {from}부터 {to}까지예요.": [
+  "Opened <strong>{file}</strong>: {n} points from {from} to {to}.",
+  "已打开 <strong>{file}</strong>：共 {n} 个点，{from} 至 {to}。",
+  "<strong>{file}</strong> を開きました。{n} 地点、{from}〜{to}。"
+ ],
+ "내 백업": [
+  "my backup",
+  "我的备份",
+  "マイバックアップ"
+ ],
+ "<strong>{file}</strong>을 여는 중이에요…": [
+  "Opening <strong>{file}</strong>…",
+  "正在打开 <strong>{file}</strong>…",
+  "<strong>{file}</strong> を開いています…"
+ ],
+ "파일을 읽지 못했어요.": [
+  "Couldn't read the file.",
+  "无法读取文件。",
+  "ファイルを読めませんでした。"
+ ],
+ "이메일이나 비밀번호가 맞지 않아요.": [
+  "The email or password is incorrect.",
+  "邮箱或密码不正确。",
+  "メールアドレスかパスワードが違います。"
+ ],
+ "메일함에서 확인 링크를 먼저 눌러 주세요.": [
+  "Please click the confirmation link in your inbox first.",
+  "请先点击邮箱里的确认链接。",
+  "先にメールの確認リンクを押してください。"
+ ],
+ "이미 가입한 이메일이에요. 로그인해 주세요.": [
+  "This email is already registered. Please log in.",
+  "这个邮箱已注册，请直接登录。",
+  "このメールアドレスは登録済みです。ログインしてください。"
+ ],
+ "비밀번호를 6자 이상으로 정해 주세요.": [
+  "Please use a password of at least 6 characters.",
+  "请设置至少 6 位的密码。",
+  "パスワードは6文字以上にしてください。"
+ ],
+ "요청이 많아요. 잠시 뒤에 다시 해 주세요.": [
+  "Too many requests. Please try again in a moment.",
+  "请求太多，请稍后再试。",
+  "リクエストが多すぎます。少し待ってからもう一度お試しください。"
+ ],
+ "이메일 주소를 확인해 주세요.": [
+  "Please check the email address.",
+  "请检查邮箱地址。",
+  "メールアドレスを確認してください。"
+ ],
+ "로그인 오류": [
+  "Login error",
+  "登录错误",
+  "ログインエラー"
+ ],
+ "로그인이 필요해요.": [
+  "Please log in.",
+  "需要登录。",
+  "ログインが必要です。"
+ ],
+ "로그인이 풀렸어요. 다시 로그인해 주세요.": [
+  "You were logged out. Please log in again.",
+  "登录已失效，请重新登录。",
+  "ログインが切れました。もう一度ログインしてください。"
+ ],
+ "서버 오류": [
+  "Server error",
+  "服务器错误",
+  "サーバーエラー"
+ ],
+ "비밀번호는 6자 이상이에요.": [
+  "Passwords are at least 6 characters.",
+  "密码至少 6 位。",
+  "パスワードは6文字以上です。"
+ ],
+ "로그아웃했어요. 지금은 예시 데이터를 보고 있어요.": [
+  "Logged out. You're now looking at sample data.",
+  "已退出登录，现在显示的是示例数据。",
+  "ログアウトしました。いまはサンプルデータを表示しています。"
+ ],
+ "로그인하는 중이에요…": [
+  "Logging in…",
+  "正在登录…",
+  "ログインしています…"
+ ],
+ "가입하는 중이에요…": [
+  "Signing up…",
+  "正在注册…",
+  "登録しています…"
+ ],
+ "확인 메일을 보냈어요. 메일의 링크를 누르면 이 페이지로 돌아와 로그인돼요.": [
+  "We sent a confirmation email. Click the link in it to come back here, logged in.",
+  "确认邮件已发送。点邮件里的链接就会回到这里并自动登录。",
+  "確認メールを送りました。メールのリンクを押すと、このページに戻ってログインされます。"
+ ],
+ "로그아웃": [
+  "Log out",
+  "退出登录",
+  "ログアウト"
+ ],
+ "내 기록 보기": [
+  "My records",
+  "查看我的记录",
+  "自分の記録を見る"
+ ],
+ "새로고침": [
+  "Refresh",
+  "刷新",
+  "更新"
+ ],
+ "클라우드에서 내 기록을 불러오는 중이에요…": [
+  "Loading your records from the cloud…",
+  "正在从云端读取你的记录…",
+  "クラウドから記録を読み込んでいます…"
+ ],
+ "클라우드에서 불러오는 중이에요… {n}일": [
+  "Loading from the cloud… {n} days",
+  "正在从云端读取… {n} 天",
+  "クラウドから読み込み中… {n}日分"
+ ],
+ "<strong>{email}</strong>으로 로그인했어요. 아직 올라온 기록이 없어요. 폰의 제피 앱 <strong>설정 → 내 계정 · 클라우드</strong>에서 같은 계정으로 로그인하면 자동으로 올라와요.": [
+  "Logged in as <strong>{email}</strong>. No records have been uploaded yet. Log in with the same account in the Zepi app under <strong>Settings → My account · Cloud</strong> and they'll upload automatically.",
+  "已用 <strong>{email}</strong> 登录。还没有上传的记录。在手机 Zepi App 的<strong>设置 → 我的账号 · 云端</strong>用同一账号登录后会自动上传。",
+  "<strong>{email}</strong> でログインしました。まだアップロードされた記録がありません。スマホの Zepi アプリの<strong>設定 → マイアカウント · クラウド</strong>で同じアカウントにログインすると自動でアップロードされます。"
+ ],
+ "<strong>{email}</strong> 계정의 기록이에요. {from}부터 {to}까지, {n}일. 장소 메모는 여기서 고치면 폰에도 반영돼요.": [
+  "Records for <strong>{email}</strong>: {from} to {to}, {n} days. Place notes you edit here also update on your phone.",
+  "<strong>{email}</strong> 的记录：{from} 至 {to}，共 {n} 天。在这里修改地点备注，手机上也会同步。",
+  "<strong>{email}</strong> の記録です。{from}〜{to}、{n}日分。ここで場所メモを直すとスマホにも反映されます。"
+ ],
+ "클라우드에서 불러오지 못했어요.": [
+  "Couldn't load from the cloud.",
+  "无法从云端读取。",
+  "クラウドから読み込めませんでした。"
+ ],
+ "정복한 시군구": [
+  "Districts conquered",
+  "已征服市郡区",
+  "制覇した市郡区"
+ ],
+ "다닌 시군구": [
+  "Districts visited",
+  "去过的市郡区",
+  "訪れた市郡区"
+ ],
+ "이동 거리": [
+  "Distance",
+  "移动距离",
+  "移動距離"
+ ],
+ "여행 중": [
+  "traveling",
+  "旅行中",
+  "旅行中"
+ ],
+ "이전 달": [
+  "Previous month",
+  "上个月",
+  "前の月"
+ ],
+ "다음 달": [
+  "Next month",
+  "下个月",
+  "次の月"
+ ],
+ "기록 없음": [
+  "no records",
+  "无记录",
+  "記録なし"
+ ],
+ "이날은 머문 곳이나 이동이 잡히지 않았어요.": [
+  "No stops or trips were detected on this day.",
+  "这一天没有检测到停留或移动。",
+  "この日は滞在や移動が見つかりませんでした。"
+ ],
+ "이름 모르는 곳": [
+  "Unnamed place",
+  "未知地点",
+  "名前のない場所"
+ ],
+ "메모 고치기": [
+  "Edit note",
+  "修改备注",
+  "メモを編集"
+ ],
+ "메모 남기기": [
+  "Add note",
+  "添加备注",
+  "メモを残す"
+ ],
+ "정복 {n}일 · 처음 {first}": [
+  "Conquered {n} days · first {first}",
+  "征服 {n} 天 · 首次 {first}",
+  "制覇 {n}日 · 初回 {first}"
+ ],
+ "마지막 {last}": [
+  "last {last}",
+  "最近 {last}",
+  "最後 {last}"
+ ],
+ "사는 곳": [
+  "Where you live",
+  "居住地",
+  "住んでいる場所"
+ ],
+ "직접 표시한 곳": [
+  "Marked by hand",
+  "手动标记的地方",
+  "手動で記録した場所"
+ ],
+ "지나가기만 했어요": [
+  "Only passed through",
+  "只是路过",
+  "通過しただけ"
+ ],
+ "아직 안 가봤어요": [
+  "Not visited yet",
+  "还没去过",
+  "まだ行っていません"
+ ],
+ "새로 정복": [
+  "Newly conquered",
+  "新征服",
+  "新しく制覇"
+ ],
+ "{year}년 달마다 이동한 거리": [
+  "Distance by month in {year}",
+  "{year} 年每月移动距离",
+  "{year}年の月別移動距離"
+ ],
+ "머문 곳이 아직 없어요.": [
+  "No stops yet.",
+  "还没有停留的地方。",
+  "まだ滞在した場所がありません。"
+ ],
+ "{year}년에 새로 정복한 곳은 아직 없어요.": [
+  "No new districts conquered in {year} yet.",
+  "{year} 年还没有新征服的地方。",
+  "{year}年に新しく制覇した場所はまだありません。"
+ ],
+ "하루 화면의 타임라인에서 머문 곳의 <b>메모 남기기</b>를 누르거나, 앱에서 태그·메모를 남기면 여기에 모여요.": [
+  "Press <b>Add note</b> on a stop in the Day timeline, or add tags and notes in the app, and they'll gather here.",
+  "在“单日”时间线的停留点上点<b>添加备注</b>，或在 App 里添加标签和备注，就会汇集在这里。",
+  "「1日」タイムラインの滞在先で<b>メモを残す</b>を押すか、アプリでタグやメモを残すとここに集まります。"
+ ],
+ "앱에서 장소에 태그나 메모를 남기면 여기에 모여요.": [
+  "Tags and notes you add to places in the app gather here.",
+  "在 App 里给地点加的标签和备注会汇集在这里。",
+  "アプリで場所に残したタグやメモがここに集まります。"
+ ],
+ "별점 {n}점": [
+  "{n}-star rating",
+  "{n} 星",
+  "評価 {n}"
+ ],
+ "다녀온 날 {n}일 · 마지막 {last}": [
+  "Visited {n} days · last {last}",
+  "去过 {n} 天 · 最近 {last}",
+  "訪問 {n}日 · 最後 {last}"
+ ],
+ "기록에 남은 방문 없음": [
+  "No visits on record",
+  "记录中没有到访",
+  "記録に訪問なし"
+ ],
+ "그날 지도 보기": [
+  "View that day's map",
+  "查看当天地图",
+  "その日の地図を見る"
+ ],
+ "고치기": [
+  "Edit",
+  "修改",
+  "編集"
+ ],
+ "메모를 지웠어요. 폰에는 다음에 앱을 열 때 반영돼요.": [
+  "Note deleted. Your phone will update the next time you open the app.",
+  "备注已删除。下次打开手机 App 时会同步。",
+  "メモを削除しました。次にアプリを開いたときスマホにも反映されます。"
+ ],
+ "저장했어요. 폰에는 다음에 앱을 열 때 반영돼요.": [
+  "Saved. Your phone will update the next time you open the app.",
+  "已保存。下次打开手机 App 时会同步。",
+  "保存しました。次にアプリを開いたときスマホにも反映されます。"
+ ],
+ "저장하는 중이에요…": [
+  "Saving…",
+  "正在保存…",
+  "保存しています…"
+ ],
+ "저장하지 못했어요.": [
+  "Couldn't save.",
+  "保存失败。",
+  "保存できませんでした。"
+ ],
+ "장소": [
+  "Place",
+  "地点",
+  "場所"
+ ],
+ "장소 메모 {n}곳을 내보내요.": [
+  "Exports {n} place notes.",
+  "将导出 {n} 条地点备注。",
+  "場所メモ {n}件を書き出します。"
+ ],
+ "(지금은 예시 데이터예요)": [
+  "(this is sample data right now)",
+  "（当前是示例数据）",
+  "（いまはサンプルデータです）"
+ ],
+ "내보낼 장소 메모가 없어요.": [
+  "No place notes to export.",
+  "没有可导出的地点备注。",
+  "書き出す場所メモがありません。"
+ ],
+ "제피 장소 메모": [
+  "Zepi place notes",
+  "Zepi 地点备注",
+  "Zepi 場所メモ"
+ ],
+ "위도": [
+  "Latitude",
+  "纬度",
+  "緯度"
+ ],
+ "경도": [
+  "Longitude",
+  "经度",
+  "経度"
+ ],
+ "좌표 있음": [
+  "Has coordinates",
+  "有坐标",
+  "座標あり"
+ ],
+ "네이버에서 찾음": [
+  "Found on Naver",
+  "已在 Naver 找到",
+  "Naver で発見"
+ ],
+ "못 찾음": [
+  "Not found",
+  "未找到",
+  "見つからず"
+ ],
+ "위치 없음": [
+  "No location",
+  "无位置",
+  "位置なし"
+ ],
+ "{name} 선택": [
+  "Select {name}",
+  "选择 {name}",
+  "{name} を選択"
+ ],
+ "모두 {n}곳": [
+  "{n} total",
+  "共 {n} 处",
+  "全 {n}か所"
+ ],
+ "위치 있음 {n}곳": [
+  "{n} with location",
+  "有位置 {n} 处",
+  "位置あり {n}か所"
+ ],
+ "위치 찾을 곳 {n}곳": [
+  "{n} to locate",
+  "待查找位置 {n} 处",
+  "位置を探す {n}か所"
+ ],
+ "못 찾음 {n}곳": [
+  "{n} not found",
+  "未找到 {n} 处",
+  "見つからず {n}か所"
+ ],
+ "선택 {n}곳": [
+  "{n} selected",
+  "已选 {n} 处",
+  "選択 {n}か所"
+ ],
+ "압축 풀기 도구를 불러오지 못했어요": [
+  "Couldn't load the unzip tool",
+  "无法加载解压工具",
+  "解凍ツールを読み込めませんでした"
+ ],
+ "구글 파일을 읽는 중이에요…": [
+  "Reading the Google file…",
+  "正在读取 Google 文件…",
+  "Google のファイルを読んでいます…"
+ ],
+ "가져올 장소를 찾지 못했어요. 테이크아웃에서 <strong>저장됨</strong>과 <strong>지도(내 장소)</strong>를 골랐는지 확인해 주세요.": [
+  "No places found to import. Check that you chose <strong>Saved</strong> and <strong>Maps (your places)</strong> in Takeout.",
+  "没有找到可导入的地点。请确认在 Takeout 中选择了<strong>已保存</strong>和<strong>地图（您的地点）</strong>。",
+  "取り込める場所が見つかりませんでした。Takeout で<strong>保存済み</strong>と<strong>マップ（マイプレイス）</strong>を選んだか確認してください。"
+ ],
+ "구글에서 {n}곳을 읽었어요. 아래 목록을 확인하고 저장해 주세요.": [
+  "Read {n} places from Google. Check the list below, then save.",
+  "已从 Google 读取 {n} 个地点。请确认下面的列表后保存。",
+  "Google から {n}か所を読み込みました。下のリストを確認して保存してください。"
+ ],
+ "구글 지도에서 가져올 장소": [
+  "Places to import from Google Maps",
+  "要从 Google 地图导入的地点",
+  "Google マップから取り込む場所"
+ ],
+ "찾는 중 {done}/{total}": [
+  "searching {done}/{total}",
+  "查找中 {done}/{total}",
+  "検索中 {done}/{total}"
+ ],
+ "네이버 장소 검색으로 {total}곳 중 {hit}곳을 찾았어요. 이름이 비슷한 다른 곳일 수 있으니 목록을 한번 봐 주세요.": [
+  "Naver place search found {hit} of {total} places. Some may be a different place with a similar name, so please check the list.",
+  "Naver 地点搜索在 {total} 个中找到了 {hit} 个。可能有名字相近的其他地点，请检查一下列表。",
+  "Naver の場所検索で {total}か所中 {hit}か所が見つかりました。名前の似た別の場所の場合もあるので、リストを確認してください。"
+ ],
+ "위치 찾기를 멈췄어요.": [
+  "Stopped looking up locations.",
+  "已停止查找位置。",
+  "位置の検索を止めました。"
+ ],
+ "네이버 리스트를 불러오려면 먼저 로그인해 주세요.": [
+  "Please log in first to load a Naver list.",
+  "读取 Naver 列表前请先登录。",
+  "Naver のリストを読み込むには先にログインしてください。"
+ ],
+ "네이버 리스트를 불러오는 중이에요…": [
+  "Loading the Naver list…",
+  "正在读取 Naver 列表…",
+  "Naver のリストを読み込んでいます…"
+ ],
+ "네이버 리스트": [
+  "Naver list",
+  "Naver 列表",
+  "Naver リスト"
+ ],
+ "리스트에 장소가 없어요.": [
+  "The list has no places.",
+  "列表里没有地点。",
+  "リストに場所がありません。"
+ ],
+ "네이버 리스트 <strong>{list}</strong>에서 {n}곳을 읽었어요.": [
+  "Read {n} places from the Naver list <strong>{list}</strong>.",
+  "已从 Naver 列表 <strong>{list}</strong> 读取 {n} 个地点。",
+  "Naver リスト <strong>{list}</strong> から {n}か所を読み込みました。"
+ ],
+ "네이버 지도에서 가져올 장소": [
+  "Places to import from Naver Map",
+  "要从 Naver 地图导入的地点",
+  "Naver マップから取り込む場所"
+ ],
+ "{n}곳을 장소 메모로 저장했어요. 리스트 이름이 태그로 붙었어요. 폰 앱에는 다음에 앱을 열 때 들어가요.": [
+  "Saved {n} places as place notes, tagged with their list names. They'll appear in the phone app the next time you open it.",
+  "已将 {n} 个地点保存为地点备注，并以列表名称作为标签。下次打开手机 App 时会出现。",
+  "{n}か所を場所メモとして保存し、リスト名をタグとして付けました。次にアプリを開いたときスマホにも入ります。"
+ ],
+ "캠핑지": [
+  "Campsite",
+  "露营地",
+  "キャンプ場"
+ ],
+ "숙박": [
+  "Lodging",
+  "住宿",
+  "宿泊"
+ ],
+ "낚시 포인트": [
+  "Fishing spot",
+  "钓点",
+  "釣りポイント"
+ ],
+ "먹거리": [
+  "Food",
+  "美食",
+  "グルメ"
+ ],
+ "마실거리": [
+  "Drinks & cafés",
+  "饮品咖啡",
+  "カフェ・ドリンク"
+ ],
+ "문화생활": [
+  "Culture",
+  "文化生活",
+  "カルチャー"
+ ],
+ "다시 갈 곳": [
+  "Go again",
+  "还想再去",
+  "また行きたい"
+ ],
+ "집": [
+  "Home",
+  "家",
+  "自宅"
+ ],
+ "회사": [
+  "Work",
+  "公司",
+  "職場"
+ ],
+ "태그 없음": [
+  "No tag",
+  "无标签",
+  "タグなし"
+ ],
+ "가고 싶은 곳": [
+  "Want to go",
+  "想去的地方",
+  "行きたい場所"
+ ],
+ "즐겨찾기": [
+  "Favorites",
+  "收藏",
+  "お気に入り"
+ ],
+ "별표": [
+  "Starred",
+  "星标",
+  "スター付き"
+ ],
+ "깃발": [
+  "Flagged",
+  "旗标",
+  "旗"
+ ],
+ "여행 계획": [
+  "Travel plans",
+  "旅行计划",
+  "旅行プラン"
+ ],
+ "강원특별자치도": [
+  "Gangwon",
+  "江原特别自治道",
+  "江原特別自治道"
+ ],
+ "경기도": [
+  "Gyeonggi",
+  "京畿道",
+  "京畿道"
+ ],
+ "경상남도": [
+  "South Gyeongsang",
+  "庆尚南道",
+  "慶尚南道"
+ ],
+ "경상북도": [
+  "North Gyeongsang",
+  "庆尚北道",
+  "慶尚北道"
+ ],
+ "대구광역시": [
+  "Daegu",
+  "大邱广域市",
+  "大邱広域市"
+ ],
+ "대전광역시": [
+  "Daejeon",
+  "大田广域市",
+  "大田広域市"
+ ],
+ "부산광역시": [
+  "Busan",
+  "釜山广域市",
+  "釜山広域市"
+ ],
+ "서울특별시": [
+  "Seoul",
+  "首尔特别市",
+  "ソウル特別市"
+ ],
+ "세종특별자치시": [
+  "Sejong",
+  "世宗特别自治市",
+  "世宗特別自治市"
+ ],
+ "울산광역시": [
+  "Ulsan",
+  "蔚山广域市",
+  "蔚山広域市"
+ ],
+ "인천광역시": [
+  "Incheon",
+  "仁川广域市",
+  "仁川広域市"
+ ],
+ "전남광주통합특별시": [
+  "Jeonnam-Gwangju",
+  "全南光州统合特别市",
+  "全南光州統合特別市"
+ ],
+ "전북특별자치도": [
+  "Jeonbuk",
+  "全北特别自治道",
+  "全北特別自治道"
+ ],
+ "제주특별자치도": [
+  "Jeju",
+  "济州特别自治道",
+  "済州特別自治道"
+ ],
+ "충청남도": [
+  "South Chungcheong",
+  "忠清南道",
+  "忠清南道"
+ ],
+ "충청북도": [
+  "North Chungcheong",
+  "忠清北道",
+  "忠清北道"
+ ],
+ "제피 베타 신청": [
+  "Zepi Beta Sign-up",
+  "Zepi 内测申请",
+  "Zepi ベータ申し込み"
+ ],
+ "제피 베타 테스터 모집": [
+  "Zepi is looking for beta testers",
+  "Zepi 招募内测用户",
+  "Zepi ベータテスター募集"
+ ],
+ "J 같은 P의 여행": [
+  "Travel like a planner, even if you're spontaneous",
+  "随性的人，也能像计划派一样旅行",
+  "気ままな人でも、計画派みたいに旅をする"
+ ],
+ "제피가 하는 일": [
+  "What Zepi does",
+  "Zepi 能做什么",
+  "Zepi でできること"
+ ],
+ "다닌 길이 저절로 지도에": [
+  "Your routes, mapped automatically",
+  "走过的路自动画到地图上",
+  "歩いた道が自動で地図に"
+ ],
+ "켜두면 하루 종일 조용히 기록해요. \"여기 왔었나?\"도 바로 찾아요.": [
+  "Leave it on and it quietly records all day. \"Have I been here before?\" — find out instantly.",
+  "开着就会全天安静记录。“我来过这里吗？”也能马上查到。",
+  "オンにしておけば一日中静かに記録します。「ここ来たことあったっけ？」もすぐわかります。"
+ ],
+ "전국 230개 시군구 정복": [
+  "Conquer all 230 districts of Korea",
+  "征服韩国全部 230 个市郡区",
+  "韓国全国230の市郡区を制覇"
+ ],
+ "사진첩 위치만으로 예전 여행까지 한 번에 칠해져요.": [
+  "Your photo locations color in past trips in one go.",
+  "只用相册里的位置，就能一次补上以前的旅行。",
+  "写真の位置情報だけで、昔の旅行まで一気に塗れます。"
+ ],
+ "떠나기 전엔 한 화면에": [
+  "Everything on one screen before you go",
+  "出发前一屏看全",
+  "出発前は1画面ですべて"
+ ],
+ "날씨·물때·길 막히는 시간, 휴양림·야영장 예약 오픈일까지.": [
+  "Weather, tides, traffic times, and when forest cabins and campsites open for booking.",
+  "天气、潮汐、堵车时段，连自然休养林和露营地的开放预订日都有。",
+  "天気・潮汐・渋滞時間から、休養林やキャンプ場の予約開始日まで。"
+ ],
+ "쓰는 폰": [
+  "Your phone",
+  "你用的手机",
+  "使っているスマホ"
+ ],
+ "TestFlight로 설치": [
+  "Install via TestFlight",
+  "通过 TestFlight 安装",
+  "TestFlight でインストール"
+ ],
+ "갤럭시 · 안드로이드": [
+  "Galaxy · Android",
+  "Galaxy · 安卓",
+  "Galaxy · Android"
+ ],
+ "초대 메일로 설치": [
+  "Install from invite email",
+  "通过邀请邮件安装",
+  "招待メールからインストール"
+ ],
+ "Play 스토어로 설치": [
+  "Install via Play Store",
+  "通过 Play 商店安装",
+  "Play ストアでインストール"
+ ],
+ "초대 메일을 이 주소로 보내드려요.": [
+  "We'll send the invite to this address.",
+  "邀请邮件会发到这个地址。",
+  "このアドレスに招待メールを送ります。"
+ ],
+ "이름 또는 별명 <span style=\"font-weight:400;color:var(--muted)\">(선택)</span>": [
+  "Name or nickname <span style=\"font-weight:400;color:var(--muted)\">(optional)</span>",
+  "姓名或昵称 <span style=\"font-weight:400;color:var(--muted)\">（选填）</span>",
+  "名前またはニックネーム <span style=\"font-weight:400;color:var(--muted)\">（任意）</span>"
+ ],
+ "어떻게 알게 되셨어요? <span style=\"font-weight:400;color:var(--muted)\">(선택)</span>": [
+  "How did you hear about us? <span style=\"font-weight:400;color:var(--muted)\">(optional)</span>",
+  "你是怎么知道我们的？<span style=\"font-weight:400;color:var(--muted)\">（选填）</span>",
+  "どこで知りましたか？<span style=\"font-weight:400;color:var(--muted)\">（任意）</span>"
+ ],
+ "친구 소개, 캠핑 카페 등": [
+  "A friend, a camping forum, etc.",
+  "朋友介绍、露营社群等",
+  "友だちの紹介、キャンプのコミュニティなど"
+ ],
+ "베타 초대와 안내 메일을 받기 위해 이메일을 보관하는 데 동의해요. 베타가 끝나면 지워요.": [
+  "I agree to my email being kept to receive beta invites and updates. It will be deleted when the beta ends.",
+  "我同意保存邮箱用于接收内测邀请和通知。内测结束后会删除。",
+  "ベータの招待と案内を受け取るため、メールアドレスの保管に同意します。ベータ終了後に削除します。"
+ ],
+ "베타 신청하기": [
+  "Join the beta",
+  "申请内测",
+  "ベータに申し込む"
+ ],
+ "신청됐어요 🎉": [
+  "You're signed up 🎉",
+  "申请成功 🎉",
+  "申し込み完了 🎉"
+ ],
+ "구글 계정 이메일 (Gmail)": [
+  "Google account email (Gmail)",
+  "Google 账号邮箱（Gmail）",
+  "Google アカウントのメール（Gmail）"
+ ],
+ "Play 스토어에 쓰는 구글 계정 (Gmail)": [
+  "The Google account you use on Play Store (Gmail)",
+  "Play 商店使用的 Google 账号（Gmail）",
+  "Play ストアで使う Google アカウント（Gmail）"
+ ],
+ "Apple ID 이메일": [
+  "Apple ID email",
+  "Apple ID 邮箱",
+  "Apple ID のメール"
+ ],
+ "몇 분 안에 이 주소로 설치 초대 메일이 가요. 갤럭시에 로그인한 구글 계정이면 가장 편해요.": [
+  "An install invite will arrive at this address within a few minutes. The Google account signed in on your Galaxy works best.",
+  "几分钟内安装邀请会发到这个地址。用 Galaxy 手机上登录的 Google 账号最方便。",
+  "数分以内にこのアドレスにインストールの招待メールが届きます。Galaxy にログインしている Google アカウントがいちばん簡単です。"
+ ],
+ "갤럭시에서 Play 스토어에 로그인한 그 구글 계정이어야 설치돼요.": [
+  "It must be the same Google account signed in to Play Store on your Galaxy.",
+  "必须是 Galaxy 上登录 Play 商店的那个 Google 账号才能安装。",
+  "Galaxy の Play ストアにログインしている Google アカウントでないとインストールできません。"
+ ],
+ "TestFlight 초대 메일을 이 주소로 보내드려요.": [
+  "We'll send the TestFlight invite to this address.",
+  "TestFlight 邀请邮件会发到这个地址。",
+  "このアドレスに TestFlight の招待メールを送ります。"
+ ],
+ "쓰는 폰을 골라 주세요.": [
+  "Please choose your phone.",
+  "请选择你的手机。",
+  "スマホを選んでください。"
+ ],
+ "Gmail이 아니어도 되지만, 그 주소로 구글 계정에 로그인할 수 있어야 설치가 편해요. 이대로 신청할까요?": [
+  "It doesn't have to be Gmail, but installing is easiest if you can sign in to a Google account with that address. Sign up with it anyway?",
+  "不一定是 Gmail，但能用这个地址登录 Google 账号的话安装会更方便。就用这个地址申请吗？",
+  "Gmail でなくても大丈夫ですが、そのアドレスで Google アカウントにログインできるとインストールが簡単です。このまま申し込みますか？"
+ ],
+ "Play 스토어 계정이 Gmail이 아니어도 괜찮아요. 다만 Play 스토어에 로그인한 바로 그 계정이어야 해요. 이대로 신청할까요?": [
+  "Your Play Store account doesn't have to be Gmail, but it must be the exact account signed in to Play Store. Sign up with it anyway?",
+  "Play 商店账号不一定是 Gmail，但必须是登录 Play 商店的那个账号。就用这个地址申请吗？",
+  "Play ストアのアカウントは Gmail でなくても大丈夫ですが、Play ストアにログインしているそのアカウントである必要があります。このまま申し込みますか？"
+ ],
+ "이메일 보관에 동의해 주세요.": [
+  "Please agree to us keeping your email.",
+  "请同意保存邮箱。",
+  "メールアドレスの保管に同意してください。"
+ ],
+ "보내는 중…": [
+  "Sending…",
+  "提交中…",
+  "送信中…"
+ ],
+ "신청이 안 됐어요. 잠시 뒤 다시 해 주세요. (": [
+  "Sign-up didn't go through. Please try again shortly. (",
+  "申请没有成功，请稍后再试。（",
+  "申し込めませんでした。少ししてからもう一度お試しください。（"
+ ],
+ "<p>아이폰은 애플의 <b>TestFlight</b> 앱으로 설치해요.</p><ol>": [
+  "<p>On iPhone, you install with Apple's <b>TestFlight</b> app.</p><ol>",
+  "<p>iPhone 通过苹果的 <b>TestFlight</b> App 安装。</p><ol>",
+  "<p>iPhone は Apple の <b>TestFlight</b> アプリでインストールします。</p><ol>"
+ ],
+ "<li>App Store에서 <b>TestFlight</b> 앱을 받아요.</li>": [
+  "<li>Get the <b>TestFlight</b> app from the App Store.</li>",
+  "<li>在 App Store 下载 <b>TestFlight</b>。</li>",
+  "<li>App Store で <b>TestFlight</b> アプリを入手します。</li>"
+ ],
+ "<li>아래 버튼을 누르고 \"설치\"를 눌러요.</li>": [
+  "<li>Tap the button below, then tap \"Install\".</li>",
+  "<li>点下面的按钮，再点“安装”。</li>",
+  "<li>下のボタンを押して「インストール」を押します。</li>"
+ ],
+ "<li>초대 메일이 오면 메일 속 링크를 눌러요.</li>": [
+  "<li>When the invite email arrives, tap the link in it.</li>",
+  "<li>收到邀请邮件后，点邮件里的链接。</li>",
+  "<li>招待メールが届いたら、メールのリンクを押します。</li>"
+ ],
+ "<li>새 버전이 나오면 TestFlight가 알려줘요.</li></ol>": [
+  "<li>TestFlight will let you know when a new version is out.</li></ol>",
+  "<li>有新版本时 TestFlight 会通知你。</li></ol>",
+  "<li>新しいバージョンが出ると TestFlight が知らせてくれます。</li></ol>"
+ ],
+ "<p>갤럭시는 <b>Firebase 초대 메일</b>로 설치해요.</p><ol>": [
+  "<p>On Galaxy, you install from a <b>Firebase invite email</b>.</p><ol>",
+  "<p>Galaxy 通过 <b>Firebase 邀请邮件</b>安装。</p><ol>",
+  "<p>Galaxy は <b>Firebase の招待メール</b>からインストールします。</p><ol>"
+ ],
+ "<li>몇 분 안에 <b>Firebase App Distribution</b>에서 초대 메일이 와요. 안 보이면 스팸함도 봐 주세요.</li>": [
+  "<li>Within a few minutes an invite arrives from <b>Firebase App Distribution</b>. If you don't see it, check spam.</li>",
+  "<li>几分钟内会收到 <b>Firebase App Distribution</b> 的邀请邮件。没看到的话请查看垃圾邮件。</li>",
+  "<li>数分以内に <b>Firebase App Distribution</b> から招待メールが届きます。見当たらなければ迷惑メールも確認してください。</li>"
+ ],
+ "<li>갤럭시에서 메일을 열고 <b>시작하기</b>를 눌러 초대를 받아요.</li>": [
+  "<li>Open the email on your Galaxy and tap <b>Get started</b> to accept.</li>",
+  "<li>在 Galaxy 上打开邮件，点<b>开始使用</b>接受邀请。</li>",
+  "<li>Galaxy でメールを開き、<b>使ってみる</b>を押して招待を受け取ります。</li>"
+ ],
+ "<li>안내대로 제피를 내려받아 설치해요. \"출처를 알 수 없는 앱\" 허용을 물으면 허용해 주세요.</li>": [
+  "<li>Follow the steps to download and install Zepi. If asked to allow \"unknown apps\", allow it.</li>",
+  "<li>按提示下载并安装 Zepi。如果询问是否允许“未知来源应用”，请允许。</li>",
+  "<li>案内どおりに Zepi をダウンロードしてインストールします。「不明なアプリ」の許可を求められたら許可してください。</li>"
+ ],
+ "<li>새 버전이 나오면 메일로 알려드려요.</li></ol>": [
+  "<li>We'll email you when a new version is out.</li></ol>",
+  "<li>有新版本时会发邮件通知你。</li></ol>",
+  "<li>新しいバージョンが出たらメールでお知らせします。</li></ol>"
+ ],
+ "<p>갤럭시는 <b>Play 스토어 비공개 테스트</b>로 설치해요.</p><ol>": [
+  "<p>On Galaxy, you install through the <b>Play Store closed test</b>.</p><ol>",
+  "<p>Galaxy 通过 <b>Play 商店封闭测试</b>安装。</p><ol>",
+  "<p>Galaxy は <b>Play ストアのクローズドテスト</b>でインストールします。</p><ol>"
+ ],
+ "<li>테스터 명단에 넣고 메일로 알려드려요 (하루 이틀 걸려요).</li>": [
+  "<li>We'll add you to the tester list and email you (takes a day or two).</li>",
+  "<li>我们会把你加入测试名单并发邮件通知（需要一两天）。</li>",
+  "<li>テスター名簿に追加してメールでお知らせします（1〜2日かかります）。</li>"
+ ],
+ "<li>그다음 아래 버튼에서 <b>\"테스터 되기\"</b>를 눌러요.</li>": [
+  "<li>Then tap <b>\"Become a tester\"</b> with the button below.</li>",
+  "<li>然后用下面的按钮点<b>“成为测试人员”</b>。</li>",
+  "<li>そのあと下のボタンから<b>「テスターになる」</b>を押します。</li>"
+ ],
+ "<li>메일 속 링크에서 <b>\"테스터 되기\"</b>를 눌러요.</li>": [
+  "<li>In the email link, tap <b>\"Become a tester\"</b>.</li>",
+  "<li>在邮件链接中点<b>“成为测试人员”</b>。</li>",
+  "<li>メールのリンクで<b>「テスターになる」</b>を押します。</li>"
+ ],
+ "<li>Play 스토어에서 제피를 설치해요.</li>": [
+  "<li>Install Zepi from the Play Store.</li>",
+  "<li>在 Play 商店安装 Zepi。</li>",
+  "<li>Play ストアで Zepi をインストールします。</li>"
+ ],
+ "<li><b>2주 동안 지우지 말고 가끔 열어 주세요.</b> 정식 출시 조건이에요 🙏</li></ol>": [
+  "<li><b>Please keep it for 2 weeks and open it now and then.</b> It's required for the official launch 🙏</li></ol>",
+  "<li><b>请保留两周并偶尔打开。</b>这是正式上架的条件 🙏</li></ol>",
+  "<li><b>2週間は消さずに、ときどき開いてください。</b>正式リリースの条件なんです 🙏</li></ol>"
+ ],
+ "테스터 되기": [
+  "Become a tester",
+  "成为测试人员",
+  "テスターになる"
+ ],
+ "TestFlight로 설치하기": [
+  "Install with TestFlight",
+  "用 TestFlight 安装",
+  "TestFlight でインストール"
+ ]
+}

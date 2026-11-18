@@ -2,6 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
+<script src="i18n.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>제피 웹</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -210,6 +211,7 @@ dialog.dlg::backdrop { background: rgb(10 20 14 / .45); }
 .ptable td.st { white-space: nowrap; font-size: 12px; }
 .st-ok { color: var(--leaf); } .st-found { color: var(--leaf); } .st-miss { color: var(--pepper); }
 .ptable td .sub { color: var(--muted); font-size: 12px; }
+.langsel { padding: 0 10px; appearance: auto; }
 footer { color: var(--muted); font-size: 12px; text-align: center; padding-top: 8px; }
 .loading { padding: 60px 16px; text-align: center; color: var(--muted); }
 
@@ -274,6 +276,7 @@ body { margin: 0; }
       <input type="file" id="file" accept=".db,application/octet-stream">
       <button class="btn" id="sampleBtn" type="button" hidden>예시 다시 보기</button>
       <a class="btn" href="beta.html">베타 신청</a>
+      <select class="btn langsel" id="langSel" aria-label="언어 · Language"></select>
       <div class="acct" id="acct"></div>
     </div>
   </header>
@@ -305,7 +308,7 @@ body { margin: 0; }
                 <button class="iconbtn" id="nextDay" type="button" aria-label="다음 기록한 날"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
               </div>
               <div class="cal" id="cal"></div>
-              <div class="legend"><span><i style="background:var(--leaf)"></i>기록한 날</span><span><i style="background:var(--pepper);border-radius:3px;width:12px"></i>집 밖에서 잔 날</span></div>
+              <div class="legend"><span><i style="background:var(--leaf)"></i>기록한 날</span><span><i style="background:var(--pepper);border-radius:3px;width:12px"></i>여행한 날</span></div>
             </div>
             <div class="panel">
               <ol class="tl" id="timeline"></ol>
@@ -466,8 +469,12 @@ body { margin: 0; }
   const $ = (id) => document.getElementById(id);
   const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  const fmtInt = new Intl.NumberFormat("ko-KR");
-  const DOW = ["일", "월", "화", "수", "목", "금", "토"];
+  const Z = window.ZI18N;
+  const t = Z.t;
+  const fmtInt = Z.fmt.int;
+  const DOW = Z.fmt.dow;
+  Z.apply();
+  Z.switcher($("langSel"));
 
   function dist(lat1, lng1, lat2, lng2) {
     const r = 6371000, rad = Math.PI / 180;
@@ -480,9 +487,9 @@ body { margin: 0; }
   const hm = (ts) => { const d = new Date(ts); return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0"); };
   function durText(ms) {
     const m = Math.round(ms / 60000);
-    if (m < 60) return m + "분";
+    if (m < 60) return t("{m}분", { m });
     const h = Math.floor(m / 60), r = m % 60;
-    return r ? h + "시간 " + r + "분" : h + "시간";
+    return r ? t("{h}시간 {m}분", { h, m: r }) : t("{h}시간", { h });
   }
   const km = (m) => (m / 1000).toFixed(m < 10000 ? 1 : 0);
 
@@ -510,7 +517,7 @@ body { margin: 0; }
         finish();
       };
       const s = document.createElement("script");
-      s.src = "https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=" + NAVER_KEY_ID;
+      s.src = "https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=" + NAVER_KEY_ID + (Z.lang === "ko" ? "" : "&language=" + Z.lang);
       s.onload = () => { naverOk = !!(window.naver && naver.maps); finish(); };
       s.onerror = finish;
       document.head.appendChild(s);
@@ -543,7 +550,7 @@ body { margin: 0; }
         if (!D) {
           const why = $("noticeText").innerHTML, bad = $("notice").classList.contains("err");
           await loadSample();
-          setNotice(why + " 지금은 예시 데이터를 보여 드려요.", bad);
+          setNotice(why + " " + t("지금은 예시 데이터를 보여 드려요."), bad);
         }
         if (fromLink) setNotice(fromLink + " " + $("noticeText").innerHTML);
       } else {
@@ -551,7 +558,7 @@ body { margin: 0; }
         if (fromLink) setNotice(fromLink, true);
       }
     } catch (e) {
-      setNotice("페이지를 준비하지 못했어요. 새로고침해 주세요. (" + esc(e.message || e) + ")", true);
+      setNotice(t("페이지를 준비하지 못했어요. 새로고침해 주세요.") + " (" + esc(e.message || e) + ")", true);
     }
   }
 
@@ -561,19 +568,19 @@ body { margin: 0; }
     if (!/access_token=|error=/.test(h)) return null;
     const q = new URLSearchParams(h);
     try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
-    if (q.get("error")) return "확인 링크가 만료됐거나 이미 쓰였어요. 로그인해 보시고, 안 되면 다시 가입해 주세요.";
+    if (q.get("error")) return t("확인 링크가 만료됐거나 이미 쓰였어요. 로그인해 보시고, 안 되면 다시 가입해 주세요.");
     try {
       const j = { access_token: q.get("access_token"), refresh_token: q.get("refresh_token"), expires_in: +q.get("expires_in") || 3600 };
       j.user = await authFetch("user", undefined, j.access_token);
       takeSession(j);
-      return "이메일 확인이 끝났어요. 로그인됐어요.";
+      return t("이메일 확인이 끝났어요. 로그인됐어요.");
     } catch (e) {
-      return "로그인 확인 중 문제가 생겼어요. 다시 로그인해 주세요.";
+      return t("로그인 확인 중 문제가 생겼어요. 다시 로그인해 주세요.");
     }
   }
 
   async function loadSample() {
-    setNotice("예시 데이터를 여는 중이에요…");
+    setNotice(t("예시 데이터를 여는 중이에요…"));
     const buf = await (await fetch("sample.db")).arrayBuffer();
     openDb(new Uint8Array(buf), true);
   }
@@ -591,7 +598,7 @@ body { margin: 0; }
   function openDb(bytes, isSample, fileName) {
     const head = new TextDecoder().decode(bytes.slice(0, 15));
     if (head !== "SQLite format 3") {
-      setNotice("제피 백업 파일이 아니에요. 앱의 <strong>설정 → 기록 백업</strong>으로 만든 <strong>.db</strong> 파일을 골라 주세요.", true);
+      setNotice(t("제피 백업 파일이 아니에요. 앱의 <strong>설정 → 기록 백업</strong>으로 만든 <strong>.db</strong> 파일을 골라 주세요."), true);
       return;
     }
     let db, data;
@@ -599,24 +606,24 @@ body { margin: 0; }
       db = new SQL.Database(bytes);
       data = readAll(db);
     } catch (e) {
-      setNotice("파일을 읽지 못했어요. 앱에서 백업을 다시 만들어 주세요. (" + esc(e.message || e) + ")", true);
+      setNotice(t("파일을 읽지 못했어요. 앱에서 백업을 다시 만들어 주세요.") + " (" + esc(e.message || e) + ")", true);
       return;
     } finally {
       if (db) db.close();
     }
     if (!data.days.length) {
-      setNotice("이 백업에는 아직 이동 기록이 없어요.", true);
+      setNotice(t("이 백업에는 아직 이동 기록이 없어요."), true);
       return;
     }
     source = isSample ? "sample" : "file";
     $("sampleBtn").hidden = isSample;
     if (isSample) {
       showData(data, session
-        ? "<strong>예시 데이터</strong>를 보고 있어요."
-        : "<strong>예시 데이터</strong>를 보고 있어요. 오른쪽 위 <strong>로그인</strong>을 누르면 폰에서 올린 내 기록이 보여요. 백업 파일(.db)을 열거나 끌어다 놓아도 돼요.");
+        ? t("<strong>예시 데이터</strong>를 보고 있어요.")
+        : t("<strong>예시 데이터</strong>를 보고 있어요. 오른쪽 위 <strong>로그인</strong>을 누르면 폰에서 올린 내 기록이 보여요. 백업 파일(.db)을 열거나 끌어다 놓아도 돼요."));
     } else {
-      showData(data, "<strong>" + esc(fileName || "내 백업") + "</strong>을 열었어요. 지점 " + fmtInt.format(data.n) + "개, " +
-        fmtDayShort(data.days[0]) + "부터 " + fmtDayShort(data.days[data.days.length - 1]) + "까지예요.");
+      showData(data, t("<strong>{file}</strong>을 열었어요. 지점 {n}개, {from}부터 {to}까지예요.", {
+        file: esc(fileName || t("내 백업")), n: fmtInt.format(data.n), from: fmtDayShort(data.days[0]), to: fmtDayShort(data.days[data.days.length - 1]) }));
     }
   }
 
@@ -747,18 +754,18 @@ body { margin: 0; }
   function authMsg(j, status) {
     const c = j.error_code || j.error || "";
     const m = {
-      invalid_credentials: "이메일이나 비밀번호가 맞지 않아요.",
-      invalid_grant: "이메일이나 비밀번호가 맞지 않아요.",
-      email_not_confirmed: "메일함에서 확인 링크를 먼저 눌러 주세요.",
-      user_already_exists: "이미 가입한 이메일이에요. 로그인해 주세요.",
-      email_exists: "이미 가입한 이메일이에요. 로그인해 주세요.",
-      weak_password: "비밀번호를 6자 이상으로 정해 주세요.",
-      over_email_send_rate_limit: "요청이 많아요. 잠시 뒤에 다시 해 주세요.",
-      over_request_rate_limit: "요청이 많아요. 잠시 뒤에 다시 해 주세요.",
-      validation_failed: "이메일 주소를 확인해 주세요.",
-      email_address_invalid: "이메일 주소를 확인해 주세요.",
+      invalid_credentials: t("이메일이나 비밀번호가 맞지 않아요."),
+      invalid_grant: t("이메일이나 비밀번호가 맞지 않아요."),
+      email_not_confirmed: t("메일함에서 확인 링크를 먼저 눌러 주세요."),
+      user_already_exists: t("이미 가입한 이메일이에요. 로그인해 주세요."),
+      email_exists: t("이미 가입한 이메일이에요. 로그인해 주세요."),
+      weak_password: t("비밀번호를 6자 이상으로 정해 주세요."),
+      over_email_send_rate_limit: t("요청이 많아요. 잠시 뒤에 다시 해 주세요."),
+      over_request_rate_limit: t("요청이 많아요. 잠시 뒤에 다시 해 주세요."),
+      validation_failed: t("이메일 주소를 확인해 주세요."),
+      email_address_invalid: t("이메일 주소를 확인해 주세요."),
     }[c];
-    return m || (j.msg || j.error_description || j.message ? "로그인 오류: " + (j.msg || j.error_description || j.message) : "로그인 오류 (" + status + ")");
+    return m || (j.msg || j.error_description || j.message ? t("로그인 오류") + ": " + (j.msg || j.error_description || j.message) : t("로그인 오류") + " (" + status + ")");
   }
   async function authFetch(path, body, bearer) {
     const headers = { apikey: SB_KEY, "Content-Type": "application/json" };
@@ -770,13 +777,13 @@ body { margin: 0; }
     return j;
   }
   async function token() {
-    if (!session) throw new Error("로그인이 필요해요.");
+    if (!session) throw new Error(t("로그인이 필요해요."));
     if (Date.now() < session.exp - 60000) return session.access;
     try {
       takeSession(await authFetch("token?grant_type=refresh_token", { refresh_token: session.refresh }));
     } catch (e) {
       session = null; saveSession(); renderAccount();
-      throw new Error("로그인이 풀렸어요. 다시 로그인해 주세요.");
+      throw new Error(t("로그인이 풀렸어요. 다시 로그인해 주세요."));
     }
     return session.access;
   }
@@ -787,14 +794,14 @@ body { margin: 0; }
       headers: Object.assign({ apikey: SB_KEY, Authorization: "Bearer " + (await token()), "Content-Type": "application/json" }, opts.headers || {}),
       body: opts.body,
     });
-    if (!r.ok) throw new Error("서버 오류 (" + r.status + ")");
+    if (!r.ok) throw new Error(t("서버 오류") + " (" + r.status + ")");
     const txt = await r.text();
     return txt ? JSON.parse(txt) : null;
   }
 
   async function loadCloud() {
     if (!session) return;
-    setNotice("클라우드에서 내 기록을 불러오는 중이에요…");
+    setNotice(t("클라우드에서 내 기록을 불러오는 중이에요…"));
     try {
       const [blobs, notes] = await Promise.all([
         sb("blobs?select=name,data"),
@@ -805,7 +812,7 @@ body { margin: 0; }
         const part = await sb("day_tracks?select=day,pts&order=day.asc&limit=40&offset=" + off);
         tracks.push(...part);
         off += part.length;
-        setNotice("클라우드에서 불러오는 중이에요… " + fmtInt.format(off) + "일");
+        setNotice(t("클라우드에서 불러오는 중이에요… {n}일", { n: fmtInt.format(off) }));
         if (part.length < 40) break;
       }
       const decoded = [];
@@ -828,24 +835,24 @@ body { margin: 0; }
         photo: (B.photo_days || []).map(([code, day, first_ts, last_ts]) => ({ code, day, first_ts, last_ts })),
       });
       if (!data.days.length) {
-        setNotice("<strong>" + esc(session.email) + "</strong>으로 로그인했어요. 아직 올라온 기록이 없어요. 폰의 제피 앱 <strong>설정 → 내 계정 · 클라우드</strong>에서 같은 계정으로 로그인하면 자동으로 올라와요.");
+        setNotice(t("<strong>{email}</strong>으로 로그인했어요. 아직 올라온 기록이 없어요. 폰의 제피 앱 <strong>설정 → 내 계정 · 클라우드</strong>에서 같은 계정으로 로그인하면 자동으로 올라와요.", { email: esc(session.email) }));
         return;
       }
       source = "cloud";
       $("sampleBtn").hidden = false;
-      showData(data, "<strong>" + esc(session.email) + "</strong> 계정의 기록이에요. " + fmtDayShort(data.days[0]) + "부터 " +
-        fmtDayShort(data.days[data.days.length - 1]) + "까지, " + fmtInt.format(data.days.length) + "일. 장소 메모는 여기서 고치면 폰에도 반영돼요.");
+      showData(data, t("<strong>{email}</strong> 계정의 기록이에요. {from}부터 {to}까지, {n}일. 장소 메모는 여기서 고치면 폰에도 반영돼요.", {
+        email: esc(session.email), from: fmtDayShort(data.days[0]), to: fmtDayShort(data.days[data.days.length - 1]), n: fmtInt.format(data.days.length) }));
     } catch (e) {
-      setNotice("클라우드에서 불러오지 못했어요. " + esc(e.message || e), true);
+      setNotice(t("클라우드에서 불러오지 못했어요.") + " " + esc(e.message || e), true);
     }
   }
 
   function renderAccount() {
     $("acct").innerHTML = session
       ? '<span class="who" title="' + esc(session.email) + '">' + esc(session.email) + '</span>' +
-        (source !== "cloud" ? '<button class="btn" type="button" data-acct="load">내 기록 보기</button>' : '<button class="btn" type="button" data-acct="load">새로고침</button>') +
-        '<button class="btn" type="button" data-acct="out">로그아웃</button>'
-      : '<button class="btn" type="button" data-acct="in">로그인</button>';
+        '<button class="btn" type="button" data-acct="load">' + t(source !== "cloud" ? "내 기록 보기" : "새로고침") + "</button>" +
+        '<button class="btn" type="button" data-acct="out">' + t("로그아웃") + "</button>"
+      : '<button class="btn" type="button" data-acct="in">' + t("로그인") + "</button>";
   }
   const canEdit = () => source === "cloud" && !!session;
 
@@ -960,14 +967,10 @@ body { margin: 0; }
   }
 
   // ---------- 그리기 ----------
-  function fmtDay(k) {
-    const d = dateOfKey(k);
-    return (d.getMonth() + 1) + "월 " + d.getDate() + "일 (" + DOW[d.getDay()] + ")";
-  }
-  function fmtDayShort(k) {
-    const d = dateOfKey(k);
-    return d.getFullYear() + ". " + (d.getMonth() + 1) + ". " + d.getDate() + ".";
-  }
+  const fmtDay = (k) => Z.fmt.day(dateOfKey(k));
+  const fmtDayShort = (k) => Z.fmt.dayShort(dateOfKey(k));
+  // 시도 이름 (시군구 이름은 데이터라 그대로)
+  const sidoName = (s) => Z.tOpt(s);
 
   function renderAll() {
     renderAccount();
@@ -980,6 +983,15 @@ body { margin: 0; }
     renderNotes();
   }
 
+  // 한 번이라도 지나가거나 머문 시군구 (해가 주어지면 그 해만)
+  function visitedCount(year) {
+    const set = new Set();
+    const inYear = (k) => !year || Math.floor(k / 10000) === year;
+    for (const [code, m] of D.regionDays) for (const k of m.keys()) if (inYear(k)) { set.add(code); break; }
+    for (const [code, m] of D.photoDays) for (const k of m.keys()) if (inYear(k)) { set.add(code); break; }
+    if (!year) for (const code of D.visits.keys()) set.add(code);
+    return set.size;
+  }
   function conqueredCount() {
     let c = 0;
     for (const r of regions) if (D.manual.has(r.c) || D.conq.has(r.c)) c++;
@@ -991,10 +1003,10 @@ body { margin: 0; }
     for (const k of D.days) totalM += timelineOf(k).total;
     const first = D.days[0], last = D.days[D.days.length - 1];
     $("stats").innerHTML =
-      stat("기록한 날", fmtInt.format(D.days.length), "일") +
-      stat("정복한 시군구", conqueredCount(), "/ " + regions.length) +
-      stat("집 밖에서 잔 밤", D.awayNights.size, "밤") +
-      stat("이동 거리", fmtInt.format(Math.round(totalM / 1000)), "km");
+      stat(t("기록한 날"), fmtInt.format(D.days.length), t("일")) +
+      stat(t("정복한 시군구"), conqueredCount(), "/ " + regions.length) +
+      stat(t("다닌 시군구"), visitedCount(), t("곳")) +
+      stat(t("이동 거리"), fmtInt.format(Math.round(totalM / 1000)), "km");
     $("stats").title = fmtDayShort(first) + " ~ " + fmtDayShort(last);
   }
   function stat(k, v, unit) {
@@ -1032,7 +1044,7 @@ body { margin: 0; }
     $("dayTitle").textContent = fmtDay(k);
     const tl = timelineOf(k);
     const stays = tl.items.filter((x) => x.kind === "stay").length;
-    $("daySub").textContent = d.getFullYear() + "년 · " + km(tl.total) + "km 이동 · 머문 곳 " + stays + "곳" + (D.awayNights.has(k) ? " · 집 밖에서 잠" : "");
+    $("daySub").textContent = Z.fmt.year(d.getFullYear()) + " · " + t("{km}km 이동", { km: km(tl.total) }) + " · " + t("머문 곳 {n}곳", { n: stays }) + (D.awayNights.has(k) ? " · " + t("여행 중") : "");
     renderCal();
     renderTimeline(tl);
     drawDayMap(tl);
@@ -1042,10 +1054,10 @@ body { margin: 0; }
     const y = Math.floor(calMonth / 100), mo = calMonth % 100;
     const first = new Date(y, mo - 1, 1), daysIn = new Date(y, mo, 0).getDate();
     const minM = Math.floor(D.days[0] / 100), maxM = Math.floor(D.days[D.days.length - 1] / 100);
-    let h = '<div class="cal-head"><button class="iconbtn" type="button" data-cal="-1" aria-label="이전 달"' + (calMonth <= minM ? " disabled" : "") +
+    let h = '<div class="cal-head"><button class="iconbtn" type="button" data-cal="-1" aria-label="' + t("이전 달") + '"' + (calMonth <= minM ? " disabled" : "") +
       '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><b>' +
-      y + "년 " + mo + "월</b>" +
-      '<button class="iconbtn" type="button" data-cal="1" aria-label="다음 달"' + (calMonth >= maxM ? " disabled" : "") +
+      Z.fmt.monthTitle(y, mo) + "</b>" +
+      '<button class="iconbtn" type="button" data-cal="1" aria-label="' + t("다음 달") + '"' + (calMonth >= maxM ? " disabled" : "") +
       '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></div><div class="cal-grid">';
     for (const w of DOW) h += '<span class="dow">' + w + "</span>";
     for (let i = 0; i < first.getDay(); i++) h += "<span></span>";
@@ -1053,14 +1065,14 @@ body { margin: 0; }
       const k = y * 10000 + mo * 100 + dd;
       const has = D.dayIdx.has(k);
       const cls = [has ? "has" : "", D.awayNights.has(k) ? "away" : "", k === curDay ? "sel" : ""].join(" ").trim();
-      h += '<button type="button" class="' + cls + '" data-day="' + k + '"' + (has ? "" : " disabled") + ' aria-label="' + mo + "월 " + dd + "일" + (has ? "" : ", 기록 없음") + '">' + dd + "</button>";
+      h += '<button type="button" class="' + cls + '" data-day="' + k + '"' + (has ? "" : " disabled") + ' aria-label="' + Z.fmt.monthDay(y, mo, dd) + (has ? "" : ", " + t("기록 없음")) + '">' + dd + "</button>";
     }
     $("cal").innerHTML = h + "</div>";
   }
 
   function renderTimeline(tl) {
     if (!tl.items.length) {
-      $("timeline").innerHTML = '<li class="empty" style="display:block">이날은 머문 곳이나 이동이 잡히지 않았어요.</li>';
+      $("timeline").innerHTML = '<li class="empty" style="display:block">' + t("이날은 머문 곳이나 이동이 잡히지 않았어요.") + "</li>";
       return;
     }
     let h = "";
@@ -1068,17 +1080,17 @@ body { margin: 0; }
       if (it.kind === "stay") {
         const full = placeName(it.lat, it.lng);
         const note = noteNear(it.lat, it.lng);
-        const nm = shortName(full) || "이름 모르는 곳";
+        const nm = shortName(full) || t("이름 모르는 곳");
         h += '<li class="stay"><span class="t">' + hm(it.start) + '</span><span class="rail"><span class="dot"></span></span>' +
           '<div class="body"><button type="button" class="linkish nm" data-stay="' + i + '" title="' + esc(full || "") + '">' + esc(nm) + '</button><div class="sub">' +
           hm(it.start) + "–" + hm(it.end) + " · " + durText(it.end - it.start) + "</div>" +
-          (note ? note.tags.map((t) => '<span class="chip">' + esc(t) + "</span>").join("") + (note.rating ? ' <span class="chip">' + "★".repeat(note.rating) + "</span>" : "") + (note.memo ? '<div class="memo">' + esc(note.memo) + "</div>" : "") : "") +
-          (canEdit() ? '<div><button type="button" class="mini" data-note-stay="' + i + '">' + (note ? "메모 고치기" : "메모 남기기") + "</button></div>" : "") +
+          (note ? note.tags.map((g) => '<span class="chip">' + esc(Z.tOpt(g)) + "</span>").join("") + (note.rating ? ' <span class="chip">' + "★".repeat(note.rating) + "</span>" : "") + (note.memo ? '<div class="memo">' + esc(note.memo) + "</div>" : "") : "") +
+          (canEdit() ? '<div><button type="button" class="mini" data-note-stay="' + i + '">' + t(note ? "메모 고치기" : "메모 남기기") + "</button></div>" : "") +
           "</div></li>";
       } else {
         const kmh = (it.m / 1000) / ((it.end - it.start) / 3600000);
         h += '<li class="move"><span class="t"></span><span class="rail"><span class="dot"></span></span><div class="body">' +
-          km(it.m) + "km 이동 · " + durText(it.end - it.start) + " · 평균 " + Math.round(kmh) + "km/h</div></li>";
+          t("{km}km 이동", { km: km(it.m) }) + " · " + durText(it.end - it.start) + " · " + t("평균 {v}km/h", { v: Math.round(kmh) }) + "</div></li>";
       }
     });
     $("timeline").innerHTML = h;
@@ -1103,7 +1115,7 @@ body { margin: 0; }
     tl.items.forEach((it, i) => {
       if (it.kind !== "stay") return;
       all.push([it.lat, it.lng]);
-      const nm = shortName(placeName(it.lat, it.lng)) || "이름 모르는 곳";
+      const nm = shortName(placeName(it.lat, it.lng)) || t("이름 모르는 곳");
       const mk = L.circleMarker([it.lat, it.lng], { radius: 7, color: surf, weight: 2, fillColor: pepper, fillOpacity: 1 })
         .bindTooltip(nm + " · " + hm(it.start) + " · " + durText(it.end - it.start), { direction: "top", offset: [0, -8] })
         .addTo(dayLayers);
@@ -1140,7 +1152,7 @@ body { margin: 0; }
       if (it.kind !== "stay") return;
       const pos = new N.LatLng(it.lat, it.lng);
       grow(pos);
-      const nm = shortName(placeName(it.lat, it.lng)) || "이름 모르는 곳";
+      const nm = shortName(placeName(it.lat, it.lng)) || t("이름 모르는 곳");
       const mk = new N.Marker({ map: nMap, position: pos, title: nm, icon: { content: '<div class="nm-dot"></div>', anchor: new N.Point(9, 9) } });
       const html = '<div class="nm-tip"><b>' + esc(nm) + "</b><br>" + hm(it.start) + "–" + hm(it.end) + " · " + durText(it.end - it.start) + "</div>";
       mk._html = html;
@@ -1203,11 +1215,11 @@ body { margin: 0; }
       let tip = "<b>" + esc(r.s + " " + r.n) + "</b>";
       if (n > 0) {
         const ks = [...days].sort((a, b) => a - b);
-        tip += "<br>정복 " + n + "일 · 처음 " + fmtDayShort(ks[0]) + (ks.length > 1 ? "<br>마지막 " + fmtDayShort(ks[ks.length - 1]) : "");
-        if (D.home.has(r.c)) tip += "<br>사는 곳";
-      } else if (manual) tip += "<br>직접 표시한 곳";
-      else if (wasThere) tip += "<br>지나가기만 했어요";
-      else tip += "<br>아직 안 가봤어요";
+        tip += "<br>" + t("정복 {n}일 · 처음 {first}", { n, first: fmtDayShort(ks[0]) }) + (ks.length > 1 ? "<br>" + t("마지막 {last}", { last: fmtDayShort(ks[ks.length - 1]) }) : "");
+        if (D.home.has(r.c)) tip += "<br>" + t("사는 곳");
+      } else if (manual) tip += "<br>" + t("직접 표시한 곳");
+      else if (wasThere) tip += "<br>" + t("지나가기만 했어요");
+      else tip += "<br>" + t("아직 안 가봤어요");
       L.polygon(regionLatLngs(r), { color: line, weight: 0.8, fillColor: fill, fillOpacity: op })
         .bindTooltip(tip, { sticky: true }).addTo(conqLayer);
     }
@@ -1249,8 +1261,8 @@ body { margin: 0; }
     newRegs.sort((a, b) => a[1] - b[1]);
 
     $("yearStats").innerHTML =
-      stat("기록한 날", recorded, "일") + stat("이동 거리", fmtInt.format(Math.round(total / 1000)), "km") +
-      stat("집 밖에서 잔 밤", nights, "밤") + stat("새로 정복", newRegs.length, "곳");
+      stat(t("기록한 날"), recorded, t("일")) + stat(t("이동 거리"), fmtInt.format(Math.round(total / 1000)), "km") +
+      stat(t("다닌 시군구"), visitedCount(year), t("곳")) + stat(t("새로 정복"), newRegs.length, t("곳"));
 
     // 달별 막대
     const W = 720, H = 220, pl = 40, pb = 28, pt = 16, pr = 8;
@@ -1258,7 +1270,7 @@ body { margin: 0; }
     const step = niceStep(maxKm / 4);
     const top = Math.ceil(maxKm / step) * step;
     const bw = (W - pl - pr) / 12;
-    let svg = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + year + '년 달마다 이동한 거리">';
+    let svg = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + esc(t("{year}년 달마다 이동한 거리", { year })) + '">';
     for (let v = 0; v <= top + 1e-9; v += step) {
       const y = pt + (H - pt - pb) * (1 - v / top);
       svg += '<line x1="' + pl + '" x2="' + (W - pr) + '" y1="' + y + '" y2="' + y + '" stroke="var(--line)" stroke-width="1"/>' +
@@ -1267,19 +1279,19 @@ body { margin: 0; }
     monthM.forEach((m, i) => {
       const v = m / 1000, h = (H - pt - pb) * (v / top);
       const x = pl + i * bw + bw * 0.18, w = bw * 0.64;
-      if (v > 0) svg += '<rect x="' + x + '" y="' + (H - pb - h) + '" width="' + w + '" height="' + h + '" rx="3" fill="var(--leaf)"><title>' + (i + 1) + "월 " + fmtInt.format(Math.round(v)) + "km</title></rect>";
-      svg += '<text x="' + (x + w / 2) + '" y="' + (H - pb + 17) + '" text-anchor="middle" font-size="11" fill="var(--muted)">' + (i + 1) + "월</text>";
+      if (v > 0) svg += '<rect x="' + x + '" y="' + (H - pb - h) + '" width="' + w + '" height="' + h + '" rx="3" fill="var(--leaf)"><title>' + Z.fmt.monthShort(i + 1) + " " + fmtInt.format(Math.round(v)) + "km</title></rect>";
+      svg += '<text x="' + (x + w / 2) + '" y="' + (H - pb + 17) + '" text-anchor="middle" font-size="11" fill="var(--muted)">' + Z.fmt.monthShort(i + 1) + "</text>";
     });
     $("monthChart").innerHTML = svg + "</svg>";
 
     const top5 = [...placeDur.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
     $("topPlaces").innerHTML = top5.length
       ? top5.map(([nm, ms]) => '<li><span class="nm">' + esc(nm) + '</span><span class="v">' + durText(ms) + "</span></li>").join("")
-      : '<li class="empty" style="display:block">머문 곳이 아직 없어요.</li>';
-    $("newCount").textContent = newRegs.length ? newRegs.length + "곳" : "";
+      : '<li class="empty" style="display:block">' + t("머문 곳이 아직 없어요.") + "</li>";
+    $("newCount").textContent = newRegs.length ? t("{n}곳", { n: newRegs.length }) : "";
     $("newRegions").innerHTML = newRegs.length
-      ? newRegs.slice(0, 12).map(([c, k]) => { const r = regionByCode.get(c); return '<li><span class="nm">' + esc(r ? r.s.replace(/(특별자치도|특별자치시|광역시|특별시)$/, "") + " " + r.n : c) + '</span><span class="v">' + fmtDayShort(k) + "</span></li>"; }).join("")
-      : '<li class="empty" style="display:block">' + year + "년에 새로 정복한 곳은 아직 없어요.</li>";
+      ? newRegs.slice(0, 12).map(([c, k]) => { const r = regionByCode.get(c); return '<li><span class="nm">' + esc(r ? (Z.lang === "ko" ? r.s.replace(/(특별자치도|특별자치시|광역시|특별시)$/, "") : sidoName(r.s)) + " " + r.n : c) + '</span><span class="v">' + fmtDayShort(k) + "</span></li>"; }).join("")
+      : '<li class="empty" style="display:block">' + t("{year}년에 새로 정복한 곳은 아직 없어요.", { year }) + "</li>";
   }
   function niceStep(x) {
     const p = Math.pow(10, Math.floor(Math.log10(x)));
@@ -1291,19 +1303,19 @@ body { margin: 0; }
   function renderNotes() {
     const list = D.notes.filter((n) => !n.tags.includes("집") && !n.tags.includes("회사"));
     if (!list.length) {
-      $("notesList").innerHTML = '<div class="panel empty">' + (canEdit() ? "하루 화면의 타임라인에서 머문 곳의 <b>메모 남기기</b>를 누르거나, 앱에서 태그·메모를 남기면 여기에 모여요." : "앱에서 장소에 태그나 메모를 남기면 여기에 모여요.") + "</div>";
+      $("notesList").innerHTML = '<div class="panel empty">' + t(canEdit() ? "하루 화면의 타임라인에서 머문 곳의 <b>메모 남기기</b>를 누르거나, 앱에서 태그·메모를 남기면 여기에 모여요." : "앱에서 장소에 태그나 메모를 남기면 여기에 모여요.") + "</div>";
       return;
     }
     $("notesList").innerHTML = list.map((n, i) => {
       const nm = shortName(placeName(n.lat, n.lng)) || n.lat.toFixed(4) + ", " + n.lng.toFixed(4);
       const days = visitDaysNear(n.lat, n.lng);
       return '<article class="panel note"><div class="nm">' + esc(nm) + "</div>" +
-        (n.rating ? '<div class="stars" aria-label="별점 ' + n.rating + '점">' + "★".repeat(n.rating) + '<span style="color:var(--line)">' + "★".repeat(5 - n.rating) + "</span></div>" : "") +
-        "<div>" + n.tags.map((t) => '<span class="chip">' + esc(t) + "</span>").join("") + "</div>" +
+        (n.rating ? '<div class="stars" aria-label="' + t("별점 {n}점", { n: n.rating }) + '">' + "★".repeat(n.rating) + '<span style="color:var(--line)">' + "★".repeat(5 - n.rating) + "</span></div>" : "") +
+        "<div>" + n.tags.map((g) => '<span class="chip">' + esc(Z.tOpt(g)) + "</span>").join("") + "</div>" +
         (n.memo ? '<div class="memo">' + esc(n.memo) + "</div>" : "") +
-        '<div class="when">' + (days.length ? "다녀온 날 " + days.length + "일 · 마지막 " + fmtDayShort(days[days.length - 1]) : "기록에 남은 방문 없음") + "</div>" +
-        '<div class="acts">' + (days.length ? '<button class="go" type="button" data-go="' + days[days.length - 1] + '">그날 지도 보기</button>' : "") +
-        (canEdit() ? '<button class="go" type="button" data-edit="' + esc(n.key) + '">고치기</button>' : "") + "</div>" +
+        '<div class="when">' + (days.length ? t("다녀온 날 {n}일 · 마지막 {last}", { n: days.length, last: fmtDayShort(days[days.length - 1]) }) : t("기록에 남은 방문 없음")) + "</div>" +
+        '<div class="acts">' + (days.length ? '<button class="go" type="button" data-go="' + days[days.length - 1] + '">' + t("그날 지도 보기") + "</button>" : "") +
+        (canEdit() ? '<button class="go" type="button" data-edit="' + esc(n.key) + '">' + t("고치기") + "</button>" : "") + "</div>" +
         "</article>";
     }).join("");
   }
@@ -1338,7 +1350,7 @@ body { margin: 0; }
     const r = await fetch(PROXY + path, { headers: { Authorization: "Bearer " + (await token()), apikey: SB_KEY } });
     let j = {};
     try { j = await r.json(); } catch (e) {}
-    if (!r.ok) throw new Error((j.error && j.error.message) || "서버 오류 (" + r.status + ")");
+    if (!r.ok) throw new Error((j.error && j.error.message) || t("서버 오류") + " (" + r.status + ")");
     return j;
   }
   function download(name, text, type) {
@@ -1357,23 +1369,23 @@ body { margin: 0; }
     const hide = $("exHide").checked;
     return D.notes.filter((n) => !(hide && (n.tags.includes("집") || n.tags.includes("회사"))));
   }
-  function noteName(n) { return shortName(placeName(n.lat, n.lng)) || n.memo.split("\n")[0].slice(0, 30) || n.tags[0] || "장소"; }
+  function noteName(n) { return shortName(placeName(n.lat, n.lng)) || n.memo.split("\n")[0].slice(0, 30) || n.tags[0] || t("장소"); }
   function stamp() { const d = new Date(); return d.getFullYear() + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0"); }
   function updateExHint() {
     const n = exportNotes().length;
-    $("exHint").textContent = n ? "장소 메모 " + n + "곳을 내보내요." + (source === "sample" ? " (지금은 예시 데이터예요)" : "") : "내보낼 장소 메모가 없어요.";
+    $("exHint").textContent = n ? t("장소 메모 {n}곳을 내보내요.", { n }) + (source === "sample" ? " " + t("(지금은 예시 데이터예요)") : "") : t("내보낼 장소 메모가 없어요.");
     $("exKml").disabled = $("exCsv").disabled = !n;
   }
   $("exHide").addEventListener("change", updateExHint);
   $("exKml").addEventListener("click", () => {
     const list = exportNotes();
     const groups = new Map();
-    for (const n of list) { const g = n.tags[0] || "태그 없음"; if (!groups.has(g)) groups.set(g, []); groups.get(g).push(n); }
-    let k = '<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>제피 장소 메모 ' + stamp() + "</name>\n";
+    for (const n of list) { const g = Z.tOpt(n.tags[0] || "태그 없음"); if (!groups.has(g)) groups.set(g, []); groups.get(g).push(n); }
+    let k = '<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>' + xml(t("제피 장소 메모")) + " " + stamp() + "</name>\n";
     for (const [g, ns] of groups) {
       k += "<Folder><name>" + xml(g) + "</name>\n";
       for (const n of ns) {
-        const desc = [n.tags.length ? "태그: " + n.tags.join(", ") : "", n.rating ? "별점: " + "★".repeat(n.rating) : "", n.memo].filter(Boolean).join("\n");
+        const desc = [n.tags.length ? t("태그") + ": " + n.tags.map(Z.tOpt).join(", ") : "", n.rating ? t("별점") + ": " + "★".repeat(n.rating) : "", n.memo].filter(Boolean).join("\n");
         k += "<Placemark><name>" + xml(noteName(n)) + "</name><description>" + xml(desc) + "</description><Point><coordinates>" + n.lng.toFixed(6) + "," + n.lat.toFixed(6) + ",0</coordinates></Point></Placemark>\n";
       }
       k += "</Folder>\n";
@@ -1381,8 +1393,8 @@ body { margin: 0; }
     download("zepi-places-" + stamp() + ".kml", k + "</Document></kml>\n", "application/vnd.google-earth.kml+xml");
   });
   $("exCsv").addEventListener("click", () => {
-    const rowsOut = [["이름", "위도", "경도", "태그", "별점", "메모"]];
-    for (const n of exportNotes()) rowsOut.push([noteName(n), n.lat.toFixed(6), n.lng.toFixed(6), n.tags.join(" "), n.rating || "", n.memo]);
+    const rowsOut = [[t("이름"), t("위도"), t("경도"), t("태그"), t("별점"), t("메모")]];
+    for (const n of exportNotes()) rowsOut.push([noteName(n), n.lat.toFixed(6), n.lng.toFixed(6), n.tags.map(Z.tOpt).join(" "), n.rating || "", n.memo]);
     download("zepi-places-" + stamp() + ".csv", "﻿" + rowsOut.map((r) => r.map(csvCell).join(",")).join("\r\n"), "text/csv;charset=utf-8");
   });
 
@@ -1402,19 +1414,19 @@ body { margin: 0; }
     $("ioPreview").scrollIntoView({ behavior: "smooth", block: "start" });
   }
   function drawPending() {
-    const ST = { ok: ["st-ok", "좌표 있음"], found: ["st-found", "네이버에서 찾음"], miss: ["st-miss", "못 찾음"], none: ["st-miss", "위치 없음"] };
+    const ST = { ok: ["st-ok", t("좌표 있음")], found: ["st-found", t("네이버에서 찾음")], miss: ["st-miss", t("못 찾음")], none: ["st-miss", t("위치 없음")] };
     $("ioRows").innerHTML = pending.map((p, i) => {
       const [cls, label] = ST[p.st];
       const has = p.st === "ok" || p.st === "found";
-      return "<tr><td><input type='checkbox' data-i='" + i + "' " + (p.sel && has ? "checked" : "") + (has ? "" : " disabled") + " aria-label='" + esc(p.name) + " 선택'></td>" +
-        "<td>" + esc(p.name) + (p.sub ? "<div class='sub'>" + esc(p.sub) + "</div>" : "") + "</td><td>" + esc(p.list) + "</td><td>" + esc(p.memo).slice(0, 120) + "</td>" +
+      return "<tr><td><input type='checkbox' data-i='" + i + "' " + (p.sel && has ? "checked" : "") + (has ? "" : " disabled") + " aria-label='" + esc(t("{name} 선택", { name: p.name })) + "'></td>" +
+        "<td>" + esc(p.name) + (p.sub ? "<div class='sub'>" + esc(p.sub) + "</div>" : "") + "</td><td>" + esc(p.list.split(", ").map(Z.tOpt).join(", ")) + "</td><td>" + esc(p.memo).slice(0, 120) + "</td>" +
         "<td class='st " + cls + "'>" + label + "</td></tr>";
     }).join("");
     const has = pending.filter((p) => p.st === "ok" || p.st === "found");
     const sel = has.filter((p) => p.sel).length;
     const need = pending.filter((p) => p.st === "none").length;
     const miss = pending.filter((p) => p.st === "miss").length;
-    $("ioSum").textContent = "모두 " + pending.length + "곳 · 위치 있음 " + has.length + "곳" + (need ? " · 위치 찾을 곳 " + need + "곳" : "") + (miss ? " · 못 찾음 " + miss + "곳" : "") + " · 선택 " + sel + "곳";
+    $("ioSum").textContent = [t("모두 {n}곳", { n: pending.length }), t("위치 있음 {n}곳", { n: has.length }), need ? t("위치 찾을 곳 {n}곳", { n: need }) : "", miss ? t("못 찾음 {n}곳", { n: miss }) : "", t("선택 {n}곳", { n: sel })].filter(Boolean).join(" · ");
     $("ioFind").hidden = !need;
     $("ioFind").disabled = !canEdit();
     $("ioSave").disabled = !sel || !canEdit();
@@ -1466,7 +1478,7 @@ body { margin: 0; }
     try { j = JSON.parse(text); } catch (e) { return []; }
     if (!j || !Array.isArray(j.features)) return [];
     const base = name.split("/").pop();
-    if (/labeled/i.test(base) || /reviews?/i.test(base)) return []; // 집·회사 주소와 리뷰는 빼요
+    if (/(labeled|label|라벨|ラベル|标签|標籤|review|리뷰|レビュー|评价|評論)/i.test(base)) return []; // 집·회사 주소와 리뷰는 빼요
     const list = tagOf(base === "Saved Places.json" ? "Starred places" : base);
     return j.features.map((f) => {
       const pr = f.properties || {}, loc = pr.location || pr.Location || {};
@@ -1485,7 +1497,7 @@ body { margin: 0; }
     if (!jszipP) jszipP = new Promise((res, rej) => {
       const s = document.createElement("script");
       s.src = "https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js";
-      s.onload = res; s.onerror = () => rej(new Error("압축 풀기 도구를 불러오지 못했어요"));
+      s.onload = res; s.onerror = () => rej(new Error(t("압축 풀기 도구를 불러오지 못했어요")));
       document.head.appendChild(s);
     });
     return jszipP;
@@ -1497,14 +1509,14 @@ body { margin: 0; }
     const files = [...e.target.files];
     e.target.value = "";
     if (!files.length) return;
-    setNotice("구글 파일을 읽는 중이에요…");
+    setNotice(t("구글 파일을 읽는 중이에요…"));
     try {
       const found = [];
       for (const f of files) {
         if (/\.zip$/i.test(f.name)) {
           await loadJsZip();
           const zip = await JSZip.loadAsync(f);
-          const entries = Object.values(zip.files).filter((z) => !z.dir && /(^|\/)(Saved|Maps \(your places\)|저장됨|지도 \(내 장소\)|지도\(내 장소\))\//i.test(z.name) && /\.(csv|json)$/i.test(z.name));
+          const entries = Object.values(zip.files).filter((z) => !z.dir && /\.(csv|json)$/i.test(z.name) && !/(labeled|label|라벨|ラベル|标签|標籤|review|리뷰|レビュー|评价|評論|timeline|타임라인|タイムライン|时间轴|semantic location|records)/i.test(z.name));
           for (const z of entries) found.push(...parseOne(z.name, await z.async("string")));
         } else {
           found.push(...parseOne(f.name, await f.text()));
@@ -1519,11 +1531,11 @@ body { margin: 0; }
         else merged.set(k, { ...p });
       }
       pending = [...merged.values()];
-      if (!pending.length) { setNotice("가져올 장소를 찾지 못했어요. 테이크아웃에서 <strong>저장됨</strong>과 <strong>지도(내 장소)</strong>를 골랐는지 확인해 주세요.", true); return; }
-      setNotice("구글에서 " + pending.length + "곳을 읽었어요. 아래 목록을 확인하고 저장해 주세요.");
-      showPending("구글 지도에서 가져올 장소");
+      if (!pending.length) { setNotice(t("가져올 장소를 찾지 못했어요. 테이크아웃에서 <strong>저장됨</strong>과 <strong>지도(내 장소)</strong>를 골랐는지 확인해 주세요."), true); return; }
+      setNotice(t("구글에서 {n}곳을 읽었어요. 아래 목록을 확인하고 저장해 주세요.", { n: pending.length }));
+      showPending(t("구글 지도에서 가져올 장소"));
     } catch (err) {
-      setNotice("파일을 읽지 못했어요. " + esc(err.message || err), true);
+      setNotice(t("파일을 읽지 못했어요.") + " " + esc(err.message || err), true);
     }
   });
 
@@ -1540,11 +1552,11 @@ body { margin: 0; }
         if (cy && cx) { p.lat = cy > 1000 ? cy / 1e7 : cy; p.lng = cx > 1000 ? cx / 1e7 : cx; p.st = "found"; p.sub = plain(it.title) + " · " + plain(it.roadAddress || it.address); hit++; }
         else p.st = "miss";
         done++;
-        if (done % 5 === 0 || done === todo.length) { drawPending(); $("ioSum").textContent += " · 찾는 중 " + done + "/" + todo.length; }
+        if (done % 5 === 0 || done === todo.length) { drawPending(); $("ioSum").textContent += " · " + t("찾는 중 {done}/{total}", { done, total: todo.length }); }
       }
-      setNotice("네이버 장소 검색으로 " + todo.length + "곳 중 " + hit + "곳을 찾았어요. 이름이 비슷한 다른 곳일 수 있으니 목록을 한번 봐 주세요.");
+      setNotice(t("네이버 장소 검색으로 {total}곳 중 {hit}곳을 찾았어요. 이름이 비슷한 다른 곳일 수 있으니 목록을 한번 봐 주세요.", { total: todo.length, hit }));
     } catch (err) {
-      setNotice("위치 찾기를 멈췄어요. " + esc(err.message || err), true);
+      setNotice(t("위치 찾기를 멈췄어요.") + " " + esc(err.message || err), true);
     } finally {
       drawPending();
     }
@@ -1553,19 +1565,19 @@ body { margin: 0; }
   $("nGo").addEventListener("click", async () => {
     const link = $("nUrl").value.trim();
     if (!link) { $("nUrl").focus(); return; }
-    if (!canEdit()) { $("ioNeed").hidden = false; setNotice("네이버 리스트를 불러오려면 먼저 로그인해 주세요.", true); return; }
+    if (!canEdit()) { $("ioNeed").hidden = false; setNotice(t("네이버 리스트를 불러오려면 먼저 로그인해 주세요."), true); return; }
     $("nGo").disabled = true;
-    setNotice("네이버 리스트를 불러오는 중이에요…");
+    setNotice(t("네이버 리스트를 불러오는 중이에요…"));
     try {
       const j = await proxy("/navershare?url=" + encodeURIComponent(link));
-      const list = tagOf(j.folder || "네이버 리스트");
+      const list = tagOf(j.folder || t("네이버 리스트"));
       pending = (j.items || []).map((b) => {
         const ok = Math.abs(b.lat) > 0.01 && Math.abs(b.lng) > 0.01;
         return { name: b.name, sub: b.address, lat: ok ? b.lat : null, lng: ok ? b.lng : null, memo: b.memo || "", list, sel: true, st: ok ? "ok" : "none" };
       });
-      if (!pending.length) { setNotice("리스트에 장소가 없어요.", true); return; }
-      setNotice("네이버 리스트 <strong>" + esc(j.folder || "") + "</strong>에서 " + pending.length + "곳을 읽었어요.");
-      showPending("네이버 지도에서 가져올 장소");
+      if (!pending.length) { setNotice(t("리스트에 장소가 없어요."), true); return; }
+      setNotice(t("네이버 리스트 <strong>{list}</strong>에서 {n}곳을 읽었어요.", { list: esc(j.folder || ""), n: pending.length }));
+      showPending(t("네이버 지도에서 가져올 장소"));
     } catch (err) {
       setNotice(esc(err.message || err), true);
     } finally {
@@ -1593,7 +1605,7 @@ body { margin: 0; }
     try {
       for (let i = 0; i < rowsUp.length; i += 200) {
         await sb("place_notes?on_conflict=user_id,key", { method: "POST", headers: { Prefer: "resolution=merge-duplicates,return=minimal" }, body: JSON.stringify(rowsUp.slice(i, i + 200)) });
-        setNotice("저장하는 중이에요… " + Math.min(i + 200, rowsUp.length) + "/" + rowsUp.length);
+        setNotice(t("저장하는 중이에요…") + " " + Math.min(i + 200, rowsUp.length) + "/" + rowsUp.length);
       }
       for (const r of rowsUp) { D.notes = D.notes.filter((x) => x.key !== r.key); D.notes.unshift(noteFromRow(r)); }
       pending = [];
@@ -1601,10 +1613,10 @@ body { margin: 0; }
       renderNotes();
       renderTimeline(timelineOf(curDay));
       updateExHint();
-      setNotice(rowsUp.length + "곳을 장소 메모로 저장했어요. 리스트 이름이 태그로 붙었어요. 폰 앱에는 다음에 앱을 열 때 들어가요.");
+      setNotice(t("{n}곳을 장소 메모로 저장했어요. 리스트 이름이 태그로 붙었어요. 폰 앱에는 다음에 앱을 열 때 들어가요.", { n: rowsUp.length }));
       showTab("notes");
     } catch (err) {
-      setNotice("저장하지 못했어요. " + esc(err.message || err), true);
+      setNotice(t("저장하지 못했어요.") + " " + esc(err.message || err), true);
     } finally {
       $("ioSave").disabled = false;
     }
@@ -1651,8 +1663,8 @@ body { margin: 0; }
   function loginBusy(on) { for (const id of ["loginGo", "signupGo"]) $(id).disabled = on; }
   function loginInputs() {
     const email = $("loginEmail").value.trim(), pw = $("loginPw").value;
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { loginMsg("이메일 주소를 확인해 주세요.", true); return null; }
-    if (pw.length < 6) { loginMsg("비밀번호는 6자 이상이에요.", true); return null; }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { loginMsg(t("이메일 주소를 확인해 주세요."), true); return null; }
+    if (pw.length < 6) { loginMsg(t("비밀번호는 6자 이상이에요."), true); return null; }
     return { email, password: pw };
   }
   $("acct").addEventListener("click", async (e) => {
@@ -1665,7 +1677,7 @@ body { margin: 0; }
       session = null; saveSession();
       if (source === "cloud") await loadSample();
       renderAccount();
-      setNotice("로그아웃했어요. 지금은 예시 데이터를 보고 있어요.");
+      setNotice(t("로그아웃했어요. 지금은 예시 데이터를 보고 있어요."));
     }
   });
   $("loginClose").addEventListener("click", () => loginDlg.close());
@@ -1673,7 +1685,7 @@ body { margin: 0; }
     e.preventDefault();
     const v = loginInputs();
     if (!v) return;
-    loginBusy(true); loginMsg("로그인하는 중이에요…");
+    loginBusy(true); loginMsg(t("로그인하는 중이에요…"));
     try {
       takeSession(await authFetch("token?grant_type=password", v));
       $("loginPw").value = "";
@@ -1685,11 +1697,11 @@ body { margin: 0; }
   $("signupGo").addEventListener("click", async () => {
     const v = loginInputs();
     if (!v) return;
-    loginBusy(true); loginMsg("가입하는 중이에요…");
+    loginBusy(true); loginMsg(t("가입하는 중이에요…"));
     try {
       const j = await authFetch("signup?redirect_to=" + encodeURIComponent(location.origin + location.pathname), v);
       if (j.access_token) { takeSession(j); loginDlg.close(); await loadCloud(); }
-      else loginMsg("확인 메일을 보냈어요. 메일의 링크를 누르면 이 페이지로 돌아와 로그인돼요.");
+      else loginMsg(t("확인 메일을 보냈어요. 메일의 링크를 누르면 이 페이지로 돌아와 로그인돼요."));
     } catch (err) { loginMsg(err.message, true); }
     finally { loginBusy(false); }
   });
@@ -1703,11 +1715,11 @@ body { margin: 0; }
     const used = new Set(PRESET_TAGS);
     for (const n of D.notes) for (const t of n.tags) used.add(t);
     for (const t of editing.tags) used.add(t);
-    $("noteTags").innerHTML = [...used].map((t) => '<button type="button" class="tagbtn" data-tag="' + esc(t) + '" aria-pressed="' + editing.tags.has(t) + '">' + esc(t) + "</button>").join("");
+    $("noteTags").innerHTML = [...used].map((g) => '<button type="button" class="tagbtn" data-tag="' + esc(g) + '" aria-pressed="' + editing.tags.has(g) + '">' + esc(Z.tOpt(g)) + "</button>").join("");
   }
   function drawNoteStars() {
     let h = "";
-    for (let i = 1; i <= 5; i++) h += '<button type="button" data-star="' + i + '" class="' + (i <= editing.rating ? "on" : "") + '" aria-label="별점 ' + i + '점" aria-pressed="' + (i <= editing.rating) + '">★</button>';
+    for (let i = 1; i <= 5; i++) h += '<button type="button" data-star="' + i + '" class="' + (i <= editing.rating ? "on" : "") + '" aria-label="' + t("별점 {n}점", { n: i }) + '" aria-pressed="' + (i <= editing.rating) + '">★</button>';
     $("noteStars").innerHTML = h;
   }
   function openNote(n) {
@@ -1753,7 +1765,7 @@ body { margin: 0; }
       memo: del ? "" : $("noteMemo").value.trim(), updated: Date.now(),
     };
     for (const id of ["noteSave", "noteDel"]) $(id).disabled = true;
-    noteMsg("저장하는 중이에요…");
+    noteMsg(t("저장하는 중이에요…"));
     try {
       await sb("place_notes?on_conflict=user_id,key", {
         method: "POST",
@@ -1767,9 +1779,9 @@ body { margin: 0; }
       renderNotes();
       renderTimeline(timelineOf(curDay));
       renderReport(repYear);
-      setNotice(del ? "메모를 지웠어요. 폰에는 다음에 앱을 열 때 반영돼요." : "저장했어요. 폰에는 다음에 앱을 열 때 반영돼요.");
+      setNotice(t(del ? "메모를 지웠어요. 폰에는 다음에 앱을 열 때 반영돼요." : "저장했어요. 폰에는 다음에 앱을 열 때 반영돼요."));
     } catch (err) {
-      noteMsg("저장하지 못했어요. " + err.message, true);
+      noteMsg(t("저장하지 못했어요.") + " " + err.message, true);
     } finally {
       for (const id of ["noteSave", "noteDel"]) $(id).disabled = false;
     }
@@ -1784,12 +1796,12 @@ body { margin: 0; }
 
   async function openFile(f) {
     if (!f) return;
-    setNotice("<strong>" + esc(f.name) + "</strong>을 여는 중이에요…");
+    setNotice(t("<strong>{file}</strong>을 여는 중이에요…", { file: esc(f.name) }));
     try {
       const buf = new Uint8Array(await f.arrayBuffer());
       openDb(buf, false, f.name);
     } catch (e) {
-      setNotice("파일을 읽지 못했어요. (" + esc(e.message || e) + ")", true);
+      setNotice(t("파일을 읽지 못했어요.") + " (" + esc(e.message || e) + ")", true);
     }
   }
   $("file").addEventListener("change", (e) => { openFile(e.target.files[0]); e.target.value = ""; });
