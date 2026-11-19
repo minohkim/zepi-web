@@ -229,5 +229,5 @@
   }
   if (window.ZLOC) ZLOC.on(() => { shownFor = ""; pickCode = ""; if (!$("view-sea").hidden) render(true); });
   window.ZSEA = { show: () => render(false), refresh: () => render(true) };
-  window.addEventListener("zapp-auth", () => { shownFor = ""; if (!$("view-sea").hidden) render(true); });
+  window.addEventListener("zapp-auth", () => { shownFor = ""; if (window.ZAPP_READY && !$("view-sea").hidden) render(true); });
 })();

@@ -689,6 +689,8 @@ body { margin: 0; }
     setNotice(html);
     $("main").hidden = false;
     renderAll();
+    // 기록이 바뀌면 오늘·바다의 기본 위치도 다시
+    window.dispatchEvent(new Event("zapp-auth"));
   }
 
   function openDb(bytes, isSample, fileName) {
@@ -1990,6 +1992,7 @@ body { margin: 0; }
   if (!TABS.includes(savedTab)) savedTab = "today";
   window.addEventListener("hashchange", () => { const h = location.hash.slice(1); if (TABS.includes(h)) showTab(h); });
   boot().then(() => {
+    window.ZAPP_READY = true;
     showTab(savedTab);
     window.dispatchEvent(new Event("zapp-ready"));
     if (/[?&]login\b/.test(location.search)) {

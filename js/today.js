@@ -38,7 +38,7 @@
       for (const f of this.subs) { try { f(l); } catch (e) { console.error(e); } }
     },
     init() {
-      if (this.cur) return this.cur;
+      if (this.cur && this.cur.src !== "default") return this.cur;
       try { const s = JSON.parse(localStorage.getItem(LOC_KEY) || "null"); if (s && isFinite(s.lat)) { this.cur = s; return s; } } catch (e) {}
       const r = window.ZAPP && ZAPP.lastPlace();
       if (r) { this.cur = { lat: r.lat, lng: r.lng, label: "", src: "record" }; return this.cur; }
@@ -486,5 +486,5 @@
   ZLOC.on(() => { shownFor = ""; if (!$("view-today").hidden) render(true); });
   window.ZTODAY = { show: () => render(false), refresh: () => render(true) };
   // 로그인 상태가 바뀌면 다시
-  window.addEventListener("zapp-auth", () => { shownFor = ""; if (!$("view-today").hidden) render(true); });
+  window.addEventListener("zapp-auth", () => { shownFor = ""; if (window.ZAPP_READY && !$("view-today").hidden) render(true); });
 })();
