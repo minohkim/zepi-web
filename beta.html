@@ -147,6 +147,12 @@ footer a { color: inherit; }
 
   const params = new URLSearchParams(location.search);
   if (params.get("from")) $("source").value = params.get("from").slice(0, 200);
+  // 설치 링크(go.html)에서 폰 종류를 정해서 넘겨주면 미리 골라 둬요
+  const pre = params.get("p");
+  if (pre === "ios" || pre === "android") {
+    const el = $("p-" + pre);
+    if (el) { el.checked = true; f.dispatchEvent(new Event("change")); }
+  }
 
   f.addEventListener("change", () => {
     const p = f.platform.value;
