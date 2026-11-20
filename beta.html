@@ -128,7 +128,7 @@ footer a { color: inherit; }
 (() => {
   // ── 링크가 생기면 여기만 채우면 돼요 ──────────────────────────────
   // App Store Connect → TestFlight → 외부 그룹 → 공개 링크
-  const TESTFLIGHT_URL = "";
+  const TESTFLIGHT_URL = "https://testflight.apple.com/join/K4vm2seY";
   // Play Console → 테스트 → 비공개 테스트 → 테스터 → "웹에서 참여" 링크
   const PLAY_TEST_URL = "";
   // ────────────────────────────────────────────────────────────────
@@ -152,7 +152,7 @@ footer a { color: inherit; }
     $("emailLabel").textContent = p === "android" ? (VIA_FIREBASE ? t("구글 계정 이메일 (Gmail)") : t("Play 스토어에 쓰는 구글 계정 (Gmail)")) : p === "ios" ? t("Apple ID 이메일") : t("이메일");
     $("emailHint").textContent = p === "android"
       ? (VIA_FIREBASE ? t("몇 분 안에 이 주소로 설치 초대 메일이 가요. 갤럭시에 로그인한 구글 계정이면 가장 편해요.") : t("갤럭시에서 Play 스토어에 로그인한 그 구글 계정이어야 설치돼요."))
-      : p === "ios" ? t("TestFlight 초대 메일을 이 주소로 보내드려요.") : t("초대 메일을 이 주소로 보내드려요.");
+      : p === "ios" ? t(TESTFLIGHT_URL ? "신청하면 바로 설치 링크가 나와요. 새 소식은 이 주소로 알려드려요." : "TestFlight 초대 메일을 이 주소로 보내드려요.") : t("초대 메일을 이 주소로 보내드려요.");
   });
 
   function showErr(msg) { $("err").textContent = msg; $("err").hidden = !msg; }
