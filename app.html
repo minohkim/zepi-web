@@ -264,6 +264,9 @@ nav.tabs.side .navgroup { font-size: 11px; letter-spacing: .06em; color: var(--m
 .seasonhead .t { font-family: var(--font-display); font-size: 24px; }
 .needlogin { font-size: 14px; padding: 12px 14px; border-radius: var(--radius); background: var(--leaf-soft); }
 .tidechart svg { width: 100%; height: auto; display: block; }
+.iohead { display: flex; flex-direction: column; gap: 4px; margin-bottom: 16px; }
+.iohead h2 { font-family: var(--font-display); font-size: 22px; }
+.iohead p { margin: 0; color: var(--muted); max-width: 52em; }
 footer { color: var(--muted); font-size: 12px; text-align: center; padding-top: 8px; }
 .loading { padding: 60px 16px; text-align: center; color: var(--muted); }
 
@@ -343,7 +346,8 @@ body { margin: 0; }
         <button role="tab" id="tab-report" aria-selected="false" aria-controls="view-report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>올해의 발자취</span></button>
         <button role="tab" id="tab-notes" aria-selected="false" aria-controls="view-notes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>장소 메모</span></button>
         <span class="navgroup" aria-hidden="true">도구</span>
-        <button role="tab" id="tab-io" aria-selected="false" aria-controls="view-io"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 7h11l-3-3M17 17H6l3 3"/></svg><span>가져오기 · 내보내기</span></button>
+        <button role="tab" id="tab-routes" aria-selected="false" aria-controls="view-routes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 19c4-1 3-6 8-7s4-6 8-7"/><path d="M12 3v6M9 6l3 3 3-3"/></svg><span>경로 가져오기</span></button>
+        <button role="tab" id="tab-io" aria-selected="false" aria-controls="view-io"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><path d="M9 9.5h6M12 6.5v6"/></svg><span>장소 가져오기 · 내보내기</span></button>
       </nav>
       <div class="content">
       <section class="stats" id="stats" aria-label="요약" hidden></section>
@@ -416,14 +420,45 @@ body { margin: 0; }
         <div class="notes" id="notesList"></div>
       </section>
 
+      <section id="view-routes" role="tabpanel" aria-labelledby="tab-routes" hidden>
+        <div class="iohead">
+          <h2>경로 가져오기</h2>
+          <p>폰에 쌓인 <b>다닌 길(경로)</b>을 웹에서 보는 방법이에요. 장소 리스트는 <a href="#io">장소 가져오기</a>에서 해요.</p>
+        </div>
+        <div class="io" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
+          <div class="panel card">
+            <h2>방법 1 · 로그인해서 보기 (추천)</h2>
+            <ol>
+              <li>폰의 제피 앱 → <b>설정 → 내 계정 · 클라우드</b>에서 로그인</li>
+              <li><b>지금 맞추기</b>를 누르면 경로가 계정에 올라가요</li>
+              <li>여기서 같은 계정으로 로그인하면 <b>하루</b> 메뉴에 경로가 보여요</li>
+            </ol>
+            <div class="row" id="routesLogin"></div>
+            <p class="hint">한 번 맞춰 두면 그다음부터는 앱이 알아서 올려요.</p>
+          </div>
+          <div class="panel card">
+            <h2>방법 2 · 백업 파일 열기</h2>
+            <ol>
+              <li>폰의 제피 앱 → <b>설정 → 기록 백업</b>으로 .db 파일 만들기</li>
+              <li>파일을 이 컴퓨터로 옮기기 (메일·카톡·드라이브 등)</li>
+              <li>아래에서 파일 고르기</li>
+            </ol>
+            <div class="row">
+              <label class="btn primary" for="file">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg>
+                백업 파일 열기
+              </label>
+              <input type="file" id="file" accept=".db,application/octet-stream" style="position:absolute;width:1px;height:1px;opacity:0">
+            </div>
+            <p class="hint">로그인 없이 볼 수 있어요. 파일은 이 브라우저 안에서만 열리고 어디에도 올라가지 않아요. 창을 닫으면 사라져요.</p>
+          </div>
+        </div>
+      </section>
+
       <section id="view-io" role="tabpanel" aria-labelledby="tab-io" hidden>
-        <div class="panel card" style="padding:16px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;margin-bottom:16px">
-          <div style="min-width:0"><b>제피 백업 파일 열기</b><div class="hint" style="font-size:13px;color:var(--muted)">앱의 설정 → 기록 백업으로 만든 .db 파일을 열면 이 브라우저 안에서만 보여요.</div></div>
-          <label class="btn primary" for="file">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg>
-            백업 파일 열기
-          </label>
-          <input type="file" id="file" accept=".db,application/octet-stream">
+        <div class="iohead">
+          <h2>장소 가져오기 · 내보내기</h2>
+          <p>구글 지도·네이버 지도에 <b>저장해 둔 장소</b>(가고 싶은 곳, 맛집 리스트 등)를 제피 장소 메모로 가져오거나, 내 장소를 구글 내 지도로 내보내요. 다닌 길(경로)은 <a href="#routes">경로 가져오기</a>에서 해요.</p>
         </div>
         <div class="io">
           <div class="panel card">
@@ -488,7 +523,7 @@ body { margin: 0; }
     </div>
   </div>
 
-  <footer>로그인하면 내 계정의 기록만 보여요. 백업 파일은 이 브라우저 안에서만 열려요.</footer>
+  <footer><span>로그인하면 내 계정의 기록만 보여요. 백업 파일은 이 브라우저 안에서만 열려요.</span> <a href="privacy.html">개인정보처리방침</a></footer>
 
   <dialog class="dlg" id="loginDlg" aria-labelledby="loginTitle">
     <form id="loginForm" novalidate>
@@ -1430,7 +1465,7 @@ body { margin: 0; }
   }
 
   // ---------- 탭과 이벤트 ----------
-  const TABS = ["today", "sea", "day", "conquest", "report", "notes", "io"];
+  const TABS = ["today", "sea", "day", "conquest", "report", "notes", "routes", "io"];
   const RECORD_TABS = ["day", "conquest", "report", "notes"];
   function showTab(name) {
     if (!D && RECORD_TABS.includes(name)) name = "today";
@@ -1439,6 +1474,7 @@ body { margin: 0; }
       $("view-" + t).hidden = t !== name;
     }
     $("stats").hidden = !RECORD_TABS.includes(name);
+    if (name === "routes") drawRoutesLogin();
     if (name === "today" && window.ZTODAY) ZTODAY.show();
     if (name === "sea" && window.ZSEA) ZSEA.show();
     if (location.hash.slice(1) !== name) { try { history.replaceState(null, "", "#" + name); } catch (e) {} }
@@ -1948,6 +1984,7 @@ body { margin: 0; }
     try {
       const buf = new Uint8Array(await f.arrayBuffer());
       openDb(buf, false, f.name);
+      if (D) showTab("day");
     } catch (e) {
       setNotice(t("파일을 읽지 못했어요.") + " (" + esc(e.message || e) + ")", true);
     }
@@ -1968,6 +2005,22 @@ body { margin: 0; }
   }
   try { matchMedia("(prefers-color-scheme: dark)").addEventListener("change", retheme); } catch (e) {}
   new MutationObserver(retheme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
+  function drawRoutesLogin() {
+    const el = $("routesLogin");
+    if (!el) return;
+    if (!session) el.innerHTML = '<button class="btn primary" type="button" data-rl="in">' + t("로그인") + "</button>";
+    else if (source === "cloud") el.innerHTML = '<span class="hint">' + t("로그인돼 있어요. 하루 메뉴에서 내 경로를 볼 수 있어요.") + '</span> <button class="btn" type="button" data-rl="day">' + t("하루 보기") + "</button>";
+    else el.innerHTML = '<button class="btn primary" type="button" data-rl="load">' + t("내 기록 보기") + "</button>";
+  }
+  $("routesLogin").addEventListener("click", async (e) => {
+    const b = e.target.closest("[data-rl]");
+    if (!b) return;
+    if (b.dataset.rl === "in") { loginMsg(""); loginDlg.showModal(); }
+    if (b.dataset.rl === "load") { await loadCloud(); drawRoutesLogin(); }
+    if (b.dataset.rl === "day") showTab("day");
+  });
+  window.addEventListener("zapp-auth", drawRoutesLogin);
 
   // 다른 화면(오늘·바다)이 쓰는 통로
   window.ZAPP = {

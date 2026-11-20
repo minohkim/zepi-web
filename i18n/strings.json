@@ -3523,5 +3523,90 @@
   "Chosen place",
   "所选地点",
   "選んだ場所"
+ ],
+ "경로 가져오기": [
+  "Import routes",
+  "导入路线",
+  "ルートを取り込む"
+ ],
+ "장소 가져오기 · 내보내기": [
+  "Import · export places",
+  "导入 · 导出地点",
+  "場所の取り込み · 書き出し"
+ ],
+ "구글 지도·네이버 지도에 <b>저장해 둔 장소</b>(가고 싶은 곳, 맛집 리스트 등)를 제피 장소 메모로 가져오거나, 내 장소를 구글 내 지도로 내보내요. 다닌 길(경로)은 <a href=\"#routes\">경로 가져오기</a>에서 해요.": [
+  "Bring <b>places you saved</b> in Google Maps or Naver Map (want-to-go spots, restaurant lists, etc.) into Zepi place notes, or export your places to Google My Maps. For the routes you travelled, use <a href=\"#routes\">Import routes</a>.",
+  "将 Google 地图·Naver 地图中<b>保存的地点</b>（想去的地方、美食清单等）导入为 Zepi 地点备注，或把我的地点导出到 Google 我的地图。走过的路线请在<a href=\"#routes\">导入路线</a>中操作。",
+  "Googleマップ・NAVERマップに<b>保存した場所</b>（行きたい所、グルメリストなど）をZepiの場所メモに取り込んだり、自分の場所をGoogleマイマップに書き出します。歩いた道（ルート）は<a href=\"#routes\">ルートを取り込む</a>で行います。"
+ ],
+ "폰에 쌓인 <b>다닌 길(경로)</b>을 웹에서 보는 방법이에요. 장소 리스트는 <a href=\"#io\">장소 가져오기</a>에서 해요.": [
+  "How to see the <b>routes</b> recorded on your phone here on the web. For saved place lists, use <a href=\"#io\">Import places</a>.",
+  "在网页上查看手机记录的<b>路线</b>的方法。地点清单请在<a href=\"#io\">导入地点</a>中操作。",
+  "スマホに記録された<b>道のり（ルート）</b>をウェブで見る方法です。場所リストは<a href=\"#io\">場所を取り込む</a>で行います。"
+ ],
+ "방법 1 · 로그인해서 보기 (추천)": [
+  "Option 1 · Sign in (recommended)",
+  "方法 1 · 登录查看（推荐）",
+  "方法1 · ログインして見る（おすすめ）"
+ ],
+ "방법 2 · 백업 파일 열기": [
+  "Option 2 · Open a backup file",
+  "方法 2 · 打开备份文件",
+  "方法2 · バックアップファイルを開く"
+ ],
+ "폰의 제피 앱 → <b>설정 → 내 계정 · 클라우드</b>에서 로그인": [
+  "In the Zepi phone app, sign in at <b>Settings → My account · Cloud</b>",
+  "在手机 Zepi 应用中，于<b>设置 → 我的账号 · 云端</b>登录",
+  "スマホのZepiアプリで<b>設定 → マイアカウント · クラウド</b>からログイン"
+ ],
+ "<b>지금 맞추기</b>를 누르면 경로가 계정에 올라가요": [
+  "Tap <b>Sync now</b> to upload your routes to your account",
+  "点<b>立即同步</b>，路线会上传到账号",
+  "<b>今すぐ同期</b>を押すとルートがアカウントに上がります"
+ ],
+ "여기서 같은 계정으로 로그인하면 <b>하루</b> 메뉴에 경로가 보여요": [
+  "Sign in here with the same account and your routes appear under <b>Day</b>",
+  "在这里用同一账号登录，<b>每日</b>菜单中就会显示路线",
+  "ここで同じアカウントでログインすると<b>1日</b>メニューにルートが表示されます"
+ ],
+ "한 번 맞춰 두면 그다음부터는 앱이 알아서 올려요.": [
+  "After the first sync, the app uploads on its own.",
+  "同步一次后，应用会自动上传。",
+  "一度同期すれば、あとはアプリが自動で上げます。"
+ ],
+ "폰의 제피 앱 → <b>설정 → 기록 백업</b>으로 .db 파일 만들기": [
+  "In the Zepi phone app, make a .db file with <b>Settings → Backup</b>",
+  "在手机 Zepi 应用中通过<b>设置 → 记录备份</b>生成 .db 文件",
+  "スマホのZepiアプリの<b>設定 → 記録のバックアップ</b>で .db ファイルを作成"
+ ],
+ "파일을 이 컴퓨터로 옮기기 (메일·카톡·드라이브 등)": [
+  "Move the file to this computer (email, KakaoTalk, Drive, etc.)",
+  "把文件传到这台电脑（邮件·KakaoTalk·云盘等）",
+  "ファイルをこのパソコンに移す（メール・カカオトーク・ドライブなど）"
+ ],
+ "아래에서 파일 고르기": [
+  "Choose the file below",
+  "在下方选择文件",
+  "下でファイルを選ぶ"
+ ],
+ "로그인 없이 볼 수 있어요. 파일은 이 브라우저 안에서만 열리고 어디에도 올라가지 않아요. 창을 닫으면 사라져요.": [
+  "No sign-in needed. The file opens only in this browser and is never uploaded. It's gone when you close the window.",
+  "无需登录。文件只在本浏览器中打开，不会上传到任何地方。关闭窗口后即消失。",
+  "ログイン不要です。ファイルはこのブラウザの中だけで開き、どこにもアップロードされません。ウィンドウを閉じると消えます。"
+ ],
+ "로그인돼 있어요. 하루 메뉴에서 내 경로를 볼 수 있어요.": [
+  "You're signed in. See your routes under Day.",
+  "已登录。可在每日菜单查看路线。",
+  "ログイン済みです。1日メニューでルートを見られます。"
+ ],
+ "하루 보기": [
+  "Open Day",
+  "查看每日",
+  "1日を見る"
+ ],
+ "개인정보처리방침": [
+  "Privacy policy",
+  "隐私政策",
+  "プライバシーポリシー"
  ]
 }
