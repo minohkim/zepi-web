@@ -749,7 +749,7 @@ body { margin: 0; }
       return;
     }
     source = isSample ? "sample" : "file";
-    $("sampleBtn").hidden = isSample;
+    $("sampleBtn").hidden = isSample || !!session;
     if (isSample) {
       showData(data, session
         ? t("<strong>예시 데이터</strong>를 보고 있어요.")
@@ -973,7 +973,7 @@ body { margin: 0; }
         return;
       }
       source = "cloud";
-      $("sampleBtn").hidden = false;
+      $("sampleBtn").hidden = true;
       showData(data, t("<strong>{email}</strong> 계정의 기록이에요. {from}부터 {to}까지, {n}일. 장소 메모는 여기서 고치면 폰에도 반영돼요.", {
         email: esc(session.email), from: fmtDayShort(data.days[0]), to: fmtDayShort(data.days[data.days.length - 1]), n: fmtInt.format(data.days.length) }));
     } catch (e) {
@@ -982,6 +982,8 @@ body { margin: 0; }
   }
 
   function renderAccount() {
+    // 로그인한 사람에게는 예시 다시 보기를 보이지 않아요
+    $("sampleBtn").hidden = !!session || source === "sample";
     $("acct").innerHTML = session
       ? '<span class="who" title="' + esc(session.email) + '">' + esc(session.email) + '</span>' +
         '<button class="btn" type="button" data-acct="load">' + t(source !== "cloud" ? "내 기록 보기" : "새로고침") + "</button>" +
