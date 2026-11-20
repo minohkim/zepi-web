@@ -167,6 +167,16 @@ nav.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: 
 .acct .who { font-size: 13px; color: var(--muted); max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 dialog.dlg { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); color: var(--ink); padding: 0; width: min(440px, calc(100vw - 32px)); max-height: calc(100vh - 32px); }
 dialog.dlg::backdrop { background: rgb(10 20 14 / .45); }
+.avatar { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--leaf); color: #fff; font-size: 12px; font-weight: 700; object-fit: cover; flex: none; overflow: hidden; }
+.avatar.big { width: 56px; height: 56px; font-size: 22px; }
+.btn.who { display: inline-flex; align-items: center; gap: 6px; max-width: 220px; }
+.btn.who span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#acctDlg .me { display: flex; gap: 14px; align-items: center; margin: 6px 0 14px; }
+#acctDlg .me b { font-size: 17px; }
+#acctDlg details.danger { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 10px; }
+#acctDlg details.danger summary { color: #C62828; cursor: pointer; font-weight: 600; }
+.btn.dangerbtn { background: #C62828; color: #fff; border-color: #C62828; }
+.btn.dangerbtn:disabled { opacity: .45; }
 .dlg form { display: flex; flex-direction: column; gap: 14px; padding: 20px; }
 .dlg h2 { font-family: var(--font-display); font-size: 21px; }
 .dlg p.lead { margin: 0; color: var(--muted); font-size: 14px; }
@@ -559,6 +569,31 @@ body { margin: 0; }
     </form>
   </dialog>
 
+  <dialog class="dlg" id="acctDlg" aria-labelledby="acctTitle">
+    <form method="dialog" id="acctForm">
+      <h2 id="acctTitle">내 계정</h2>
+      <div class="me">
+        <span class="avatar big" id="meAvatar"></span>
+        <div>
+          <b id="meName"></b>
+          <div class="small" id="meEmail"></div>
+          <div class="small" id="meHow"></div>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn" type="button" id="meOut">로그아웃</button>
+        <button class="btn" type="button" id="meClose">닫기</button>
+      </div>
+      <details class="danger">
+        <summary>탈퇴하기</summary>
+        <p class="small">제피 계정과 클라우드에 올린 이동 기록·장소 메모·정복 기록이 모두 지워지고 되돌릴 수 없어요. 폰 앱에 있는 기록은 그대로 남아요.</p>
+        <label class="field" for="meConfirm">계속하려면 "탈퇴"라고 적어 주세요<input id="meConfirm" autocomplete="off"></label>
+        <div class="msg" id="meMsg" role="status"></div>
+        <button class="btn dangerbtn" type="button" id="meDelete" disabled>탈퇴하기</button>
+      </details>
+    </form>
+  </dialog>
+
   <dialog class="dlg" id="noteDlg" aria-labelledby="noteTitle">
     <form id="noteForm" novalidate>
       <h2 id="noteTitle">장소 메모</h2>
@@ -881,9 +916,21 @@ body { margin: 0; }
       exp: Date.now() + (+j.expires_in || 3600) * 1000,
       email: u.email || (u.user_metadata && (u.user_metadata.name || u.user_metadata.full_name || u.user_metadata.nickname)) || (session && session.email) || "", uid: u.id || (session && session.uid) || "",
     };
+    readProfile(u);
     saveSession();
     renderAccount();
     window.dispatchEvent(new Event("zapp-auth"));
+  }
+  // 내 계정 정보 (이름·사진·로그인 방식·가입일)를 세션에 같이 둬요
+  function readProfile(u) {
+    if (!session || !u || !u.id) return;
+    const m = u.user_metadata || {};
+    session.name = m.name || m.full_name || m.nickname || session.name || "";
+    session.avatar = m.avatar_url || m.picture || session.avatar || "";
+    session.provider = (u.app_metadata && u.app_metadata.provider) || session.provider || "";
+    session.created = u.created_at || session.created || "";
+    if (u.email) session.email = u.email;
+    saveSession();
   }
   function authMsg(j, status) {
     const c = j.error_code || j.error || "";
@@ -984,10 +1031,13 @@ body { margin: 0; }
   function renderAccount() {
     // 로그인한 사람에게는 예시 다시 보기를 보이지 않아요
     $("sampleBtn").hidden = !!session || source === "sample";
+    const label = session ? (session.name || session.email || t("내 계정")) : "";
+    const pic = session && session.avatar
+      ? '<img class="avatar" src="' + esc(session.avatar) + '" alt="" referrerpolicy="no-referrer">'
+      : '<span class="avatar">' + esc((label || "제").slice(0, 1)) + "</span>";
     $("acct").innerHTML = session
-      ? '<span class="who" title="' + esc(session.email) + '">' + esc(session.email) + '</span>' +
-        '<button class="btn" type="button" data-acct="load">' + t(source !== "cloud" ? "내 기록 보기" : "새로고침") + "</button>" +
-        '<button class="btn" type="button" data-acct="out">' + t("로그아웃") + "</button>"
+      ? '<button class="btn who" type="button" data-acct="me" title="' + esc(t("내 계정")) + '">' + pic + "<span>" + esc(label) + "</span></button>" +
+        '<button class="btn" type="button" data-acct="load">' + t(source !== "cloud" ? "내 기록 보기" : "새로고침") + "</button>"
       : '<button class="btn" type="button" data-acct="in">' + t("로그인") + "</button>";
   }
   const canEdit = () => source === "cloud" && !!session;
@@ -1815,13 +1865,66 @@ body { margin: 0; }
     if (!b) return;
     if (b.dataset.acct === "in") { loginMsg(""); loginDlg.showModal(); $("loginEmail").focus(); }
     if (b.dataset.acct === "load") await loadCloud();
-    if (b.dataset.acct === "out") {
-      try { await authFetch("logout", {}, await token()); } catch (err) {}
+    if (b.dataset.acct === "out") await signOut();
+    if (b.dataset.acct === "me") openAccount();
+  });
+
+  async function signOut(msg) {
+    try { await authFetch("logout", {}, await token()); } catch (err) {}
+    session = null; saveSession();
+    window.dispatchEvent(new Event("zapp-auth"));
+    if (source === "cloud") await loadSample();
+    renderAccount();
+    setNotice(msg || t("로그아웃했어요. 지금은 예시 데이터를 보고 있어요."));
+  }
+
+  // ---------- 내 계정: 프로필·로그아웃·탈퇴 ----------
+  const acctDlg = $("acctDlg");
+  function fillAccount() {
+    if (!session) return;
+    const name = session.name || session.email || t("제피 사용자");
+    $("meAvatar").innerHTML = session.avatar
+      ? '<img class="avatar big" src="' + esc(session.avatar) + '" alt="" referrerpolicy="no-referrer">'
+      : esc(name.slice(0, 1));
+    $("meName").textContent = name;
+    $("meEmail").textContent = session.name && session.email ? session.email : "";
+    const how = { kakao: t("카카오로 로그인"), google: t("구글로 로그인"), email: t("이메일로 로그인") }[session.provider] || t("로그인됨");
+    let since = "";
+    if (session.created) {
+      try { since = " · " + new Intl.DateTimeFormat(Z.lang || "ko", { dateStyle: "long" }).format(new Date(session.created)) + " " + t("가입"); } catch (e) {}
+    }
+    $("meHow").textContent = how + since;
+  }
+  async function openAccount() {
+    $("meConfirm").value = ""; $("meDelete").disabled = true; $("meMsg").textContent = "";
+    fillAccount();
+    acctDlg.showModal();
+    try { readProfile(await authFetch("user", undefined, await token())); fillAccount(); renderAccount(); } catch (e) {}
+  }
+  $("meClose").addEventListener("click", () => acctDlg.close());
+  $("meOut").addEventListener("click", async () => { acctDlg.close(); await signOut(); });
+  $("meConfirm").addEventListener("input", () => { $("meDelete").disabled = $("meConfirm").value.trim() !== "탈퇴"; });
+  $("meDelete").addEventListener("click", async () => {
+    $("meDelete").disabled = true;
+    $("meMsg").textContent = t("탈퇴하는 중이에요…"); $("meMsg").classList.remove("err");
+    try {
+      const r = await fetch(SB_URL + "/functions/v1/account/delete", {
+        method: "POST",
+        headers: { apikey: SB_KEY, Authorization: "Bearer " + (await token()), "Content-Type": "application/json" },
+        body: JSON.stringify({ confirm: "탈퇴" }),
+      });
+      let j = {};
+      try { j = await r.json(); } catch (e) {}
+      if (!r.ok) throw new Error((j.error && j.error.message) || t("탈퇴하지 못했어요. 잠시 뒤 다시 해 주세요."));
+      acctDlg.close();
       session = null; saveSession();
       window.dispatchEvent(new Event("zapp-auth"));
       if (source === "cloud") await loadSample();
       renderAccount();
-      setNotice(t("로그아웃했어요. 지금은 예시 데이터를 보고 있어요."));
+      setNotice(t("탈퇴했어요. 그동안 고마웠어요. 폰 앱의 기록은 그대로 남아 있어요."));
+    } catch (e) {
+      $("meMsg").textContent = e.message || String(e); $("meMsg").classList.add("err");
+      $("meDelete").disabled = false;
     }
   });
   $("loginClose").addEventListener("click", () => loginDlg.close());

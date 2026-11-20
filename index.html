@@ -116,7 +116,7 @@ footer .in { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: spa
       <a class="btn hide-s" href="#features">기능</a>
       <a class="btn hide-s" href="beta.html">베타 신청</a>
       <select class="btn langsel" id="langSel" aria-label="언어 · Language"></select>
-      <a class="btn primary" href="app.html?login">로그인</a>
+      <a class="btn primary" href="app.html?login" id="loginLink">로그인</a>
     </nav>
   </div>
 </header>
@@ -214,6 +214,21 @@ footer .in { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: spa
     const Z = window.ZI18N;
     Z.apply();
     Z.switcher(document.getElementById("langSel"));
+  })();
+</script>
+<script>
+  // 로그인해 둔 사람이 ?home 으로 첫 화면에 오면 '로그인' 대신 내 이름과 '내 기록 열기'
+  (function () {
+    try {
+      var s = JSON.parse(localStorage.getItem("jepi.session") || "null");
+      if (!s || !s.refresh) return;
+      var a = document.getElementById("loginLink");
+      if (!a) return;
+      var tt = (window.ZI18N && window.ZI18N.t) ? window.ZI18N.t : function (x) { return x; };
+      a.href = "app.html";
+      a.textContent = (s.name || s.email ? (s.name || s.email) + " · " : "") + tt("내 기록 열기");
+      a.removeAttribute("data-i18n");
+    } catch (e) {}
   })();
 </script>
 </body>

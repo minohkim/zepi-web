@@ -3613,5 +3613,75 @@
   "You'll get the install link right after signing up. We'll send news to this address.",
   "提交申请后会立即显示安装链接。新消息会发送到这个地址。",
   "申し込むとすぐにインストールリンクが表示されます。お知らせはこのアドレスに送ります。"
+ ],
+ "내 계정": [
+  "My account",
+  "我的账户",
+  "マイアカウント"
+ ],
+ "제피 사용자": [
+  "Zepi user",
+  "Zepi 用户",
+  "Zepiユーザー"
+ ],
+ "카카오로 로그인": [
+  "Signed in with Kakao",
+  "通过 Kakao 登录",
+  "Kakaoでログイン"
+ ],
+ "구글로 로그인": [
+  "Signed in with Google",
+  "通过 Google 登录",
+  "Googleでログイン"
+ ],
+ "이메일로 로그인": [
+  "Signed in with email",
+  "通过邮箱登录",
+  "メールでログイン"
+ ],
+ "로그인됨": [
+  "Signed in",
+  "已登录",
+  "ログイン中"
+ ],
+ "가입": [
+  "joined",
+  "注册",
+  "登録"
+ ],
+ "탈퇴하기": [
+  "Delete account",
+  "注销账户",
+  "退会する"
+ ],
+ "탈퇴하는 중이에요…": [
+  "Deleting your account…",
+  "正在注销…",
+  "退会しています…"
+ ],
+ "탈퇴하지 못했어요. 잠시 뒤 다시 해 주세요.": [
+  "Couldn't delete the account. Please try again later.",
+  "注销失败，请稍后再试。",
+  "退会できませんでした。しばらくしてからもう一度お試しください。"
+ ],
+ "탈퇴했어요. 그동안 고마웠어요. 폰 앱의 기록은 그대로 남아 있어요.": [
+  "Your account is deleted. Thank you for everything. Records in the phone app stay as they are.",
+  "账户已注销，感谢使用。手机应用里的记录仍会保留。",
+  "退会しました。ありがとうございました。スマホアプリの記録はそのまま残ります。"
+ ],
+ "제피 계정과 클라우드에 올린 이동 기록·장소 메모·정복 기록이 모두 지워지고 되돌릴 수 없어요. 폰 앱에 있는 기록은 그대로 남아요.": [
+  "Your Zepi account and all routes, place notes and region records uploaded to the cloud will be deleted permanently. Records in the phone app stay.",
+  "Zepi 账户及上传到云端的路线、地点备注、足迹版图都会被永久删除。手机应用里的记录会保留。",
+  "Zepiアカウントとクラウドに上げた移動記録・場所メモ・制覇記録がすべて削除され、元に戻せません。スマホアプリの記録は残ります。"
+ ],
+ "계속하려면 \"탈퇴\"라고 적어 주세요": [
+  "To continue, type \"탈퇴\"",
+  "如需继续，请输入「탈퇴」",
+  "続けるには「탈퇴」と入力してください"
+ ],
+ "내 기록 열기": [
+  "Open my records",
+  "打开我的记录",
+  "自分の記録を開く"
  ]
 }
