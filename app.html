@@ -10,32 +10,38 @@
 <style>
 /* 레이아웃: 위에 요약 띠, 아래 탭. "하루"는 넓은 화면에서 왼쪽 지도 · 오른쪽 타임라인 (폴드 펼친 화면과 같은 배치) */
 :root {
-  --bg: #F5F7F1;
+  --bg: #F7F5EE;
   --surface: #FFFFFF;
   --ink: #17201A;
   --muted: #56615A;
-  --line: #D8DED4;
+  --line: #D9D5C7;
   --leaf: #1F6B3A;
   --leaf-soft: #DCE9DD;
   --pepper: #A8402A;
   --land: #ECF0E7;
   --land-line: #C3CCBF;
   --passed: #CFE0CB;
+  /* 앱 브랜드 노랑: 주 버튼·선택 표시 */
+  --sun: #F2B705;
+  --sun-ink: #8A6A00;
+  --sun-soft: #FFF1C2;
+  --on-sun: #1B1A12; /* 노랑 위 글자는 다크 모드에서도 어둡게 */
   --font-display: "Gowun Batang", "Nanum Myeongjo", serif;
   --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
   --font-num: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
-  --radius: 10px;
+  --radius: 20px;
+  --radius-sm: 10px; /* 알림 띠처럼 낮은 것 */
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0F1411; --surface: #161D18; --ink: #E5EBE3; --muted: #9AA69D; --line: #29332C;
-    --leaf: #62BE84; --leaf-soft: #1D3324; --pepper: #E5805F; --land: #19211C; --land-line: #34413A; --passed: #2A3B2F;
+    --leaf: #62BE84; --leaf-soft: #1D3324; --pepper: #E5805F; --land: #19211C; --land-line: #34413A; --passed: #2A3B2F; --sun-ink: #F2C94C; --sun-soft: #3A3114;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0F1411; --surface: #161D18; --ink: #E5EBE3; --muted: #9AA69D; --line: #29332C;
-  --leaf: #62BE84; --leaf-soft: #1D3324; --pepper: #E5805F; --land: #19211C; --land-line: #34413A; --passed: #2A3B2F;
+  --leaf: #62BE84; --leaf-soft: #1D3324; --pepper: #E5805F; --land: #19211C; --land-line: #34413A; --passed: #2A3B2F; --sun-ink: #F2C94C; --sun-soft: #3A3114;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -56,15 +62,16 @@ header.top { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px
 .brand h1 { font-family: var(--font-display); font-size: 26px; letter-spacing: -0.01em; }
 .brand p { margin: 0; color: var(--muted); font-size: 13px; }
 .actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-.btn { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font-size: 14px; }
-.btn.primary { background: var(--leaf); border-color: var(--leaf); color: var(--bg); font-weight: 600; }
+.btn { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font-size: 14px; }
+.btn.primary { background: var(--sun); border-color: var(--sun); color: var(--on-sun); font-weight: 600; }
 .btn:hover { border-color: var(--leaf); }
+.btn.primary:hover { border-color: var(--sun-ink); }
 #file { position: absolute; width: 1px; height: 1px; opacity: 0; }
 
-.notice { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; padding: 10px 14px; border-radius: var(--radius); background: var(--leaf-soft); font-size: 14px; }
+.notice { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; padding: 10px 14px; border-radius: var(--radius-sm); background: var(--leaf-soft); font-size: 14px; }
 .notice strong { font-weight: 600; }
 .notice.err { background: color-mix(in srgb, var(--pepper) 16%, var(--surface)); }
-.drop-on { outline: 2px dashed var(--leaf); outline-offset: 6px; border-radius: var(--radius); }
+.drop-on { outline: 2px dashed var(--leaf); outline-offset: 6px; border-radius: var(--radius-sm); }
 
 .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
 .stat { background: var(--surface); padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
@@ -88,17 +95,17 @@ nav.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: 
 .daynav .label { flex: 1; text-align: center; min-width: 0; }
 .daynav .label b { font-family: var(--font-display); font-size: 19px; }
 .daynav .label span { display: block; color: var(--muted); font-size: 13px; }
-.iconbtn { width: 40px; height: 40px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); display: grid; place-items: center; }
+.iconbtn { width: 44px; height: 44px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); display: grid; place-items: center; }
 .iconbtn:disabled { opacity: .35; cursor: default; }
 .iconbtn svg { width: 18px; height: 18px; }
 
 .cal { padding: 4px 12px 12px; }
 .cal-head { display: flex; justify-content: space-between; align-items: center; padding: 4px 0 8px; }
 .cal-head b { font-size: 14px; }
-.cal-head .iconbtn { width: 32px; height: 32px; }
+.cal-head .iconbtn { width: 44px; height: 44px; }
 .cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; text-align: center; font-size: 13px; }
 .cal-grid .dow { color: var(--muted); font-size: 11px; padding: 2px 0; }
-.cal-grid button { position: relative; border: 0; background: none; color: var(--muted); border-radius: 8px; min-height: 34px; font-family: var(--font-num); font-variant-numeric: tabular-nums; font-size: 13px; }
+.cal-grid button { position: relative; border: 0; background: none; color: var(--muted); border-radius: 8px; min-height: 44px; font-family: var(--font-num); font-variant-numeric: tabular-nums; font-size: 13px; }
 .cal-grid button.has { color: var(--ink); }
 .cal-grid button.has::after { content: ""; position: absolute; left: 50%; bottom: 3px; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: var(--leaf); }
 .cal-grid button.away::after { background: var(--pepper); width: 6px; margin-left: -3px; border-radius: 3px; }
@@ -146,7 +153,7 @@ nav.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: 
 .card-h h2 { font-family: var(--font-display); font-size: 18px; }
 .card-h span { color: var(--muted); font-size: 13px; }
 .yearsel { display: flex; gap: 6px; flex-wrap: wrap; }
-.yearsel button { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 6px 14px; font-family: var(--font-num); min-height: 36px; }
+.yearsel button { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 6px 14px; font-family: var(--font-num); min-height: 44px; }
 .yearsel button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .chart { padding: 8px 12px 12px; overflow-x: auto; }
 .chart svg { display: block; width: 100%; min-width: 480px; height: auto; }
@@ -161,7 +168,7 @@ nav.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: 
 .note .nm { font-weight: 600; overflow-wrap: anywhere; }
 .note .stars { color: var(--pepper); letter-spacing: 1px; font-size: 14px; }
 .note .when { color: var(--muted); font-size: 12px; }
-.note button.go { align-self: flex-start; margin-top: 6px; border: 0; background: none; color: var(--leaf); padding: 6px 0; font-size: 13px; font-weight: 600; min-height: 32px; }
+.note button.go { align-self: flex-start; margin-top: 6px; border: 0; background: none; color: var(--leaf); padding: 6px 0; font-size: 13px; font-weight: 600; min-height: 44px; }
 
 .acct { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .acct .who { font-size: 13px; color: var(--muted); max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -233,6 +240,9 @@ nav.tabs.side { flex-direction: column; border-bottom: 0; gap: 2px; position: st
 nav.tabs.side button { text-align: left; border-bottom: 0; border-left: 3px solid transparent; border-radius: 0 8px 8px 0; margin: 0; padding: 9px 12px; display: flex; gap: 10px; align-items: center; }
 nav.tabs.side button[aria-selected="true"] { border-left-color: var(--leaf); background: var(--leaf-soft); }
 nav.tabs.side button svg { width: 18px; height: 18px; flex: none; }
+/* 고른 메뉴: 앱처럼 작은 노란 점 */
+nav.tabs.side button { position: relative; }
+nav.tabs.side button[aria-selected="true"]::after { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--sun); box-shadow: 0 0 0 1px color-mix(in srgb, var(--sun-ink) 45%, transparent); margin-left: auto; flex: none; }
 nav.tabs.side .navgroup { font-size: 11px; letter-spacing: .06em; color: var(--muted); padding: 14px 12px 4px; text-transform: uppercase; }
 @media (max-width: 860px) {
   .shell { grid-template-columns: minmax(0, 1fr); gap: 12px; }
@@ -241,6 +251,7 @@ nav.tabs.side .navgroup { font-size: 11px; letter-spacing: .06em; color: var(--m
   nav.tabs.side button { border-left: 0; border-bottom: 2px solid transparent; border-radius: 0; padding: 10px 12px; white-space: nowrap; }
   nav.tabs.side button[aria-selected="true"] { border-bottom-color: var(--leaf); background: none; }
   nav.tabs.side button svg { display: none; }
+  nav.tabs.side button[aria-selected="true"]::after { position: absolute; top: 5px; left: 50%; margin-left: -3px; width: 6px; height: 6px; }
 }
 .social { display: grid; gap: 8px; }
 .social button { justify-content: center; min-height: 46px; font-weight: 600; }
@@ -269,10 +280,10 @@ nav.tabs.side .navgroup { font-size: 11px; letter-spacing: .06em; color: var(--m
 .chips a:hover, .chips button:hover { border-color: var(--leaf); }
 .locbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
 .locbar .where { font-family: var(--font-display); font-size: 20px; }
-.locbar select { font: inherit; font-size: 14px; min-height: 40px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 0 12px; max-width: 100%; }
+.locbar select { font: inherit; font-size: 14px; min-height: 44px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 0 12px; max-width: 100%; }
 .seasonhead { border-radius: var(--radius); padding: 18px; display: flex; flex-direction: column; gap: 6px; border: 1px solid var(--line); }
 .seasonhead .t { font-family: var(--font-display); font-size: 24px; }
-.needlogin { font-size: 14px; padding: 12px 14px; border-radius: var(--radius); background: var(--leaf-soft); }
+.needlogin { font-size: 14px; padding: 12px 14px; border-radius: var(--radius-sm); background: var(--leaf-soft); }
 .tidechart svg { width: 100%; height: auto; display: block; }
 .iohead { display: flex; flex-direction: column; gap: 4px; margin-bottom: 16px; }
 .iohead h2 { font-family: var(--font-display); font-size: 22px; }
@@ -709,7 +720,8 @@ body { margin: 0; }
 
   const $ = (id) => document.getElementById(id);
   const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  // 작은따옴표도 바꿔요: 속성을 '…'로 감싼 곳(aria-label='…' 등)에서도 안전하게
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const Z = window.ZI18N;
   const t = Z.t;
   const fmtInt = Z.fmt.int;
@@ -1385,7 +1397,7 @@ body { margin: 0; }
       all.push([it.lat, it.lng]);
       const nm = shortName(placeName(it.lat, it.lng)) || t("이름 모르는 곳");
       const mk = L.circleMarker([it.lat, it.lng], { radius: 7, color: surf, weight: 2, fillColor: pepper, fillOpacity: 1 })
-        .bindTooltip(nm + " · " + hm(it.start) + " · " + durText(it.end - it.start), { direction: "top", offset: [0, -8] })
+        .bindTooltip(esc(nm) + " · " + hm(it.start) + " · " + durText(it.end - it.start), { direction: "top", offset: [0, -8] })
         .addTo(dayLayers);
       mk._stayIdx = i;
     });
@@ -1698,7 +1710,7 @@ body { margin: 0; }
       const [cls, label] = ST[p.st];
       const has = p.st === "ok" || p.st === "found";
       return "<tr><td><input type='checkbox' data-i='" + i + "' " + (p.sel && has ? "checked" : "") + (has ? "" : " disabled") + " aria-label='" + esc(t("{name} 선택", { name: p.name })) + "'></td>" +
-        "<td>" + esc(p.name) + (p.sub ? "<div class='sub'>" + esc(p.sub) + "</div>" : "") + "</td><td>" + esc(p.list.split(", ").map(Z.tOpt).join(", ")) + "</td><td>" + esc(p.memo).slice(0, 120) + "</td>" +
+        "<td>" + esc(p.name) + (p.sub ? "<div class='sub'>" + esc(p.sub) + "</div>" : "") + "</td><td>" + esc(p.list.split(", ").map(Z.tOpt).join(", ")) + "</td><td>" + esc(String(p.memo || "").slice(0, 120)) + "</td>" +
         "<td class='st " + cls + "'>" + label + "</td></tr>";
     }).join("");
     const has = pending.filter((p) => p.st === "ok" || p.st === "found");
@@ -2263,6 +2275,7 @@ body { margin: 0; }
   });
 })();
 </script>
+<script src="js/lunar.js"></script>
 <script src="js/today.js"></script>
 <script src="js/sea.js"></script>
 <script src="js/plan.js"></script>

@@ -17,22 +17,16 @@
   }
   const byDist = (lat, lng) => ST.map((s) => ({ ...s, m: distM(lat, lng, s.lat, s.lng) })).sort((a, b) => a.m - b.m);
 
-  // ---------- 물때 (앱 tide.dart 와 같은 규칙) ----------
-  const SYN = 29.530588853;
-  function moonAge(d) { const a = ((d.getTime() - Date.UTC(2000, 0, 6, 18, 14)) / 864e5) % SYN; return a < 0 ? a + SYN : a; }
-  function springNeap(d) {
-    const a = moonAge(d);
-    const near = (x, c) => Math.abs(x - c) <= 3 || Math.abs(x - c - 29.53) <= 3;
-    if (near(a, 1.5) || near(a, 16.3)) return ["사리", "사리 무렵: 물이 많이 들어오고 많이 빠지는 때예요. 갯벌이 넓게 드러나고 물살이 세요."];
-    if (near(a, 8.9) || near(a, 23.6)) return ["조금", "조금 무렵: 물높이 차이가 작은 때예요. 물이 많이 빠지지 않고 물살이 약해요."];
-    return ["중간", "사리와 조금 사이예요. 물높이 차이가 중간 정도예요."];
-  }
-  function daysToSpring(d) {
-    const a = moonAge(d);
-    let best = 99;
-    for (const s of [1.5, 16.3, 31.0]) { const x = s - a; if (Math.abs(x) < Math.abs(best)) best = x; }
-    return Math.round(best);
-  }
+  // ---------- 물때: 실제 삭으로 셈한 음력 날짜(한국 날짜) → 사리·조금 · 서해식 7물때 (js/lunar.js) ----------
+  const LU = window.ZLUNAR;
+  const SN_TEXT = {
+    "사리": "사리 무렵: 물이 많이 들어오고 많이 빠지는 때예요. 갯벌이 넓게 드러나고 물살이 세요.",
+    "조금": "조금 무렵: 물높이 차이가 작은 때예요. 물이 많이 빠지지 않고 물살이 약해요.",
+    "중간": "사리와 조금 사이예요. 물높이 차이가 중간 정도예요.",
+  };
+  function springNeap(d) { const k = LU.springNeap(LU.lunarDay(d)); return [k, SN_TEXT[k]]; }
+  const daysToSpring = (d) => LU.daysToSpring(d);
+  function mulLabel(lunar) { const x = LU.mul(lunar); return x.name ? t(x.name) : t("{n}물", { n: x.n }); }
   const RX = /^(\d{4})-?(\d{2})-?(\d{2})[ T]?(\d{2}):?(\d{2})/;
   function parseTime(s) { const m = RX.exec(String(s).trim()); return m ? new Date(m[1] + "-" + m[2] + "-" + m[3] + "T" + m[4] + ":" + m[5] + ":00+09:00") : null; }
   function collect(v, out) {
@@ -154,6 +148,7 @@
       const reg = await ZLOC.regionAt(l.lat, l.lng);
       const [snKey, snText] = springNeap(now);
       const dts = daysToSpring(now);
+      const lunar = LU.lunarDay(now);
       let h = ZLOC.bar(l, reg);
       h += '<div class="locbar"><label class="muted" for="stSel">' + esc(t("조위 관측소")) + '</label><select id="stSel">' +
         near.slice(0, 10).map((s) => '<option value="' + s.code + '"' + (s.code === st.code ? " selected" : "") + ">" + esc(tOpt(s.name)) + " · " + fmtInt.format(Math.round(s.m / 1000)) + " km</option>").join("") +
@@ -190,7 +185,8 @@
       h += "</article>";
 
       // 사리·조금
-      h += '<article class="card2"><h2>' + esc(t("사리 · 조금")) + '</h2><div><span class="pill ' + (snKey === "사리" ? "warn" : "") + '">' + esc(t(snKey)) + "</span></div><div>" + esc(t(snText)) + "</div>" +
+      h += '<article class="card2"><h2>' + esc(t("사리 · 조금")) + '</h2><div style="display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center"><span class="pill ' + (snKey === "사리" ? "warn" : "") + '">' + esc(t(snKey)) + "</span>" +
+        '<span class="pill mul" title="' + esc(t("서해식 7물때 기준")) + '">' + esc(mulLabel(lunar)) + '</span><span class="muted">' + esc(t("음력 {n}일", { n: lunar })) + "</span></div><div>" + esc(t(snText)) + "</div>" +
         '<div class="muted">' + esc(dts === 0 ? t("오늘이 사리 무렵이에요.") : dts > 0 ? t("다음 사리까지 {n}일", { n: dts }) : t("사리가 {n}일 지났어요", { n: -dts })) + "</div>" +
         '<div class="muted">' + esc(t("갯벌 체험은 사리 무렵 간조 앞뒤 두 시간이 좋아요.")) + "</div></article>";
 

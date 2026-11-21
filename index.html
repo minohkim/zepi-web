@@ -23,17 +23,18 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap">
 <style>
 :root {
-  --bg: #F5F7F1; --surface: #FFFFFF; --ink: #17201A; --muted: #56615A; --line: #D8DED4;
+  --bg: #F7F5EE; --surface: #FFFFFF; --ink: #17201A; --muted: #56615A; --line: #D9D5C7;
   --leaf: #1F6B3A; --leaf-soft: #DCE9DD; --pepper: #A8402A; --sea: #2C7FB8;
+  --sun: #F2B705; --sun-ink: #8A6A00; --sun-soft: #FFF1C2; --on-sun: #1B1A12;
   --font-display: "Gowun Batang", "Nanum Myeongjo", serif;
   --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
   --font-num: "IBM Plex Mono", ui-monospace, Menlo, monospace;
-  --radius: 12px;
+  --radius: 20px;
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { --bg: #0F1411; --surface: #161D18; --ink: #E5EBE3; --muted: #9AA69D; --line: #29332C; --leaf: #62BE84; --leaf-soft: #1D3324; --pepper: #E5805F; --sea: #6DB6E3; color-scheme: dark; }
+  :root:not([data-theme="light"]) { --bg: #0F1411; --surface: #161D18; --ink: #E5EBE3; --muted: #9AA69D; --line: #29332C; --leaf: #62BE84; --leaf-soft: #1D3324; --pepper: #E5805F; --sea: #6DB6E3; --sun-ink: #F2C94C; --sun-soft: #3A3114; color-scheme: dark; }
 }
-:root[data-theme="dark"] { --bg: #0F1411; --surface: #161D18; --ink: #E5EBE3; --muted: #9AA69D; --line: #29332C; --leaf: #62BE84; --leaf-soft: #1D3324; --pepper: #E5805F; --sea: #6DB6E3; color-scheme: dark; }
+:root[data-theme="dark"] { --bg: #0F1411; --surface: #161D18; --ink: #E5EBE3; --muted: #9AA69D; --line: #29332C; --leaf: #62BE84; --leaf-soft: #1D3324; --pepper: #E5805F; --sea: #6DB6E3; --sun-ink: #F2C94C; --sun-soft: #3A3114; color-scheme: dark; }
 :root:lang(zh) { --font-display: "Noto Serif SC", "Songti SC", serif; --font-body: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif; }
 :root:lang(ja) { --font-display: "Hiragino Mincho ProN", "Yu Mincho", serif; --font-body: "Hiragino Sans", "Yu Gothic", "Meiryo", system-ui, sans-serif; }
 :root:lang(en) { --font-display: Georgia, "Times New Roman", serif; --font-body: "IBM Plex Sans KR", system-ui, sans-serif; }
@@ -46,8 +47,9 @@ a { color: inherit; }
 h1, h2, h3 { margin: 0; text-wrap: balance; }
 :focus-visible { outline: 2px solid var(--leaf); outline-offset: 2px; }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; font-size: 15px; font-weight: 500; text-decoration: none; cursor: pointer; }
-.btn.primary { background: var(--leaf); border-color: var(--leaf); color: var(--bg); font-weight: 600; }
+.btn.primary { background: var(--sun); border-color: var(--sun); color: var(--on-sun); font-weight: 600; }
 .btn:hover { border-color: var(--leaf); }
+.btn.primary:hover { border-color: var(--sun-ink); }
 /* 머리 */
 header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }

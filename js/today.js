@@ -426,7 +426,7 @@
         (sunrise ? "<dt>🌅 " + esc(t("해 뜨는 시각")) + "</dt><dd>" + esc(fmtTime.format(sunrise)) + "</dd>" : "") +
         (sunset ? "<dt>🌇 " + esc(t("해 지는 시각")) + "</dt><dd>" + esc(fmtTime.format(sunset)) + "</dd>" : "") +
         (sunrise && sunset ? "<dt>☀️ " + esc(t("낮 길이")) + "</dt><dd>" + esc(t("{h}시간 {m}분", { h: Math.floor((sunset - sunrise) / 3600e3), m: Math.round(((sunset - sunrise) % 3600e3) / 60e3) })) + "</dd>" : "") +
-        "<dt>" + mEmoji + " " + esc(t("달")) + "</dt><dd>" + esc(t(mName)) + " · " + esc(t("음력 {n}일쯤", { n: Math.floor(age) + 1 })) + (sk.illum != null ? " · " + Math.round(sk.illum * 100) + "%" : "") + "</dd>" +
+        "<dt>" + mEmoji + " " + esc(t("달")) + "</dt><dd>" + esc(t(mName)) + " · " + esc(window.ZLUNAR ? t("음력 {n}일", { n: ZLUNAR.lunarDay(now) }) : t("음력 {n}일쯤", { n: Math.floor(age) + 1 })) + (sk.illum != null ? " · " + Math.round(sk.illum * 100) + "%" : "") + "</dd>" +
         (sk.moonRise ? "<dt>🌙 " + esc(t("달 뜨는 시각")) + "</dt><dd>" + esc(fmtTime.format(sk.moonRise)) + "</dd>" : "") +
         (sk.moonSet ? "<dt>🌘 " + esc(t("달 지는 시각")) + "</dt><dd>" + esc(fmtTime.format(sk.moonSet)) + "</dd>" : "") +
         "</dl></article>";

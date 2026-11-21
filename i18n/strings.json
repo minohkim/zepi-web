@@ -5598,5 +5598,25 @@
   "Back-to-back days away from home with a night's stay or 3+ hours somewhere are grouped into one trip. Where you live (30+ nights a year, or tagged 'Home') and places tagged 'Work' are left out.",
   "把在外过夜或停留 3 小时以上的连续日子合并为一次旅行。居住地（一年住满 30 晚以上或标为\"家\"）和标为\"公司\"的地方不计入。",
   "家の外で一泊したか3時間以上滞在した連続した日を一つの旅にまとめました。住んでいる所（年に30泊以上、または「家」タグ）と「会社」タグの場所は除きます。"
+ ],
+ "{n}물": [
+  "Mul {n}",
+  "{n}水",
+  "{n}ムル"
+ ],
+ "무시": [
+  "Musi (slack day)",
+  "无水日",
+  "ムシ（潮止まり）"
+ ],
+ "음력 {n}일": [
+  "Lunar day {n}",
+  "农历{n}日",
+  "旧暦{n}日"
+ ],
+ "서해식 7물때 기준": [
+  "Korean West Sea 7-mul tide count",
+  "按韩国西海“7水”潮汐计法",
+  "韓国西海式の7ムル潮汐の数え方"
  ]
 }

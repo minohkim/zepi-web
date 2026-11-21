@@ -12,14 +12,15 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap">
 <style>
 :root {
-  --bg: #F5F7F1; --surface: #FFFFFF; --ink: #17201A; --muted: #56615A; --line: #D8DED4;
+  --bg: #F7F5EE; --surface: #FFFFFF; --ink: #17201A; --muted: #56615A; --line: #D9D5C7;
   --leaf: #1F6B3A; --leaf-soft: #DCE9DD; --pepper: #A8402A;
+  --sun: #F2B705; --sun-ink: #8A6A00; --sun-soft: #FFF1C2; --on-sun: #1B1A12; --radius: 20px;
   --font-display: "Gowun Batang", "Nanum Myeongjo", serif;
   --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
   :root { --bg: #0F1411; --surface: #161D18; --ink: #E5EBE3; --muted: #9AA69D; --line: #29332C;
-    --leaf: #62BE84; --leaf-soft: #1D3324; --pepper: #E5805F; color-scheme: dark; }
+    --leaf: #62BE84; --leaf-soft: #1D3324; --pepper: #E5805F; --sun-ink: #F2C94C; --sun-soft: #3A3114; color-scheme: dark; }
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.6;
@@ -29,7 +30,7 @@ body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f
 .brand svg { width: 44px; height: 44px; flex: none; }
 h1 { font-family: var(--font-display); font-size: 30px; margin: 0; line-height: 1.25; text-wrap: balance; }
 .sub { margin: 4px 0 0; color: var(--muted); }
-.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 20px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; }
 ul.feat { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
 ul.feat li { display: grid; grid-template-columns: 28px 1fr; gap: 4px; }
 ul.feat b { display: block; }
@@ -49,13 +50,13 @@ input:focus-visible, button:focus-visible { outline: 2px solid var(--leaf); outl
 .hint { color: var(--muted); font-size: 13px; margin: 6px 0 0; }
 .agree { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; font-weight: 400; }
 .agree input { margin-top: 4px; width: 18px; height: 18px; accent-color: var(--leaf); }
-button.go { min-height: 52px; border: 0; border-radius: 999px; background: var(--leaf); color: var(--bg); font: inherit; font-weight: 600; font-size: 17px; cursor: pointer; }
+button.go { min-height: 52px; border: 0; border-radius: 999px; background: var(--sun); color: var(--on-sun); font: inherit; font-weight: 600; font-size: 17px; cursor: pointer; }
 button.go[disabled] { opacity: .6; cursor: default; }
 .msg { padding: 12px 14px; border-radius: 10px; font-size: 14px; }
 .msg.err { background: color-mix(in srgb, var(--pepper) 14%, transparent); color: var(--pepper); }
 .done h2 { font-family: var(--font-display); margin: 0 0 8px; font-size: 22px; }
 .done ol { padding-left: 20px; margin: 10px 0 0; }
-.done a.btn { display: inline-flex; margin-top: 14px; min-height: 46px; align-items: center; padding: 0 18px; border-radius: 999px; background: var(--leaf); color: var(--bg); text-decoration: none; font-weight: 600; }
+.done a.btn { display: inline-flex; margin-top: 14px; min-height: 46px; align-items: center; padding: 0 18px; border-radius: 999px; background: var(--sun); color: var(--on-sun); text-decoration: none; font-weight: 600; }
 /* 중국어·일본어는 그 나라 글꼴로 (한국어 글꼴은 한자를 한국식 모양으로 그려요) */
 :root:lang(zh) { --font-display: "Songti SC", "Noto Serif SC", "SimSun", serif; --font-body: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif; }
 :root:lang(ja) { --font-display: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif; --font-body: "Hiragino Sans", "Yu Gothic UI", "Meiryo", "Noto Sans JP", system-ui, sans-serif; }
