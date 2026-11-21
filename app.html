@@ -317,6 +317,28 @@ nav.tabs.side .navgroup { font-size: 11px; letter-spacing: .06em; color: var(--m
 .fcal-bar b { position: absolute; top: 2px; bottom: 2px; border-radius: 3px; opacity: .85; }
 .fcal-bar .fnow { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); z-index: 1; }
 .fdiag { white-space: pre-wrap; font-size: 14px; line-height: 1.65; }
+.tyear { font-family: var(--font-display); font-size: 20px; margin: 8px 0 0; }
+.tlist { display: flex; flex-direction: column; gap: 10px; }
+.trip .thead { display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; border: 0; background: none; color: var(--ink); font: inherit; text-align: left; cursor: pointer; padding: 0; }
+.trip.on { border-color: var(--leaf); }
+.tday { display: flex; justify-content: space-between; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); font-size: 14px; }
+.lvcard { border-radius: var(--radius); padding: 18px; background: linear-gradient(135deg, #1F6B3A, #2C7F8F); color: #fff; display: flex; flex-direction: column; gap: 8px; }
+.lvtop { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; }
+.lvtop .lv { font-family: var(--font-display); font-size: 32px; }
+.lvbar { height: 10px; border-radius: 999px; background: rgba(255,255,255,.25); overflow: hidden; }
+.lvbar i { display: block; height: 100%; background: #F4C542; border-radius: 999px; }
+.lvsub { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; font-size: 13px; opacity: .9; }
+.bgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+.badge { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 8px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; text-align: center; }
+.badge .bemoji { font-size: 30px; filter: grayscale(1); opacity: .45; }
+.badge.got .bemoji { filter: none; opacity: 1; }
+.badge.got { border-color: var(--leaf); background: var(--leaf-soft); }
+.badge b { font-size: 13px; line-height: 1.3; }
+.badge small { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.bbar { width: 80%; height: 5px; border-radius: 999px; background: var(--bg); overflow: hidden; }
+.bbar i { display: block; height: 100%; background: var(--leaf); }
+.bok { color: var(--leaf); font-weight: 700; }
+.bdetail { align-items: center; text-align: center; }
 footer { color: var(--muted); font-size: 12px; text-align: center; padding-top: 8px; }
 .loading { padding: 60px 16px; text-align: center; color: var(--muted); }
 
@@ -396,6 +418,8 @@ body { margin: 0; }
         <button role="tab" id="tab-day" aria-selected="false" aria-controls="view-day"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 19c4-1 3-6 8-7s4-6 8-7"/><circle cx="4" cy="19" r="2"/><circle cx="20" cy="5" r="2"/></svg><span>하루</span></button>
         <button role="tab" id="tab-conquest" aria-selected="false" aria-controls="view-conquest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg><span>정복 지도</span></button>
         <button role="tab" id="tab-report" aria-selected="false" aria-controls="view-report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>올해의 발자취</span></button>
+        <button role="tab" id="tab-trips" aria-selected="false" aria-controls="view-trips"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 7h18v12H3z"/><path d="M8 7V5h8v2"/><path d="M3 12h18"/></svg><span>내 여행</span></button>
+        <button role="tab" id="tab-badges" aria-selected="false" aria-controls="view-badges"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="M8.5 14 7 22l5-3 5 3-1.5-8"/></svg><span>배지·레벨</span></button>
         <button role="tab" id="tab-notes" aria-selected="false" aria-controls="view-notes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>장소 메모</span></button>
         <span class="navgroup" aria-hidden="true">도구</span>
         <button role="tab" id="tab-routes" aria-selected="false" aria-controls="view-routes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 19c4-1 3-6 8-7s4-6 8-7"/><path d="M12 3v6M9 6l3 3 3-3"/></svg><span>경로 가져오기</span></button>
@@ -414,6 +438,14 @@ body { margin: 0; }
 
       <section id="view-farm" role="tabpanel" aria-labelledby="tab-farm" hidden>
         <div id="farmRoot" style="display:flex;flex-direction:column;gap:16px"><div class="loading">준비하는 중이에요…</div></div>
+      </section>
+
+      <section id="view-trips" role="tabpanel" aria-labelledby="tab-trips" hidden>
+        <div id="tripsRoot" style="display:flex;flex-direction:column;gap:12px"></div>
+      </section>
+
+      <section id="view-badges" role="tabpanel" aria-labelledby="tab-badges" hidden>
+        <div id="badgesRoot" style="display:flex;flex-direction:column;gap:16px"></div>
       </section>
 
       <section id="view-sea" role="tabpanel" aria-labelledby="tab-sea" hidden>
@@ -1567,8 +1599,8 @@ body { margin: 0; }
   }
 
   // ---------- 탭과 이벤트 ----------
-  const TABS = ["today", "sea", "plan", "farm", "day", "conquest", "report", "notes", "routes", "io"];
-  const RECORD_TABS = ["day", "conquest", "report", "notes"];
+  const TABS = ["today", "sea", "plan", "farm", "day", "conquest", "report", "trips", "badges", "notes", "routes", "io"];
+  const RECORD_TABS = ["day", "conquest", "report", "trips", "badges", "notes"];
   function showTab(name) {
     if (!D && RECORD_TABS.includes(name)) name = "today";
     for (const t of TABS) {
@@ -1581,6 +1613,8 @@ body { margin: 0; }
     if (name === "sea" && window.ZSEA) ZSEA.show();
     if (name === "plan" && window.ZPLAN) ZPLAN.show();
     if (name === "farm" && window.ZFARM) ZFARM.show();
+    if (name === "trips" && window.ZMORE) ZMORE.trips();
+    if (name === "badges" && window.ZMORE) ZMORE.badges();
     if (location.hash.slice(1) !== name) { try { history.replaceState(null, "", "#" + name); } catch (e) {} }
     if (name === "day") drawDayMap(timelineOf(curDay));
     if (name === "conquest") drawConqMap();
@@ -2189,6 +2223,11 @@ body { margin: 0; }
       if (!r.ok) throw new Error((j.error && (j.error.message || j.error)) || t("서버 오류") + " (" + r.status + ")");
       return j;
     },
+    // 내 여행·배지가 쓰는 기록
+    recs: () => (D && regions ? { stamp: D, sample: source === "sample", regionDays: D.regionDays, home: D.home, conq: D.conq, manual: D.manual, notes: D.notes, regions, lat: D.lat, lng: D.lng, ts: D.ts, n: D.n } : null),
+    dayInfo: (k) => { try { const pts = dayPoints(k); return { km: pathLen(cleanPath(pts)) / 1000, stays: detectStays(pts).length }; } catch (e) { return { km: 0, stays: 0 }; } },
+    pointsBetween: (s, e) => { const out = []; for (const k of D.days) if (k >= s && k <= e) for (const p of dayPoints(k)) out.push([p.lat, p.lng]); return out; },
+    openDay: (k) => { showTab("day"); goDay(k); window.scrollTo({ top: 0, behavior: "smooth" }); },
     // 여행 계획이 쓰는 내 기록 (정복한 시군구, 공개 장소 메모)
     mine: () => {
       if (!D || source === "sample") return { conq: new Set(), notes: [] };
@@ -2229,5 +2268,6 @@ body { margin: 0; }
 <script src="js/plan.js"></script>
 <script src="js/farm-data.js"></script>
 <script src="js/farm.js"></script>
+<script src="js/more.js"></script>
 </body>
 </html>

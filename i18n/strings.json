@@ -5348,5 +5348,255 @@
   "Remove soft fruit right away",
   "软烂的果实立即摘除",
   "傷んだ実はすぐ除く"
+ ],
+ "외 {n}곳": [
+  "+{n} more",
+  "等 {n} 处",
+  "ほか{n}か所"
+ ],
+ "당일": [
+  "day trip",
+  "当天往返",
+  "日帰り"
+ ],
+ "{n}박 {d}일": [
+  "{n} nights, {d} days",
+  "{n} 晚 {d} 天",
+  "{n}泊{d}日"
+ ],
+ "내 여행 {n}": [
+  "My trips · {n}",
+  "我的旅行 {n}",
+  "わたしの旅 {n}"
+ ],
+ "집 밖에서 하룻밤 잤거나 3시간 넘게 머문 날을 이어서 여행 하나로 묶었어요. 사는 곳(한 해 30밤 이상 잔 곳, '집' 태그)은 빼요.": [
+  "Back-to-back days away from home with a night's stay or 3+ hours somewhere are grouped into one trip. Where you live (30+ nights a year, or tagged 'Home') is left out.",
+  "把在外过夜或停留 3 小时以上的连续日子合并为一次旅行。居住地（一年住满 30 晚以上或标为\"家\"的地方）不计入。",
+  "家の外で一泊したか3時間以上滞在した連続した日を一つの旅にまとめました。住んでいる所（年に30泊以上、または「家」タグ）は除きます。"
+ ],
+ "지금은 예시 데이터예요. 로그인하면 내 여행이 보여요.": [
+  "This is sample data. Sign in to see your trips.",
+  "现在是示例数据。登录后显示你的旅行。",
+  "いまはサンプルデータです。ログインすると自分の旅が見られます。"
+ ],
+ "아직 묶인 여행이 없어요. 집 밖에서 하룻밤 자면 여기에 생겨요.": [
+  "No trips yet. Spend a night away from home and one will appear here.",
+  "还没有旅行。在外过一夜就会出现在这里。",
+  "まだ旅がありません。家の外で一泊するとここに表示されます。"
+ ],
+ "여행 {n}번 · {m}박": [
+  "{n} trips · {m} nights",
+  "旅行 {n} 次 · {m} 晚",
+  "旅{n}回 · {m}泊"
+ ],
+ "새로 정복 {n}": [
+  "{n} new",
+  "新征服 {n}",
+  "新規制覇 {n}"
+ ],
+ "머문 곳 {n}": [
+  "{n} stops",
+  "停留 {n} 处",
+  "滞在 {n}か所"
+ ],
+ "다닌 거리 약 {n} km · 시군구 {m}곳": [
+  "About {n} km travelled · {m} districts",
+  "行程约 {n} km · 市郡区 {m} 处",
+  "移動距離 約{n}km · 市郡区{m}か所"
+ ],
+ "레벨 {n}": [
+  "Level {n}",
+  "等级 {n}",
+  "レベル {n}"
+ ],
+ "경험치 {xp} · 배지 {a}/{b}": [
+  "{xp} XP · badges {a}/{b}",
+  "经验 {xp} · 徽章 {a}/{b}",
+  "経験値 {xp} · バッジ {a}/{b}"
+ ],
+ "다음 레벨까지 {n}": [
+  "{n} to next level",
+  "距下一级 {n}",
+  "次のレベルまで {n}"
+ ],
+ "정복 100 · 안개 칸 1 · 배지 200": [
+  "District 100 · fog cell 1 · badge 200",
+  "征服 100 · 迷雾格 1 · 徽章 200",
+  "制覇 100 · 霧マス 1 · バッジ 200"
+ ],
+ "정복 {n}곳 · 안개 {k}㎢ · 내 장소 {s}곳": [
+  "{n} districts · {k} km² of fog cleared · {s} saved places",
+  "征服 {n} 处 · 迷雾 {k}㎢ · 我的地点 {s} 处",
+  "制覇{n}か所 · 霧 {k}㎢ · 自分の場所{s}か所"
+ ],
+ "지금은 예시 데이터예요. 로그인하면 내 배지가 보여요.": [
+  "This is sample data. Sign in to see your badges.",
+  "现在是示例数据。登录后显示你的徽章。",
+  "いまはサンプルデータです。ログインすると自分のバッジが見られます。"
+ ],
+ "획득했어요!": [
+  "Earned!",
+  "已获得！",
+  "獲得しました！"
+ ],
+ "앱의 여행 MBTI 배지는 앱에서만 받을 수 있어요.": [
+  "The Travel MBTI badge is only available in the app.",
+  "旅行 MBTI 徽章只能在应用中获得。",
+  "旅行MBTIバッジはアプリでだけもらえます。"
+ ],
+ "섬 탐험가": [
+  "Island explorer",
+  "海岛探险家",
+  "島の探検家"
+ ],
+ "섬 지역 3곳 정복 (울릉·제주·옹진·신안 등)": [
+  "Visit 3 island districts (Ulleung, Jeju, Ongjin, Sinan…)",
+  "征服 3 个海岛地区（郁陵 · 济州 · 瓮津 · 新安等）",
+  "島の地域を3か所制覇（鬱陵・済州・甕津・新安など）"
+ ],
+ "울릉도 상륙": [
+  "Landed on Ulleungdo",
+  "登陆郁陵岛",
+  "鬱陵島上陸"
+ ],
+ "울릉군 정복": [
+  "Visit Ulleung County",
+  "征服郁陵郡",
+  "鬱陵郡を制覇"
+ ],
+ "제주 정복": [
+  "Jeju conquered",
+  "征服济州",
+  "済州制覇"
+ ],
+ "제주시와 서귀포시 정복": [
+  "Visit both Jeju City and Seogwipo",
+  "征服济州市和西归浦市",
+  "済州市と西帰浦市を制覇"
+ ],
+ "4극 정복": [
+  "Four extremes",
+  "四极征服",
+  "四極制覇"
+ ],
+ "북 고성·동 울릉·남 서귀포·서 옹진": [
+  "North Goseong, east Ulleung, south Seogwipo, west Ongjin",
+  "北高城 · 东郁陵 · 南西归浦 · 西瓮津",
+  "北・高城、東・鬱陵、南・西帰浦、西・甕津"
+ ],
+ "사계절 여행자": [
+  "Four-season traveller",
+  "四季旅行者",
+  "四季の旅人"
+ ],
+ "한 해에 봄·여름·가을·겨울 모두 1박 여행": [
+  "An overnight trip in every season of one year",
+  "一年内春夏秋冬都有过夜旅行",
+  "1年で春夏秋冬すべてに1泊旅行"
+ ],
+ "수집가": [
+  "Collector",
+  "收集家",
+  "コレクター"
+ ],
+ "내 장소 {n}곳 저장": [
+  "Save {n} places",
+  "保存 {n} 个我的地点",
+  "自分の場所を{n}か所保存"
+ ],
+ "큐레이터": [
+  "Curator",
+  "策展人",
+  "キュレーター"
+ ],
+ "첫 깃발": [
+  "First flag",
+  "第一面旗",
+  "最初の旗"
+ ],
+ "열 고을": [
+  "Ten districts",
+  "十个郡县",
+  "十の郷"
+ ],
+ "쉰 고을": [
+  "Fifty districts",
+  "五十个郡县",
+  "五十の郷"
+ ],
+ "백 고을": [
+  "A hundred districts",
+  "一百个郡县",
+  "百の郷"
+ ],
+ "백오십 고을": [
+  "150 districts",
+  "一百五十个郡县",
+  "百五十の郷"
+ ],
+ "이백 고을": [
+  "200 districts",
+  "两百个郡县",
+  "二百の郷"
+ ],
+ "전국 일주": [
+  "All of Korea",
+  "全国一周",
+  "全国一周"
+ ],
+ "동네 탐험가": [
+  "Neighborhood explorer",
+  "街区探险家",
+  "近所の探検家"
+ ],
+ "길 위의 사람": [
+  "Life on the road",
+  "在路上的人",
+  "道の上の人"
+ ],
+ "안개 걷는 자": [
+  "Fog walker",
+  "驱散迷雾的人",
+  "霧を払う者"
+ ],
+ "내 여행": [
+  "My trips",
+  "我的旅行",
+  "わたしの旅"
+ ],
+ "배지·레벨": [
+  "Badges & level",
+  "徽章 · 等级",
+  "バッジ・レベル"
+ ],
+ "{sido} 완주": [
+  "{sido} complete",
+  "{sido} 全部完成",
+  "{sido} 完走"
+ ],
+ "{full} {n}곳 모두 정복": [
+  "Visit all {n} districts of {full}",
+  "征服{full}全部 {n} 处",
+  "{full}の{n}か所をすべて制覇"
+ ],
+ "시군구 {n}곳 정복": [
+  "Visit {n} districts",
+  "征服 {n} 个市郡区",
+  "市郡区を{n}か所制覇"
+ ],
+ "{n}㎢ 안개 걷기": [
+  "Clear {n} km² of fog",
+  "驱散 {n}㎢ 迷雾",
+  "{n}㎢の霧を晴らす"
+ ],
+ "1박 {d}일": [
+  "1 night, {d} days",
+  "1 晚 {d} 天",
+  "1泊{d}日"
+ ],
+ "집 밖에서 하룻밤 잤거나 3시간 넘게 머문 날을 이어서 여행 하나로 묶었어요. 사는 곳(한 해 30밤 이상 잔 곳, '집' 태그)과 '회사' 태그가 있는 곳은 빼요.": [
+  "Back-to-back days away from home with a night's stay or 3+ hours somewhere are grouped into one trip. Where you live (30+ nights a year, or tagged 'Home') and places tagged 'Work' are left out.",
+  "把在外过夜或停留 3 小时以上的连续日子合并为一次旅行。居住地（一年住满 30 晚以上或标为\"家\"）和标为\"公司\"的地方不计入。",
+  "家の外で一泊したか3時間以上滞在した連続した日を一つの旅にまとめました。住んでいる所（年に30泊以上、または「家」タグ）と「会社」タグの場所は除きます。"
  ]
 }
