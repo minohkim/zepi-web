@@ -4,6 +4,31 @@
   const Z = window.ZI18N, t = Z.t, tOpt = Z.tOpt;
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  // AI 답(또는 저장해 둔 일정)을 화면이 기대하는 모양으로 맞춰요. 모양이 달라도 탭이 깨지지 않게.
+  const num = (v) => { const n = typeof v === "number" ? v : typeof v === "string" && /^\s*-?\d+(\.\d+)?\s*$/.test(v) ? parseFloat(v) : NaN; return Number.isFinite(n) ? n : undefined; };
+  function normPlan(p) {
+    const str = (v) => (v == null ? "" : typeof v === "string" ? v : typeof v === "number" ? String(v) : "");
+    const days = (Array.isArray(p && p.days) ? p.days : [])
+      .filter((d) => d && typeof d === "object")
+      .map((d) => ({
+        ...d,
+        label: str(d.label),
+        items: (Array.isArray(d.items) ? d.items : [])
+          .filter((it) => it && typeof it === "object" && str(it.title))
+          .map((it) => {
+            const lat = num(it.lat), lng = num(it.lng);
+            const ok = lat != null && lng != null && lat > 32 && lat < 39.5 && lng > 124 && lng < 132;
+            return {
+              ...it,
+              time: str(it.time), title: str(it.title), why: str(it.why), tip: str(it.tip),
+              options: Array.isArray(it.options) ? it.options.map(str).filter(Boolean) : [],
+              lat: ok ? lat : undefined, lng: ok ? lng : undefined,
+            };
+          }),
+      }))
+      .filter((d) => d.items.length);
+    return { ...(p || {}), title: str(p && p.title), hook: str(p && p.hook), days };
+  }
   const locale = { ko: "ko-KR", en: "en-US", zh: "zh-CN", ja: "ja-JP" }[Z.lang] || "ko-KR";
   const fmtDay = new Intl.DateTimeFormat(locale, { month: "long", day: "numeric", weekday: "short" });
   const pad = (n) => String(n).padStart(2, "0");
@@ -390,7 +415,7 @@ JSON 하나만 답해:
     return t(w);
   }
   function itemHtml(it, id, doneSet) {
-    const has = it.lat && it.lng;
+    const has = Number.isFinite(it.lat) && Number.isFinite(it.lng); // normPlan 이 숫자만 남겨요 (AI 답의 좌표 칸에 글자가 와도 링크에 못 들어가게)
     const done = doneSet.has(id);
     return '<li class="pitem' + (done ? " done" : "") + '"><label class="ptime"><input type="checkbox" data-done="' + id + '"' + (done ? " checked" : "") + '><b>' + esc(it.time || "") + '</b></label><div class="pbody"><div class="ptitle"><span aria-hidden="true">' + (KIND[it.kind] || "📍") + "</span> " + esc(it.title) +
       (it.drive_min ? ' <span class="muted">· ' + esc(t("이동 {n}분", { n: it.drive_min })) + "</span>" : "") + (it.stay_min ? ' <span class="muted">· ' + esc(t("머물기 {n}분", { n: it.stay_min })) + "</span>" : "") + "</div>" +
@@ -400,8 +425,8 @@ JSON 하나만 답해:
       "</div></li>";
   }
   function viewPlan() {
-    const p = st.plan;
-    if (!p) return "";
+    const p = st.plan ? normPlan(st.plan) : null;
+    if (!p || !p.days.length) return "";
     const doneSet = new Set(st.done);
     const di = Math.min(st.day || 0, p.days.length - 1);
     let h = '<div class="seasonhead" style="background:var(--leaf-soft)"><div class="t">' + esc(p.title || t("이번 여행")) + "</div>" + (p.hook ? "<div>" + esc(p.hook) + "</div>" : "") +
@@ -421,7 +446,7 @@ JSON 하나만 답해:
   function drawMap() {
     const el = $("planMap");
     if (!el || !st.plan) return;
-    const items = st.plan.days[Math.min(st.day || 0, st.plan.days.length - 1)].items.filter((i) => i.lat && i.lng);
+    const items = (() => { const np = normPlan(st.plan); return np.days.length ? np.days[Math.min(st.day || 0, np.days.length - 1)].items : []; })().filter((i) => i.lat != null && i.lng != null);
     if (!items.length) { el.hidden = true; return; }
     if (!(window.naver && naver.maps && naver.maps.Map)) { el.innerHTML = '<div class="muted" style="padding:12px">' + esc(t("지도를 불러오지 못했어요.")) + "</div>"; return; }
     pmap = new naver.maps.Map(el, { zoomControl: true, zoomControlOptions: { position: naver.maps.Position.TOP_RIGHT } });
@@ -472,7 +497,8 @@ JSON 하나만 답해:
     try {
       const j = extractJson(await askClaude(context(st, picks, day)));
       if (!j || !Array.isArray(j.days) || !j.days.length) throw new Error(t("AI 답을 읽지 못했어요"));
-      plan = { ...j, byAi: true };
+      plan = normPlan({ ...j, byAi: true });
+      if (!plan.days.length) throw new Error(t("AI 답을 읽지 못했어요"));
     } catch (e) {
       plan = { ...localPlan(st, picks, day), byAi: false };
       errMsg = t("AI 일정을 받지 못해서 간단히 짰어요.") + " " + (e.message || e);

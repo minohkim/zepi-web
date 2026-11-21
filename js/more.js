@@ -130,7 +130,7 @@
   function levelOf(xp) {
     let lv = 1;
     while ((lv + 1) * (lv + 1) * 100 <= xp) lv++;
-    const cur = lv * lv * 100, next = (lv + 1) * (lv + 1) * 100;
+    const cur = lv === 1 ? 0 : lv * lv * 100, next = (lv + 1) * (lv + 1) * 100; // 1레벨은 0부터 (앱 badges.dart 와 같게)
     return [lv, xp - cur, next - cur];
   }
 
