@@ -4253,5 +4253,1100 @@
   "Culture",
   "文化",
   "文化"
+ ],
+ "추워서 물은 쉬어도 돼요": [
+  "It's cold — you can skip watering",
+  "天冷，可以不浇水",
+  "寒いので水やりはお休みでOK"
+ ],
+ "이틀 안에 비 {n}mm 예보 — 물 안 줘도 돼요": [
+  "{n} mm of rain forecast within 2 days — no need to water",
+  "两天内预报降雨 {n}mm — 不用浇水",
+  "2日以内に{n}mmの雨予報 — 水やり不要"
+ ],
+ "최근 비 {n}mm — 흙이 젖어 있어요": [
+  "{n} mm of recent rain — the soil is still wet",
+  "最近降雨 {n}mm — 土壤还湿",
+  "最近の雨{n}mm — 土が湿っています"
+ ],
+ "최고 {n}° 더워요 — 흠뻑, 아침이나 저녁에": [
+  "High of {n}° — water deeply, morning or evening",
+  "最高 {n}°，很热 — 早晚浇透",
+  "最高{n}°で暑い — 朝か夕方にたっぷり"
+ ],
+ "잎채소는 자주 — 흠뻑 주세요": [
+  "Leafy greens need frequent, deep watering",
+  "叶菜要常浇 — 浇透",
+  "葉物はこまめに — たっぷりと"
+ ],
+ "최근 비가 거의 없어요 — 흠뻑 주세요": [
+  "Hardly any rain lately — water deeply",
+  "最近几乎没下雨 — 浇透",
+  "最近ほとんど雨がありません — たっぷりと"
+ ],
+ "흙을 손가락 한 마디 파 보고 말랐으면 주세요": [
+  "Dig a finger's depth; water if it's dry",
+  "挖一指深，干了再浇",
+  "指一節ほど掘って乾いていたら水やり"
+ ],
+ "무엇을 키우나요?": [
+  "What are you growing?",
+  "你种了什么？",
+  "何を育てていますか？"
+ ],
+ "{zone} 기준 · 노란 테두리는 곧 심을 때예요": [
+  "For {zone} · yellow outline = planting soon",
+  "以{zone}为准 · 黄框表示快到种植期",
+  "{zone}基準 · 黄色の枠はもうすぐ植える時期"
+ ],
+ "{n}가지 저장": [
+  "Save {n}",
+  "保存 {n} 种",
+  "{n}種類を保存"
+ ],
+ "내 텃밭": [
+  "My garden",
+  "我的菜园",
+  "わたしの菜園"
+ ],
+ "{zone} 기준": [
+  "for {zone}",
+  "以{zone}为准",
+  "{zone}基準"
+ ],
+ "위치를 정하면 날씨·물주기·서리 판단이 붙어요": [
+  "Set a location to get weather, watering and frost advice",
+  "设置位置后会提供天气 · 浇水 · 霜冻判断",
+  "場所を決めると天気・水やり・霜の判断が付きます"
+ ],
+ "지금 위치를 텃밭으로": [
+  "Use my location as the garden",
+  "把当前位置设为菜园",
+  "現在地を菜園に"
+ ],
+ "텃밭 위치": [
+  "Garden location",
+  "菜园位置",
+  "菜園の場所"
+ ],
+ "작물 고르기": [
+  "Choose crops",
+  "选择作物",
+  "作物を選ぶ"
+ ],
+ "이번 주말 · {date}": [
+  "This weekend · {date}",
+  "本周末 · {date}",
+  "今週末 · {date}"
+ ],
+ "토": [
+  "Sat",
+  "周六",
+  "土"
+ ],
+ "비 {n}mm": [
+  "rain {n} mm",
+  "雨 {n}mm",
+  "雨 {n}mm"
+ ],
+ "열흘 안에 2° 이하로 내려가는 날이 있어요 — 모종은 미루고, 심은 건 덮어 주세요": [
+  "A day at 2° or below is coming within 10 days — hold off on seedlings and cover what's planted",
+  "十天内有气温降到 2° 以下的日子 — 推迟移栽，已种的要盖好",
+  "10日以内に2°以下の日があります — 苗植えは延期し、植えたものは覆ってください"
+ ],
+ "물은 쉬어도 돼요": [
+  "You can skip watering",
+  "可以不浇水",
+  "水やりはお休みでOK"
+ ],
+ "이번 주말은 둘러보기만 해도 돼요 🌱": [
+  "Just look around this weekend 🌱",
+  "这个周末看看就好 🌱",
+  "今週末は見回るだけでOK 🌱"
+ ],
+ "{m}월에 조심할 것": [
+  "Watch out in month {m}",
+  "{m}月要注意",
+  "{m}月に気をつけること"
+ ],
+ "다가오는 일 · 두 달": [
+  "Coming up · next 2 months",
+  "即将进行 · 两个月内",
+  "これからの作業 · 2か月"
+ ],
+ "두 달 안에 시작할 일은 없어요.": [
+  "Nothing starts in the next two months.",
+  "两个月内没有要开始的事。",
+  "2か月以内に始まる作業はありません。"
+ ],
+ "{y} 텃밭 달력": [
+  "{y} garden calendar",
+  "{y} 菜园日历",
+  "{y} 菜園カレンダー"
+ ],
+ "{zone} 기준 · 비 없으면 {n}일에 한 번 물": [
+  "For {zone} · water every {n} days without rain",
+  "以{zone}为准 · 不下雨时每 {n} 天浇一次",
+  "{zone}基準 · 雨がなければ{n}日に1回水やり"
+ ],
+ "일정": [
+  "Schedule",
+  "日程",
+  "日程"
+ ],
+ "관리 요령": [
+  "Care tips",
+  "管理要领",
+  "管理のコツ"
+ ],
+ "조심할 병해충": [
+  "Pests & diseases to watch",
+  "需注意的病虫害",
+  "気をつける病害虫"
+ ],
+ "내 메모": [
+  "My notes",
+  "我的备注",
+  "わたしのメモ"
+ ],
+ "시기는 {zone} 노지 기준 어림이에요. 그해 날씨에 따라 1~2주 달라질 수 있어요.": [
+  "Timing is a rough guide for open fields in {zone}. It can shift 1–2 weeks with the year's weather.",
+  "时间是以{zone}露地栽培为准的估计，视当年天气可能相差 1~2 周。",
+  "時期は{zone}の露地基準の目安です。その年の天気で1〜2週間ずれることがあります。"
+ ],
+ "사진으로 병충해 보기": [
+  "Check pests from a photo",
+  "用照片看病虫害",
+  "写真で病害虫チェック"
+ ],
+ "로그인하면 사진 진단을 쓸 수 있어요.": [
+  "Sign in to use photo diagnosis.",
+  "登录后可使用照片诊断。",
+  "ログインすると写真診断が使えます。"
+ ],
+ "잎이나 열매를 가까이 찍은 사진 한 장을 고르면 AI가 무엇으로 보이는지, 이번 주말 할 일을 알려 줘요.": [
+  "Pick a close-up photo of a leaf or fruit and AI will tell you what it looks like and what to do this weekend.",
+  "选一张叶子或果实的近照，AI 会告诉你可能是什么以及本周末该做的事。",
+  "葉や実のアップ写真を選ぶと、AIが何に見えるか、今週末やることを教えてくれます。"
+ ],
+ "사진 고르기": [
+  "Choose photo",
+  "选择照片",
+  "写真を選ぶ"
+ ],
+ "사진을 살펴보는 중…": [
+  "Looking at the photo…",
+  "正在查看照片…",
+  "写真を見ています…"
+ ],
+ "진단을 못 했어요: {e}": [
+  "Couldn't diagnose: {e}",
+  "无法诊断：{e}",
+  "診断できませんでした：{e}"
+ ],
+ "AI 추정이에요. 번지는 속도가 빠르면 가까운 농업기술센터에 사진을 보여 주세요.": [
+  "This is an AI guess. If it spreads fast, show the photo to your local agricultural technology center.",
+  "这是 AI 的推测。如果扩散很快，请把照片给附近的农业技术中心看。",
+  "AIの推定です。広がるのが速ければ、近くの農業技術センターに写真を見せてください。"
+ ],
+ "내 작물": [
+  "My crops",
+  "我的作物",
+  "わたしの作物"
+ ],
+ "누르면 관리 요령·병해충·내 메모": [
+  "Tap for care tips, pests and your notes",
+  "点击查看管理要领 · 病虫害 · 我的备注",
+  "押すと管理のコツ・病害虫・メモ"
+ ],
+ "텃밭 정보는 이 브라우저에만 저장돼요.": [
+  "Garden info is saved only in this browser.",
+  "菜园信息只保存在此浏览器中。",
+  "菜園の情報はこのブラウザにだけ保存されます。"
+ ],
+ "텃밭 날씨를 못 받았어요": [
+  "Couldn't get garden weather",
+  "未能获取菜园天气",
+  "菜園の天気を取得できませんでした"
+ ],
+ "사진을 열지 못했어요": [
+  "Couldn't open the photo",
+  "无法打开照片",
+  "写真を開けませんでした"
+ ],
+ "씨 뿌리기": [
+  "Sow",
+  "播种",
+  "種まき"
+ ],
+ "모종 심기": [
+  "Transplant",
+  "移栽",
+  "苗植え"
+ ],
+ "관리": [
+  "Care",
+  "管理",
+  "管理"
+ ],
+ "수확": [
+  "Harvest",
+  "收获",
+  "収穫"
+ ],
+ "남부": [
+  "South",
+  "南部",
+  "南部"
+ ],
+ "중부": [
+  "Central",
+  "中部",
+  "中部"
+ ],
+ "중북부·산간": [
+  "North & highlands",
+  "中北部 · 山区",
+  "中北部・山間"
+ ],
+ "주말농장": [
+  "Weekend farm",
+  "周末农场",
+  "週末農園"
+ ],
+ "상추": [
+  "Lettuce",
+  "生菜",
+  "サンチュ"
+ ],
+ "잎채소": [
+  "Leafy greens",
+  "叶菜",
+  "葉物野菜"
+ ],
+ "봄 모종": [
+  "Spring seedlings",
+  "春苗",
+  "春の苗"
+ ],
+ "겉잎부터 2~3장씩": [
+  "2–3 outer leaves at a time",
+  "从外叶开始每次 2~3 片",
+  "外葉から2〜3枚ずつ"
+ ],
+ "가을 모종": [
+  "Autumn seedlings",
+  "秋苗",
+  "秋の苗"
+ ],
+ "겉잎부터 따면 오래 먹어요": [
+  "Pick outer leaves first to harvest longer",
+  "从外叶摘起能吃更久",
+  "外葉から摘むと長く食べられます"
+ ],
+ "한여름엔 꽃대가 올라와 쓴맛 — 6월 말엔 정리": [
+  "Bolts and turns bitter in midsummer — clear out by late June",
+  "盛夏抽薹变苦 — 6 月底清理",
+  "真夏は花茎が出て苦くなる — 6月末に片付け"
+ ],
+ "물은 아침에, 잎보다 뿌리 쪽에": [
+  "Water in the morning, at the roots not the leaves",
+  "早上浇水，浇根不浇叶",
+  "水は朝に、葉より根元へ"
+ ],
+ "진딧물": [
+  "Aphids",
+  "蚜虫",
+  "アブラムシ"
+ ],
+ "잎 뒷면 확인, 물로 씻어내거나 친환경 비누액": [
+  "Check leaf undersides; wash off with water or eco soap spray",
+  "检查叶背，用水冲或环保肥皂水",
+  "葉の裏を確認、水で洗い流すかエコ石けん液"
+ ],
+ "민달팽이": [
+  "Slugs",
+  "蛞蝓",
+  "ナメクジ"
+ ],
+ "비 온 뒤 저녁에 잡기, 맥주 트랩": [
+  "Pick them off on evenings after rain; beer traps",
+  "雨后傍晚捉，啤酒诱捕",
+  "雨の後の夕方に捕る、ビールトラップ"
+ ],
+ "고추": [
+  "Chili pepper",
+  "辣椒",
+  "唐辛子"
+ ],
+ "열매채소": [
+  "Fruiting vegetables",
+  "果菜",
+  "果菜類"
+ ],
+ "늦서리 지난 뒤": [
+  "After the last frost",
+  "晚霜过后",
+  "遅霜の後"
+ ],
+ "지주 세우고 줄 묶기, 첫 꽃 아래 곁순 따기": [
+  "Stake and tie; remove side shoots below the first flower",
+  "立支架绑绳，摘除第一朵花下的侧芽",
+  "支柱を立てて結ぶ、一番花の下のわき芽を摘む"
+ ],
+ "풋고추는 7월부터, 홍고추는 8월부터": [
+  "Green from July, red from August",
+  "青椒从 7 月，红椒从 8 月",
+  "青唐辛子は7月から、赤は8月から"
+ ],
+ "방아다리(첫 갈래) 아래 곁순은 모두 따기": [
+  "Remove all side shoots below the first fork",
+  "第一个分叉以下的侧芽全部摘掉",
+  "最初の分かれ目より下のわき芽は全部摘む"
+ ],
+ "장마 전 지주와 줄을 튼튼히": [
+  "Secure stakes and ties before the monsoon",
+  "梅雨前把支架和绳子加固",
+  "梅雨前に支柱と紐を丈夫に"
+ ],
+ "물 빠짐이 좋아야 병이 적어요": [
+  "Good drainage means fewer diseases",
+  "排水好病就少",
+  "水はけが良いと病気が少ない"
+ ],
+ "탄저병": [
+  "Anthracnose",
+  "炭疽病",
+  "炭疽病"
+ ],
+ "장마철 빗물 튀김 주의, 병든 열매는 바로 따서 버리기": [
+  "Watch rain splash in the monsoon; remove sick fruit right away",
+  "梅雨季注意雨水溅起，病果立即摘除",
+  "梅雨の泥はねに注意、病果はすぐ摘んで捨てる"
+ ],
+ "담배나방": [
+  "Oriental tobacco budworm",
+  "烟青虫",
+  "タバコガ"
+ ],
+ "열매에 구멍 — 애벌레 잡기, 구멍 난 열매 제거": [
+  "Holes in fruit — pick off caterpillars, remove damaged fruit",
+  "果实有洞 — 捉幼虫，摘掉有洞的果",
+  "実に穴 — 幼虫を捕り、穴のある実を除く"
+ ],
+ "새순 끝 확인": [
+  "Check new shoot tips",
+  "检查新芽顶端",
+  "新芽の先を確認"
+ ],
+ "방울토마토": [
+  "Cherry tomato",
+  "圣女果",
+  "ミニトマト"
+ ],
+ "1주일마다 곁순 따기, 지주에 묶기": [
+  "Remove side shoots weekly; tie to stakes",
+  "每周摘侧芽，绑在支架上",
+  "毎週わき芽を摘み、支柱に結ぶ"
+ ],
+ "잎겨드랑이 곁순은 작을 때 손으로 따기": [
+  "Pinch off axillary shoots by hand while small",
+  "叶腋侧芽趁小用手摘",
+  "葉の付け根のわき芽は小さいうちに手で摘む"
+ ],
+ "물은 꾸준히 — 들쭉날쭉하면 열매가 터져요": [
+  "Water steadily — uneven watering splits fruit",
+  "浇水要稳定 — 忽多忽少果实会裂",
+  "水やりは一定に — ムラがあると実が割れる"
+ ],
+ "키가 지주 끝에 닿으면 순 지르기": [
+  "Top the plant when it reaches the stake top",
+  "长到支架顶端时摘心",
+  "支柱の先に届いたら摘心"
+ ],
+ "잎곰팡이병": [
+  "Leaf mold",
+  "叶霉病",
+  "葉かび病"
+ ],
+ "아래 잎 솎아 바람길 만들기": [
+  "Thin lower leaves for airflow",
+  "疏掉下部叶子通风",
+  "下葉を間引いて風通しを"
+ ],
+ "역병": [
+  "Blight",
+  "疫病",
+  "疫病"
+ ],
+ "장마철 빗물 튀김 막기(멀칭)": [
+  "Prevent rain splash in the monsoon (mulch)",
+  "防止梅雨季雨水溅起（覆盖）",
+  "梅雨の泥はね防止（マルチ）"
+ ],
+ "오이": [
+  "Cucumber",
+  "黄瓜",
+  "キュウリ"
+ ],
+ "그물·지주에 덩굴 올리기": [
+  "Train vines up netting or stakes",
+  "让藤蔓爬上网或支架",
+  "ネットや支柱につるを誘引"
+ ],
+ "아침에, 너무 크기 전에": [
+  "In the morning, before they get too big",
+  "早上摘，别等太大",
+  "朝に、大きくなりすぎる前に"
+ ],
+ "아래 5~6마디 곁순과 꽃은 따기": [
+  "Remove side shoots and flowers on the lowest 5–6 nodes",
+  "摘掉下部 5~6 节的侧芽和花",
+  "下5〜6節のわき芽と花を摘む"
+ ],
+ "물을 많이 먹어요 — 더울 땐 이틀에 한 번": [
+  "Thirsty — every other day when hot",
+  "很耗水 — 热时两天一次",
+  "水をよく吸う — 暑い時は2日に1回"
+ ],
+ "늦게 따면 포기가 지쳐요": [
+  "Late picking tires the plant",
+  "摘晚了植株会累",
+  "収穫が遅れると株が疲れる"
+ ],
+ "노균병": [
+  "Downy mildew",
+  "霜霉病",
+  "べと病"
+ ],
+ "잎에 각진 노란 무늬 — 병든 잎 제거": [
+  "Angular yellow spots — remove sick leaves",
+  "叶上有角形黄斑 — 摘除病叶",
+  "葉に角ばった黄色い斑点 — 病葉を除く"
+ ],
+ "흰가루병": [
+  "Powdery mildew",
+  "白粉病",
+  "うどんこ病"
+ ],
+ "잎에 흰 가루 — 바람길, 우유 희석액": [
+  "White powder on leaves — airflow, diluted milk spray",
+  "叶上有白粉 — 通风，稀释牛奶喷洒",
+  "葉に白い粉 — 風通し、薄めた牛乳"
+ ],
+ "새순 확인": [
+  "Check new shoots",
+  "检查新芽",
+  "新芽を確認"
+ ],
+ "가지": [
+  "Eggplant",
+  "茄子",
+  "ナス"
+ ],
+ "따뜻해진 뒤": [
+  "Once it's warm",
+  "天气转暖后",
+  "暖かくなってから"
+ ],
+ "첫 꽃 아래 곁순 따고 원줄기+곁가지 2개로": [
+  "Remove shoots below the first flower; keep main stem + 2 side branches",
+  "摘掉第一朵花下的侧芽，留主干加 2 根侧枝",
+  "一番花の下のわき芽を摘み、主枝＋側枝2本に"
+ ],
+ "8월에 한 번 가지 정리하면 가을 가지가 잘 달려요": [
+  "Prune once in August for a good autumn crop",
+  "8 月修剪一次，秋茄结得好",
+  "8月に一度剪定すると秋ナスがよく実る"
+ ],
+ "28점박이무당벌레": [
+  "28-spotted ladybird",
+  "二十八星瓢虫",
+  "ニジュウヤホシテントウ"
+ ],
+ "잎을 그물처럼 갉아먹음 — 손으로 잡기": [
+  "Skeletonizes leaves — pick off by hand",
+  "把叶子啃成网状 — 用手捉",
+  "葉を網目状に食べる — 手で捕る"
+ ],
+ "응애": [
+  "Spider mites",
+  "红蜘蛛",
+  "ハダニ"
+ ],
+ "잎 뒷면 작은 점 — 잎 뒷면에 물 뿌리기": [
+  "Tiny dots under leaves — spray water underneath",
+  "叶背小点 — 往叶背喷水",
+  "葉裏に小さな点 — 葉裏に水をかける"
+ ],
+ "감자": [
+  "Potato",
+  "土豆",
+  "ジャガイモ"
+ ],
+ "뿌리채소": [
+  "Root vegetables",
+  "根菜",
+  "根菜類"
+ ],
+ "씨감자 쪼개 재 묻혀 심기": [
+  "Cut seed potatoes, dust with ash and plant",
+  "切开种薯蘸草木灰种下",
+  "種芋を切って灰をまぶして植える"
+ ],
+ "싹 2~3개만 남기고 북주기": [
+  "Keep 2–3 sprouts and hill up soil",
+  "只留 2~3 个芽并培土",
+  "芽を2〜3本残して土寄せ"
+ ],
+ "하지 무렵, 맑은 날": [
+  "Around the summer solstice, on a sunny day",
+  "夏至前后，晴天",
+  "夏至のころ、晴れた日"
+ ],
+ "북주기를 해야 감자가 햇빛에 파래지지 않아요": [
+  "Hill up so tubers don't turn green in the sun",
+  "培土才不会让土豆晒绿",
+  "土寄せしないと芋が日光で緑になる"
+ ],
+ "수확 1주 전부터 물 끊기": [
+  "Stop watering a week before harvest",
+  "收获前一周停止浇水",
+  "収穫1週間前から水を止める"
+ ],
+ "캔 뒤 그늘에서 말리기": [
+  "Dry in the shade after digging",
+  "挖出后在阴凉处晾干",
+  "掘ったら日陰で乾かす"
+ ],
+ "잎 뒷면 노란 알 덩어리 제거": [
+  "Remove yellow egg clusters under leaves",
+  "清除叶背黄色卵块",
+  "葉裏の黄色い卵塊を除く"
+ ],
+ "잎이 검게 무르면 빨리 수확": [
+  "If leaves blacken and rot, harvest quickly",
+  "叶子发黑腐烂就尽快收获",
+  "葉が黒く腐ったら早めに収穫"
+ ],
+ "고구마": [
+  "Sweet potato",
+  "红薯",
+  "サツマイモ"
+ ],
+ "순 심고 1주는 물 자주": [
+  "Water often for a week after planting slips",
+  "插苗后一周勤浇水",
+  "苗を植えて1週間はこまめに水"
+ ],
+ "덩굴 뒤집기(뿌리 내린 마디 떼기)": [
+  "Turn vines (lift rooted nodes)",
+  "翻藤（拔起生根的节）",
+  "つる返し（根付いた節を外す）"
+ ],
+ "첫서리 전에": [
+  "Before the first frost",
+  "初霜之前",
+  "初霜の前に"
+ ],
+ "자리 잡으면 물을 거의 안 줘도 돼요": [
+  "Once established, barely needs water",
+  "扎根后几乎不用浇水",
+  "根付けば水はほとんど不要"
+ ],
+ "거름이 많으면 덩굴만 무성해져요": [
+  "Too much fertilizer gives only vines",
+  "肥太多只会长藤",
+  "肥料が多いとつるばかり茂る"
+ ],
+ "굼벵이": [
+  "Grubs",
+  "蛴螬",
+  "コガネムシの幼虫"
+ ],
+ "덩이에 구멍 — 심기 전 흙 확인": [
+  "Holes in tubers — check soil before planting",
+  "块根有洞 — 种前检查土壤",
+  "芋に穴 — 植える前に土を確認"
+ ],
+ "옥수수": [
+  "Corn",
+  "玉米",
+  "トウモロコシ"
+ ],
+ "기타": [
+  "Other",
+  "其他",
+  "その他"
+ ],
+ "여러 줄로 모아 심어야 열매가 잘 차요": [
+  "Plant in blocks of several rows for full ears",
+  "多行集中种植果穗才饱满",
+  "数列まとめて植えると実がよく入る"
+ ],
+ "곁가지 따기, 북주기": [
+  "Remove side shoots, hill up",
+  "摘侧枝，培土",
+  "わき芽取り、土寄せ"
+ ],
+ "수염이 갈색으로 마르면": [
+  "When the silk turns brown and dry",
+  "玉米须变褐干枯时",
+  "ひげが茶色く乾いたら"
+ ],
+ "한 줄보다 네모나게 모아 심기(꽃가루받이)": [
+  "Plant in a square, not a single row (pollination)",
+  "别种一行，种成方块（授粉）",
+  "一列より四角くまとめて植える（受粉）"
+ ],
+ "수확 후 바로 먹거나 데쳐 두기": [
+  "Eat right after harvest or blanch",
+  "收获后马上吃或焯水保存",
+  "収穫後すぐ食べるか茹でておく"
+ ],
+ "조명나방": [
+  "Corn borer",
+  "玉米螟",
+  "アワノメイガ"
+ ],
+ "줄기에 구멍·톱밥 — 수꽃 일부 미리 제거": [
+  "Holes and frass in stems — remove some tassels early",
+  "茎上有洞和木屑状粪 — 提前摘掉部分雄花",
+  "茎に穴・おがくず — 雄花の一部を早めに除く"
+ ],
+ "대파": [
+  "Green onion",
+  "大葱",
+  "長ネギ"
+ ],
+ "양념채소": [
+  "Seasoning vegetables",
+  "调味蔬菜",
+  "香味野菜"
+ ],
+ "모종을 비스듬히 깊게": [
+  "Plant seedlings deep and at an angle",
+  "苗斜着深种",
+  "苗を斜めに深く"
+ ],
+ "흙 북돋아 흰 부분 길게": [
+  "Hill soil up for longer white stems",
+  "培土让葱白更长",
+  "土寄せして白い部分を長く"
+ ],
+ "자라는 만큼 흙을 덮어 주면 흰 대가 길어져요": [
+  "Keep adding soil as it grows for longer white stalks",
+  "边长边培土，葱白会更长",
+  "伸びた分だけ土をかけると白い部分が長くなる"
+ ],
+ "파밤나방": [
+  "Beet armyworm",
+  "甜菜夜蛾",
+  "シロイチモジヨトウ"
+ ],
+ "잎 속 애벌레 — 잎을 갈라 확인": [
+  "Caterpillars inside leaves — split leaves to check",
+  "叶内有幼虫 — 剖开叶子检查",
+  "葉の中に幼虫 — 葉を裂いて確認"
+ ],
+ "비 많을 때 잎 끝이 시들면 제거": [
+  "Remove if leaf tips wilt in rainy spells",
+  "多雨时叶尖枯萎就摘除",
+  "雨が多い時に葉先がしおれたら除く"
+ ],
+ "쪽파": [
+  "Scallion",
+  "细香葱",
+  "ワケギ"
+ ],
+ "종구 심기": [
+  "Plant bulbs",
+  "种球根",
+  "種球を植える"
+ ],
+ "김장용": [
+  "For kimchi season",
+  "腌泡菜用",
+  "キムジャン用"
+ ],
+ "종구는 끝이 살짝 보이게 얕게": [
+  "Plant bulbs shallow with tips just showing",
+  "种球浅种，露出尖端",
+  "種球は先が少し見えるくらい浅く"
+ ],
+ "고자리파리": [
+  "Onion maggot",
+  "葱地种蝇",
+  "タマネギバエ"
+ ],
+ "뿌리가 썩으면 주변 포기 확인": [
+  "If roots rot, check nearby plants",
+  "根烂了就检查周边植株",
+  "根が腐ったら周りの株を確認"
+ ],
+ "마늘": [
+  "Garlic",
+  "大蒜",
+  "ニンニク"
+ ],
+ "쪽마늘 심고 짚·비닐로 덮기": [
+  "Plant cloves and cover with straw or plastic",
+  "种蒜瓣，盖稻草或塑料膜",
+  "片を植えて藁やビニールで覆う"
+ ],
+ "덮개 걷고 웃거름": [
+  "Remove cover and top-dress",
+  "揭开覆盖物追肥",
+  "覆いを外して追肥"
+ ],
+ "꽃대(마늘종) 뽑기": [
+  "Pull the scapes (garlic stems)",
+  "拔蒜薹",
+  "花茎（ニンニクの芽）を抜く"
+ ],
+ "잎이 절반쯤 마르면": [
+  "When about half the leaves are dry",
+  "叶子干枯一半左右时",
+  "葉が半分ほど枯れたら"
+ ],
+ "겨울을 나요 — 덮개로 얼지 않게": [
+  "Overwinters — cover to prevent freezing",
+  "要过冬 — 盖好防冻",
+  "冬越し — 覆いで凍らないように"
+ ],
+ "마늘종을 뽑아야 통이 굵어져요": [
+  "Pull scapes for bigger bulbs",
+  "拔掉蒜薹蒜头才会大",
+  "芽を抜くと玉が太る"
+ ],
+ "잎마름병": [
+  "Leaf blight",
+  "叶枯病",
+  "葉枯病"
+ ],
+ "잎 끝 갈변 — 물 빠짐 확인": [
+  "Brown leaf tips — check drainage",
+  "叶尖变褐 — 检查排水",
+  "葉先が褐変 — 水はけを確認"
+ ],
+ "양파": [
+  "Onion",
+  "洋葱",
+  "タマネギ"
+ ],
+ "모종 정식, 덮개": [
+  "Transplant seedlings, cover",
+  "定植幼苗，覆盖",
+  "苗を定植、覆い"
+ ],
+ "줄기가 쓰러지면": [
+  "When the stems fall over",
+  "茎倒伏时",
+  "茎が倒れたら"
+ ],
+ "너무 깊게 심으면 둥글게 안 커요": [
+  "Planted too deep, they won't round out",
+  "种太深就长不圆",
+  "深植えすると丸く太らない"
+ ],
+ "이른 봄 웃거름": [
+  "Top-dress in early spring",
+  "早春追肥",
+  "早春に追肥"
+ ],
+ "비 잦을 때 잎 관찰": [
+  "Watch the leaves in rainy spells",
+  "多雨时观察叶子",
+  "雨が多い時は葉を観察"
+ ],
+ "배추 (김장)": [
+  "Napa cabbage (kimchi)",
+  "白菜（腌泡菜）",
+  "白菜（キムジャン）"
+ ],
+ "모종 정식 — 늦으면 속이 안 차요": [
+  "Transplant — late planting won't head up",
+  "定植 — 晚了不包心",
+  "定植 — 遅れると結球しない"
+ ],
+ "겉잎 모아 묶기(선택)": [
+  "Tie outer leaves together (optional)",
+  "把外叶拢起来绑（可选）",
+  "外葉をまとめて縛る（任意）"
+ ],
+ "영하로 떨어지기 전": [
+  "Before temperatures drop below freezing",
+  "气温降到零下之前",
+  "氷点下になる前に"
+ ],
+ "초반 3주 벌레가 가장 많아요 — 매주 확인": [
+  "Pests peak in the first 3 weeks — check weekly",
+  "头三周虫子最多 — 每周检查",
+  "最初の3週間が一番虫が多い — 毎週確認"
+ ],
+ "포기 사이 40cm": [
+  "40 cm between plants",
+  "株距 40cm",
+  "株間40cm"
+ ],
+ "배추흰나비 애벌레": [
+  "Cabbage white caterpillars",
+  "菜青虫",
+  "モンシロチョウの幼虫"
+ ],
+ "잎에 구멍 — 손으로 잡기, 한랭사": [
+  "Holes in leaves — pick by hand, use insect netting",
+  "叶子有洞 — 用手捉，盖防虫网",
+  "葉に穴 — 手で捕る、防虫ネット"
+ ],
+ "벼룩잎벌레": [
+  "Flea beetles",
+  "跳甲",
+  "キスジノミハムシ"
+ ],
+ "작은 구멍 잔뜩 — 모종 때 한랭사": [
+  "Lots of tiny holes — net the seedlings",
+  "满是小洞 — 幼苗期盖防虫网",
+  "小さな穴がたくさん — 苗のうちに防虫ネット"
+ ],
+ "무름병": [
+  "Soft rot",
+  "软腐病",
+  "軟腐病"
+ ],
+ "밑동이 무르면 포기째 제거": [
+  "If the base rots, remove the whole plant",
+  "根部软烂就整株拔掉",
+  "株元が腐ったら株ごと除く"
+ ],
+ "무 (김장)": [
+  "Radish (kimchi)",
+  "萝卜（腌泡菜）",
+  "大根（キムジャン）"
+ ],
+ "씨 3~4알씩, 나중에 1포기로": [
+  "3–4 seeds per spot, later thin to 1",
+  "每穴 3~4 粒，之后留 1 株",
+  "3〜4粒ずつまき、後で1株に"
+ ],
+ "두세 번에 걸쳐 솎기": [
+  "Thin in two or three rounds",
+  "分两三次间苗",
+  "2〜3回に分けて間引く"
+ ],
+ "솎은 어린 무는 열무처럼 먹어요": [
+  "Eat thinned seedlings like young radish greens",
+  "间下的小萝卜像小萝卜缨一样吃",
+  "間引いた若い大根は若菜として食べる"
+ ],
+ "땅이 깊고 부드러워야 곧게 자라요": [
+  "Deep, soft soil grows straight roots",
+  "土深而松软才能长直",
+  "土が深く柔らかいとまっすぐ育つ"
+ ],
+ "싹 틀 때 한랭사": [
+  "Net when they sprout",
+  "发芽时盖防虫网",
+  "発芽したら防虫ネット"
+ ],
+ "잎 뒷면 확인": [
+  "Check leaf undersides",
+  "检查叶背",
+  "葉の裏を確認"
+ ],
+ "열무": [
+  "Young radish",
+  "小萝卜",
+  "ヨルム（若大根）"
+ ],
+ "씨 뿌리고 25~35일": [
+  "25–35 days after sowing",
+  "播种后 25~35 天",
+  "種まきから25〜35日"
+ ],
+ "빨리 자라요 — 한 달이면 수확": [
+  "Fast-growing — harvest in a month",
+  "长得快 — 一个月就能收",
+  "生長が早い — 1か月で収穫"
+ ],
+ "여름엔 벌레가 많아 한랭사 추천": [
+  "Lots of bugs in summer — netting recommended",
+  "夏天虫多，建议盖防虫网",
+  "夏は虫が多いので防虫ネット推奨"
+ ],
+ "한랭사로 덮기": [
+  "Cover with insect netting",
+  "盖防虫网",
+  "防虫ネットで覆う"
+ ],
+ "시금치": [
+  "Spinach",
+  "菠菜",
+  "ほうれん草"
+ ],
+ "가을 시금치가 더 달아요": [
+  "Autumn spinach is sweeter",
+  "秋菠菜更甜",
+  "秋のほうれん草の方が甘い"
+ ],
+ "더위에 약해요 — 봄엔 일찍, 가을엔 서늘할 때": [
+  "Dislikes heat — sow early in spring, when cool in autumn",
+  "怕热 — 春天早种，秋天凉了再种",
+  "暑さに弱い — 春は早めに、秋は涼しくなってから"
+ ],
+ "촘촘하면 솎아 바람길": [
+  "If crowded, thin for airflow",
+  "太密就间苗通风",
+  "密なら間引いて風通しを"
+ ],
+ "들깨 (깻잎)": [
+  "Perilla (leaves)",
+  "紫苏（苏子叶）",
+  "エゴマ（葉）"
+ ],
+ "깻잎은 아래부터": [
+  "Pick leaves from the bottom up",
+  "苏子叶从下往上摘",
+  "葉は下から摘む"
+ ],
+ "들깨 털기": [
+  "Thresh the perilla seeds",
+  "打紫苏籽",
+  "エゴマの脱穀"
+ ],
+ "순을 한 번 지르면 곁가지가 늘어 깻잎이 많아요": [
+  "Pinch the tip once for more branches and leaves",
+  "摘一次心侧枝会变多，叶子也更多",
+  "一度摘心すると脇枝が増えて葉が多くなる"
+ ],
+ "들깨잎말이명나방": [
+  "Perilla leaf roller",
+  "紫苏卷叶螟",
+  "エゴマハマキ"
+ ],
+ "말린 잎 속 애벌레 제거": [
+  "Remove caterpillars inside rolled leaves",
+  "清除卷叶里的幼虫",
+  "巻いた葉の中の幼虫を除く"
+ ],
+ "애호박": [
+  "Zucchini",
+  "西葫芦",
+  "ズッキーニ"
+ ],
+ "손바닥만 할 때 자주": [
+  "Pick often, at palm size",
+  "巴掌大时常摘",
+  "手のひら大の時にこまめに"
+ ],
+ "자리를 넓게 차지해요(1포기 1m²)": [
+  "Needs space (1 m² per plant)",
+  "占地大（每株 1m²）",
+  "場所を広く取る（1株1m²）"
+ ],
+ "꽃가루받이가 안 되면 붓으로 도와주기": [
+  "If pollination fails, help with a brush",
+  "授粉不好就用毛笔帮忙",
+  "受粉しなければ筆で手伝う"
+ ],
+ "잎에 흰 가루 — 아래 잎 정리": [
+  "White powder on leaves — trim lower leaves",
+  "叶上有白粉 — 清理下部叶片",
+  "葉に白い粉 — 下葉を整理"
+ ],
+ "강낭콩": [
+  "Kidney beans",
+  "菜豆",
+  "インゲン豆"
+ ],
+ "한 구멍에 2~3알": [
+  "2–3 seeds per hole",
+  "每穴 2~3 粒",
+  "1穴に2〜3粒"
+ ],
+ "꼬투리가 누렇게 마르면": [
+  "When pods turn yellow and dry",
+  "豆荚变黄干枯时",
+  "さやが黄色く乾いたら"
+ ],
+ "거름을 많이 안 줘도 잘 커요": [
+  "Grows well without much fertilizer",
+  "不用多施肥也长得好",
+  "肥料が少なくてもよく育つ"
+ ],
+ "수확 뒤 같은 자리에 가을 배추·무": [
+  "Follow with autumn cabbage or radish in the same spot",
+  "收获后同一块地种秋白菜 · 萝卜",
+  "収穫後の同じ場所に秋の白菜・大根"
+ ],
+ "서리태 (콩)": [
+  "Black soybeans",
+  "黑豆（大豆）",
+  "黒大豆"
+ ],
+ "비둘기 조심 — 망 덮기": [
+  "Beware of pigeons — cover with netting",
+  "小心鸽子 — 盖网",
+  "ハトに注意 — ネットをかける"
+ ],
+ "순 지르기": [
+  "Pinch the tips",
+  "摘心",
+  "摘心"
+ ],
+ "꼬투리가 마르면": [
+  "When the pods dry",
+  "豆荚干了时",
+  "さやが乾いたら"
+ ],
+ "새가 씨를 먹어요 — 싹 날 때까지 망": [
+  "Birds eat the seeds — net until they sprout",
+  "鸟会吃种子 — 发芽前盖网",
+  "鳥が種を食べる — 発芽までネット"
+ ],
+ "노린재": [
+  "Stink bugs",
+  "椿象",
+  "カメムシ"
+ ],
+ "꼬투리 즙을 빨아요 — 아침에 잡기": [
+  "They suck pod juices — catch them in the morning",
+  "吸食豆荚汁液 — 早上捉",
+  "さやの汁を吸う — 朝に捕る"
+ ],
+ "딸기": [
+  "Strawberry",
+  "草莓",
+  "イチゴ"
+ ],
+ "모종 정식 후 짚 덮기": [
+  "Transplant, then mulch with straw",
+  "定植后盖稻草",
+  "定植後に藁を敷く"
+ ],
+ "이듬해 봄": [
+  "The following spring",
+  "第二年春天",
+  "翌年の春"
+ ],
+ "열매가 흙에 닿지 않게 짚·멀칭": [
+  "Keep fruit off the soil with straw or mulch",
+  "用稻草或覆盖物让果实不碰土",
+  "実が土につかないよう藁・マルチ"
+ ],
+ "러너(덩굴)는 열매 볼 땐 따기": [
+  "Remove runners while fruiting",
+  "结果期间摘掉匍匐茎",
+  "実をつける間はランナーを摘む"
+ ],
+ "잿빛곰팡이병": [
+  "Gray mold",
+  "灰霉病",
+  "灰色かび病"
+ ],
+ "물러진 열매 바로 제거": [
+  "Remove soft fruit right away",
+  "软烂的果实立即摘除",
+  "傷んだ実はすぐ除く"
  ]
 }
