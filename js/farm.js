@@ -83,7 +83,27 @@
 
   // ---------- 저장 ----------
   let farm = (() => { try { return JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { return null; } })() || { name: "내 텃밭", lat: null, lng: null, label: "", crops: [], notes: {} };
-  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(farm)); } catch (e) {} };
+  // 고칠 때마다 시각을 붙이고, 로그인했으면 폰과 맞춰요 (서버 이름 'farm', 앱 farm_v1 과 같은 모양)
+  const save = () => {
+    farm.updated = Date.now();
+    const s = JSON.stringify(farm);
+    try { localStorage.setItem(KEY, s); } catch (e) {}
+    if (window.ZDOCS) ZDOCS.push("farm", s);
+  };
+  async function syncFarm() {
+    if (!window.ZDOCS) return false;
+    let local = null;
+    try { local = localStorage.getItem(KEY); } catch (e) {}
+    const got = await ZDOCS.sync("farm", local);
+    if (!got) return false;
+    try {
+      const j = JSON.parse(got);
+      farm = { name: j.name || "내 텃밭", lat: j.lat ?? null, lng: j.lng ?? null, label: j.label || "", crops: j.crops || [], notes: j.notes || {}, updated: j.updated || 0 };
+      localStorage.setItem(KEY, JSON.stringify(farm));
+      picking = !farm.crops.length;
+      return true;
+    } catch (e) { return false; }
+  }
   let picking = !farm.crops.length, openCrop = null, wx = null, wxErr = "", diag = null;
 
   // ---------- 그리기 ----------
@@ -191,7 +211,7 @@
         '<article class="card2" style="grid-column:1/-1"><h2>' + esc(t("내 작물")) + "<small>" + esc(t("누르면 관리 요령·병해충·내 메모")) + '</small></h2><div class="chips">' +
         mine.map((c) => '<button type="button" data-open="' + c.id + '">' + c.emoji + " " + esc(cropName(c)) + (farm.notes[c.id] ? " 📝" : "") + "</button>").join("") + "</div></article></div>";
     }
-    h += '<div class="muted">' + esc(t("텃밭 정보는 이 브라우저에만 저장돼요.")) + "</div>";
+    h += '<div class="muted">' + esc(ZAPP.signedIn() ? t("로그인돼 있어서 폰 앱의 텃밭과 같이 맞춰져요.") : t("텃밭 정보는 이 브라우저에만 저장돼요. 로그인하면 폰 앱과 같이 맞춰져요.")) + "</div>";
     if (openCrop) h += cropDetailHtml(byId(openCrop), zone);
     root.innerHTML = h;
     const dlg = $("cropDlg");
@@ -203,7 +223,7 @@
     if (farm.lat == null) { wx = null; return; }
     try { wx = await farmWx(farm.lat, farm.lng); wxErr = ""; } catch (e) { wx = null; wxErr = t("텃밭 날씨를 못 받았어요"); }
   }
-  async function show() { render(); await loadWx(); render(); }
+  async function show() { render(); await syncFarm(); await loadWx(); render(); }
 
   // ---------- 사진 진단 ----------
   function shrink(file) {
@@ -273,6 +293,6 @@
     farm.lat = c[1]; farm.lng = c[2]; farm.label = c[0]; save();
     await loadWx(); render();
   });
-  window.addEventListener("zapp-auth", () => { if (window.ZAPP_READY && $("view-farm") && !$("view-farm").hidden) render(); });
+  window.addEventListener("zapp-auth", () => { if (window.ZAPP_READY && $("view-farm") && !$("view-farm").hidden) show(); });
   window.ZFARM = { show };
 })();

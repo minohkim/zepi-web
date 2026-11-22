@@ -5618,5 +5618,30 @@
   "Korean West Sea 7-mul tide count",
   "按韩国西海“7水”潮汐计法",
   "韓国西海式の7ムル潮汐の数え方"
+ ],
+ "로그인돼 있어서 폰 앱의 텃밭과 같이 맞춰져요.": [
+  "You're signed in, so this stays in sync with the garden in the phone app.",
+  "已登录，会与手机应用中的菜园保持同步。",
+  "ログイン中なので、スマホアプリの菜園と同期されます。"
+ ],
+ "텃밭 정보는 이 브라우저에만 저장돼요. 로그인하면 폰 앱과 같이 맞춰져요.": [
+  "Garden info is saved only in this browser. Sign in to sync with the phone app.",
+  "菜园信息只保存在此浏览器中。登录后会与手机应用同步。",
+  "菜園の情報はこのブラウザにだけ保存されます。ログインするとスマホアプリと同期されます。"
+ ],
+ "폰 앱에서 짠 일정이에요.": [
+  "This itinerary was made in the phone app.",
+  "这是在手机应用中编排的行程。",
+  "スマホアプリで作った日程です。"
+ ],
+ "폰 앱의 여행 계획과 같이 맞춰져요.": [
+  "Stays in sync with the trip plan in the phone app.",
+  "与手机应用中的旅行计划同步。",
+  "スマホアプリの旅行計画と同期されます。"
+ ],
+ "로그인하면 폰 앱과 같이 맞춰져요.": [
+  "Sign in to sync with the phone app.",
+  "登录后会与手机应用同步。",
+  "ログインするとスマホアプリと同期されます。"
  ]
 }

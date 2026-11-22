@@ -2235,6 +2235,9 @@ body { margin: 0; }
       if (!r.ok) throw new Error((j.error && (j.error.message || j.error)) || t("서버 오류") + " (" + r.status + ")");
       return j;
     },
+    // 폰과 같이 쓰는 문서 (텃밭·여행 계획)
+    docGet: async (name) => { const rows = await sb("blobs?select=data&name=eq." + encodeURIComponent(name)); return rows && rows[0] ? rows[0].data : null; },
+    docPut: (name, data) => sb("blobs?on_conflict=user_id,name", { method: "POST", headers: { Prefer: "resolution=merge-duplicates,return=minimal" }, body: JSON.stringify([{ name, data }]) }),
     // 내 여행·배지가 쓰는 기록
     recs: () => (D && regions ? { stamp: D, sample: source === "sample", regionDays: D.regionDays, home: D.home, conq: D.conq, manual: D.manual, notes: D.notes, regions, lat: D.lat, lng: D.lng, ts: D.ts, n: D.n } : null),
     dayInfo: (k) => { try { const pts = dayPoints(k); return { km: pathLen(cleanPath(pts)) / 1000, stays: detectStays(pts).length }; } catch (e) { return { km: 0, stays: 0 }; } },
@@ -2278,6 +2281,7 @@ body { margin: 0; }
 <script src="js/lunar.js"></script>
 <script src="js/today.js"></script>
 <script src="js/sea.js"></script>
+<script src="js/docs.js"></script>
 <script src="js/plan.js"></script>
 <script src="js/farm-data.js"></script>
 <script src="js/farm.js"></script>

@@ -370,6 +370,31 @@ JSON 하나만 답해:
   let st = load() || { step: "wants", when: "weekend", wants: [], maxMin: 180, from: null, cands: [], picks: [], plan: null, done: [], day: 0 };
   function load() { try { return JSON.parse(localStorage.getItem(SAVE_KEY) || "null"); } catch (e) { return null; } }
   function save() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(st)); } catch (e) {} }
+  // 일정은 폰과 같이 써요 (서버 이름 'trip_plan', 앱 TripPlan.toJson 과 같은 모양)
+  function planDoc() {
+    const p = st.plan;
+    return JSON.stringify({ key: p.key || "web|" + (p.start || "") + "|" + (st.picks || []).join(","), start: (p.start || ymd(new Date())) + "T00:00:00", title: p.title || "", hook: p.hook || "",
+      days: p.days || [], plan_b: p.plan_b || [], prep: (p.prep || []).map((x) => (typeof x === "string" ? { when: "", what: x } : x)), packing: p.packing || [], by_ai: !!p.byAi, done: st.done || [], updated: st.planUpdated || Date.now() });
+  }
+  function planChanged() {
+    st.planUpdated = Date.now();
+    save();
+    if (st.plan && window.ZDOCS) ZDOCS.push("trip_plan", planDoc());
+  }
+  async function syncPlan() {
+    if (!window.ZDOCS) return false;
+    const got = await ZDOCS.sync("trip_plan", st.plan ? planDoc() : null);
+    if (!got) return false;
+    try {
+      const j = JSON.parse(got);
+      if (!Array.isArray(j.days) || !j.days.length) return false;
+      st.plan = { key: j.key, title: j.title, hook: j.hook, days: j.days, plan_b: j.plan_b || [], prep: j.prep || [], packing: j.packing || [], byAi: !!j.by_ai, start: String(j.start || "").slice(0, 10), fromPhone: !String(j.key || "").startsWith("web|") };
+      st.done = (j.done || []).map(String); st.planUpdated = j.updated || 0; st.day = 0;
+      if (st.step === "plan" || st.step === "wants") st.step = "plan";
+      save();
+      return true;
+    } catch (e) { return false; }
+  }
   let busy = false, busyMsg = "", errMsg = "";
 
   // ---------- 그리기 ----------
@@ -430,7 +455,8 @@ JSON 하나만 답해:
     const doneSet = new Set(st.done);
     const di = Math.min(st.day || 0, p.days.length - 1);
     let h = '<div class="seasonhead" style="background:var(--leaf-soft)"><div class="t">' + esc(p.title || t("이번 여행")) + "</div>" + (p.hook ? "<div>" + esc(p.hook) + "</div>" : "") +
-      '<div class="muted">' + esc(p.byAi ? t("AI가 관광공사 장소·날씨·물때로 짠 일정이에요. 가기 전에 영업시간은 한번 확인해 주세요.") : t("AI 없이 간단히 짠 일정이에요.")) + "</div></div>";
+      '<div class="muted">' + esc(p.byAi ? t("AI가 관광공사 장소·날씨·물때로 짠 일정이에요. 가기 전에 영업시간은 한번 확인해 주세요.") : t("AI 없이 간단히 짠 일정이에요.")) + "</div>" +
+      '<div class="muted">' + esc(p.fromPhone ? t("폰 앱에서 짠 일정이에요.") : ZAPP.signedIn() ? t("폰 앱의 여행 계획과 같이 맞춰져요.") : t("로그인하면 폰 앱과 같이 맞춰져요.")) + "</div></div>";
     if (errMsg) h += '<div class="needlogin">' + esc(errMsg) + "</div>";
     if (p.days.length > 1) h += '<div class="chips" role="tablist">' + p.days.map((d, i) => '<button type="button" class="' + (i === di ? "on" : "") + '" data-day="' + i + '">' + esc(d.label || t("{n}일째", { n: i + 1 })) + "</button>").join("") + "</div>";
     h += '<div class="cardgrid" style="grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)"><article class="card2"><h2>' + esc(p.days[di].label || "") + '</h2><ol class="plist">' + p.days[di].items.map((it, i) => itemHtml(it, "d" + di + "i" + i, doneSet)).join("") + "</ol></article>";
@@ -505,7 +531,7 @@ JSON 하나만 답해:
     }
     plan.start = ymd(day);
     st.plan = plan; st.done = []; st.day = 0; st.step = "plan";
-    busy = false; save(); render();
+    busy = false; planChanged(); render();
   }
   document.addEventListener("click", async (e) => {
     const root = $("planRoot");
@@ -537,9 +563,10 @@ JSON 하나만 답해:
     if (c.checked && i < 0) st.done.push(id);
     if (!c.checked && i >= 0) st.done.splice(i, 1);
     c.closest(".pitem") && c.closest(".pitem").classList.toggle("done", c.checked);
-    save();
+    planChanged();
   });
   if (window.ZLOC) ZLOC.on((l) => { if (st.step === "wants") { st.from = { lat: l.lat, lng: l.lng, label: l.label || "" }; save(); if (!$("view-plan").hidden) render(); } });
-  window.addEventListener("zapp-auth", () => { if (window.ZAPP_READY && !$("view-plan").hidden) render(); });
-  window.ZPLAN = { show: render };
+  async function show() { render(); if (!busy && (await syncPlan())) render(); }
+  window.addEventListener("zapp-auth", () => { if (window.ZAPP_READY && !$("view-plan").hidden) show(); });
+  window.ZPLAN = { show };
 })();
