@@ -8,26 +8,35 @@
   const num = (v) => { const n = typeof v === "number" ? v : typeof v === "string" && /^\s*-?\d+(\.\d+)?\s*$/.test(v) ? parseFloat(v) : NaN; return Number.isFinite(n) ? n : undefined; };
   function normPlan(p) {
     const str = (v) => (v == null ? "" : typeof v === "string" ? v : typeof v === "number" ? String(v) : "");
+    const items = (list) => (Array.isArray(list) ? list : [])
+      .filter((it) => it && typeof it === "object" && str(it.title))
+      .map((it) => {
+        const lat = num(it.lat), lng = num(it.lng);
+        const ok = lat != null && lng != null && lat > 32 && lat < 39.5 && lng > 124 && lng < 132;
+        return {
+          ...it,
+          time: str(it.time), title: str(it.title), why: str(it.why), tip: str(it.tip),
+          options: Array.isArray(it.options) ? it.options.map(str).filter(Boolean) : [],
+          lat: ok ? lat : undefined, lng: ok ? lng : undefined,
+        };
+      });
     const days = (Array.isArray(p && p.days) ? p.days : [])
       .filter((d) => d && typeof d === "object")
       .map((d) => ({
         ...d,
         label: str(d.label),
-        items: (Array.isArray(d.items) ? d.items : [])
-          .filter((it) => it && typeof it === "object" && str(it.title))
-          .map((it) => {
-            const lat = num(it.lat), lng = num(it.lng);
-            const ok = lat != null && lng != null && lat > 32 && lat < 39.5 && lng > 124 && lng < 132;
-            return {
-              ...it,
-              time: str(it.time), title: str(it.title), why: str(it.why), tip: str(it.tip),
-              options: Array.isArray(it.options) ? it.options.map(str).filter(Boolean) : [],
-              lat: ok ? lat : undefined, lng: ok ? lng : undefined,
-            };
-          }),
+        items: items(d.items),
       }))
       .filter((d) => d.items.length);
-    return { ...(p || {}), title: str(p && p.title), hook: str(p && p.hook), days };
+    // 비 오면·출발 전에·챙길 것도 모양을 맞춰요. 하나라도 null·문자열이면 탭이 멈추던 것 (QA 11-23)
+    const arr = (v) => (Array.isArray(v) ? v : []);
+    const plan_b = items(arr(p && p.plan_b).map((x) => (typeof x === "string" ? { title: x } : x)));
+    const prep = arr(p && p.prep)
+      .map((x) => (typeof x === "string" ? { when: "", what: x } : x))
+      .filter((x) => x && typeof x === "object" && str(x.what))
+      .map((x) => ({ when: str(x.when), what: str(x.what) }));
+    const packing = arr(p && p.packing).map(str).filter(Boolean);
+    return { ...(p || {}), title: str(p && p.title), hook: str(p && p.hook), days, plan_b, prep, packing };
   }
   const locale = { ko: "ko-KR", en: "en-US", zh: "zh-CN", ja: "ja-JP" }[Z.lang] || "ko-KR";
   const fmtDay = new Intl.DateTimeFormat(locale, { month: "long", day: "numeric", weekday: "short" });
@@ -280,7 +289,7 @@
     if (st.when !== "month") jobs.push(safe("날씨", async () => { c.weather = await weatherOn(c.lat, c.lng, day); }));
     if (c.seaCode && ["sea_fish", "sea", "water", "random", "food"].some((x) => wants.has(x))) jobs.push(safe("물때", async () => { c.lows = await lowsOn(c.seaCode, day); }));
     const bk = (await baek())[c.code] || [];
-    const eats = bk.filter((b) => EAT.has(b[2])).concat(bk.filter((b) => !EAT.has(b[2])));
+    const eats = bk.filter((b) => EAT.has(b[2])).concat(bk.filter((b) => b[2] === "market")); // 밸브상사·안경점 같은 음식점 아닌 백년가게는 넣지 않아요 (QA 11-23)
     const baekSpots = [];
     jobs.push((async () => {
       for (const b of eats.slice(0, wants.has("food") || wants.has("nopo") ? 5 : 3)) { const p = await locateBaek(b); if (p) baekSpots.push(p); }
@@ -442,7 +451,7 @@ JSON 하나만 답해:
   function itemHtml(it, id, doneSet) {
     const has = Number.isFinite(it.lat) && Number.isFinite(it.lng); // normPlan 이 숫자만 남겨요 (AI 답의 좌표 칸에 글자가 와도 링크에 못 들어가게)
     const done = doneSet.has(id);
-    return '<li class="pitem' + (done ? " done" : "") + '"><label class="ptime"><input type="checkbox" data-done="' + id + '"' + (done ? " checked" : "") + '><b>' + esc(it.time || "") + '</b></label><div class="pbody"><div class="ptitle"><span aria-hidden="true">' + (KIND[it.kind] || "📍") + "</span> " + esc(it.title) +
+    return '<li class="pitem' + (done ? " done" : "") + '"><label class="ptime"><input type="checkbox" data-done="' + id + '"' + (done ? " checked" : "") + '><b>' + esc(it.time || "") + '</b></label><div class="pbody"><div class="ptitle"><span aria-hidden="true">' + (Object.prototype.hasOwnProperty.call(KIND, it.kind) ? KIND[it.kind] : "📍") + "</span> " + esc(it.title) +
       (it.drive_min ? ' <span class="muted">· ' + esc(t("이동 {n}분", { n: it.drive_min })) + "</span>" : "") + (it.stay_min ? ' <span class="muted">· ' + esc(t("머물기 {n}분", { n: it.stay_min })) + "</span>" : "") + "</div>" +
       (it.why ? '<div class="pwhy">' + esc(it.why) + "</div>" : "") + (it.tip ? '<div class="ptip">💡 ' + esc(it.tip) + "</div>" : "") +
       (it.options && it.options.length ? '<div class="chips">' + it.options.map((o) => '<a href="' + naverSearch(o) + '" ' + ext + ">🎲 " + esc(o) + "</a>").join("") + "</div>" : "") +
@@ -526,6 +535,11 @@ JSON 하나만 답해:
       plan = normPlan({ ...j, byAi: true });
       if (!plan.days.length) throw new Error(t("AI 답을 읽지 못했어요"));
     } catch (e) {
+      // 이미 AI 일정이 있으면(다시 짜기) 간단 일정으로 덮지 않고 그대로 둬요. 폰 쪽 일정도 지켜요 (QA 11-23)
+      if (st.plan && st.plan.byAi && st.step === "plan") {
+        errMsg = t("AI 일정을 받지 못했어요.") + " " + (e.message || e);
+        busy = false; render(); return;
+      }
       plan = { ...localPlan(st, picks, day), byAi: false };
       errMsg = t("AI 일정을 받지 못해서 간단히 짰어요.") + " " + (e.message || e);
     }
@@ -553,6 +567,7 @@ JSON 하나만 답해:
     if (d.login !== undefined) { ZAPP.openLogin(); return; }
     if (d.act === "rank") { st.roll = 0; return doRank(); }
     if (d.act === "reroll") { st.roll = (st.roll || 0) + 1; return doRank(); }
+    if (d.act === "remake" && st.plan && st.plan.fromPhone) { errMsg = t("폰 앱에서 짠 일정은 폰 앱에서 다시 짜 주세요."); render(); return; } // 웹의 옛 후보로 폰 일정을 덮지 않게 (QA 11-23)
     if (d.act === "make" || d.act === "remake") return doMake();
     if (d.act === "new") { st = { step: "wants", when: st.when, wants: [], maxMin: st.maxMin, from: st.from, cands: [], picks: [], plan: null, done: [], day: 0 }; errMsg = ""; save(); render(); return; }
   });

@@ -38,6 +38,7 @@ const $ = (id) => els[id];
 const t = (s, p) => String(s).replace(/\{(\w+)\}/g, (_, k) => (p && k in p ? p[k] : "{" + k + "}"));
 const Z = { tOpt: (s) => s };
 const canEdit = () => true;
+const finding = false; // app.html: 네이버로 찾는 중인지
 
 const EVIL = "카페' autofocus onfocus='alert(1)' x='";
 const EVIL2 = '"><img src=x onerror=alert(2)>';
@@ -48,8 +49,8 @@ let pending = [
 ];
 
 // eslint-disable-next-line no-new-func
-const run = new Function("$", "t", "Z", "canEdit", "pending", escLine + "\n" + drawSrc + "\nreturn { drawPending, esc };");
-const api = run($, t, Z, canEdit, pending);
+const run = new Function("$", "t", "Z", "canEdit", "pending", "finding", escLine + "\n" + drawSrc + "\nreturn { drawPending, esc };");
+const api = run($, t, Z, canEdit, pending, finding);
 api.drawPending();
 const html = rowsEl.innerHTML;
 

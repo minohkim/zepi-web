@@ -82,7 +82,21 @@
   const rainSum = (wx, from, days) => wx.filter((d) => d.day >= from && d.day < addDays(from, days)).reduce((a, d) => a + d.rain, 0);
 
   // ---------- 저장 ----------
-  let farm = (() => { try { return JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { return null; } })() || { name: "내 텃밭", lat: null, lng: null, label: "", crops: [], notes: {} };
+  // 저장값·서버(앱) 값의 모양이 조금 달라도 탭이 멈추지 않게 맞춰요. 모르는 칸(앱 쪽 필드)은 그대로 둬요 (QA 11-23)
+  const numOrNull = (v) => (v === null || v === "" || v === undefined || !Number.isFinite(+v) ? null : +v);
+  const normFarm = (j) => {
+    j = j && typeof j === "object" && !Array.isArray(j) ? j : {};
+    return {
+      ...j,
+      name: typeof j.name === "string" && j.name ? j.name : "내 텃밭",
+      lat: numOrNull(j.lat), lng: numOrNull(j.lng),
+      label: typeof j.label === "string" ? j.label : "",
+      crops: Array.isArray(j.crops) ? j.crops.map((c) => (typeof c === "string" ? c : c && typeof c.id === "string" ? c.id : null)).filter(Boolean) : [],
+      notes: j.notes && typeof j.notes === "object" && !Array.isArray(j.notes) ? j.notes : {},
+      updated: typeof j.updated === "number" ? j.updated : 0,
+    };
+  };
+  let farm = normFarm((() => { try { return JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { return null; } })());
   // 고칠 때마다 시각을 붙이고, 로그인했으면 폰과 맞춰요 (서버 이름 'farm', 앱 farm_v1 과 같은 모양)
   const save = () => {
     farm.updated = Date.now();
@@ -94,11 +108,13 @@
     if (!window.ZDOCS) return false;
     let local = null;
     try { local = localStorage.getItem(KEY); } catch (e) {}
+    const before = farm.updated;
     const got = await ZDOCS.sync("farm", local);
     if (!got) return false;
+    // 서버를 기다리는 사이에 웹에서 고쳤으면 내 것(더 새것)을 지키고, 그 수정은 save()가 이미 올리는 중이에요 (QA 11-23)
+    if (farm.updated !== before) return false;
     try {
-      const j = JSON.parse(got);
-      farm = { name: j.name || "내 텃밭", lat: j.lat ?? null, lng: j.lng ?? null, label: j.label || "", crops: j.crops || [], notes: j.notes || {}, updated: j.updated || 0 };
+      farm = normFarm(JSON.parse(got));
       localStorage.setItem(KEY, JSON.stringify(farm));
       picking = !farm.crops.length;
       return true;
@@ -156,7 +172,7 @@
   function upcomingHtml(mine, zone) {
     const list = upcoming(mine, day0(new Date()), zone);
     return '<article class="card2"><h2>' + esc(t("다가오는 일 · 두 달")) + "</h2>" + (list.length ? list.map((x) =>
-      '<div class="ftask"><span class="fk" style="background:' + KIND[x.tk.k][1] + '">' + esc(kindLabel(x.tk.k)) + "</span> " + x.c.emoji + " " + esc(cropName(x.c)) + (x.tk.n ? " · " + esc(tOpt(x.tk.n)) : "") + ' <span class="muted">D-' + (x.diff + 1) + " · " + fmtMd.format(x.s) + "</span></div>").join("") : '<div class="muted">' + esc(t("두 달 안에 시작할 일은 없어요.")) + "</div>") + "</article>";
+      '<div class="ftask"><span class="fk" style="background:' + KIND[x.tk.k][1] + '">' + esc(kindLabel(x.tk.k)) + "</span> " + x.c.emoji + " " + esc(cropName(x.c)) + (x.tk.n ? " · " + esc(tOpt(x.tk.n)) : "") + ' <span class="muted">D-' + x.diff + " · " + fmtMd.format(x.s) + "</span></div>").join("") : '<div class="muted">' + esc(t("두 달 안에 시작할 일은 없어요.")) + "</div>") + "</article>";
   }
   function calendarHtml(mine, zone) {
     const y = new Date().getFullYear();
@@ -202,6 +218,9 @@
   function render() {
     const root = $("farmRoot");
     if (!root) return;
+    // 작물 안내 창을 연 채로 다시 그리면(날씨 도착·동기화) 쓰던 메모가 사라지던 것 (QA 11-23)
+    const memo = $("cropMemo");
+    if (memo && openCrop) farm.notes[openCrop] = memo.value;
     const zone = zoneOf(farm.lat, farm.lng);
     const mine = farm.crops.map(byId).filter(Boolean);
     let h = placeHtml();

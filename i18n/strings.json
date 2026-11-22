@@ -8928,5 +8928,15 @@
   "Tap Share to save to your gallery or send in a chat app",
   "点击分享即可保存到相册或发送给好友",
   "共有をタップするとギャラリー保存やトーク送信ができます"
+ ],
+ "AI 일정을 받지 못했어요.": [
+  "Couldn't get the AI plan.",
+  "未能获取AI行程。",
+  "AIの日程を受け取れませんでした。"
+ ],
+ "폰 앱에서 짠 일정은 폰 앱에서 다시 짜 주세요.": [
+  "This plan was made in the phone app. Please remake it there.",
+  "这是在手机App里做的行程，请在App里重新安排。",
+  "スマホアプリで作った日程です。アプリで作り直してください。"
  ]
 }

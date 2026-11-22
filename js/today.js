@@ -174,8 +174,9 @@
       "&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,is_day" +
       "&hourly=temperature_2m,precipitation_probability,weather_code,is_day" +
       "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset,uv_index_max" +
-      "&timezone=Asia%2FSeoul&forecast_days=5&wind_speed_unit=ms";
-    return cached("om" + lat.toFixed(2) + lng.toFixed(2), 15 * 60e3, () => getJson(u));
+      "&timezone=Asia%2FSeoul&forecast_days=8&wind_speed_unit=ms";
+    const d = kst(new Date());
+    return cached("om" + d.y + "-" + d.m + "-" + d.d + "|" + lat.toFixed(2) + lng.toFixed(2), 15 * 60e3, () => getJson(u));
   }
   function openMeteoAir(lat, lng) {
     const u = "https://air-quality-api.open-meteo.com/v1/air-quality?latitude=" + lat.toFixed(3) + "&longitude=" + lng.toFixed(3) + "&current=pm10,pm2_5&timezone=Asia%2FSeoul";
@@ -229,7 +230,7 @@
     });
   }
   function grade(v, cuts) {
-    if (v == null) return ["", ""];
+    if (v == null || !isFinite(v)) return ["", ""];
     if (v <= cuts[0]) return ["좋음", ""];
     if (v <= cuts[1]) return ["보통", ""];
     if (v <= cuts[2]) return ["나쁨", "warn"];
@@ -323,12 +324,13 @@
   }
   ZLOC.bar = locBar; ZLOC.bind = bindLoc; ZLOC.label = locLabel;
 
+  const pct = (v) => (v == null || !isFinite(+v) ? "–" : Math.round(+v));
   async function render(force) {
     const root = $("todayRoot");
     if (!root || busy) return;
     const l = ZLOC.init();
     const now = new Date(), k = kst(now);
-    const key = l.lat.toFixed(3) + l.lng.toFixed(3) + k.h + (ZAPP.signedIn() ? "s" : "");
+    const key = l.lat.toFixed(3) + l.lng.toFixed(3) + k.y + "-" + k.m + "-" + k.d + "h" + k.h + (ZAPP.signedIn() ? "s" : "");
     if (!force && key === shownFor) return;
     busy = true;
     try {
@@ -342,7 +344,7 @@
         (async () => {
           const sd = reg && airSido(reg.sido);
           if (signed && sd) { try { air = await airKorea(sd); airSrc = t("에어코리아 · {sido} 평균", { sido: Z.lang === "ko" ? sd : tOpt(reg.sido) }); return; } catch (e) {} }
-          try { const a = await openMeteoAir(l.lat, l.lng); air = { pm10: Math.round(a.current.pm10), pm25: Math.round(a.current.pm2_5) }; airSrc = t("예측 모델 값"); } catch (e) {}
+          try { const a = await openMeteoAir(l.lat, l.lng); const rv = (v) => (v == null || !isFinite(+v) ? null : Math.round(+v)); air = { pm10: rv(a.current && a.current.pm10), pm25: rv(a.current && a.current.pm2_5) }; if (air.pm10 == null && air.pm25 == null) { air = null; throw new Error("no data"); } airSrc = t("예측 모델 값"); } catch (e) {}
         })(),
       ];
       if (signed) jobs.push(kmaNow(l.lat, l.lng).then((v) => (kma = v)).catch(() => {}));
@@ -382,7 +384,7 @@
         h += '<article class="card2"><h2>' + esc(t("지금 날씨")) + "<small>" + esc(kma ? t("기상청 초단기 실황") : "Open-Meteo") + "</small></h2>" +
           '<div style="display:flex;align-items:center;gap:14px"><span style="font-size:44px" aria-hidden="true">' + em + '</span><div><div class="big">' + Math.round(temp) + '°</div><div class="muted">' + esc(t(txt)) + " · " + esc(t("체감 {n}°", { n: Math.round(cur.apparent_temperature) })) + "</div></div></div>" +
           '<dl class="kv"><dt>' + esc(t("습도")) + "</dt><dd>" + Math.round(hum) + "%</dd><dt>" + esc(t("바람")) + "</dt><dd>" + (+wind).toFixed(1) + " m/s</dd><dt>" + esc(t("강수")) + "</dt><dd>" + (+rn).toFixed(1) + " mm</dd>" +
-          (daily ? "<dt>" + esc(t("오늘")) + "</dt><dd>" + Math.round(daily.temperature_2m_min[0]) + "° / " + Math.round(daily.temperature_2m_max[0]) + "° · " + esc(t("비 올 확률 {n}%", { n: daily.precipitation_probability_max[0] })) + "</dd>" : "") +
+          (daily ? "<dt>" + esc(t("오늘")) + "</dt><dd>" + Math.round(daily.temperature_2m_min[0]) + "° / " + Math.round(daily.temperature_2m_max[0]) + "° · " + esc(t("비 올 확률 {n}%", { n: pct(daily.precipitation_probability_max[0]) })) + "</dd>" : "") +
           "</dl>";
         // 시간별 24시간
         const hr = wx.hourly, start = hr.time.findIndex((x) => new Date(x + ":00+09:00").getTime() >= nowMs - 3600e3);
@@ -390,7 +392,7 @@
           h += '<div class="hours" aria-label="' + esc(t("시간별")) + '">';
           for (let i = start; i < Math.min(start + 24, hr.time.length); i++) {
             const [e2] = wmo(hr.weather_code[i], hr.is_day[i]);
-            h += "<div><span>" + esc(fmtHour.format(new Date(hr.time[i] + ":00+09:00"))) + '</span><span aria-hidden="true">' + e2 + "</span><b>" + Math.round(hr.temperature_2m[i]) + "°</b><span>" + (hr.precipitation_probability[i] || 0) + "%</span></div>";
+            h += "<div><span>" + esc(fmtHour.format(new Date(hr.time[i] + ":00+09:00"))) + '</span><span aria-hidden="true">' + e2 + "</span><b>" + Math.round(hr.temperature_2m[i]) + "°</b><span>" + pct(hr.precipitation_probability[i] || 0) + "%</span></div>";
           }
           h += "</div>";
         }
@@ -398,7 +400,7 @@
         h += '<dl class="kv">';
         for (let i = 1; i < daily.time.length; i++) {
           const [e3, t3] = wmo(daily.weather_code[i], 1);
-          h += "<dt>" + esc(fmtWd.format(new Date(daily.time[i] + "T12:00:00+09:00"))) + "</dt><dd>" + e3 + " " + Math.round(daily.temperature_2m_min[i]) + "° / " + Math.round(daily.temperature_2m_max[i]) + "° · " + esc(t(t3)) + " · " + daily.precipitation_probability_max[i] + "%</dd>";
+          h += "<dt>" + esc(fmtWd.format(new Date(daily.time[i] + "T12:00:00+09:00"))) + "</dt><dd>" + e3 + " " + Math.round(daily.temperature_2m_min[i]) + "° / " + Math.round(daily.temperature_2m_max[i]) + "° · " + esc(t(t3)) + " · " + pct(daily.precipitation_probability_max[i]) + "%</dd>";
         }
         h += "</dl>";
         if (!signed) h += '<div class="muted">' + esc(t("로그인하면 기상청 실황 값으로 보여요.")) + "</div>";
@@ -487,4 +489,6 @@
   window.ZTODAY = { show: () => render(false), refresh: () => render(true) };
   // 로그인 상태가 바뀌면 다시
   window.addEventListener("zapp-auth", () => { shownFor = ""; if (window.ZAPP_READY && !$("view-today").hidden) render(true); });
+  // app.html 준비가 이 파일보다 먼저 끝났으면(예: CDN 실패) 지금 그려요
+  if (window.ZAPP_READY && !$("view-today").hidden) render(false);
 })();
