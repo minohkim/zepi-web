@@ -236,4 +236,5 @@
   }
   window.ZSEA = { show: () => render(false), refresh: () => render(true), tideNow };
   window.addEventListener("zapp-auth", () => { shownFor = ""; if (window.ZAPP_READY && !$("view-sea").hidden) render(true); });
+  if (window.ZAPP_READY && !$("view-sea").hidden) render(false);
 })();
