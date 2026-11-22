@@ -5643,5 +5643,15 @@
   "Sign in to sync with the phone app.",
   "登录后会与手机应用同步。",
   "ログインするとスマホアプリと同期されます。"
+ ],
+ "이용약관": [
+  "Terms",
+  "使用条款",
+  "利用規約"
+ ],
+ "계속하면 <a href=\"terms.html\" target=\"_blank\" rel=\"noopener\">이용약관</a>, <a href=\"terms.html#lbs\" target=\"_blank\" rel=\"noopener\">위치기반서비스 이용약관</a>, <a href=\"privacy.html\" target=\"_blank\" rel=\"noopener\">개인정보처리방침</a>에 동의하는 것으로 봐요.": [
+  "By continuing you agree to the <a href=\"terms.html\" target=\"_blank\" rel=\"noopener\">Terms</a>, <a href=\"terms.html#lbs\" target=\"_blank\" rel=\"noopener\">Location Service Terms</a> and <a href=\"privacy.html\" target=\"_blank\" rel=\"noopener\">Privacy Policy</a>.",
+  "继续即表示同意<a href=\"terms.html\" target=\"_blank\" rel=\"noopener\">使用条款</a>、<a href=\"terms.html#lbs\" target=\"_blank\" rel=\"noopener\">位置服务条款</a>和<a href=\"privacy.html\" target=\"_blank\" rel=\"noopener\">隐私政策</a>。",
+  "続けると<a href=\"terms.html\" target=\"_blank\" rel=\"noopener\">利用規約</a>・<a href=\"terms.html#lbs\" target=\"_blank\" rel=\"noopener\">位置情報サービス利用規約</a>・<a href=\"privacy.html\" target=\"_blank\" rel=\"noopener\">プライバシーポリシー</a>に同意したものとみなします。"
  ]
 }

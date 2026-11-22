@@ -350,6 +350,7 @@ nav.tabs.side .navgroup { font-size: 11px; letter-spacing: .06em; color: var(--m
 .bbar i { display: block; height: 100%; background: var(--leaf); }
 .bok { color: var(--leaf); font-weight: 700; }
 .bdetail { align-items: center; text-align: center; }
+.consent { font-size: 12px; color: var(--muted); margin: 0; }
 footer { color: var(--muted); font-size: 12px; text-align: center; padding-top: 8px; }
 .loading { padding: 60px 16px; text-align: center; color: var(--muted); }
 
@@ -626,7 +627,7 @@ body { margin: 0; }
     </div>
   </div>
 
-  <footer><span>로그인하면 내 계정의 기록만 보여요. 백업 파일은 이 브라우저 안에서만 열려요.</span> <a href="privacy.html">개인정보처리방침</a></footer>
+  <footer><span>로그인하면 내 계정의 기록만 보여요. 백업 파일은 이 브라우저 안에서만 열려요.</span> <a href="terms.html">이용약관</a> · <a href="privacy.html">개인정보처리방침</a></footer>
 
   <dialog class="dlg" id="loginDlg" aria-labelledby="loginTitle">
     <form id="loginForm" novalidate>
@@ -646,6 +647,7 @@ body { margin: 0; }
         <button class="btn" type="button" id="loginClose">닫기</button>
       </div>
       <button class="linkbtn" type="button" id="forgotGo">비밀번호를 잊었어요</button>
+      <p class="consent">계속하면 <a href="terms.html" target="_blank" rel="noopener">이용약관</a>, <a href="terms.html#lbs" target="_blank" rel="noopener">위치기반서비스 이용약관</a>, <a href="privacy.html" target="_blank" rel="noopener">개인정보처리방침</a>에 동의하는 것으로 봐요.</p>
     </form>
   </dialog>
 
