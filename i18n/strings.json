@@ -7333,5 +7333,585 @@
   "Six garden plots",
   "菜园6格",
   "菜園6マス"
+ ],
+ "포인트에 정확히 던지기": [
+  "Cast right onto the spot",
+  "精准抛到钓点",
+  "ポイントに正確に投げる"
+ ],
+ "갯바위 찌낚시대 1호 5.3m": [
+  "Rock float rod, No.1, 5.3 m",
+  "矶钓竿 1号 5.3米",
+  "磯竿 1号 5.3m"
+ ],
+ "루어대 8.6ft": [
+  "Lure rod 8.6 ft",
+  "路亚竿 8.6英尺",
+  "ルアーロッド 8.6ft"
+ ],
+ "원투대 4.2m + 대형 릴": [
+  "Surf rod 4.2 m + big reel",
+  "远投竿 4.2米 + 大型渔轮",
+  "投げ竿 4.2m + 大型リール"
+ ],
+ "태안 신진도 갯바위": [
+  "Sinjindo rocks, Taean",
+  "泰安 新津岛 礁石",
+  "泰安 新津島の磯"
+ ],
+ "태안 학암포 방파제": [
+  "Hagampo breakwater, Taean",
+  "泰安 鹤岩浦 防波堤",
+  "泰安 鶴岩浦 防波堤"
+ ],
+ "태안 만리포 해수욕장": [
+  "Mallipo Beach, Taean",
+  "泰安 万里浦 海水浴场",
+  "泰安 万里浦 海水浴場"
+ ],
+ "남해 미조 갯바위": [
+  "Mijo rocks, Namhae",
+  "南海 弥助 礁石",
+  "南海 弥助の磯"
+ ],
+ "거제 지세포 방파제": [
+  "Jisepo breakwater, Geoje",
+  "巨济 知世浦 防波堤",
+  "巨済 知世浦 防波堤"
+ ],
+ "남해 상주은모래비치": [
+  "Sangju Eunmorae Beach, Namhae",
+  "南海 尚州银沙滩",
+  "南海 尚州ウンモレビーチ"
+ ],
+ "포항 구룡포 갯바위": [
+  "Guryongpo rocks, Pohang",
+  "浦项 九龙浦 礁石",
+  "浦項 九龍浦の磯"
+ ],
+ "속초 동명항 방파제": [
+  "Dongmyeong Port breakwater, Sokcho",
+  "束草 东明港 防波堤",
+  "束草 東明港 防波堤"
+ ],
+ "강릉 사천진 해변": [
+  "Sacheonjin Beach, Gangneung",
+  "江陵 沙川津 海边",
+  "江陵 沙川津ビーチ"
+ ],
+ "집어제 (밑밥 가루)": [
+  "Attractant (chum powder)",
+  "集鱼剂（诱饵粉）",
+  "集魚剤（撒き餌の粉）"
+ ],
+ "밑밥에 고기가 더 빨리 모여요": [
+  "Fish gather to your chum faster",
+  "鱼更快聚到诱饵周围",
+  "撒き餌に魚が早く集まる"
+ ],
+ "채비 방식": [
+  "Rig style",
+  "钓组方式",
+  "仕掛けの方式"
+ ],
+ "반유동": [
+  "Half-sliding (fixed depth)",
+  "半游动",
+  "半遊動"
+ ],
+ "찌멈춤봉으로 정한 수심에 미끼를 멈춰요. 찌가 쏙 들어가요": [
+  "A float stopper holds the bait at a set depth. The float dips sharply",
+  "用浮漂止停把鱼饵停在设定水深。浮漂会猛地沉下",
+  "ウキ止めで決めたタナにエサを止める。ウキがスッと沈む"
+ ],
+ "전유동": [
+  "Full-sliding",
+  "全游动",
+  "全遊動"
+ ],
+ "미끼가 천천히 끝까지 내려가며 모든 층을 훑어요. 찌가 스르르 잠겨요": [
+  "The bait sinks slowly all the way down, searching every layer. The float sinks gently",
+  "鱼饵慢慢沉到底，搜索每个水层。浮漂会缓缓沉下",
+  "エサがゆっくり底まで沈み全層を探る。ウキがじわっと沈む"
+ ],
+ "수심 (반유동 찌 밑 길이)": [
+  "Depth (line below float, half-sliding)",
+  "水深（半游动浮漂下线长）",
+  "タナ（半遊動のウキ下）"
+ ],
+ "얕게 (2m)": [
+  "Shallow (2 m)",
+  "浅（2米）",
+  "浅め（2m）"
+ ],
+ "중간 (4m)": [
+  "Middle (4 m)",
+  "中层（4米）",
+  "中くらい（4m）"
+ ],
+ "깊게 (6m)": [
+  "Deep (6 m)",
+  "深（6米）",
+  "深め（6m）"
+ ],
+ "북": [
+  "N",
+  "北",
+  "北"
+ ],
+ "북동": [
+  "NE",
+  "东北",
+  "北東"
+ ],
+ "동": [
+  "E",
+  "东",
+  "東"
+ ],
+ "남동": [
+  "SE",
+  "东南",
+  "南東"
+ ],
+ "남": [
+  "S",
+  "南",
+  "南"
+ ],
+ "남서": [
+  "SW",
+  "西南",
+  "南西"
+ ],
+ "서": [
+  "W",
+  "西",
+  "西"
+ ],
+ "북서": [
+  "NW",
+  "西北",
+  "北西"
+ ],
+ "⚠️ 파도가 높아요. 실제라면 갯바위·방파제 끝은 위험해요. 안전 먼저!": [
+  "⚠️ High waves. In real life, rocks and breakwater ends are dangerous now. Safety first!",
+  "⚠️ 浪很高。现实中礁石和防波堤尽头很危险。安全第一！",
+  "⚠️ 波が高い。実際なら磯や防波堤の先は危険。安全第一！"
+ ],
+ "💨 바람이 세요. 원투는 옆바람만큼 줄이 밀려요": [
+  "💨 Strong wind. Crosswind pushes your surf-casting line",
+  "💨 风很大。远投时侧风会把线吹偏",
+  "💨 風が強い。投げ釣りは横風で糸が流される"
+ ],
+ "물돌이(물 멈춤) 무렵 — 입질이 뜸할 수 있어요": [
+  "Around slack tide — bites may be slow",
+  "平潮（潮停）前后——咬钩可能变少",
+  "潮止まりの頃 — アタリが遠いかも"
+ ],
+ "물이 힘차게 흘러요 — 입질 좋을 때, 찌가 빨리 흘러요": [
+  "Strong current — good bites, and the float drifts fast",
+  "水流很急——咬钩好的时候，浮漂漂得快",
+  "潮がよく動いている — アタリの好機、ウキが早く流れる"
+ ],
+ "밤엔 볼락·우럭·붕장어·농어가 잘 물어요": [
+  "At night rockfish, conger and sea bass bite well",
+  "夜里平鲉、许氏平鲉、星鳗、鲈鱼爱咬钩",
+  "夜はメバル・ソイ・アナゴ・スズキがよく釣れる"
+ ],
+ "비 오는 날은 경계심이 줄어 입질이 좋아지기도 해요": [
+  "On rainy days fish are less wary and may bite better",
+  "下雨天鱼的警惕性降低，咬钩可能更好",
+  "雨の日は警戒心が薄れてアタリが増えることも"
+ ],
+ "칸!": [
+  "Clack!",
+  "咔！",
+  "カン！"
+ ],
+ "골창 (모래 고랑)": [
+  "Trough (sand channel)",
+  "沙沟",
+  "カケアガリ（砂の溝）"
+ ],
+ "수중여 옆": [
+  "Beside a submerged reef",
+  "水下礁石旁",
+  "沈み根の横"
+ ],
+ "물골": [
+  "Water channel",
+  "水道",
+  "ミオ筋"
+ ],
+ "모래톱 끝": [
+  "Edge of the sandbar",
+  "沙洲边缘",
+  "砂州の先"
+ ],
+ "🎯 명중! {n}에 정확히 들어갔어요": [
+  "🎯 Bullseye! Right into the {n}",
+  "🎯 命中！正好落在{n}",
+  "🎯 命中！{n}にぴったり"
+ ],
+ "👍 좋아요! 포인트 근처예요": [
+  "👍 Nice! Close to the spot",
+  "👍 不错！在钓点附近",
+  "👍 いいね！ポイントの近く"
+ ],
+ "😅 포인트에서 벗어났어요. 입질이 늦을 수 있어요": [
+  "😅 Missed the spot. Bites may be slow",
+  "😅 偏离钓点了。咬钩可能会慢",
+  "😅 ポイントを外れた。アタリが遅いかも"
+ ],
+ "🥄 밑밥을 뿌려 고기를 모으세요 (아래 버튼)": [
+  "🥄 Throw chum to gather fish (button below)",
+  "🥄 撒诱饵聚鱼（下面的按钮）",
+  "🥄 撒き餌で魚を寄せよう（下のボタン）"
+ ],
+ "🥅 뜰채를 내렸어요. 고기가 뜰채 위로 올 때 탭!": [
+  "🥅 Net's down. Tap when the fish is over it!",
+  "🥅 抄网放下了。鱼到网上方时点！",
+  "🥅 タモを入れた。魚がタモの上に来たらタップ！"
+ ],
+ "너무 빨라요! 찌가 끝까지 잠길 때 챔질": [
+  "Too early! Strike when the float is fully under",
+  "太早了！浮漂完全沉下再扬竿",
+  "早すぎ！ウキが沈みきってからアワセ"
+ ],
+ "바늘털이! 뜰채질이 늦었어요": [
+  "It shook the hook! Netting was too slow",
+  "鱼甩钩了！抄网太慢",
+  "エラ洗い！タモ入れが遅かった"
+ ],
+ "아직! 고기가 뜰채 위에 올 때 탭": [
+  "Not yet! Tap when the fish is over the net",
+  "还没！鱼到网上方时再点",
+  "まだ！魚がタモの上に来たらタップ"
+ ],
+ "찌가 너무 멀리 흘렀어요. 걷어서 다시 던져요": [
+  "The float drifted too far. Reel in and cast again",
+  "浮漂漂太远了。收线重新抛",
+  "ウキが流れすぎた。回収して投げ直そう"
+ ],
+ "조류": [
+  "Current",
+  "潮流",
+  "潮"
+ ],
+ "집어 {n}%": [
+  "Fish gathered {n}%",
+  "聚鱼 {n}%",
+  "寄せ {n}%"
+ ],
+ "들물↑": [
+  "Flood↑",
+  "涨潮↑",
+  "上げ潮↑"
+ ],
+ "날물↓": [
+  "Ebb↓",
+  "退潮↓",
+  "下げ潮↓"
+ ],
+ "초록 칸에 닿으면 한 번 더 탭!": [
+  "Tap again when it reaches the green band!",
+  "到绿色区域时再点一下！",
+  "緑の帯に届いたらもう一度タップ！"
+ ],
+ "손을 떼는 순간 날아가요 · 봉돌이 가운데 올 때": [
+  "It flies when you let go · release when the sinker is centered",
+  "松手就抛出·铅坠摆到中间时松手",
+  "離した瞬間に飛ぶ・オモリが真ん中に来たとき"
+ ],
+ "옆바람 → 줄이 오른쪽으로 밀려요": [
+  "Crosswind → line drifts right",
+  "侧风 → 线会被吹向右边",
+  "横風 → 糸が右へ流される"
+ ],
+ "옆바람 ← 줄이 왼쪽으로 밀려요": [
+  "Crosswind ← line drifts left",
+  "侧风 ← 线会被吹向左边",
+  "横風 ← 糸が左へ流される"
+ ],
+ "찌를 보세요 · 밑밥은 찌 주변에": [
+  "Watch the float · chum around it",
+  "盯着浮漂·诱饵撒在浮漂周围",
+  "ウキを見て・撒き餌はウキの周りに"
+ ],
+ "찌가 스르르 잠겨요… 끝까지 들어가면 탭!": [
+  "The float is slowly sinking… tap when it's fully under!",
+  "浮漂在缓缓下沉…完全沉下就点！",
+  "ウキがじわっと沈む…沈みきったらタップ！"
+ ],
+ "뜰채 위로 고기가 올 때 탭!": [
+  "Tap when the fish is over the net!",
+  "鱼到抄网上方时点！",
+  "魚がタモの上に来たらタップ！"
+ ],
+ "🏖️ 힘 모으기 시작": [
+  "🏖️ Start the swing",
+  "🏖️ 开始蓄力",
+  "🏖️ 力をためる"
+ ],
+ "🏖️ 꾹 눌러 힘 모으기": [
+  "🏖️ Hold to build power",
+  "🏖️ 长按蓄力",
+  "🏖️ 長押しで力をためる"
+ ],
+ "🎣 휙! 던지기": [
+  "🎣 Whip it! Cast",
+  "🎣 唰！抛竿",
+  "🎣 ヒュッ！と投げる"
+ ],
+ "🎈 살짝 던지기": [
+  "🎈 Gentle cast",
+  "🎈 轻轻抛出",
+  "🎈 そっと投げる"
+ ],
+ "🎯 지금 던지기!": [
+  "🎯 Cast now!",
+  "🎯 现在抛！",
+  "🎯 今投げる！"
+ ],
+ "🎯 손을 떼면 던져요": [
+  "🎯 Let go to cast",
+  "🎯 松手就抛出",
+  "🎯 離すと投げる"
+ ],
+ "쉬이이익~": [
+  "Whooosh~",
+  "嗖嗖嗖~",
+  "シュイーン"
+ ],
+ "휙!": [
+  "Whip!",
+  "唰！",
+  "ヒュッ！"
+ ],
+ "🥄 밑밥 뿌리기": [
+  "🥄 Throw chum",
+  "🥄 撒诱饵",
+  "🥄 撒き餌をまく"
+ ],
+ "삼발이에 거치하는 중": [
+  "Setting the rod on the stand",
+  "正在把竿架到三脚架上",
+  "三脚に竿を置いています"
+ ],
+ "🥅 뜰채로 뜨기!": [
+  "🥅 Scoop with the net!",
+  "🥅 用抄网捞！",
+  "🥅 タモですくう！"
+ ],
+ "영차!": [
+  "Heave-ho!",
+  "嘿哟！",
+  "よいしょ！"
+ ],
+ "날씨": [
+  "Weather",
+  "天气",
+  "天気"
+ ],
+ "수온 {n}°C": [
+  "water {n}°C",
+  "水温 {n}°C",
+  "水温 {n}°C"
+ ],
+ "바람 · 파도": [
+  "Wind · waves",
+  "风·浪",
+  "風・波"
+ ],
+ "파고 {n}m": [
+  "waves {n} m",
+  "浪高 {n}米",
+  "波高 {n}m"
+ ],
+ "물때": [
+  "Tide",
+  "潮汐",
+  "潮回り"
+ ],
+ "들물 (물 들어오는 중)": [
+  "Flood (water coming in)",
+  "涨潮（水在涨）",
+  "上げ潮（満ちてきている）"
+ ],
+ "날물 (물 빠지는 중)": [
+  "Ebb (water going out)",
+  "退潮（水在退）",
+  "下げ潮（引いている）"
+ ],
+ "물흐름 {n}": [
+  "current {n}",
+  "水流 {n}",
+  "潮の流れ {n}"
+ ],
+ "셈": [
+  "strong",
+  "强",
+  "強い"
+ ],
+ "약함": [
+  "weak",
+  "弱",
+  "弱い"
+ ],
+ "날씨·파도: Open-Meteo 실시간": [
+  "Weather & waves: Open-Meteo live",
+  "天气·海浪：Open-Meteo 实时",
+  "天気・波：Open-Meteo リアルタイム"
+ ],
+ "날씨: 연결이 안 돼 예시 날씨로 그렸어요": [
+  "Weather: couldn't connect, drawn with sample weather",
+  "天气：无法连接，用示例天气绘制",
+  "天気：接続できず例の天気で描きました"
+ ],
+ "물높이: 음력으로 추정 (로그인하면 가까운 관측소 실측 예보)": [
+  "Tide height: estimated from the lunar calendar (sign in for the nearest station's forecast)",
+  "潮高：按农历估算（登录后显示最近观测站预报）",
+  "潮位：旧暦から推定（ログインすると最寄り観測所の予報）"
+ ],
+ "물높이: {st} 관측소 예보": [
+  "Tide height: {st} station forecast",
+  "潮高：{st}观测站预报",
+  "潮位：{st}観測所の予報"
+ ],
+ "지도에서 보기": [
+  "View on map",
+  "在地图上看",
+  "地図で見る"
+ ],
+ "명중률 {n}%": [
+  "accuracy {n}%",
+  "命中率 {n}%",
+  "命中率 {n}%"
+ ],
+ "보령 외연도 갯바위": [
+  "Oeyeondo rocks, Boryeong",
+  "保宁外烟岛礁石",
+  "保寧・外煙島の磯"
+ ],
+ "여수 금오도 갯바위": [
+  "Geumodo rocks, Yeosu",
+  "丽水金鳌岛礁石",
+  "麗水・金鰲島の磯"
+ ],
+ "거제 해금강 갯바위": [
+  "Haegeumgang rocks, Geoje",
+  "巨济海金刚礁石",
+  "巨済・海金剛の磯"
+ ],
+ "부산 태종대 갯바위": [
+  "Taejongdae rocks, Busan",
+  "釜山太宗台礁石",
+  "釜山・太宗台の磯"
+ ],
+ "제주 차귀도 갯바위": [
+  "Chagwido rocks, Jeju",
+  "济州遮归岛礁石",
+  "済州・遮帰島の磯"
+ ],
+ "인천 영흥도 진두항": [
+  "Jindu port, Yeongheungdo, Incheon",
+  "仁川灵兴岛津头港",
+  "仁川・霊興島 津頭港"
+ ],
+ "보령 오천항 방파제": [
+  "Ocheon port breakwater, Boryeong",
+  "保宁鳌川港防波堤",
+  "保寧・鰲川港の防波堤"
+ ],
+ "군산 비응항 방파제": [
+  "Bieung port breakwater, Gunsan",
+  "群山飞鹰港防波堤",
+  "群山・飛鷹港の防波堤"
+ ],
+ "여수 국동항 방파제": [
+  "Gukdong port breakwater, Yeosu",
+  "丽水菊洞港防波堤",
+  "麗水・菊洞港の防波堤"
+ ],
+ "부산 기장 대변항 방파제": [
+  "Daebyeon port breakwater, Gijang, Busan",
+  "釜山机张大边港防波堤",
+  "釜山・機張 大辺港の防波堤"
+ ],
+ "강릉 주문진항 방파제": [
+  "Jumunjin port breakwater, Gangneung",
+  "江陵注文津港防波堤",
+  "江陵・注文津港の防波堤"
+ ],
+ "보령 대천 해수욕장": [
+  "Daecheon Beach, Boryeong",
+  "保宁大川海水浴场",
+  "保寧・大川海水浴場"
+ ],
+ "부안 변산 해수욕장": [
+  "Byeonsan Beach, Buan",
+  "扶安边山海水浴场",
+  "扶安・辺山海水浴場"
+ ],
+ "부산 다대포 해수욕장": [
+  "Dadaepo Beach, Busan",
+  "釜山多大浦海水浴场",
+  "釜山・多大浦海水浴場"
+ ],
+ "제주 협재 해수욕장": [
+  "Hyeopjae Beach, Jeju",
+  "济州挟才海水浴场",
+  "済州・挟才海水浴場"
+ ],
+ "포항 칠포 해수욕장": [
+  "Chilpo Beach, Pohang",
+  "浦项七浦海水浴场",
+  "浦項・七浦海水浴場"
+ ],
+ "내 위치에서 약 {n}km": [
+  "about {n} km from me",
+  "离我约{n}公里",
+  "現在地から約{n}km"
+ ],
+ "내 위치(GPS)": [
+  "My location (GPS)",
+  "我的位置（GPS）",
+  "現在地（GPS）"
+ ],
+ "서울 (기본)": [
+  "Seoul (default)",
+  "首尔（默认）",
+  "ソウル（初期設定）"
+ ],
+ "선택한 위치": [
+  "Chosen location",
+  "所选位置",
+  "選んだ場所"
+ ],
+ "📍 가까운 {spot} 낚시터": [
+  "📍 Nearby fishing spots ({spot})",
+  "📍 附近的钓点（{spot}）",
+  "📍 近くの釣り場（{spot}）"
+ ],
+ "기준: {from}": [
+  "From: {from}",
+  "基准：{from}",
+  "基準：{from}"
+ ],
+ "📡 지금 내 위치로 다시 찾기": [
+  "📡 Find again from where I am",
+  "📡 按我现在的位置重新查找",
+  "📡 今いる場所でもう一度探す"
+ ],
+ "찾는 중…": [
+  "Finding…",
+  "查找中…",
+  "探しています…"
+ ],
+ "위치를 찾지 못했어요. 지금 기준으로 보여 줘요": [
+  "Couldn't get your location. Showing from the current reference",
+  "没能找到位置，按当前基准显示",
+  "位置がわかりませんでした。今の基準で表示します"
  ]
 }

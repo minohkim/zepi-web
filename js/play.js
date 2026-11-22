@@ -58,6 +58,37 @@
       src.connect(bp); bp.connect(g); g.connect(a.destination); src.start();
     } catch (e) {}
   }
+  // 휙 · 쉬이익 (던질 때 바람 소리): 잡음을 대역 필터로 훑어요
+  let longNoise = null;
+  function noise(a) {
+    if (!longNoise) {
+      longNoise = a.createBuffer(1, Math.round(a.sampleRate * 1.6), a.sampleRate);
+      const ch = longNoise.getChannelData(0);
+      for (let i = 0; i < ch.length; i++) ch[i] = Math.random() * 2 - 1;
+    }
+    return longNoise;
+  }
+  function swoosh(f0, f1, dur, vol, q) {
+    const a = audio(); if (!a) return;
+    try {
+      const t0 = a.currentTime, src = a.createBufferSource(), bp = a.createBiquadFilter(), g = a.createGain();
+      src.buffer = noise(a); bp.type = "bandpass"; bp.Q.value = q || 1.4;
+      bp.frequency.setValueAtTime(f0, t0); bp.frequency.exponentialRampToValueAtTime(f1, t0 + dur);
+      g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(vol, t0 + dur * 0.35); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      src.connect(bp); bp.connect(g); g.connect(a.destination); src.start(t0); src.stop(t0 + dur + 0.05);
+    } catch (e) {}
+  }
+  // 첨벙 · 퐁 (물에 떨어지는 소리)
+  function splash(vol, low) {
+    const a = audio(); if (!a) return;
+    try {
+      const t0 = a.currentTime, src = a.createBufferSource(), lp = a.createBiquadFilter(), g = a.createGain();
+      src.buffer = noise(a); lp.type = "lowpass"; lp.frequency.setValueAtTime(low ? 900 : 2200, t0); lp.frequency.exponentialRampToValueAtTime(200, t0 + 0.4);
+      g.gain.setValueAtTime(vol, t0); g.gain.exponentialRampToValueAtTime(0.0001, t0 + (low ? 0.5 : 0.25));
+      src.connect(lp); lp.connect(g); g.connect(a.destination); src.start(t0); src.stop(t0 + 0.55);
+      if (!low) { const o = a.createOscillator(), og = a.createGain(); o.frequency.setValueAtTime(900, t0); o.frequency.exponentialRampToValueAtTime(300, t0 + 0.08); og.gain.setValueAtTime(vol * 0.5, t0); og.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.1); o.connect(og); og.connect(a.destination); o.start(t0); o.stop(t0 + 0.12); }
+    } catch (e) {}
+  }
   let dragAcc = 0, reelAcc = 0;
   // rate: 초당 딸깍 수 (0 이면 조용). 매 화면마다 불러요
   function drag(rate, dt) { if (rate <= 0) { dragAcc = 0; return; } dragAcc += rate * dt; let n = 0; while (dragAcc >= 1 && n < 6) { dragAcc -= 1; n++; click(3600 + Math.random() * 900, 0.5); } }
@@ -257,7 +288,7 @@
   // 지금 이 게임 창이 보이는지 (안 보이면 그리기를 멈춰요)
   function visible(el) { return !!(layer && !layer.hidden && el && !el.hidden); }
 
-  const K = { t, esc, opt, beep, click, drag, reel, buzz, photo, photoHtml, drawCover, optHtml, onOpt, bindPress, canvasSize, font, visible };
+  const K = { t, esc, opt, beep, click, drag, reel, buzz, swoosh, splash, photo, photoHtml, drawCover, optHtml, onOpt, bindPress, canvasSize, font, visible };
   K.opt = opt;
   function reg(kind, g) { GAMES[kind] = g; }
 

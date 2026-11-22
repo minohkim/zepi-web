@@ -224,6 +224,16 @@
     } finally { busy = false; }
   }
   if (window.ZLOC) ZLOC.on(() => { shownFor = ""; pickCode = ""; if (!$("view-sea").hidden) render(true); });
-  window.ZSEA = { show: () => render(false), refresh: () => render(true) };
+  // 놀이(낚시 게임)가 쓰는 지금 물높이: 가장 가까운 관측소 · 오늘 최저~최고 사이 어디쯤(k 0~1) · 들물/날물 (로그인 필요)
+  async function tideNow(lat, lng) {
+    const st = byDist(lat, lng)[0], now = new Date();
+    const a = await tideDay(st.code, kstYmd(now), 10);
+    const lv = levelAt(a.pts, now);
+    if (lv == null) throw new Error("no level");
+    const lvls = a.pts.map((p) => p.level), lo = Math.min(...lvls), hi = Math.max(...lvls);
+    const next = extremes(a.pts).find((e) => e.time > now);
+    return { station: tOpt(st.name), level: lv, k: (lv - lo) / ((hi - lo) || 1), rising: next ? next.high : null, range: hi - lo, next: next ? next.time : null };
+  }
+  window.ZSEA = { show: () => render(false), refresh: () => render(true), tideNow };
   window.addEventListener("zapp-auth", () => { shownFor = ""; if (window.ZAPP_READY && !$("view-sea").hidden) render(true); });
 })();
