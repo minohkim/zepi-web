@@ -32,14 +32,16 @@
   const M = () => MOUNTS.find((m) => m.id === save.sel) || MOUNTS[0];
 
   // 내 기록에서 가 본 시군구 → 가 본 산
+  let summitSet = new Set(); // 제피 앱의 100대 명산에서 실제로 오른 산
   function visitedSet() {
     const out = new Set();
     try {
       const R = window.ZAPP && ZAPP.recs && ZAPP.recs();
       if (!R || R.sample || !R.regions) return out;
+      summitSet = new Set(R.summits || []);
       const names = [];
       for (const r of R.regions) if ((R.conq && (R.conq.has(r.c) || R.conq.has(String(r.c)))) || (R.manual && R.manual.has && (R.manual.has(r.c) || R.manual.has(String(r.c))))) names.push(r.n);
-      for (const m of MOUNTS) if (m.sgg.some((g) => names.some((n) => n.indexOf(g) === 0))) out.add(m.id);
+      for (const m of MOUNTS) if (m.sgg.some((g) => names.some((n) => n.indexOf(g) === 0)) || (R.summits && R.summits.indexOf(m.n) >= 0)) out.add(m.id);
     } catch (e) {}
     return out;
   }
@@ -242,10 +244,10 @@
     const vis = visitedSet();
     const list = MOUNTS.slice().sort((a, b) => (vis.has(b.id) - vis.has(a.id)));
     let h = '<article class="panel gcard"><h3>' + esc(t("어느 산에 오를까요?")) + "</h3>";
-    if (vis.size) h += '<p class="muted" style="margin:0 0 8px">' + esc(t("✓ 표시는 내 기록에 있는 동네의 산이에요")) + "</p>";
+    if (vis.size) h += '<p class="muted" style="margin:0 0 8px">' + esc(t("✓ 표시는 내 기록에 있는 동네의 산이에요")) + (summitSet.size ? " · " + esc(t("🏅 는 제피 앱 기록으로 실제로 오른 산")) : "") + "</p>";
     h += '<div class="chips">' + list.map((m) => {
       const d = save.done[m.id];
-      return '<button type="button" data-msel="' + m.id + '" class="' + (save.sel === m.id ? "on" : "") + '">' + (vis.has(m.id) ? "✓ " : "") + esc(t(m.n)) + (d ? " 🏁" : "") + "</button>";
+      return '<button type="button" data-msel="' + m.id + '" class="' + (save.sel === m.id ? "on" : "") + '">' + (summitSet.has(m.n) ? "🏅 " : vis.has(m.id) ? "✓ " : "") + esc(t(m.n)) + (d ? " 🏁" : "") + "</button>";
     }).join("") + "</div>";
     const m = M(), d = save.done[m.id];
     h += '<p class="tk-like" style="margin:10px 0 0">' + esc(m.stops.map((s) => t(s)).join(" → ")) + " · " + m.h + "m" + (d ? " · " + esc(t("완등 {n}번 · 최고 {m}분 {s}초", { n: d.n, m: Math.floor(d.best / 60), s: d.best % 60 })) : "") + "</p></article>";

@@ -93,7 +93,11 @@
   // rate: 초당 딸깍 수 (0 이면 조용). 매 화면마다 불러요
   function drag(rate, dt) { if (rate <= 0) { dragAcc = 0; return; } dragAcc += rate * dt; let n = 0; while (dragAcc >= 1 && n < 6) { dragAcc -= 1; n++; click(3600 + Math.random() * 900, 0.5); } }
   function reel(rate, dt) { if (rate <= 0) { reelAcc = 0; return; } reelAcc += rate * dt; let n = 0; while (reelAcc >= 1 && n < 3) { reelAcc -= 1; n++; click(1500 + Math.random() * 300, 0.22); } }
-  function buzz(ms) { try { navigator.vibrate && navigator.vibrate(ms); } catch (e) {} }
+  // 진동: 제피 앱 안이면 폰의 햅틱으로 (웹뷰는 진동이 잘 안 돼요), 아니면 브라우저 진동
+  function buzz(ms) {
+    if (window.ZNATIVE) { const total = Array.isArray(ms) ? ms.filter((_, i) => i % 2 === 0).reduce((a, b) => a + b, 0) : ms; window.ZNATIVE.send("buzz", { ms: total }); return; }
+    try { navigator.vibrate && navigator.vibrate(ms); } catch (e) {}
+  }
 
   // ---------- 내 사진 배경 ----------
   const photos = {};
@@ -245,6 +249,7 @@
     layer.hidden = true; cur = null;
     document.documentElement.style.overflow = "";
     try { lastFocus && lastFocus.focus({ preventScroll: true }); } catch (e) {}
+    if (window.ZPLAY && typeof window.ZPLAY.onClose === "function") window.ZPLAY.onClose();
   }
 
   // ---------- 탭마다 '게임으로 해보기' 카드 ----------

@@ -1,0 +1,134 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>제피 놀이</title><link rel="preconnect" href="https://fonts.googleapis.com"><style>/* 레이아웃: 위에 요약 띠, 아래 탭. "하루"는 넓은 화면에서 왼쪽 지도 · 오른쪽 타임라인 (폴드 펼친 화면과 같은 배치) */
+:root {
+  --bg: #F7F5EE;
+  --surface: #FFFFFF;
+  --ink: #17201A;
+  --muted: #56615A;
+  --line: #D9D5C7;
+  --leaf: #1F6B3A;
+  --leaf-soft: #DCE9DD;
+  --pepper: #A8402A;
+  --land: #ECF0E7;
+  --land-line: #C3CCBF;
+  --passed: #CFE0CB;
+  /* 앱 브랜드 노랑: 주 버튼·선택 표시 */
+  --sun: #F2B705;
+  --sun-ink: #8A6A00;
+  --sun-soft: #FFF1C2;
+  --on-sun: #1B1A12; /* 노랑 위 글자는 다크 모드에서도 어둡게 */
+  --font-display: "Gowun Batang", "Nanum Myeongjo", serif;
+  --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --font-num: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --radius: 20px;
+  --radius-sm: 10px; /* 알림 띠처럼 낮은 것 */
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1411; --surface: #161D18; --ink: #E5EBE3; --muted: #9AA69D; --line: #29332C;
+    --leaf: #62BE84; --leaf-soft: #1D3324; --pepper: #E5805F; --land: #19211C; --land-line: #34413A; --passed: #2A3B2F; --sun-ink: #F2C94C; --sun-soft: #3A3114;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1411; --surface: #161D18; --ink: #E5EBE3; --muted: #9AA69D; --line: #29332C;
+  --leaf: #62BE84; --leaf-soft: #1D3324; --pepper: #E5805F; --land: #19211C; --land-line: #34413A; --passed: #2A3B2F; --sun-ink: #F2C94C; --sun-soft: #3A3114;
+  color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 16px 40px;
+}
+button, label.btn { font: inherit; cursor: pointer; }
+.btn { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font-size: 14px; }
+.btn.primary { background: var(--sun); border-color: var(--sun); color: var(--on-sun); font-weight: 600; }
+.btn:hover { border-color: var(--leaf); }
+.btn.primary:hover { border-color: var(--sun-ink); }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.btn.who { display: inline-flex; align-items: center; gap: 6px; max-width: 220px; }
+.btn.who span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.btn.dangerbtn { background: #C62828; color: #fff; border-color: #C62828; }
+.btn.dangerbtn:disabled { opacity: .45; }
+.dlg .row .btn { flex: 1 1 auto; justify-content: center; }
+/* 중국어·일본어는 그 나라 글꼴로 (한국어 글꼴은 한자를 한국식 모양으로 그려요) */
+:root:lang(zh) { --font-display: "Songti SC", "Noto Serif SC", "SimSun", serif; --font-body: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif; }
+:root:lang(ja) { --font-display: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif; --font-body: "Hiragino Sans", "Yu Gothic UI", "Meiryo", "Noto Sans JP", system-ui, sans-serif; }
+:root:lang(en) { --font-display: Georgia, "Times New Roman", serif; }
+.card2 .muted { color: var(--muted); font-size: 13px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips a, .chips button { display: inline-flex; align-items: center; gap: 4px; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font: inherit; font-size: 13px; text-decoration: none; cursor: pointer; }
+.chips a:hover, .chips button:hover { border-color: var(--leaf); }
+.chips button.on { background: var(--leaf); border-color: var(--leaf); color: var(--bg); }
+.chips button.soon { box-shadow: inset 0 0 0 2px #E2A400; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; }
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body)}
+.home{max-width:640px;margin:0 auto;padding:max(22px,env(safe-area-inset-top)) 16px 40px;display:flex;flex-direction:column;gap:12px}
+.home h1{font-family:var(--font-display);margin:0;font-size:28px}.home p{margin:0;color:var(--muted)}
+.home .tile{display:flex;align-items:center;gap:14px;min-height:96px;padding:14px 18px;border-radius:20px;border:2px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.home .tile .i{font-size:40px}.home .tile b{display:block;font-size:20px}.home .tile small{color:var(--muted);font-size:14px}
+</style></head><body><main class="home"><h1>제피 놀이</h1><p>제피 앱의 활동을 게임으로</p>
+<button class="tile" data-go="fish"><span class="i">🎣</span><span><b>낚시 게임</b><small>찌낚시 · 루어 · 원투 — 어르신도 쉽게</small></span></button>
+<button class="tile" data-go="mount"><span class="i">⛰️</span><span><b>다시 오르는 산</b><small>가 본 산을 게임으로 한 번 더</small></span></button>
+<button class="tile" data-go="farm"><span class="i">🥬</span><span><b>텃밭 게임</b><small>심고 물 주고 수확하기</small></span></button>
+<button class="tile" data-go="star"><span class="i">✨</span><span><b>별자리 잇기</b><small>오늘 밤 보이는 별자리를 손가락으로</small></span></button>
+</main><script>
+// 제피 놀이 페이지 (play.html?g=fish|mount|farm|star&lang=ko&lat=..&lng=..&sgg=속초시,인제군)
+// - 폰 앱(제피)의 웹뷰에서 열려요. 앱이 언어·위치·가 본 시군구를 넘겨 주고, 진동·닫기·위치 찾기는 앱에 부탁해요 (ZepiNative 채널)
+// - 브라우저에서 그냥 열어도 돼요 (그때는 게임 고르는 화면부터)
+(function () {
+  var q = new URLSearchParams(location.search);
+  // 앱 다리: 웹 → 앱 은 ZepiNative.postMessage, 앱 → 웹 은 ZNATIVE.reply(id, ok, value)
+  if (window.ZepiNative && window.ZepiNative.postMessage) {
+    window.ZNATIVE = {
+      _id: 0, _p: {},
+      call: function (t, a) {
+        var self = this, id = ++this._id;
+        return new Promise(function (res, rej) {
+          self._p[id] = { res: res, rej: rej };
+          try { window.ZepiNative.postMessage(JSON.stringify({ id: id, t: t, a: a || {} })); } catch (e) { delete self._p[id]; rej(e); }
+          setTimeout(function () { if (self._p[id]) { delete self._p[id]; rej("timeout"); } }, 20000);
+        });
+      },
+      send: function (t, a) { try { window.ZepiNative.postMessage(JSON.stringify({ id: 0, t: t, a: a || {} })); } catch (e) {} },
+      reply: function (id, ok, v) { var p = this._p[id]; if (!p) return; delete this._p[id]; if (ok) p.res(v); else p.rej(v); },
+    };
+  }
+  // 위치: 앱이 넘겨 준 좌표. "지금 내 위치로 다시 찾기"는 앱에 물어봐요
+  var lat = parseFloat(q.get("lat")), lng = parseFloat(q.get("lng"));
+  var loc = isFinite(lat) && isFinite(lng) ? { lat: lat, lng: lng, src: "gps", label: "" } : null;
+  if (loc || window.ZNATIVE) {
+    window.ZLOC = {
+      init: function () { return loc || { lat: 37.5665, lng: 126.978, src: "default", label: "" }; },
+      gps: function () { return window.ZNATIVE ? window.ZNATIVE.call("loc").then(function (v) { return { lat: v.lat, lng: v.lng, src: "gps", label: "" }; }) : Promise.reject("no-gps"); },
+      set: function (l) { loc = { lat: l.lat, lng: l.lng, src: "gps", label: "" }; },
+    };
+  }
+  // 가 본 시군구 → 등산 게임의 '가 본 산' 표시
+  var sgg = (q.get("sgg") || "").split(",").filter(Boolean), peaks = (q.get("peaks") || "").split(",").filter(Boolean);
+  if (sgg.length || peaks.length) {
+    var set = new Set(sgg);
+    window.ZAPP = { recs: function () { return { sample: false, regions: sgg.map(function (n) { return { c: n, n: n }; }), conq: set, summits: peaks }; } };
+  }
+})();
+</script>
+<script src="i18n.js"></script>
+<script src="js/lunar.js"></script>
+<script src="js/play.js"></script>
+<script src="js/game.js"></script>
+<script src="js/game-mount.js"></script>
+<script src="js/game-farm.js"></script>
+<script src="js/game-star.js"></script>
+<script>
+(function () {
+  var q = new URLSearchParams(location.search), g = q.get("g");
+  document.querySelectorAll("[data-go]").forEach(function (b) { b.addEventListener("click", function () { ZPLAY.open(b.dataset.go); }); });
+  if (window.ZI18N && ZI18N.apply) try { ZI18N.apply(document.body); } catch (e) {}
+  // 앱에서 열었으면: 게임을 닫으면 앱 화면으로 돌아가요
+  if (window.ZNATIVE) ZPLAY.onClose = function () { window.ZNATIVE.send("close"); };
+  if (g && ZPLAY.kinds().indexOf(g) >= 0) ZPLAY.open(g);
+})();
+</script>
+</body></html>
