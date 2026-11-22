@@ -37,6 +37,18 @@ for (const lang of ["ko", "en"]) {
     const visible = await pg.evaluate((t) => !document.getElementById("view-" + t).hidden, tab);
     ok(visible, lang + " 메뉴 " + tab);
   }
+  // 놀이: 탭마다 게임 카드가 있고, 게임 4개가 열리고 한 판씩 돌아가는지
+  for (const [tab, kind] of [["sea", "fish"], ["conquest", "mount"], ["farm", "farm"], ["today", "star"]]) {
+    await pg.evaluate((t) => ZAPP.showTab(t), tab);
+    ok((await pg.locator('#view-' + tab + ' .playcard[data-pcard="' + kind + '"]').count()) === 1, lang + " 놀이 카드 " + tab);
+  }
+  for (const kind of ["fish", "mount", "farm", "star"]) {
+    await pg.evaluate((k) => ZPLAY.open(k), kind);
+    await pg.waitForTimeout(300);
+    for (let i = 0; i < 25; i++) { await pg.click('[data-pgame="' + kind + '"] .gbig', { force: true }); await pg.waitForTimeout(kind === "farm" ? 900 : 350); }
+    ok(await pg.evaluate((k) => !document.querySelector('[data-pgame="' + k + '"]').hidden && ZPLAY.current() === k, kind), lang + " 놀이 " + kind + " 열림·진행");
+  }
+  await pg.evaluate(() => ZPLAY.close());
   ok(pg.errors.length === 0, lang + " 메뉴 전부 오류 없음", pg.errors.join(" | "));
   if (lang === "en") {
     const missing = await pg.evaluate(() => Object.keys(ZI18N.missing || {}));
