@@ -138,9 +138,10 @@
   }
 
   // ---------- 설정 줄 ----------
-  function optHtml() {
+  // o.noEasy: 게임이 자기 난이도 단추를 따로 쓸 때 (낚시)
+  function optHtml(o) {
     return '<div class="chips gopt">' +
-      '<button type="button" data-popt="easy" class="' + (opt.easy ? "on" : "") + '">' + esc(t(opt.easy ? "쉬운 모드 켜짐" : "도전 모드 (어려움)")) + "</button>" +
+      (o && o.noEasy ? "" : '<button type="button" data-popt="easy" class="' + (opt.easy ? "on" : "") + '">' + esc(t(opt.easy ? "쉬운 모드 켜짐" : "도전 모드 (어려움)")) + "</button>") +
       '<button type="button" data-popt="big" class="' + (opt.big ? "on" : "") + '">' + esc(t("큰 글씨")) + "</button>" +
       '<button type="button" data-popt="sound" class="' + (opt.sound ? "on" : "") + '">' + esc(t(opt.sound ? "소리 켜짐" : "소리 꺼짐")) + "</button></div>";
   }

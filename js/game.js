@@ -169,7 +169,10 @@
   let save = load();
   function store() { try { localStorage.setItem(KEY, JSON.stringify(save)); } catch (e) {} }
   const mode = () => save.mode;
-  const easy = () => !K || K.opt.easy;
+  // 난이도: 1 쉬움(어르신 · 실패 없음) · 2 손맛(기본) · 3 고수
+  const diff = () => save.diff || 2;
+  const easy = () => diff() === 1;
+  const hard = () => diff() === 3;
   function spot() { const list = nearSpots(mode()), id = (save.spots || {})[mode()]; return list.find((x) => x.id === id) || list[0]; }
   const place = () => spot().sea;
 
@@ -309,11 +312,28 @@
   let waitT = 0, biteAt = 0, biteT = 0, nibbles = [];
   let lureK = 0, lureTaps = 0, lureNeed = 2, lureBite = -1, hopT = 0, retrT = 0;
   let fish = null, T = 0, P = 0, slackT = 0, hookPt = null, warnT = 0, res = null, perfect = false;
+  // 손맛 파이팅: 세로 게이지에서 초록 칸(zy)으로 고기(fy)를 붙잡아요
+  let zy = 0.3, zv = 0, fy = 0.5, fv = 0, fTo = 0.5, fTimer = 0, inT = 0, outT = 0, jump = null, jumpsOk = 0, fightT = 0;
+  // 도파민: 연속 낚기 · 피딩 러시 · 화면 흔들림 · 꽃가루
+  let streak = 0, bestStreak = 0, rushT = 0, shake = 0, parts = [], flashT = 0, flashCol = "#fff";
   let netT = 0, netMiss = 0, scoopT = 0, liftT = 0;
   const sess = [];
   function flash(m) { G.msg = m; G.msgT = 2.4; }
 
   // ---------- 고기 고르기 ----------
+  // 레벨: 낚은 점수(경험치)로 올라가요. 높을수록 귀한 고기 · 주인(보스)이 잘 나와요
+  const lvOf = (xp) => Math.floor(Math.sqrt((xp || 0) / 150)) + 1;
+  const xpAt = (lv) => (lv - 1) * (lv - 1) * 150;
+  // 고기 성격: 파이팅 때 움직이는 모양
+  const STYLE = { mackerel: "dart", spmackerel: "dart", halfbeak: "dart", sillago: "dart", seabream: "dive", redbream: "dive", blackfish: "dive", korockfish: "dive", rockfish: "dive", greenling: "dive", flounder: "heavy", marbled: "heavy", righteye: "heavy", conger: "heavy", seabass: "jumper", squid: "jet" };
+  function bossFish() {
+    const ml = mode()[0], pi = PI[place()];
+    const list = SP.filter((x) => !x.junk && x.m.includes(ml) && x.r[pi] > 0 && x.id !== "squid").sort((a, b) => b.max * b.str - a.max * a.str);
+    const s0 = list[Math.floor(Math.random() * Math.min(2, list.length))] || list[0];
+    const size = Math.round(s0.max * rnd(1.15, 1.35));
+    const short = t(spot().n).split(" ").slice(0, 2).join(" ");
+    return Object.assign({}, s0, { size, sf: 1.3, st: s0.str * 1.6, boss: true, title: t("👑 {spot}의 주인", { spot: short }), run: false, rt: 1 });
+  }
   function pickFish() {
     const ml = mode()[0], pi = PI[place()];
     const list = SP.filter((s) => s.m.includes(ml));
@@ -323,7 +343,7 @@
       let w = s.junk ? 0.35 : s.r[pi] * baitMul(s) * depthMulAt(s, bz);
       if (!s.junk && s.str >= 1.2) w *= (0.6 + 0.8 * cast) * accBonus;
       if (s.night && COND.night) w *= 2;
-      if (s.rare) w *= 0.35 * (save.gear.shiny ? 1.8 : 1);
+      if (s.rare) w *= 0.35 * (save.gear.shiny ? 1.8 : 1) * (1 + 0.04 * (lvOf(save.xp) - 1)) * (rushT > 0 ? 1.5 : 1);
       if (!s.junk && save.gear.shiny && s.str >= 1.3) w *= 1.3;
       tot += w; return w;
     });
@@ -331,8 +351,10 @@
     for (; i < list.length - 1; i++) { r -= ws[i]; if (r <= 0) break; }
     const s = list[i];
     const size = s.junk ? 0 : Math.round(clamp(rnd(s.min, s.max) * (0.92 + 0.2 * cast) * (save.gear.shiny ? 1.05 : 1) * (acc && acc.grade === "hit" ? 1.06 : 1), s.min, s.max * 1.12));
-    const sf = s.junk ? 0 : clamp((size - s.min) / (s.max - s.min), 0, 1.2);
-    return Object.assign({}, s, { size, st: s.str * (0.8 + 0.5 * sf), run: false, rt: 1 });
+    let sz = size;
+    if (!s.junk && rushT > 0) sz = Math.round(Math.min(s.max * 1.12, sz * 1.06));
+    const sf = s.junk ? 0 : clamp((sz - s.min) / (s.max - s.min), 0, 1.2);
+    return Object.assign({}, s, { size: sz, sf, st: s.str * (0.8 + 0.5 * sf), run: false, rt: 1 });
   }
 
   // ---------- 던지기 ----------
@@ -412,9 +434,14 @@
   function hook() {
     perfect = biteT < (easy() ? 0.6 : 0.3);
     hookPt = tackle();
-    fish = pickFish(); T = 30; P = 15; slackT = 0; fish.rt = rnd(0.6, 1.2);
+    const bossChance = easy() ? 0.012 : 0.02 + 0.004 * (lvOf(save.xp) - 1) + (rushT > 0 ? 0.03 : 0) + (perfect ? 0.01 : 0);
+    fish = Math.random() < bossChance ? bossFish() : pickFish();
+    T = 30; P = fish.boss ? 22 : 30; slackT = 0; fish.rt = rnd(0.6, 1.2);
+    zy = 0.35; zv = 0; fy = 0.4; fv = 0; fTo = 0.5; fTimer = 0.5; inT = 0; outT = 0; jump = null; jumpsOk = 0; fightT = 0;
     G.s = "fight"; beep(300, 0.1, "sawtooth", 0.1); buzz(50); K.swoosh(900, 2500, 0.15, 0.3, 2);
-    if (perfect) flash(t("⚡ 퍼펙트 챔질!"));
+    if (fish.boss) { flash(fish.title + " — " + t("엄청난 힘이에요!")); shake = 0.8; buzz([200, 80, 200]); flashT = 0.5; flashCol = "#ffd34d"; [196, 185, 175].forEach((f, i) => setTimeout(() => beep(f, 0.4, "sawtooth", 0.1), i * 180)); }
+    else if (perfect) flash(t("⚡ 퍼펙트 챔질!"));
+    if (perfect) mission("perfect", 1);
     setBtn();
   }
   // 다 끌어오면: 찌낚시와 큰 고기(45cm 넘음)는 뜰채로, 작은 고기는 들어뽑기
@@ -424,10 +451,15 @@
     setBtn();
   }
   function endFight(kind) {
-    let pts = 0, isNew = false, second = null;
+    let pts = 0, isNew = false, second = null, grade = -1, record = false, lvUp = 0, perfFight = false;
     if (kind === "catch") {
-      pts = fish.junk ? 5 : Math.round(fish.size * fish.p * (perfect ? 1.2 : 1) * (easy() ? 1 : 1.5) * (acc && mode() === "surf" && acc.grade === "hit" ? 1.2 : 1));
+      grade = gradeOf(fish);
+      perfFight = !easy() && !fish.junk && outT < 0.35 && fightT > 1.5;
+      streak = fish.junk ? streak : streak + 1; bestStreak = Math.max(bestStreak, streak);
+      const comboMul = 1 + Math.min(streak - 1, 10) * 0.1;
+      pts = fish.junk ? 5 : Math.round(fish.size * fish.p * GRADE[grade].mul * comboMul * (perfect ? 1.2 : 1) * (perfFight ? 1.3 : 1) * (easy() ? 1 : hard() ? 2 : 1.5) * (acc && mode() === "surf" && acc.grade === "hit" ? 1.2 : 1));
       const d = save.dex[fish.id];
+      record = !!d && !fish.junk && fish.size > d.max;
       isNew = !d && !fish.junk;
       save.dex[fish.id] = { n: (d ? d.n : 0) + 1, max: Math.max(d ? d.max : 0, fish.size) };
       save.coins += pts; save.total += pts; store();
@@ -444,11 +476,85 @@
           second = two;
         }
       }
-      beep(660, 0.1); setTimeout(() => beep(880, 0.1), 110); setTimeout(() => beep(1175, 0.22), 220); buzz([40, 40, 40]);
-    } else { beep(150, 0.35, "sawtooth", 0.08); buzz(200); }
-    res = { kind, fish, pts, isNew, second, t: 0 };
+      const lv0 = lvOf(save.xp);
+      save.xp = (save.xp || 0) + pts; save.fish = (save.fish || 0) + 1;
+      if (fish.boss) save.bosses = (save.bosses || 0) + 1;
+      if (lvOf(save.xp) > lv0) lvUp = lvOf(save.xp);
+      if (!fish.junk) { mission("any", 1); mission("species", 1, fish.id); if (fish.size >= 40) mission("big", 1); if (grade >= 2) mission("grade", 1); mission("streak", streak, null, true); }
+      // 연속이 쌓이면 피딩 러시
+      if (!fish.junk && rushT <= 0 && (streak === 3 || streak === 6 || streak === 10 || Math.random() < 0.07)) { rushT = 30; flash(t("🐟 피딩 러시! 30초 동안 입질 폭발")); }
+      store();
+      // 소리 · 진동은 등급 연출(drawResult)에서
+    } else { breakStreak(); beep(150, 0.35, "sawtooth", 0.08); buzz(200); }
+    res = { kind, fish, pts, isNew, second, t: 0, grade, record, lvUp, perfFight, streak, rolled: 0, stamped: false };
     target = null;
     G.s = "result"; holding = false; setBtn(); renderPanel();
+  }
+
+  // ---------- 등급 · 연속 · 미션 ----------
+  const GRADE = [
+    { n: "일반", c: "#d7dee3", mul: 1 }, { n: "준수", c: "#62BE84", mul: 1.2 }, { n: "대물", c: "#5aa9ff", mul: 1.5 },
+    { n: "초대물", c: "#c27cff", mul: 2.2 }, { n: "전설", c: "#ffcf3a", mul: 4 },
+  ];
+  function gradeOf(f) {
+    if (f.junk) return -1;
+    if (f.boss) return 4;
+    if (f.sf >= 0.92 || (f.rare && f.sf >= 0.6)) return 3;
+    if (f.sf >= 0.7) return 2;
+    if (f.sf >= 0.4) return 1;
+    return 0;
+  }
+  function breakStreak() {
+    if (streak >= 3) flash(t("💔 {n}연속이 끊겼어요", { n: streak }));
+    streak = 0;
+  }
+  // 오늘의 미션 3개 (날짜마다 바뀌어요)
+  const MIS = [
+    { k: "any", n: 5, d: "고기 {n}마리 낚기" },
+    { k: "big", n: 2, d: "40cm 넘는 고기 {n}마리" },
+    { k: "perfect", n: 3, d: "퍼펙트 챔질 {n}번" },
+    { k: "streak", n: 3, d: "{n}연속 낚기" },
+    { k: "grade", n: 1, d: "대물 등급 이상 {n}마리" },
+    { k: "species", n: 1, d: "{fish} 낚기" },
+  ];
+  function today() { const d = new Date(Date.now() + 9 * 3600e3); return d.toISOString().slice(0, 10); }
+  function missions() {
+    const day = today();
+    if (!save.mis || save.mis.day !== day) {
+      let x = 0; for (const c of day) x = (x * 31 + c.charCodeAt(0)) >>> 0;
+      const r = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
+      const pool = MIS.slice(), list = [];
+      while (list.length < 3) {
+        const m = pool.splice(Math.floor(r() * pool.length), 1)[0];
+        const o = { k: m.k, n: m.n, p: 0, done: false };
+        if (m.k === "species") { const c = SP.filter((s2) => !s2.junk && !s2.rare); o.id = c[Math.floor(r() * c.length)].id; }
+        list.push(o);
+      }
+      save.mis = { day, list, all: false };
+    }
+    return save.mis;
+  }
+  function misText(o) {
+    const m = MIS.find((q) => q.k === o.k);
+    const sp = o.id ? SP.find((q) => q.id === o.id) : null;
+    return t(m.d, { n: o.n, fish: sp ? t(sp.n) + " (" + SP_MODES(sp) + ")" : "" });
+  }
+  function SP_MODES(sp) { return [..."fls"].filter((c) => sp.m.includes(c)).map((c) => t(MODES[{ f: "float", l: "lure", s: "surf" }[c]].n)).join("·"); }
+  function mission(k, v, id, isMax) {
+    const M = missions();
+    for (const o of M.list) {
+      if (o.done || o.k !== k || (o.id && o.id !== id)) continue;
+      o.p = isMax ? Math.max(o.p, v) : o.p + v;
+      if (o.p >= o.n) {
+        o.done = true; save.coins += 100; save.xp = (save.xp || 0) + 80;
+        setTimeout(() => { flash(t("🎯 미션 완료! {m} (+100🪙)", { m: misText(o) })); [784, 988, 1175, 1568].forEach((f, i) => setTimeout(() => beep(f, 0.15, "triangle", 0.14), i * 90)); }, 1400);
+      }
+    }
+    if (!M.all && M.list.every((o) => o.done)) { M.all = true; save.coins += 300; setTimeout(() => flash(t("🏆 오늘의 미션 전부 완료! +300🪙")), 3200); }
+    store();
+  }
+  function confetti(n, cols) {
+    for (let i = 0; i < n; i++) parts.push({ x: W / 2 + rnd(-40, 40), y: H * 0.42, vx: rnd(-220, 220), vy: rnd(-420, -160), r: rnd(0, 6), vr: rnd(-8, 8), life: rnd(1.2, 2.2), c: cols[i % cols.length], s: rnd(3, 6) });
   }
 
   // ---------- 밑밥 ----------
@@ -498,7 +604,7 @@
         }
         holding = false; break;
       }
-      case "result": if (res.t > 0.5) toReady(); holding = false; break;
+      case "result": if (res.t > 1.2) toReady(); holding = false; break;
     }
   }
   function release() {
@@ -509,6 +615,11 @@
   // ---------- 업데이트 ----------
   function update(dt) {
     if (G.msgT > 0) G.msgT -= dt;
+    if (rushT > 0 && G.s !== "fight" && G.s !== "result") { rushT -= dt; if (rushT <= 0) flash(t("피딩 러시가 끝났어요")); }
+    if (shake > 0) shake = Math.max(0, shake - dt * 2.2);
+    if (flashT > 0) flashT -= dt;
+    for (const q of parts) { q.x += q.vx * dt; q.y += q.vy * dt; q.vy += 260 * dt; q.r += q.vr * dt; q.life -= dt; }
+    parts = parts.filter((q) => q.life > 0);
     const s = G.s, m = mode(), cur = current();
     if (s === "windup") {
       windT += dt;
@@ -530,7 +641,7 @@
     else if (s === "settle") { settleT += dt; bz = Math.min(planDepth(), bz + dt * 1.0); drift += cur.dir * cur.s * W * 0.022 * dt; if (settleT > 0.8) startWait(); }
     else if (s === "set") { setT += dt; if (setT > 0.9) startWait(); }
     else if (s === "wait") {
-      waitT += dt;
+      waitT += dt * (rushT > 0 && m === "surf" ? 2.5 : 1);
       if (m === "surf") {
         for (const n of nibbles) if (waitT >= n && waitT - dt < n) beep(1568, 0.06, "triangle", 0.06);
         if (waitT >= biteAt) startBite();
@@ -539,7 +650,7 @@
     else if (s === "retr") {
       retrT += dt; lureK += dt * 0.045; if (hopT > 0) hopT -= dt;
       if (easy() && retrT > 6 && lureBite < 0) lureBite = 0.3;
-      if (lureBite < 0 && Math.random() < dt * 0.03 * condMul() && lureTaps > 0) lureBite = 0.2;
+      if (lureBite < 0 && Math.random() < dt * 0.03 * condMul() * (rushT > 0 ? 6 : 1) && lureTaps > 0) lureBite = 0.2;
       if (lureBite >= 0) { lureBite -= dt; if (lureBite <= 0) { startBite(); return; } }
       if (lureK >= 0.97) { flash(t("입질이 없었어요. 다시 던져 보세요")); toReady(); }
     }
@@ -547,7 +658,7 @@
       biteT += dt;
       if (m === "float") { drift += cur.dir * cur.s * W * 0.022 * dt; if (tk("rig") === "full") sinkT = Math.min(1, sinkT + dt / 1.2); }
       const win = (easy() ? 3 : 1) + (m === "float" && tk("rig") === "full" ? 1.2 : 0);
-      if (biteT > win) { flash(t("놓쳤어요. 다시 던져 보세요")); toReady(); }
+      if (biteT > win) { flash(t("놓쳤어요. 다시 던져 보세요")); breakStreak(); toReady(); }
     }
     else if (s === "fight") fight(dt);
     else if (s === "net") netT += dt * (easy() ? 1 : 1.5);
@@ -574,7 +685,7 @@
       ov += Math.exp(-dx * dx - dzz * dzz) * (1 - c.age / 16);
     }
     gather += (clamp(ov, 0, 1) - gather) * dt * (save.gear.chum ? 0.7 : 0.45);
-    const lam = (0.03 + 0.5 * gather) * condMul() * (easy() ? 1.6 : 1);
+    const lam = (0.03 + 0.5 * gather) * condMul() * (easy() ? 1.6 : 1) * (rushT > 0 ? 3 : 1);
     if (Math.random() < lam * dt || (easy() && waitT > 22)) { startBite(); return; }
     if (gather > 0.25 && Math.random() < dt * 0.5) nibbles = [waitT]; // 잡어 깔짝
     if (f.x < W * 0.3 || f.x > W * 0.98) { flash(t("찌가 너무 멀리 흘렀어요. 걷어서 다시 던져요")); toReady(); }
@@ -591,14 +702,65 @@
       if (P >= 100) landing();
       return;
     }
-    const pull = fish.run ? 75 * st : 12 * st, reel = save.gear.reel ? 1.25 : 1;
-    if (holding) { T += (28 + pull) * dt; P += (24 / (0.5 + st * 0.6)) * dt * (fish.run ? 0.25 : 1) * reel; }
-    else { T -= 65 * dt; T += pull * 0.2 * dt; P -= (fish.run ? 14 : 4) * st * dt; }
-    T = clamp(T, 0, lim + 5);
-    if (T < 6) slackT += dt; else slackT = 0;
-    if (T > lim * 0.85) { warnT -= dt; if (warnT <= 0) { beep(1400, 0.04, "square", 0.05); warnT = 0.15; } }
-    if (T >= lim) endFight("snap");
-    else if (P <= 0 || slackT > 2.2) endFight("escape");
+    skillFight(dt);
+  }
+  // 세로 게이지 파이팅: 누르면 초록 칸이 올라가고, 떼면 내려와요. 고기가 칸 안에 있으면 끌려와요
+  function zoneSize() { return (hard() ? 0.2 : 0.3) * (save.gear.line ? 1.12 : 1) * (fish.boss ? 0.85 : 1) * (1.08 - 0.12 * Math.min(fish.st, 1.8) / 1.8); }
+  function skillFight(dt) {
+    fightT += dt;
+    const st = fish.st, style = fish.boss ? "jumper" : STYLE[fish.id] || "dive", zs = zoneSize();
+    // 바늘털이: 고기가 물 위로 뛰어올라요 — 그때는 손을 떼야 해요
+    if (jump) {
+      jump.t += dt;
+      if (holding && jump.t > 0.25) jump.bad = true;
+      if (jump.t >= jump.dur) {
+        if (jump.bad && Math.random() < (hard() ? 0.85 : 0.5)) { flash(t("바늘털이에 당했어요! 뛸 때는 손을 떼요")); endFight("escape"); return; }
+        if (jump.bad) flash(t("휴… 겨우 버텼어요"));
+        else { jumpsOk++; P = Math.min(99, P + 8); flash(t("버텼다! 🔥 바늘털이 성공 방어")); beep(988, 0.1); setTimeout(() => beep(1319, 0.14), 100); }
+        jump = null;
+      }
+      return;
+    }
+    const canJump = style === "jumper" || fish.sf > 0.75 || fish.boss;
+    if (canJump && fightT > 2 && P > 25 && P < 90 && Math.random() < dt * (fish.boss ? 0.35 : 0.18)) {
+      jump = { t: 0, dur: 0.95, bad: false }; K.splash(0.9, true); buzz([80, 40, 80]); shake = 0.5;
+      K.swoosh(600, 2400, 0.3, 0.3, 2); return;
+    }
+    // 고기 움직임
+    fTimer -= dt;
+    if (fTimer <= 0) {
+      const aggr = (0.6 + 0.35 * st) * (hard() ? 1.25 : 1);
+      if (style === "dart") { fTo = Math.random(); fTimer = rnd(0.35, 0.8) / aggr; }
+      else if (style === "dive") { fTo = Math.random() < 0.6 ? rnd(0, 0.35) : rnd(0.35, 1); fTimer = rnd(0.6, 1.3) / aggr; }
+      else if (style === "heavy") { fTo = rnd(0.05, 0.95); fTimer = rnd(1.0, 2.0) / aggr; }
+      else if (style === "jet") { fTo = Math.random() < 0.5 ? rnd(0, 0.2) : rnd(0.8, 1); fTimer = rnd(0.7, 1.4) / aggr; }
+      else { fTo = Math.random(); fTimer = rnd(0.5, 1.1) / aggr; }
+    }
+    const spd = (style === "dart" || style === "jet" ? 5 : style === "heavy" ? 2 : 3.2) * (0.7 + 0.3 * st) * (hard() ? 1.2 : 0.9);
+    fv += ((fTo - fy) * spd * 2.2 - fv * 2.6) * dt * 3;
+    fy = clamp(fy + fv * dt, 0, 1);
+    fish.run = Math.abs(fv) > 0.55;
+    // 초록 칸 (누르면 위로, 떼면 아래로)
+    zv += (holding ? 2.9 : -2.4) * dt;
+    zv *= Math.pow(0.35, dt);
+    zy += zv * dt;
+    if (zy < zs / 2) { zy = zs / 2; zv = Math.abs(zv) * 0.25; }
+    if (zy > 1 - zs / 2) { zy = 1 - zs / 2; zv = -Math.abs(zv) * 0.25; }
+    const inside = Math.abs(fy - zy) < zs / 2;
+    const reel = save.gear.reel ? 1.25 : 1;
+    if (inside) {
+      inT += dt;
+      const hot = inT > 1.5 ? 1.6 : 1; // 계속 붙잡고 있으면 손맛 x1.6
+      P += (17 / (0.55 + 0.35 * st)) * dt * reel * hot * (fish.boss ? 0.55 : 1);
+      T = 45 + 25 * Math.abs(fv);
+      K.reel(hot > 1 ? 16 : 10, dt); K.drag(0, dt);
+    } else {
+      inT = 0; outT += dt;
+      P -= (hard() ? 12 : 7) * dt * (0.7 + 0.3 * st);
+      T = 85;
+      K.drag(22 + 20 * st, dt); K.reel(0, dt);
+    }
+    if (P <= 0) endFight(Math.random() < 0.5 ? "snap" : "escape");
     else if (P >= 100) landing();
   }
 
@@ -880,6 +1042,13 @@
     ctx.strokeStyle = "rgba(255,255,255,0.8)"; ctx.lineWidth = 1.1;
     ctx.beginPath(); ctx.moveTo(tp.x, tp.y); ctx.quadraticCurveTo((tp.x + b.x) / 2, (tp.y + b.y) / 2 + sag, b.x, b.y + bo); ctx.stroke();
     const sc = (1 - 0.45 * Math.min(cast, 1)) * S;
+    if (s === "fight" && jump) {
+      const k = jump.t / jump.dur, jx = b.x + (k - 0.5) * 30 * S, jy = b.y - Math.sin(k * Math.PI) * H * 0.18;
+      ctx.save(); ctx.translate(jx, jy); ctx.rotate((k - 0.5) * 2.2);
+      drawFish(0, 0, (fish.junk ? 24 : Math.min(120, fish.size * 0.9 + 10)) * S, fish); ctx.restore();
+      for (let i = 0; i < 8; i++) { const a = i / 8 * Math.PI * 2 + now; ctx.fillStyle = "rgba(255,255,255,0.8)"; ctx.beginPath(); ctx.arc(b.x + Math.cos(a) * 18 * k, b.y + Math.sin(a) * 6 * k, 2, 0, 7); ctx.fill(); }
+      return;
+    }
     if (s === "fight" || s === "net" || s === "scoop" || s === "lift") { drawHooked(b); return; }
     if (s === "bite") {
       for (let i = 0; i < 3; i++) { const rp = ((biteT * 2) + i / 3) % 1; ctx.strokeStyle = "rgba(255,255,255," + (0.7 * (1 - rp)) + ")"; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(b.x, b.y + 3 * sc, (4 + rp * 30) * sc, (1.5 + rp * 9) * sc, 0, 0, 7); ctx.stroke(); }
@@ -1038,20 +1207,13 @@
     else if (s === "net") hint(t("뜰채 위로 고기가 올 때 탭!"), "#bff3c9");
     else if (s === "fight") {
       const x = 16, w = W - 32, y = 16;
-      if (!easy()) {
-        const lim = save.gear.line ? 115 : 100;
-        ctx.fillStyle = "rgba(0,0,0,0.4)"; rr(x, y, w, 18, 9); ctx.fill();
-        ctx.fillStyle = "rgba(255,90,90,0.45)"; ctx.fillRect(x + w * 0.85, y + 2, w * 0.15 - 2, 14);
-        ctx.fillStyle = T > lim * 0.85 ? "#ff5a5a" : T < 10 ? "#9fb3c8" : "#62BE84"; rr(x + 2, y + 2, Math.max(4, (w - 4) * Math.min(T / lim, 1)), 14, 7); ctx.fill();
-        stxt(t("텐션"), x + 4, y + 32, 13, "#fff", "left", "600");
-        if (T > lim * 0.85) { ctx.strokeStyle = "rgba(255,60,60," + (0.4 + 0.3 * Math.sin(now * 30)) + ")"; ctx.lineWidth = 10; ctx.strokeRect(0, 0, W, H); }
-      }
-      const py = easy() ? y : y + 46;
-      ctx.fillStyle = "rgba(0,0,0,0.4)"; rr(x, py, w, 16, 8); ctx.fill();
-      ctx.fillStyle = "#F2B705"; rr(x + 2, py + 2, Math.max(4, (w - 4) * clamp(P, 0, 100) / 100), 12, 6); ctx.fill();
-      stxt(t("끌어올리기 {n}%", { n: Math.round(clamp(P, 0, 100)) }), x + 4, py + 30, 14, "#fff", "left", "700");
-      if (fish.run) { stxt(t("고기가 힘써요! 🐟💨"), W / 2, H * 0.3, 20, "#ffb4a0"); stxt(t("지이이익~ (드랙)"), W / 2, H * 0.3 + 28 * F, 14, "#ffe0d6", "center", "600"); }
-      else if (!easy() && slackT > 0.6) stxt(t("줄이 느슨해요! 감아요!"), W / 2, H * 0.3, 20, "#ffe14a");
+      if (fish.boss) stxt(fish.title, W / 2, H * 0.2, 17, "#ffd34d");
+      ctx.fillStyle = "rgba(0,0,0,0.4)"; rr(x, y, w - (easy() ? 0 : 56), 16, 8); ctx.fill();
+      ctx.fillStyle = "#F2B705"; rr(x + 2, y + 2, Math.max(4, (w - (easy() ? 4 : 60)) * clamp(P, 0, 100) / 100), 12, 6); ctx.fill();
+      stxt(t("끌어올리기 {n}%", { n: Math.round(clamp(P, 0, 100)) }), x + 4, y + 30, 14, "#fff", "left", "700");
+      if (easy()) {
+        if (fish.run) { stxt(t("고기가 힘써요! 🐟💨"), W / 2, H * 0.3, 20, "#ffb4a0"); stxt(t("지이이익~ (드랙)"), W / 2, H * 0.3 + 28 * F, 14, "#ffe0d6", "center", "600"); }
+      } else drawGauge();
     }
     if (G.msgT > 0) {
       ctx.globalAlpha = Math.min(1, G.msgT * 2);
@@ -1061,6 +1223,34 @@
       fitTxt(G.msg, W / 2, my, 15, w - 20, "#fff");
       ctx.globalAlpha = 1;
     }
+  }
+  // 손맛 게이지: 오른쪽 세로 막대. 초록 칸 = 내 릴, 물고기 = 도망가는 고기
+  function drawGauge() {
+    const gx = W - 52, gy = H * 0.1, gh = H * 0.62, gw = 36, zs = zoneSize();
+    const inside = Math.abs(fy - zy) < zs / 2;
+    ctx.fillStyle = "rgba(4,24,40,0.72)"; rr(gx, gy, gw, gh, 12); ctx.fill();
+    ctx.strokeStyle = inside ? "rgba(98,190,132,0.9)" : "rgba(255,90,90," + (0.5 + 0.4 * Math.sin(now * 20)) + ")"; ctx.lineWidth = 2; rr(gx, gy, gw, gh, 12); ctx.stroke();
+    const Y = (v) => gy + 4 + (gh - 8) * (1 - v);
+    const zt = Y(zy + zs / 2), zb = Y(zy - zs / 2);
+    const hot = inside && inT > 1.5;
+    ctx.fillStyle = hot ? "rgba(242,183,5,0.75)" : inside ? "rgba(98,190,132,0.7)" : "rgba(98,190,132,0.4)";
+    rr(gx + 4, zt, gw - 8, zb - zt, 8); ctx.fill();
+    // 물고기
+    const fyy = Y(fy), wob = Math.sin(now * 18) * (fish.run ? 3 : 1);
+    ctx.save(); ctx.translate(gx + gw / 2 + wob, fyy); ctx.scale(fv > 0 ? 1 : -1, 1);
+    ctx.fillStyle = fish.boss ? "#ffcf3a" : "#fff";
+    ctx.beginPath(); ctx.ellipse(0, 0, 11, 5.5, 0, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(8, 0); ctx.lineTo(15, -5); ctx.lineTo(15, 5); ctx.fill();
+    ctx.fillStyle = "#111"; ctx.beginPath(); ctx.arc(-6, -1, 1.6, 0, 7); ctx.fill();
+    ctx.restore();
+    if (hot) stxt(t("손맛 x1.6!"), gx + gw / 2, zt - 12, 12, "#ffe14a", "center", "800");
+    // 안내
+    if (jump) {
+      const k = jump.t / jump.dur;
+      ctx.fillStyle = "rgba(255,255,255," + (0.25 * (1 - k)) + ")"; ctx.fillRect(0, 0, W, H);
+      stxt(t("✋ 바늘털이! 손 떼요!!"), W / 2, H * 0.36, 26, holding ? "#ff6b5a" : "#ffe14a");
+    } else if (!inside) fitTxt(t("초록 칸으로 고기를 잡아요! (누르면 ↑ 떼면 ↓)"), (W - 64) / 2, H * 0.36, 14, W - 84, "#ffd0c0", "700", true);
+    else if (fightT < 3) fitTxt(t("좋아요! 칸 안에 붙잡아 두세요"), (W - 64) / 2, H * 0.36, 14, W - 84, "#c9f5d6", "700", true);
   }
   // 원투 포인트 (과녁)
   function drawTarget(faint) {
@@ -1073,31 +1263,86 @@
     ctx.globalAlpha = 1;
   }
   function drawResult() {
-    ctx.fillStyle = "rgba(0,0,0,0.45)"; ctx.fillRect(0, 0, W, H);
-    const w = Math.min(360, W - 24), h = Math.min(H - 24, 300), x = W / 2 - w / 2, y = H / 2 - h / 2, cx = W / 2, f = res.fish;
+    ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.fillRect(0, 0, W, H);
+    const w = Math.min(360, W - 24), h = Math.min(H - 24, 330), x = W / 2 - w / 2, y = H / 2 - h / 2, cx = W / 2, f = res.fish;
+    const G2 = res.grade >= 0 ? GRADE[res.grade] : null;
+    // 등급 빛
+    if (G2 && res.t > 0.9) {
+      const gl = ctx.createRadialGradient(cx, y + h * 0.36, 10, cx, y + h * 0.36, w * 0.8);
+      gl.addColorStop(0, G2.c + "88"); gl.addColorStop(1, G2.c + "00");
+      ctx.fillStyle = gl; ctx.fillRect(0, 0, W, H);
+    }
     ctx.fillStyle = "rgba(14,30,26,0.95)"; rr(x, y, w, h, 20); ctx.fill();
+    if (G2 && res.t > 0.9) { ctx.strokeStyle = G2.c; ctx.lineWidth = res.grade >= 3 ? 4 : 2; rr(x, y, w, h, 20); ctx.stroke(); }
     if (res.kind === "catch") {
-      fitTxt(f.junk ? t("😅 …장화네요") : (res.isNew ? t("🎉 처음 낚았어요!") : t("🎉 낚았다!")), cx, y + 32, 22, w - 30, res.isNew ? "#ffe14a" : "#fff");
-      drawFish(cx, y + h * 0.36, Math.min(170, w * 0.5), f);
-      fitTxt(f.junk ? t("바다 청소 완료") : t(f.n) + "  " + f.size + "cm", cx, y + h * 0.58, 24, w - 30, "#fff");
-      fitTxt("+" + res.pts + t("점") + (perfect && !f.junk ? "  ⚡" : "") + (mode() === "surf" && acc && acc.grade === "hit" ? "  🎯" : ""), cx, y + h * 0.71, 22, w - 30, "#F2B705");
-      fitTxt(res.second ? t("두바늘에 한 마리 더! {name} {n}cm", { name: t(res.second.n), n: res.second.size }) : t(f.tip), cx, y + h * 0.82, 14, w - 30, res.second ? "#ffe14a" : "#cfe0d6", res.second ? "700" : "500");
+      const title = f.junk ? t("😅 …장화네요") : f.boss ? f.title : res.isNew ? t("🎉 처음 낚았어요!") : t("🎉 낚았다!");
+      fitTxt(title, cx, y + 30, 21, w - 30, f.boss ? "#ffcf3a" : res.isNew ? "#ffe14a" : "#fff");
+      // 물고기: 등급이 높을수록 크게 튀어나와요
+      const pop = res.t < 0.25 ? res.t / 0.25 : 1, bob = Math.sin(now * 3) * 3;
+      ctx.save(); ctx.translate(cx, y + h * 0.32 + bob); ctx.scale(pop, pop); drawFish(0, 0, Math.min(180, w * 0.52), f); ctx.restore();
+      if (!f.junk) {
+        // cm 숫자가 촤라락 올라가요
+        const k = clamp(res.t / 0.85, 0, 1), cm = Math.round(f.size * (1 - Math.pow(1 - k, 3)));
+        if (cm > res.rolled) { const step = Math.max(1, Math.round(f.size / 30)); if (cm - res.rolled >= step || k >= 1) { K.click(900 + cm * 18, 0.25); res.rolled = cm; } }
+        fitTxt(t(f.n) + "  " + cm + "cm", cx, y + h * 0.53, 26, w - 30, "#fff", "800");
+        if (res.t > 0.9) {
+          if (!res.stamped) {
+            res.stamped = true; const g = res.grade;
+            const chords = [[523, 659], [523, 659, 784], [523, 659, 784, 1047], [659, 831, 988, 1319, 1568], [392, 523, 659, 784, 1047, 1319, 1568]];
+            chords[g].forEach((fq, i) => setTimeout(() => beep(fq, 0.25 + g * 0.06, i % 2 ? "triangle" : "sine", 0.13), i * (g >= 3 ? 110 : 80)));
+            if (g >= 2) { confetti(g >= 3 ? 70 : 35, [G2.c, "#ffe14a", "#ffffff", "#ff8a5a"]); buzz(g >= 3 ? [80, 50, 80, 50, 160] : [60, 40, 60]); }
+            if (g >= 3) { shake = 0.9; flashT = 0.35; flashCol = G2.c; }
+            if (res.record) setTimeout(() => { [1047, 1319, 1568, 2093].forEach((fq, i) => setTimeout(() => beep(fq, 0.18, "triangle", 0.12), i * 70)); }, 600);
+            if (res.lvUp) setTimeout(() => { [523, 784, 1047, 1568].forEach((fq, i) => setTimeout(() => beep(fq, 0.2, "square", 0.08), i * 100)); confetti(40, ["#ffe14a", "#62BE84", "#ffffff"]); }, 1100);
+          }
+          const sc = res.t < 1.05 ? 1.8 - (res.t - 0.9) / 0.15 * 0.8 : 1;
+          ctx.save(); ctx.translate(cx, y + h * 0.66); ctx.scale(sc, sc); ctx.rotate(-0.06);
+          ctx.strokeStyle = G2.c; ctx.lineWidth = 3; rr(-62, -16, 124, 32, 8); ctx.stroke();
+          txt(t(G2.n), 0, 0, 18, G2.c, "center", "900"); ctx.restore();
+        }
+      } else fitTxt(t("바다 청소 완료"), cx, y + h * 0.53, 22, w - 30, "#fff");
+      if (res.t > 1.15) {
+        const tags = [];
+        if (res.record) tags.push(t("📈 내 신기록!"));
+        if (res.streak >= 2 && !f.junk) tags.push(t("🔥 {n}연속", { n: res.streak }));
+        if (perfect && !f.junk) tags.push("⚡");
+        if (res.perfFight) tags.push(t("💎 퍼펙트 파이팅"));
+        if (mode() === "surf" && acc && acc.grade === "hit") tags.push("🎯");
+        fitTxt("+" + res.pts + t("점") + (tags.length ? "  " + tags.join(" ") : ""), cx, y + h * 0.78, 19, w - 30, "#F2B705", "800");
+        fitTxt(res.lvUp ? t("⬆️ 레벨 업! Lv.{n} — 귀한 고기가 더 잘 나와요", { n: res.lvUp }) : res.second ? t("두바늘에 한 마리 더! {name} {n}cm", { name: t(res.second.n), n: res.second.size }) : t(f.tip), cx, y + h * 0.87, 13, w - 30, res.lvUp || res.second ? "#ffe14a" : "#cfe0d6", res.lvUp || res.second ? "800" : "500");
+      }
     } else {
       fitTxt(res.kind === "snap" ? t("💥 줄이 터졌어요") : t("🐟 빠져버렸어요"), cx, y + 40, 22, w - 30, "#ffb4a0");
-      fitTxt(f.junk ? t("(사실 장화였어요…)") : t("놓친 고기: {name} {n}cm", { name: t(f.n), n: f.size }), cx, y + h * 0.38, 18, w - 30, "#fff", "600");
-      fitTxt(t(res.kind === "snap" ? "고기가 힘쓸 땐 손을 떼세요" : "너무 오래 풀어줬어요. 짧게 여러 번 감아요"), cx, y + h * 0.56, 15, w - 30, "#cfe0d6", "500");
-      fitTxt(t("어렵다면 '쉬운 모드'를 켜 보세요"), cx, y + h * 0.68, 14, w - 30, "#cfe0d6", "500");
+      fitTxt(f.junk ? t("(사실 장화였어요…)") : (f.boss ? f.title + " " : "") + t("놓친 고기: {name} {n}cm", { name: t(f.n), n: f.size }), cx, y + h * 0.36, 17, w - 30, "#fff", "600");
+      fitTxt(t(diff() >= 2 ? "초록 칸 안에 고기를 붙잡아 두세요. 뛰어오르면 손을 떼요" : "고기가 힘쓸 땐 손을 떼세요"), cx, y + h * 0.54, 14, w - 30, "#cfe0d6", "500");
+      fitTxt(t("어렵다면 아래에서 '쉬움'을 골라 보세요"), cx, y + h * 0.66, 13, w - 30, "#cfe0d6", "500");
     }
-    if (res.t > 0.5) fitTxt(t("아래 버튼을 누르면 계속해요"), cx, y + h - 22, 14, w - 30, "rgba(255,255,255," + (0.6 + 0.4 * Math.sin(now * 4)) + ")", "600");
+    if (res.t > 1.2) fitTxt(t("아래 버튼을 누르면 계속해요"), cx, y + h - 18, 13, w - 30, "rgba(255,255,255," + (0.6 + 0.4 * Math.sin(now * 4)) + ")", "600");
+  }
+  // 위쪽 작은 정보: 레벨 · 연속 · 피딩 러시
+  function drawTopBadges() {
+    const lv = lvOf(save.xp), a = xpAt(lv), b = xpAt(lv + 1), k = clamp(((save.xp || 0) - a) / (b - a), 0, 1);
+    const y = 30;
+    ctx.fillStyle = "rgba(0,0,0,0.35)"; rr(8, y - 9, 92, 18, 9); ctx.fill();
+    ctx.fillStyle = "#62BE84"; rr(10, y - 7, Math.max(4, 88 * k), 14, 7); ctx.fill();
+    txt("Lv." + lv, 54, y, 11, "#fff", "center", "800");
+    if (streak >= 2) stxt("🔥 " + t("{n}연속", { n: streak }) + " x" + (1 + Math.min(streak - 1, 10) * 0.1).toFixed(1), 108, y, 12, "#ffb46a", "left", "800");
+    if (rushT > 0) stxt(t("🐟 피딩 러시 {n}초", { n: Math.ceil(rushT) }), W - 10, y, 12, "#ffe14a", "right", "800");
   }
   function draw() {
     F = K.opt.big ? 1.2 : 1;
+    ctx.save();
+    if (shake > 0) ctx.translate(rnd(-1, 1) * shake * 9, rnd(-1, 1) * shake * 9);
     drawScene();
+    if (rushT > 0) { ctx.fillStyle = "rgba(255,200,60," + (0.08 + 0.05 * Math.sin(now * 4)) + ")"; ctx.fillRect(0, hy(), W, H - hy()); }
     drawChum();
     if (!["ready", "result"].includes(G.s) || true) drawTackle();
     drawAngler();
     drawUnder();
-    if (G.s === "result") drawResult(); else drawHud();
+    if (G.s === "result") drawResult(); else { drawHud(); if (G.s !== "fight") drawTopBadges(); }
+    ctx.restore();
+    for (const q of parts) { ctx.save(); ctx.globalAlpha = Math.min(1, q.life * 1.5); ctx.translate(q.x, q.y); ctx.rotate(q.r); ctx.fillStyle = q.c; ctx.fillRect(-q.s / 2, -q.s / 4, q.s, q.s / 2); ctx.restore(); }
+    if (flashT > 0) { ctx.globalAlpha = clamp(flashT * 1.6, 0, 0.6); ctx.fillStyle = flashCol; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1; }
   }
 
   // ---------- 큰 버튼 ----------
@@ -1113,10 +1358,14 @@
     else if (s === "set") label = t("삼발이에 거치하는 중");
     else if (s === "retr") label = t("👆 톡! 움직이기");
     else if (s === "bite") { label = t("❗ 챔질!"); cls = "hot"; }
-    else if (s === "fight") { label = easy() ? t("🌀 감기 (연타 또는 꾹)") : t("🌀 꾹 눌러 감기"); if (fish && fish.run) cls = "warn"; }
+    else if (s === "fight") {
+      if (easy()) { label = t("🌀 감기 (연타 또는 꾹)"); if (fish && fish.run) cls = "warn"; }
+      else if (jump) { label = t("✋ 손 떼요!"); cls = "warn"; }
+      else label = t("🌀 누르면 ↑ · 떼면 ↓");
+    }
     else if (s === "net") { label = t("🥅 뜰채로 뜨기!"); cls = "hot"; }
     else if (s === "scoop" || s === "lift") label = t("영차!");
-    else if (s === "result") label = t("▶ 계속하기");
+    else if (s === "result") label = res && res.t > 1.2 ? t("▶ 계속하기") : "…";
     const key = label + cls;
     if (key === btnKey) return;
     btnKey = key; btn.textContent = label; btn.className = "gbig " + cls;
@@ -1159,6 +1408,12 @@
     const dx = dexHtml(), lu = lunarInfo();
     let h = "";
     h += '<div class="gsea">' + esc(t("오늘 물때")) + " <b>" + esc(lu.mulText || "-") + "</b> · " + esc(t(lu.sn)) + (lu.sn === "사리" ? " — " + esc(t("입질 활발")) : lu.sn === "조금" ? " — " + esc(t("입질 느긋")) : "") + '<span class="gcoin">🪙 ' + save.coins + "</span></div>";
+    // 난이도
+    h += '<div class="chips gopt" role="group" aria-label="' + esc(t("난이도")) + '">' + [[1, "🙂 쉬움 (어르신)"], [2, "🎣 손맛 (보통)"], [3, "🔥 고수"]].map(([v, l]) => '<button type="button" data-gdiff="' + v + '" class="' + (diff() === v ? "on" : "") + '">' + esc(t(l)) + "</button>").join("") + "</div>";
+    // 레벨 · 오늘의 미션
+    const lv = lvOf(save.xp), M = missions();
+    h += '<article class="panel gcard"><h3>' + esc(t("Lv.{lv} 낚시꾼 · 오늘의 미션", { lv })) + '</h3><div class="tk">' + M.list.map((o) => '<div class="tk-like" style="font-size:14px;color:var(--ink)">' + (o.done ? "✅ " : "⬜ ") + esc(misText(o)) + ' <span class="muted">' + Math.min(o.p, o.n) + "/" + o.n + "</span></div>").join("") +
+      '<div class="tk-like">' + esc(t("미션 하나 +100🪙 · 전부 +300🪙 · 대물·초대물·전설 등급일수록 점수가 커져요")) + (save.bosses ? " · " + esc(t("잡은 주인 {n}마리", { n: save.bosses })) : "") + "</div></div></article>";
     h += '<div class="gpick" role="group" aria-label="' + esc(t("낚시 방법")) + '">';
     for (const k of Object.keys(MODES)) h += '<button type="button" data-gmode="' + k + '" aria-pressed="' + (mode() === k) + '"><span class="i">' + MODES[k].ico + "</span><b>" + esc(t(MODES[k].n)) + "</b><small>" + esc(t(MODES[k].d)) + "</small></button>";
     h += "</div>";
@@ -1179,7 +1434,7 @@
     }
     const lk = likes();
     h += '<div class="tk-like"><b>' + esc(t("지금 채비로 잘 무는 고기")) + ":</b> " + esc(lk.length ? lk.join(", ") : t("별로 없어요 — 미끼를 바꿔 보세요")) + "</div></article>";
-    h += K.optHtml() + K.photoHtml("fish");
+    h += K.optHtml({ noEasy: true }) + K.photoHtml("fish");
     h += '<article class="panel gcard"><h3>' + esc(t("오늘 조과")) + "</h3>";
     if (!sess.length) h += '<p class="muted">' + esc(t("아직 없어요. 한 마리 낚아 볼까요?")) + "</p>";
     else {
@@ -1203,6 +1458,7 @@
     const b = e.target.closest("button");
     if (!b) return;
     if (b.dataset.gmode) { if (G.s === "fight" || G.s === "net") return; save.mode = b.dataset.gmode; store(); target = null; refreshCond(); toReady(); renderPanel(); }
+    else if (b.dataset.gdiff) { if (G.s === "fight" || G.s === "net") return; save.diff = +b.dataset.gdiff; store(); target = null; toReady(); renderPanel(); }
     else if (b.dataset.gspot) { if (G.s === "fight" || G.s === "net") return; (save.spots = save.spots || {})[mode()] = b.dataset.gspot; store(); target = null; refreshCond(); toReady(); renderPanel(); }
     else if (b.hasAttribute("data-ggps")) {
       const msg = root.querySelector("#gGpsMsg"); if (msg) msg.textContent = t("찾는 중…");
@@ -1267,7 +1523,7 @@
     if (!running) { running = true; last = performance.now(); requestAnimationFrame(loop); }
   }
   function stop() { holding = false; if (["fight", "net", "windup"].includes(G.s)) toReady(); }
-  const api = { build, start, stop, state: () => G.s, press, release, cond: () => COND };
+  const api = { build, start, stop, state: () => G.s, press, release, _dbg: () => ({ fy, zy, jump: !!jump, P, diff: diff(), grade: res && res.grade, streak, rushT, lv: lvOf(save.xp) }), _diff: (v) => { save.diff = v; store(); toReady(); renderPanel(); }, cond: () => COND };
   if (window.ZPLAY) ZPLAY.reg("fish", api);
   window.ZGAME = api;
 })();
