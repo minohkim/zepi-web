@@ -13,7 +13,7 @@
     const r = await fetch(SB_URL + "/rest/v1/reports", {
       method: "POST",
       headers: { apikey: SB_KEY, Authorization: "Bearer " + (s ? s.access : SB_KEY), "Content-Type": "application/json", Prefer: "return=minimal" },
-      body: JSON.stringify([{ page: (location.pathname + location.hash).slice(0, 300), ua: navigator.userAgent.slice(0, 300), lang: (Z && Z.lang) || "", ...row }]),
+      body: JSON.stringify([{ page: (location.pathname + (/(access_token|refresh_token|provider_token|code)=/.test(location.hash) ? "#(auth)" : location.hash)).slice(0, 300), ua: navigator.userAgent.slice(0, 300), lang: (Z && Z.lang) || "", ...row }]),
     });
     if (!r.ok) throw new Error(t("보내지 못했어요") + " (" + r.status + ")");
   }
