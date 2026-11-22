@@ -1,0 +1,21 @@
+name: 웹 점검
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm i --no-save playwright@1.48.2 && npx playwright install --with-deps chromium
+      - run: python3 tools/build_i18n.py && git diff --exit-code i18n.js || (echo "i18n.js가 strings.json과 달라요. tools/build_i18n.py를 돌려 주세요." && exit 1)
+      - run: |
+          python3 -m http.server 8765 >/dev/null 2>&1 &
+          sleep 1
+          node tests/smoke.mjs

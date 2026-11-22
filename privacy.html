@@ -23,11 +23,22 @@ th { background: var(--surface); }
 .tbl { overflow-x: auto; }
 hr { border: 0; border-top: 1px solid var(--line); margin: 48px 0; }
 nav { display: flex; gap: 12px; flex-wrap: wrap; font-size: 14px; }
+.dlg { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); color: var(--ink); padding: 20px; width: min(440px, calc(100vw - 32px)); }
+.dlg::backdrop { background: rgba(0,0,0,.4); }
+.dlg form { display: flex; flex-direction: column; gap: 12px; margin: 0; }
+.dlg h2 { font-family: var(--font-display); font-size: 22px; margin: 0; }
+.dlg .lead { margin: 0; color: var(--muted); font-size: 14px; }
+.dlg .field { display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+.dlg textarea, .dlg input { font: inherit; padding: 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+.dlg .row { display: flex; gap: 8px; justify-content: flex-end; }
+.dlg .msg { font-size: 13px; color: var(--muted); min-height: 1em; }
+.btn { font: inherit; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+.btn.primary { background: var(--leaf); border-color: var(--leaf); color: var(--bg); }
 </style>
 </head>
 <body>
 <div class="wrap">
-<nav><a href="./?home">← 제피</a><a href="terms.html">이용약관</a><a href="terms.html#lbs">위치기반서비스 이용약관</a><a href="#en">English</a></nav>
+<nav><a href="./?home">← 제피</a><a href="terms.html">이용약관</a><a href="terms.html#lbs">위치기반서비스 이용약관</a><a href="#en">English</a><a href="#" data-feedback>문의하기</a></nav>
 
 <h1>제피 개인정보처리방침</h1>
 <p class="muted">시행일: 2026년 11월 21일 · 문의: <span>minoh.kim@gmail.com</span></p>
@@ -108,5 +119,6 @@ nav { display: flex; gap: 12px; flex-wrap: wrap; font-size: 14px; }
 <p>If this policy changes, we will post the new version here with its effective date.</p>
 </div>
 </div>
+<script src="js/report.js"></script>
 </body>
 </html>

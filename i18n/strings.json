@@ -5653,5 +5653,55 @@
   "By continuing you agree to the <a href=\"terms.html\" target=\"_blank\" rel=\"noopener\">Terms</a>, <a href=\"terms.html#lbs\" target=\"_blank\" rel=\"noopener\">Location Service Terms</a> and <a href=\"privacy.html\" target=\"_blank\" rel=\"noopener\">Privacy Policy</a>.",
   "继续即表示同意<a href=\"terms.html\" target=\"_blank\" rel=\"noopener\">使用条款</a>、<a href=\"terms.html#lbs\" target=\"_blank\" rel=\"noopener\">位置服务条款</a>和<a href=\"privacy.html\" target=\"_blank\" rel=\"noopener\">隐私政策</a>。",
   "続けると<a href=\"terms.html\" target=\"_blank\" rel=\"noopener\">利用規約</a>・<a href=\"terms.html#lbs\" target=\"_blank\" rel=\"noopener\">位置情報サービス利用規約</a>・<a href=\"privacy.html\" target=\"_blank\" rel=\"noopener\">プライバシーポリシー</a>に同意したものとみなします。"
+ ],
+ "문의하기": [
+  "Contact us",
+  "联系我们",
+  "お問い合わせ"
+ ],
+ "불편한 점, 바라는 기능, 고마운 말 다 좋아요. 답이 필요하면 이메일을 남겨 주세요.": [
+  "Problems, feature ideas, kind words — all welcome. Leave an email if you'd like a reply.",
+  "不便之处、想要的功能、感谢的话都欢迎。需要回复请留下邮箱。",
+  "不便な点、ほしい機能、うれしい一言、なんでも歓迎です。返信が必要ならメールを残してください。"
+ ],
+ "내용": [
+  "Message",
+  "内容",
+  "内容"
+ ],
+ "답장 받을 이메일 (선택)": [
+  "Email for a reply (optional)",
+  "回复邮箱（选填）",
+  "返信用メール（任意）"
+ ],
+ "보내기": [
+  "Send",
+  "发送",
+  "送信"
+ ],
+ "내용을 적어 주세요.": [
+  "Please write a message.",
+  "请填写内容。",
+  "内容を書いてください。"
+ ],
+ "보내는 중이에요…": [
+  "Sending…",
+  "正在发送…",
+  "送信中…"
+ ],
+ "잘 받았어요. 고마워요!": [
+  "Got it — thank you!",
+  "收到了，谢谢！",
+  "受け取りました。ありがとう！"
+ ],
+ "보내지 못했어요": [
+  "Couldn't send",
+  "发送失败",
+  "送信できませんでした"
+ ],
+ "개인정보처리방침의 문의 메일로 보내 주셔도 돼요.": [
+  "You can also use the contact email in the Privacy Policy.",
+  "也可以发送到隐私政策中的联系邮箱。",
+  "プライバシーポリシーの問い合わせメールに送っても大丈夫です。"
  ]
 }
