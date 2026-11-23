@@ -21,6 +21,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 48px 0; }
 nav { display: flex; gap: 12px; flex-wrap: wrap; font-size: 14px; }
 ol, ul { padding-left: 1.3em; }
 .note { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; font-size: 14px; }
+.dlg, .dlg * { box-sizing: border-box; } /* 390px 폰에서 문의 창이 화면 밖으로 넘치던 것 (QA 11-23) */
 .dlg { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); color: var(--ink); padding: 20px; width: min(440px, calc(100vw - 32px)); }
 .dlg::backdrop { background: rgba(0,0,0,.4); }
 .dlg form { display: flex; flex-direction: column; gap: 12px; margin: 0; }

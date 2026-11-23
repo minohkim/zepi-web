@@ -51,12 +51,12 @@
     return out.sort((a, b) => a.s - b.s);
   }
   const pestsIn = (mine, m) => mine.flatMap((c) => c.pests.filter((p) => p.months.includes(m)).map((p) => ({ c, p })));
-  function shouldWater(waterDays, past3, next2, tmax) {
+  function shouldWater(waterDays, past3, next2, tmax, leafy) {
     if (tmax < 5) return [false, t("추워서 물은 쉬어도 돼요")];
     if (next2 >= 10) return [false, t("이틀 안에 비 {n}mm 예보 — 물 안 줘도 돼요", { n: Math.round(next2) })];
     if (past3 >= 15) return [false, t("최근 비 {n}mm — 흙이 젖어 있어요", { n: Math.round(past3) })];
     const hot = tmax >= 28;
-    if (waterDays <= 2 || hot) return [true, hot ? t("최고 {n}° 더워요 — 흠뻑, 아침이나 저녁에", { n: Math.round(tmax) }) : t("잎채소는 자주 — 흠뻑 주세요")];
+    if (waterDays <= 2 || hot) return [true, hot ? t("최고 {n}° 더워요 — 흠뻑, 아침이나 저녁에", { n: Math.round(tmax) }) : (leafy ? t("잎채소는 자주 — 흠뻑 주세요") : t("물을 자주 찾는 작물이에요 — 흠뻑 주세요"))];
     if (past3 < 3) return [true, t("최근 비가 거의 없어요 — 흠뻑 주세요")];
     return [false, t("흙을 손가락 한 마디 파 보고 말랐으면 주세요")];
   }
@@ -86,10 +86,12 @@
   const numOrNull = (v) => (v === null || v === "" || v === undefined || !Number.isFinite(+v) ? null : +v);
   const normFarm = (j) => {
     j = j && typeof j === "object" && !Array.isArray(j) ? j : {};
+    // 위도·경도 중 하나만 있으면 위치 없음으로 (QA 11-24: lat만 있으면 toFixed 오류로 영구 멈춤)
+    const lat = numOrNull(j.lat), lng = numOrNull(j.lng), hasLoc = lat != null && lng != null;
     return {
       ...j,
       name: typeof j.name === "string" && j.name ? j.name : "내 텃밭",
-      lat: numOrNull(j.lat), lng: numOrNull(j.lng),
+      lat: hasLoc ? lat : null, lng: hasLoc ? lng : null,
       label: typeof j.label === "string" ? j.label : "",
       crops: Array.isArray(j.crops) ? j.crops.map((c) => (typeof c === "string" ? c : c && typeof c.id === "string" ? c.id : null)).filter(Boolean) : [],
       notes: j.notes && typeof j.notes === "object" && !Array.isArray(j.notes) ? j.notes : {},
@@ -159,9 +161,11 @@
     if (wxErr) h += '<div class="muted">' + esc(wxErr) + "</div>";
     if (frost) h += '<div class="pill bad" style="white-space:normal">🥶 ' + esc(t("열흘 안에 2° 이하로 내려가는 날이 있어요 — 모종은 미루고, 심은 건 덮어 주세요")) + "</div>";
     if (wx && mine.length) {
+      // 이유 문구는 물이 필요한 작물이 있으면 그 작물의 것으로 (QA 11-24: 순서에 따라 '말랐으면 주세요'가 붙던 것)
       const need = [], rest = [];
-      let why = null;
-      for (const c of mine) { const [n, r] = shouldWater(c.water, past, next, tmax); (n ? need : rest).push(cropName(c)); if (n && !why) why = r; if (!why && !n) why = r; }
+      let needWhy = null, restWhy = null;
+      for (const c of mine) { const [n, r] = shouldWater(c.water, past, next, tmax, c.group === "잎채소"); (n ? need : rest).push(cropName(c)); if (n && !needWhy) needWhy = r; if (!n && !restWhy) restWhy = r; }
+      const why = need.length ? needWhy : restWhy;
       h += "<div><b>💧 " + (need.length ? esc(need.join(", ")) + " — " : "") + esc(why || t("물은 쉬어도 돼요")) + "</b></div>";
     }
     if (!tasks.length && !pests.length) h += '<div class="muted">' + esc(t("이번 주말은 둘러보기만 해도 돼요 🌱")) + "</div>";
@@ -207,7 +211,7 @@
     let h = '<article class="card2"><h2>📷 ' + esc(t("사진으로 병충해 보기")) + "</h2>";
     if (!ZAPP.signedIn()) return h + '<div class="needlogin">' + esc(t("로그인하면 사진 진단을 쓸 수 있어요.")) + ' <button class="btn primary" type="button" data-login>' + esc(t("로그인")) + "</button></div></article>";
     h += '<div class="muted">' + esc(t("잎이나 열매를 가까이 찍은 사진 한 장을 고르면 AI가 무엇으로 보이는지, 이번 주말 할 일을 알려 줘요.")) + "</div>" +
-      '<label class="btn" for="farmPhoto" style="align-self:flex-start">' + esc(t("사진 고르기")) + '</label><input type="file" id="farmPhoto" accept="image/*" style="position:absolute;width:1px;height:1px;opacity:0">';
+      '<label class="btn" for="farmPhoto" style="align-self:flex-start' + (diag && diag.busy ? ";opacity:.5;pointer-events:none" : "") + '">' + esc(t("사진 고르기")) + '</label><input type="file" id="farmPhoto" accept="image/*"' + (diag && diag.busy ? " disabled" : "") + ' style="position:absolute;width:1px;height:1px;opacity:0">';
     if (diag) {
       if (diag.img) h += '<img src="' + diag.img + '" alt="" style="max-width:100%;max-height:220px;object-fit:cover;border-radius:10px">';
       h += diag.busy ? '<div class="loading">' + esc(t("사진을 살펴보는 중…")) + "</div>" : diag.err ? '<div class="needlogin">' + esc(t("진단을 못 했어요: {e}", { e: diag.err })) + "</div>" : '<div class="fdiag">' + esc(diag.text) + "</div>";
@@ -261,10 +265,13 @@
     });
   }
   async function diagnose(file) {
-    diag = { busy: true };
+    // 살펴보는 동안은 사진 고르기를 잠그고, 그래도 늦게 온 예전 답은 버려요 (QA 11-24: AI 두 번·답 섞임)
+    if (diag && diag.busy) return;
+    const me = diag = { busy: true };
     render();
     try {
       const url = await shrink(file);
+      if (diag !== me) return;
       diag.img = url; render();
       const mine = farm.crops.map(byId).filter(Boolean).map((c) => c.name).join(", ");
       const now = new Date();
@@ -280,9 +287,10 @@
           { type: "text", text: "내 텃밭 작물: " + (mine || "모름") + ". 오늘은 " + (now.getMonth() + 1) + "월 " + now.getDate() + "일, 지역 " + ZONES[zoneOf(farm.lat, farm.lng)][0] + ". 이 사진을 봐 줘." },
         ] }],
       });
+      if (diag !== me) return;
       diag.text = (j.content || []).filter((p) => p.type === "text").map((p) => p.text).join("").trim();
       diag.busy = false;
-    } catch (e) { diag.busy = false; diag.err = e.message || String(e); }
+    } catch (e) { if (diag !== me) return; diag.busy = false; diag.err = e.message || String(e); }
     render();
   }
 

@@ -39,7 +39,15 @@
     },
     init() {
       if (this.cur && this.cur.src !== "default") return this.cur;
-      try { const s = JSON.parse(localStorage.getItem(LOC_KEY) || "null"); if (s && isFinite(s.lat)) { this.cur = s; return s; } } catch (e) {}
+      // 저장값이 깨져 있으면(문자열·null·빠진 칸) 버려요 — 그대로 쓰면 toFixed 에서 오늘·바다가 영구히 멈춰요
+      try {
+        const s = JSON.parse(localStorage.getItem(LOC_KEY) || "null");
+        const n = (v) => (typeof v === "number" ? v : typeof v === "string" && v.trim() ? +v : NaN);
+        if (s && typeof s === "object" && isFinite(n(s.lat)) && isFinite(n(s.lng)) && Math.abs(n(s.lat)) <= 90 && Math.abs(n(s.lng)) <= 180) {
+          this.cur = { lat: n(s.lat), lng: n(s.lng), label: typeof s.label === "string" ? s.label : "", src: ["gps", "city", "record"].includes(s.src) ? s.src : "city" };
+          return this.cur;
+        }
+      } catch (e) {}
       const r = window.ZAPP && ZAPP.lastPlace();
       if (r) { this.cur = { lat: r.lat, lng: r.lng, label: "", src: "record" }; return this.cur; }
       this.cur = { lat: CITIES[0][1], lng: CITIES[0][2], label: "서울", src: "default" };
@@ -126,18 +134,22 @@
     return Math.round((end - today) / 864e5);
   }
   function actsNow(k) {
+    // 윤년 2월 29일은 2월 28일로 봐요 (to: 228 인 겨울 즐길 거리가 하루 사라지던 것)
+    if (k.m === 2 && k.d === 29) k = { ...k, d: 28 };
     return DATA.acts.filter((a) => actOn(a, k)).sort((a, b) => actLeft(a, k) - actLeft(b, k));
   }
   function songNow(k, o) {
     const pick = (f) => { const l = DATA.songs.filter(f); return l.length ? l[(k.d + k.h) % l.length] : null; };
-    const byPlace = o.region && pick((s) => s.places.includes(o.region) || (s.sido && (o.sido || "").includes(s.sido)));
+    // 기본 위치(서울)일 때는 '왔으니까'가 사실이 아니라서 장소 노래를 건너뛰어요
+    const byPlace = o.region && !o.isDefault && pick((s) => s.places.includes(o.region) || (s.sido && (o.sido || "").includes(s.sido)));
     if (byPlace) return { song: byPlace, why: t("{place}에 왔으니까", { place: o.region }) };
     if (o.snow) return { song: pick((s) => s.moment === "snow"), why: t("눈 오는 날") };
     if (o.rain) return { song: pick((s) => s.moment === "rain"), why: t("비 오는 날") };
+    // 10월 31일 저녁·밤에만 (전에는 25일 낮부터 나오고, 정작 31일 밤에는 '밤' 노래에 밀렸어요)
+    if (k.m === 10 && k.d === 31 && (o.sunset || o.night)) { const s = DATA.songs.find((x) => x.title === "잊혀진 계절"); if (s) return { song: s, why: t("10월의 마지막 밤") }; }
     if (o.sunset) return { song: pick((s) => s.moment === "sunset"), why: t("해 질 녘") };
     if (o.night) return { song: pick((s) => s.moment === "night"), why: t("밤하늘 아래") };
     if (o.dawn) return { song: pick((s) => s.moment === "dawn"), why: t("이른 아침") };
-    if (k.m === 10 && k.d >= 25) { const s = DATA.songs.find((x) => x.title === "잊혀진 계절"); if (s) return { song: s, why: t("10월의 마지막 밤") }; }
     return { song: pick((s) => s.moment === seasonOf(k.m)), why: t("{season}에", { season: t(SEASON_NAMES[k.m - 1]) }) };
   }
 
@@ -293,7 +305,7 @@
   const ext = 'target="_blank" rel="noopener"';
   const dark = () => document.documentElement.dataset.theme === "dark" || (!document.documentElement.dataset.theme && matchMedia("(prefers-color-scheme: dark)").matches);
 
-  let shownFor = "", busy = false;
+  let shownFor = "", busy = false, again = 0; // again: 불러오는 중에 들어온 요청 (1 보통, 2 force)
   function locLabel(l, reg) {
     if (l.label) return tOpt(l.label);
     if (reg) return (Z.lang === "ko" ? reg.sido.replace(/(특별자치도|특별자치시|광역시|특별시)$/, "") : tOpt(reg.sido)) + " " + reg.name;
@@ -325,9 +337,14 @@
   ZLOC.bar = locBar; ZLOC.bind = bindLoc; ZLOC.label = locLabel;
 
   const pct = (v) => (v == null || !isFinite(+v) ? "–" : Math.round(+v));
+  // 응답 칸이 빠져도(daily·hourly·sunrise …) 탭 전체가 오류로 바뀌지 않게
+  const arr = (o, k) => (o && Array.isArray(o[k]) ? o[k] : []);
+  const kdt = (s) => { if (typeof s !== "string") return null; const d = new Date(s + ":00+09:00"); return isFinite(d) ? d : null; };
+  const fix1 = (v) => (v == null || !isFinite(+v) ? "–" : (+v).toFixed(1));
   async function render(force) {
     const root = $("todayRoot");
-    if (!root || busy) return;
+    if (!root) return;
+    if (busy) { again = Math.max(again, force ? 2 : 1); return; } // 끝나면 다시 그려요 (불러오는 중 도시 바꾸기)
     const l = ZLOC.init();
     const now = new Date(), k = kst(now);
     const key = l.lat.toFixed(3) + l.lng.toFixed(3) + k.y + "-" + k.m + "-" + k.d + "h" + k.h + (ZAPP.signedIn() ? "s" : "");
@@ -351,9 +368,9 @@
       await Promise.all(jobs);
 
       const cur = wx && wx.current;
-      const daily = wx && wx.daily;
-      const sunrise = daily ? new Date(daily.sunrise[0] + ":00+09:00") : null;
-      const sunset = daily ? new Date(daily.sunset[0] + ":00+09:00") : null;
+      const daily = wx && wx.daily && Array.isArray(wx.daily.time) ? wx.daily : null;
+      const sunrise = kdt(arr(daily, "sunrise")[0]);
+      const sunset = kdt(arr(daily, "sunset")[0]);
       const sk = sky(l.lat, l.lng, now);
       const code = cur ? cur.weather_code : -1;
       const rain = kma ? kma.PTY === 1 || kma.PTY === 2 || kma.PTY === 5 || kma.PTY === 6 : code >= 51 && code <= 67 || (code >= 80 && code <= 82);
@@ -362,7 +379,7 @@
       const isSunset = sunset && Math.abs(nowMs - sunset.getTime()) < 45 * 60e3;
       const isDawn = sunrise && nowMs < sunrise.getTime() + 60 * 60e3 && nowMs > sunrise.getTime() - 60 * 60e3;
       const isNight = sunset && sunrise && (nowMs > sunset.getTime() + 45 * 60e3 || nowMs < sunrise.getTime() - 60 * 60e3);
-      const song = songNow(k, { region: reg && reg.name, sido: reg && reg.sido, rain, snow, sunset: isSunset, night: isNight, dawn: isDawn });
+      const song = songNow(k, { isDefault: l.src === "default", region: reg && reg.name, sido: reg && reg.sido, rain, snow, sunset: isSunset, night: isNight, dawn: isDawn });
       const foods = DATA.foods.filter((f) => f.months.includes(k.m));
       const acts = actsNow(k).slice(0, 6);
 
@@ -382,25 +399,27 @@
         const wind = kma && isFinite(kma.WSD) ? kma.WSD : cur.wind_speed_10m;
         const rn = kma && isFinite(kma.RN1) ? kma.RN1 : cur.precipitation;
         h += '<article class="card2"><h2>' + esc(t("지금 날씨")) + "<small>" + esc(kma ? t("기상청 초단기 실황") : "Open-Meteo") + "</small></h2>" +
-          '<div style="display:flex;align-items:center;gap:14px"><span style="font-size:44px" aria-hidden="true">' + em + '</span><div><div class="big">' + Math.round(temp) + '°</div><div class="muted">' + esc(t(txt)) + " · " + esc(t("체감 {n}°", { n: Math.round(cur.apparent_temperature) })) + "</div></div></div>" +
-          '<dl class="kv"><dt>' + esc(t("습도")) + "</dt><dd>" + Math.round(hum) + "%</dd><dt>" + esc(t("바람")) + "</dt><dd>" + (+wind).toFixed(1) + " m/s</dd><dt>" + esc(t("강수")) + "</dt><dd>" + (+rn).toFixed(1) + " mm</dd>" +
-          (daily ? "<dt>" + esc(t("오늘")) + "</dt><dd>" + Math.round(daily.temperature_2m_min[0]) + "° / " + Math.round(daily.temperature_2m_max[0]) + "° · " + esc(t("비 올 확률 {n}%", { n: pct(daily.precipitation_probability_max[0]) })) + "</dd>" : "") +
+          '<div style="display:flex;align-items:center;gap:14px"><span style="font-size:44px" aria-hidden="true">' + em + '</span><div><div class="big">' + pct(temp) + '°</div><div class="muted">' + esc(t(txt)) + " · " + esc(t("체감 {n}°", { n: pct(cur.apparent_temperature) })) + "</div></div></div>" +
+          '<dl class="kv"><dt>' + esc(t("습도")) + "</dt><dd>" + pct(hum) + "%</dd><dt>" + esc(t("바람")) + "</dt><dd>" + fix1(wind) + " m/s</dd><dt>" + esc(t("강수")) + "</dt><dd>" + fix1(rn) + " mm</dd>" +
+          (daily ? "<dt>" + esc(t("오늘")) + "</dt><dd>" + pct(arr(daily, "temperature_2m_min")[0]) + "° / " + pct(arr(daily, "temperature_2m_max")[0]) + "° · " + esc(t("비 올 확률 {n}%", { n: pct(arr(daily, "precipitation_probability_max")[0]) })) + "</dd>" : "") +
           "</dl>";
         // 시간별 24시간
-        const hr = wx.hourly, start = hr.time.findIndex((x) => new Date(x + ":00+09:00").getTime() >= nowMs - 3600e3);
+        const hr = wx.hourly, ht = arr(hr, "time"), start = ht.findIndex((x) => { const d = kdt(x); return d && d.getTime() >= nowMs - 3600e3; });
         if (start >= 0) {
           h += '<div class="hours" aria-label="' + esc(t("시간별")) + '">';
-          for (let i = start; i < Math.min(start + 24, hr.time.length); i++) {
-            const [e2] = wmo(hr.weather_code[i], hr.is_day[i]);
-            h += "<div><span>" + esc(fmtHour.format(new Date(hr.time[i] + ":00+09:00"))) + '</span><span aria-hidden="true">' + e2 + "</span><b>" + Math.round(hr.temperature_2m[i]) + "°</b><span>" + pct(hr.precipitation_probability[i] || 0) + "%</span></div>";
+          for (let i = start; i < Math.min(start + 24, ht.length); i++) {
+            const [e2] = wmo(arr(hr, "weather_code")[i], arr(hr, "is_day")[i]);
+            const d2 = kdt(ht[i]); if (!d2) continue;
+            h += "<div><span>" + esc(fmtHour.format(d2)) + '</span><span aria-hidden="true">' + e2 + "</span><b>" + pct(arr(hr, "temperature_2m")[i]) + "°</b><span>" + pct(arr(hr, "precipitation_probability")[i] || 0) + "%</span></div>";
           }
           h += "</div>";
         }
         // 며칠
         h += '<dl class="kv">';
-        for (let i = 1; i < daily.time.length; i++) {
-          const [e3, t3] = wmo(daily.weather_code[i], 1);
-          h += "<dt>" + esc(fmtWd.format(new Date(daily.time[i] + "T12:00:00+09:00"))) + "</dt><dd>" + e3 + " " + Math.round(daily.temperature_2m_min[i]) + "° / " + Math.round(daily.temperature_2m_max[i]) + "° · " + esc(t(t3)) + " · " + pct(daily.precipitation_probability_max[i]) + "%</dd>";
+        for (let i = 1; i < arr(daily, "time").length; i++) {
+          const d3 = new Date(daily.time[i] + "T12:00:00+09:00"); if (!isFinite(d3)) continue;
+          const [e3, t3] = wmo(arr(daily, "weather_code")[i], 1);
+          h += "<dt>" + esc(fmtWd.format(d3)) + "</dt><dd>" + e3 + " " + pct(arr(daily, "temperature_2m_min")[i]) + "° / " + pct(arr(daily, "temperature_2m_max")[i]) + "° · " + esc(t(t3)) + " · " + pct(arr(daily, "precipitation_probability_max")[i]) + "%</dd>";
         }
         h += "</dl>";
         if (!signed) h += '<div class="muted">' + esc(t("로그인하면 기상청 실황 값으로 보여요.")) + "</div>";
@@ -427,7 +446,7 @@
         '<dl class="kv">' +
         (sunrise ? "<dt>🌅 " + esc(t("해 뜨는 시각")) + "</dt><dd>" + esc(fmtTime.format(sunrise)) + "</dd>" : "") +
         (sunset ? "<dt>🌇 " + esc(t("해 지는 시각")) + "</dt><dd>" + esc(fmtTime.format(sunset)) + "</dd>" : "") +
-        (sunrise && sunset ? "<dt>☀️ " + esc(t("낮 길이")) + "</dt><dd>" + esc(t("{h}시간 {m}분", { h: Math.floor((sunset - sunrise) / 3600e3), m: Math.round(((sunset - sunrise) % 3600e3) / 60e3) })) + "</dd>" : "") +
+        (sunrise && sunset ? "<dt>☀️ " + esc(t("낮 길이")) + "</dt><dd>" + esc(t("{h}시간 {m}분", { h: Math.floor(Math.round((sunset - sunrise) / 60e3) / 60), m: Math.round((sunset - sunrise) / 60e3) % 60 })) + "</dd>" : "") +
         "<dt>" + mEmoji + " " + esc(t("달")) + "</dt><dd>" + esc(t(mName)) + " · " + esc(window.ZLUNAR ? t("음력 {n}일", { n: ZLUNAR.lunarDay(now) }) : t("음력 {n}일쯤", { n: Math.floor(age) + 1 })) + (sk.illum != null ? " · " + Math.round(sk.illum * 100) + "%" : "") + "</dd>" +
         (sk.moonRise ? "<dt>🌙 " + esc(t("달 뜨는 시각")) + "</dt><dd>" + esc(fmtTime.format(sk.moonRise)) + "</dd>" : "") +
         (sk.moonSet ? "<dt>🌘 " + esc(t("달 지는 시각")) + "</dt><dd>" + esc(fmtTime.format(sk.moonSet)) + "</dd>" : "") +
@@ -435,11 +454,18 @@
 
       // 밤하늘
       h += '<article class="card2" id="skyCard"><h2>' + esc(t("오늘 밤하늘")) + "<small>" + esc(t("밤 9시 기준")) + "</small></h2>";
-      const moonUp = sk.moonAlt9 != null && sk.moonAlt9 > 0;
-      const bright = sk.illum != null && sk.illum > 0.5 && moonUp;
-      const cloud = wx && wx.hourly ? (() => { const i = wx.hourly.time.findIndex((x) => x.endsWith("T21:00")); return i >= 0 ? wx.hourly.weather_code[i] : -1; })() : -1;
+      let moonUp = sk.moonAlt9 != null && sk.moonAlt9 > 0, illum = sk.illum;
+      if (sk.moonAlt9 == null) {
+        // astronomy-engine이 없으면 달 나이로 어림: 밤 9시에 떠 있는 때(4~18일)·밝기
+        const a9 = moonAge(new Date(Date.UTC(k.y, k.m - 1, k.d, 12)));
+        illum = (1 - Math.cos((2 * Math.PI * a9) / SYNODIC)) / 2;
+        moonUp = a9 > 4 && a9 < 18;
+      }
+      const bright = illum != null && illum > 0.5 && moonUp;
+      const cloud = (() => { const i = arr(wx && wx.hourly, "time").findIndex((x) => typeof x === "string" && x.endsWith("T21:00")); const c = i >= 0 ? arr(wx.hourly, "weather_code")[i] : -1; return c == null ? -1 : c; })();
       const cloudy = cloud >= 3;
-      h += '<div class="pill ' + (cloudy || bright ? "warn" : "") + '">' + esc(t(cloudy ? "구름이 많아 별 보기 어려워요" : bright ? "달이 밝아 희미한 별은 잘 안 보여요" : "별 보기 좋은 밤이에요")) + "</div>";
+      // 밤 9시 구름을 모르면(날씨 실패) '좋은 밤'이라고 단정하지 않아요
+      if (cloudy || bright || cloud >= 0) h += '<div class="pill ' + (cloudy || bright ? "warn" : "") + '">' + esc(t(cloudy ? "구름이 많아 별 보기 어려워요" : bright ? "달이 밝아 희미한 별은 잘 안 보여요" : "별 보기 좋은 밤이에요")) + "</div>";
       if (sk.darkFrom) h += '<div class="muted">' + esc(t("하늘이 완전히 어두워지는 시각 {time}", { time: fmtTime.format(sk.darkFrom) })) + "</div>";
       if (sk.planets.length) {
         h += '<dl class="kv">' + sk.planets.map((p) => "<dt>✨ " + esc(t(p.name)) + "</dt><dd>" + esc(p.dir) + " · " + esc(t("높이 {n}°", { n: p.alt })) + "</dd>").join("") + "</dl>";
@@ -454,7 +480,8 @@
           let href = "";
           if (a.go === "tide") href = "#sea";
           else if (a.go === "sky") href = "#skyCard";
-          else href = naverSearch(a.arg || a.title);
+          // wizard 의 arg(camp·spa·sea·valley)는 앱 마법사용 영어 키라 검색어로 쓰지 않아요
+          else href = naverSearch((a.go !== "wizard" && a.arg) || a.title);
           const isExt = !href.startsWith("#");
           return "<dt>" + a.emoji + '</dt><dd><a href="' + esc(href) + '" ' + (isExt ? ext : "") + ' data-act="' + esc(a.go) + '"><b>' + esc(tOpt(a.title)) + "</b></a>" + (left <= 14 ? ' <span class="pill warn">' + esc(t("{n}일 남음", { n: left })) + "</span>" : "") + '<div class="muted">' + esc(tOpt(a.why)) + "</div></dd>";
         }).join("") + "</dl>";
@@ -482,7 +509,10 @@
     } catch (e) {
       console.error(e);
       root.innerHTML = '<div class="needlogin">' + esc(t("오늘 정보를 준비하지 못했어요.")) + " " + esc(e.message || e) + "</div>";
-    } finally { busy = false; }
+    } finally {
+      busy = false;
+      if (again) { const f = again === 2; again = 0; render(f); }
+    }
   }
 
   ZLOC.on(() => { shownFor = ""; if (!$("view-today").hidden) render(true); });

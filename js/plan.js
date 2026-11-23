@@ -91,7 +91,7 @@
     if (when === "today") return d;
     const toSat = (6 - d.getDay() + 7) % 7;
     if (when === "month") return new Date(d.getFullYear(), d.getMonth(), d.getDate() + toSat + 14);
-    if (d.getDay() === 0) return d; // 일요일이면 오늘
+    if (d.getDay() === 0 && nightsOf(when) === 0) return d; // 일요일 당일치기는 오늘. 1박은 일→월(출근날)이 되니 다음 토요일로 (QA 11-24)
     return new Date(d.getFullYear(), d.getMonth(), d.getDate() + toSat);
   }
   const nightsOf = (when) => (WHENS.find((w) => w.id === when) || WHENS[0]).nights;
@@ -178,7 +178,8 @@
         if ((w.places || []).some((p) => r.name.includes(p) || r.sido.includes(p))) { s += 3; why.push(w.label); }
       }
       if (wants.has("palace") && r.sido.includes("서울") && r.name === "중구") s += 2;
-      const foods = seasonNow[r.name];
+      // 제철 산지 이름은 시군구 이름만 있어요. '고성군'은 강원·경남 둘이라 도루묵(강원 고성)은 강원만
+      const foods = r.name === "고성군" && !r.sido.startsWith("강원") ? null : seasonNow[r.name];
       if (foods) { s += wants.has("season") ? 4 : 0.8; why.push("제철 " + foods.join("·")); }
       if (wants.has("remote")) {
         const far = Math.min(...CITIES.map(([a, b]) => distKm(r.lat, r.lng, a, b)));
@@ -349,10 +350,31 @@ JSON 하나만 답해:
     };
   }
   const tOptKo = (s) => s; // 프롬프트는 한국어 그대로
+  // AI 답에서 JSON 꺼내기. 앞에 '{'가 든 설명이 붙거나 max_tokens 로 끝이 잘려도 살려요 (QA 11-24)
   function extractJson(text) {
-    const a = text.indexOf("{"), b = text.lastIndexOf("}");
-    if (a < 0 || b <= a) return null;
-    try { return JSON.parse(text.slice(a, b + 1)); } catch (e) { return null; }
+    text = String(text || "");
+    for (let a = text.indexOf("{"), tries = 0; a >= 0 && tries < 20; a = text.indexOf("{", a + 1), tries++) {
+      const j = parseFrom(text, a);
+      if (j && typeof j === "object" && Array.isArray(j.days)) return j;
+    }
+    return null;
+  }
+  function parseFrom(text, a) {
+    const stack = [];
+    let inStr = false, escp = false, cut = -1, cutStack = null;
+    for (let i = a; i < text.length; i++) {
+      const c = text[i];
+      if (inStr) { if (escp) escp = false; else if (c === "\\") escp = true; else if (c === '"') inStr = false; continue; }
+      if (c === '"') inStr = true;
+      else if (c === "{" || c === "[") stack.push(c === "{" ? "}" : "]");
+      else if (c === "}" || c === "]") {
+        if (stack.pop() !== c) return null;
+        if (!stack.length) { try { return JSON.parse(text.slice(a, i + 1)); } catch (e) { return null; } }
+        cut = i + 1; cutStack = stack.slice(); // 마지막으로 온전히 닫힌 칸
+      }
+    }
+    if (cut < 0) return null; // 잘린 답: 마지막으로 닫힌 칸까지만 두고 나머지 괄호를 닫아요
+    try { return JSON.parse(text.slice(a, cut) + cutStack.reverse().join("")); } catch (e) { return null; }
   }
   async function askClaude(ctx) {
     const j = await ZAPP.post("/claude/v1/messages", { model: MODEL, max_tokens: 4000, system: SYSTEM, messages: [{ role: "user", content: JSON.stringify(ctx) }] });
@@ -377,13 +399,29 @@ JSON 하나만 답해:
 
   // ---------- 상태·저장 ----------
   let st = load() || { step: "wants", when: "weekend", wants: [], maxMin: 180, from: null, cands: [], picks: [], plan: null, done: [], day: 0 };
-  function load() { try { return JSON.parse(localStorage.getItem(SAVE_KEY) || "null"); } catch (e) { return null; } }
+  // 저장값이 깨져 있어도(빈 객체·숫자·wants:null 등) 탭이 영구 오류로 멈추지 않게 모양을 맞춰요 (QA 11-24)
+  function load() {
+    try {
+      const s = JSON.parse(localStorage.getItem(SAVE_KEY) || "null");
+      if (!s || typeof s !== "object" || Array.isArray(s)) return null;
+      for (const k of ["wants", "cands", "picks", "done"]) if (!Array.isArray(s[k])) s[k] = [];
+      s.wants = s.wants.filter((x) => typeof x === "string");
+      s.picks = s.picks.filter((x) => typeof x === "string");
+      s.done = s.done.map(String);
+      s.cands = s.cands.filter((c) => c && typeof c === "object" && typeof c.code === "string" && typeof c.name === "string" && typeof c.sido === "string" && Array.isArray(c.why));
+      if (!WHENS.some((w) => w.id === s.when)) s.when = "weekend";
+      if (!DRIVES.includes(s.maxMin)) s.maxMin = 180;
+      if (s.from && !(s.from && Number.isFinite(s.from.lat) && Number.isFinite(s.from.lng))) s.from = null;
+      if (!s.plan || typeof s.plan !== "object" || Array.isArray(s.plan)) s.plan = null;
+      return s;
+    } catch (e) { return null; }
+  }
   function save() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(st)); } catch (e) {} }
   // 일정은 폰과 같이 써요 (서버 이름 'trip_plan', 앱 TripPlan.toJson 과 같은 모양)
   function planDoc() {
-    const p = st.plan;
+    const p = st.plan, n = normPlan(p); // 폰에서 받은 일정의 prep 이 문자열이어도 체크를 올릴 수 있게 (QA 11-24)
     return JSON.stringify({ key: p.key || "web|" + (p.start || "") + "|" + (st.picks || []).join(","), start: (p.start || ymd(new Date())) + "T00:00:00", title: p.title || "", hook: p.hook || "",
-      days: p.days || [], plan_b: p.plan_b || [], prep: (p.prep || []).map((x) => (typeof x === "string" ? { when: "", what: x } : x)), packing: p.packing || [], by_ai: !!p.byAi, done: st.done || [], updated: st.planUpdated || Date.now() });
+      days: Array.isArray(p.days) ? p.days : [], plan_b: n.plan_b, prep: n.prep, packing: n.packing, by_ai: !!p.byAi, done: st.done || [], updated: st.planUpdated || Date.now() });
   }
   function planChanged() {
     st.planUpdated = Date.now();
@@ -498,7 +536,7 @@ JSON 하나만 답해:
     let h = stepper();
     if (busy) h += '<div class="card2"><div class="loading">' + esc(busyMsg || t("준비하는 중이에요…")) + "</div></div>";
     else if (st.step === "regions") h += viewRegions();
-    else if (st.step === "plan" && st.plan) h += viewPlan();
+    else if (st.step === "plan" && st.plan && normPlan(st.plan).days.length) h += viewPlan(); // 날이 하나도 없는 일정이면 빈 화면 대신 처음으로
     else { st.step = "wants"; h += viewWants(); }
     if (!busy && errMsg && st.step !== "plan") h += '<div class="needlogin">' + esc(errMsg) + "</div>";
     root.innerHTML = h;

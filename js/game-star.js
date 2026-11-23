@@ -54,7 +54,10 @@
     c.stars.forEach((_, i) => { const [sx, sy] = sp(i); const d = Math.hypot(sx - x, sy - y); if (d < bd) { bd = d; best = i; } });
     const R = K.opt.easy ? 56 : 30;
     if (bd > R) return;
-    if (best === want) connect();
+    // 별이 촘촘한 별자리(오리온 삼태성·전갈)에서 반경 안의 '다음 별'을 눌렀는데 옆 별이 조금 더 가까워 틀림 되던 것:
+    // 다른 별 바로 위(8px 안)를 누른 게 아니면 다음 별로 받아 줘요
+    const dw = want != null ? Math.hypot(sp(want)[0] - x, sp(want)[1] - y) : 1e9;
+    if (best === want || (dw <= R && bd > 8)) connect();
     else { wrongT = 0.5; K.beep(200, 0.12, "triangle", 0.08); if (K.opt.easy) { msg = t("깜빡이는 별을 눌러 보세요"); msgT = 1.6; } }
   }
   function press() {

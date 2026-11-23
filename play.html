@@ -120,6 +120,15 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body)
       if (sess && !force && Date.now() < sess.exp) return Promise.resolve(sess);
       return window.ZNATIVE.call("session").then(function (v) {
         var first = !sess;
+        // 앱에서 다른 계정으로 바꿨으면 이 웹뷰에 남은 앞 사람 낚시 기록이 새 계정으로 올라가지 않게 지우고 새로 열어요 (QA 11-24)
+        var owner = "";
+        try { owner = localStorage.getItem("jepi.owner") || ""; } catch (e) {}
+        if (v.uid && owner && owner !== v.uid) {
+          try { localStorage.removeItem("jepi.game.v1"); localStorage.setItem("jepi.owner", v.uid); } catch (e) {}
+          location.reload();
+          return new Promise(function () {});
+        }
+        try { if (v.uid) localStorage.setItem("jepi.owner", v.uid); } catch (e) {}
         sess = { access: v.access, uid: v.uid, name: v.name || "", avatar: v.avatar || "", exp: Date.now() + 40 * 60e3 };
         if (first) window.dispatchEvent(new Event("zapp-auth"));
         return sess;
@@ -143,18 +152,18 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body)
   if (Object.keys(Z).length) window.ZAPP = Z;
 })();
 </script>
-<script src="i18n.js?v=20261123c"></script>
+<script src="i18n.js?v=20261124q"></script>
 <script src="js/lunar.js"></script>
-<script src="js/play.js?v=20261123c"></script>
-<script src="js/game.js?v=20261123c"></script>
-<script src="js/game-mount.js?v=20261123c"></script>
-<script src="js/game-farm.js?v=20261123c"></script>
-<script src="js/game-star.js?v=20261123c"></script>
+<script src="js/play.js?v=20261124q"></script>
+<script src="js/game.js?v=20261124q"></script>
+<script src="js/game-mount.js?v=20261124q"></script>
+<script src="js/game-farm.js?v=20261124q"></script>
+<script src="js/game-star.js?v=20261124q"></script>
 <script>
 (function () {
   var q = new URLSearchParams(location.search), g = q.get("g");
   document.querySelectorAll("[data-go]").forEach(function (b) { b.addEventListener("click", function () { ZPLAY.open(b.dataset.go); }); });
-  if (window.ZI18N && ZI18N.apply) try { ZI18N.apply(document.body); } catch (e) {}
+  if (window.ZI18N && ZI18N.apply) try { ZI18N.apply(); } catch (e) {} // 인자 없이 불러야 <title>도 번역돼요
   // 앱에서 열었으면: 게임을 닫으면 앱 화면으로 돌아가요
   if (window.ZNATIVE) ZPLAY.onClose = function () { window.ZNATIVE.send("close"); };
   if (g && ZPLAY.kinds().indexOf(g) >= 0) ZPLAY.open(g);
