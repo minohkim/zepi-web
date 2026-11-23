@@ -108,10 +108,39 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body)
   }
   // 가 본 시군구 → 등산 게임의 '가 본 산' 표시
   var sgg = (q.get("sgg") || "").split(",").filter(Boolean), peaks = (q.get("peaks") || "").split(",").filter(Boolean);
+  var Z = {};
   if (sgg.length || peaks.length) {
     var set = new Set(sgg);
-    window.ZAPP = { recs: function () { return { sample: false, regions: sgg.map(function (n) { return { c: n, n: n }; }), conq: set, summits: peaks }; } };
+    Z.recs = function () { return { sample: false, regions: sgg.map(function (n) { return { c: n, n: n }; }), conq: set, summits: peaks }; };
   }
+  // 앱 안: 앱의 로그인으로 게임 기록을 내 아이디에 저장해요 (제피 클라우드 blobs 표)
+  if (window.ZNATIVE) {
+    var SB = "https://xkhfannbztgvarxqhzno.supabase.co", KEY = "sb_publishable__uulkrUbHekv5cxsE-UyHw_oXkR7wtM", sess = null;
+    var getSess = function (force) {
+      if (sess && !force && Date.now() < sess.exp) return Promise.resolve(sess);
+      return window.ZNATIVE.call("session").then(function (v) {
+        var first = !sess;
+        sess = { access: v.access, uid: v.uid, name: v.name || "", avatar: v.avatar || "", exp: Date.now() + 40 * 60e3 };
+        if (first) window.dispatchEvent(new Event("zapp-auth"));
+        return sess;
+      });
+    };
+    var rest = function (path, opts, retry) {
+      return getSess().then(function (s) {
+        return fetch(SB + "/rest/v1/" + path, { method: opts.method || "GET", headers: Object.assign({ apikey: KEY, Authorization: "Bearer " + s.access, "Content-Type": "application/json" }, opts.headers || {}), body: opts.body });
+      }).then(function (r) {
+        if (r.status === 401 && !retry) return getSess(true).then(function () { return rest(path, opts, true); });
+        if (!r.ok) throw new Error("server " + r.status);
+        return r.text().then(function (tx) { return tx ? JSON.parse(tx) : null; });
+      });
+    };
+    Z.signedIn = function () { return !!sess; };
+    Z.me = function () { return sess ? { name: sess.name, avatar: sess.avatar } : null; };
+    Z.docGet = function (name) { return rest("blobs?select=data&name=eq." + encodeURIComponent(name), {}).then(function (rows) { return rows && rows[0] ? rows[0].data : null; }); };
+    Z.docPut = function (name, data) { return rest("blobs?on_conflict=user_id,name", { method: "POST", headers: { Prefer: "resolution=merge-duplicates,return=minimal" }, body: JSON.stringify([{ name: name, data: data }]) }); };
+    setTimeout(function () { getSess().catch(function () {}); }, 300); // 로그인 안 했으면 조용히 이 기기에만
+  }
+  if (Object.keys(Z).length) window.ZAPP = Z;
 })();
 </script>
 <script src="i18n.js"></script>

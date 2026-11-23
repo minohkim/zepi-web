@@ -2251,6 +2251,8 @@ body { margin: 0; }
       return { conq: new Set([...D.conq.keys(), ...D.manual].map(String)), notes: D.notes.filter((n) => !n.tags.includes("집") && !n.tags.includes("회사")) };
     },
     signedIn: () => !!session,
+    // 놀이(게임)에서 쓰는 내 이름·프로필 사진 (카카오·구글)
+    me: () => (session ? { name: session.name || (session.email || "").split("@")[0], avatar: session.avatar || "" } : null),
     openLogin: () => { loginMsg(""); loginDlg.showModal(); },
     showTab: (n) => showTab(n),
     // 내 기록의 마지막 위치 (오늘·바다의 기본 위치)
