@@ -133,10 +133,11 @@
       '<path d="' + area + '" fill="color-mix(in srgb, #2C7FB8 18%, transparent)"/><path d="' + d + '" fill="none" stroke="#2C7FB8" stroke-width="2"/>' + mk + "</svg>";
   }
 
-  let shownFor = "", busy = false, pickCode = "";
+  let shownFor = "", busy = false, again = false, pickCode = "";
   async function render(force) {
     const root = $("seaRoot");
-    if (!root || busy || !window.ZLOC) return;
+    if (!root || !window.ZLOC) return;
+    if (busy) { again = true; return; } // 불러오는 중에 관측소·위치를 바꾸면 끝난 뒤 다시 (QA 11-24)
     const l = ZLOC.init();
     const now = new Date();
     const near = byDist(l.lat, l.lng);
@@ -221,7 +222,7 @@
     } catch (e) {
       console.error(e);
       root.innerHTML = '<div class="needlogin">' + esc(t("바다 정보를 준비하지 못했어요.")) + " " + esc(e.message || e) + "</div>";
-    } finally { busy = false; }
+    } finally { busy = false; if (again) { again = false; render(true); } }
   }
   if (window.ZLOC) ZLOC.on(() => { shownFor = ""; pickCode = ""; if (!$("view-sea").hidden) render(true); });
   // 놀이(낚시 게임)가 쓰는 지금 물높이: 가장 가까운 관측소 · 오늘 최저~최고 사이 어디쯤(k 0~1) · 들물/날물 (로그인 필요)

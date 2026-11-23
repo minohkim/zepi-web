@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<script src="i18n.js?v=20261123c"></script>
+<script src="i18n.js?v=20261124q"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>제피 웹</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -711,7 +711,7 @@ body { margin: 0; }
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-asm-memory-growth.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
-<script src="js/season-data.js"></script>
+<script src="js/season-data.js?v=20261124q"></script>
 <script>
 (function () {
   "use strict";
@@ -822,6 +822,7 @@ body { margin: 0; }
     try {
       const n = sessionStorage.getItem("jepi.notice");
       if (n) { sessionStorage.removeItem("jepi.notice"); setNotice(esc(n)); }
+      if (sessionStorage.getItem("jepi.pwdlg")) { sessionStorage.removeItem("jepi.pwdlg"); if (session) setTimeout(() => { $("pwMsg").textContent = ""; $("pwDlg").showModal(); $("pwNew").focus(); }, 300); }
     } catch (e) {}
   }
 
@@ -839,8 +840,10 @@ body { margin: 0; }
     try {
       const j = { access_token: q.get("access_token"), refresh_token: q.get("refresh_token"), expires_in: +q.get("expires_in") || 3600 };
       j.user = await authFetch("user", undefined, j.access_token);
-      takeSession(j);
       const type = q.get("type");
+      if (type === "recovery") { try { sessionStorage.setItem("jepi.pwdlg", "1"); } catch (e) {} }
+      if (takeSession(j)) return null;
+      try { sessionStorage.removeItem("jepi.pwdlg"); } catch (e) {}
       if (type === "recovery") { setTimeout(() => { $("pwMsg").textContent = ""; $("pwDlg").showModal(); $("pwNew").focus(); }, 300); return t("새 비밀번호를 정해 주세요."); }
       if (type === "signup") return t("이메일 확인이 끝났어요. 로그인됐어요.");
       return t("로그인됐어요.");
@@ -952,6 +955,7 @@ body { margin: 0; }
       const next = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1).getTime();
       let e = j;
       while (e < n && ts[e] < next) e++;
+      if (e === j) e = j + 1; // 시각이 이상한 점에서 멈추지 않게 (QA 11-24)
       if (dayIdx.has(k)) dayIdx.get(k)[1] = e; else { dayIdx.set(k, [j, e]); days.push(k); }
       j = e;
     }
@@ -1010,6 +1014,14 @@ body { margin: 0; }
   function saveSession() {
     try { session ? localStorage.setItem("jepi.session", JSON.stringify(session)) : localStorage.removeItem("jepi.session"); } catch (e) {}
   }
+  // 다른 탭에서 로그아웃하거나 다른 계정으로 바꾸면 이 탭도 새로 열어요. 같은 계정의 토큰 갱신은 받아 써요 (QA 11-24)
+  window.addEventListener("storage", (e) => {
+    if (e.storageArea !== localStorage || (e.key !== null && e.key !== "jepi.session")) return;
+    let s = null;
+    try { s = JSON.parse(e.newValue || "null"); } catch (err) {}
+    if (s && s.uid && session && s.uid === session.uid) { session = s; return; }
+    if ((s && s.uid) !== (session && session.uid)) location.reload();
+  });
   function loadSession() {
     try { const s = JSON.parse(localStorage.getItem("jepi.session") || "null"); if (s && s.refresh && s.uid) session = s; } catch (e) {}
   }
@@ -1022,6 +1034,17 @@ body { margin: 0; }
     };
     readProfile(u);
     saveSession();
+    // 이 브라우저의 텃밭·여행 계획·낚시 게임이 다른 계정 것이면 새 계정으로 올라가지 않게 지우고 새로 열어요
+    // (로그아웃 없이 다른 계정으로 로그인 · 남의 로그인 링크 · 세션 만료 뒤 다른 사람 로그인) (QA 11-24)
+    let owner = "";
+    try { owner = localStorage.getItem("jepi.owner") || ""; } catch (e) {}
+    if (owner && session.uid && owner !== session.uid) {
+      clearLocalDocs();
+      try { localStorage.setItem("jepi.owner", session.uid); sessionStorage.setItem("jepi.notice", t("로그인됐어요.")); } catch (e) {}
+      location.reload();
+      return true;
+    }
+    try { if (session.uid) localStorage.setItem("jepi.owner", session.uid); } catch (e) {}
     renderAccount();
     window.dispatchEvent(new Event("zapp-auth"));
   }
@@ -1089,7 +1112,8 @@ body { margin: 0; }
     setNotice(t("클라우드에서 내 기록을 불러오는 중이에요…"));
     try {
       const [blobs, notes] = await Promise.all([
-        sb("blobs?select=name,data"),
+        // 기록에 쓰는 것만 받아요. 운동 기록(workouts)·텃밭·여행 계획·놀이 저장 같은 큰 문서까지 매번 받지 않게 (QA 11-24)
+        sb("blobs?select=name,data&name=in.(places,region_days,region_visits,manual_regions,photo_days)"),
         sb("place_notes?select=key,lat,lng,tags,rating,memo,updated"),
       ]);
       const tracks = [];
@@ -1107,7 +1131,8 @@ body { margin: 0; }
         try {
           const j = typeof t.pts === "string" ? JSON.parse(t.pts) : t.pts;
           if (!j || !Number.isFinite(+j.t0) || !Array.isArray(j.p)) continue;
-          const p = j.p.filter((q) => Array.isArray(q) && Number.isFinite(q[0]) && Number.isFinite(q[1]) && Number.isFinite(q[2])).sort((x, y) => x[0] - y[0]);
+          // 시각이 Date 범위(±8.64e15ms) 밖이면 buildData의 날짜 나누기가 끝나지 않아요 (QA 11-24)
+          const p = j.p.filter((q) => Array.isArray(q) && Number.isFinite(q[0]) && Number.isFinite(q[1]) && Number.isFinite(q[2]) && Math.abs(+j.t0 + q[0] * 1000) < 8.64e15).sort((x, y) => x[0] - y[0]);
           decoded.push({ t0: +j.t0, p }); n += p.length;
         } catch (e) {}
       }
@@ -1170,7 +1195,8 @@ body { margin: 0; }
     for (let i = 1; i < a.length; i++) {
       const prev = out[out.length - 1], cur = a[i];
       const dt = (cur.ts - prev.ts) / 1000, d = dist(prev.lat, prev.lng, cur.lat, cur.lng);
-      if (dt > 0 && dt < SEG_GAP / 1000 && d / dt > 83) continue;
+      // 같은 시각(dt=0)에 멀리 떨어진 점도 순간이동으로 봐요 (QA 11-24: 같은 시각 부산 점 하나로 하루 +330km)
+      if (dt >= 0 && dt < SEG_GAP / 1000 && d / Math.max(dt, 1) > 83) continue;
       if (i + 1 < a.length) {
         const nx = a[i + 1];
         const dPN = dist(prev.lat, prev.lng, nx.lat, nx.lng), dCN = dist(cur.lat, cur.lng, nx.lat, nx.lng);
@@ -1919,7 +1945,9 @@ body { margin: 0; }
       const tags = new Set(old ? old.tags : []);
       for (const t of p.list.split(", ")) if (t) tags.add(t);
       const memoNew = [p.name, p.memo].filter(Boolean).join(" · ");
-      const memo = old && old.memo ? (old.memo.includes(p.name) ? old.memo : old.memo + "\n" + memoNew) : memoNew;
+      // 같은 100m 칸에 '할매국밥'과 '국밥'이 있으면 부분 문자열 비교로 '국밥'이 사라지던 것 → 줄 단위로 이름이 같은지 봐요 (QA 11-24)
+      const hasLine = (m) => m.split("\n").some((l) => l === p.name || l.startsWith(p.name + " · "));
+      const memo = old && old.memo ? (hasLine(old.memo) ? old.memo : old.memo + "\n" + memoNew) : memoNew;
       out.set(key, { key, lat: old ? old.lat : p.lat, lng: old ? old.lng : p.lng, tags: [...tags], rating: old ? old.rating : 0, memo: memo.slice(0, 500) });
     }
     const rowsUp = [...out.values()].map((n, i) => ({ user_id: session.uid, key: n.key, lat: n.lat, lng: n.lng, tags: n.tags.join(","), rating: n.rating, memo: n.memo, updated: now + i }));
@@ -1999,7 +2027,7 @@ body { margin: 0; }
 
   function clearLocalDocs() {
     try {
-      for (const k of Object.keys(localStorage)) if (/^jepi\.(farm\.v1|plan\.v1|loc$|play\.photo\.)/.test(k)) localStorage.removeItem(k);
+      for (const k of Object.keys(localStorage)) if (/^jepi\.(farm\.v1|plan\.v1|loc$|play\.photo\.|game\.v1$|owner$)/.test(k)) localStorage.removeItem(k);
     } catch (e) {}
   }
   async function signOut(msg) {
@@ -2314,19 +2342,19 @@ body { margin: 0; }
   });
 })();
 </script>
-<script src="js/lunar.js"></script>
-<script src="js/report.js"></script>
-<script src="js/today.js"></script>
-<script src="js/sea.js"></script>
-<script src="js/docs.js"></script>
-<script src="js/plan.js"></script>
-<script src="js/farm-data.js"></script>
-<script src="js/farm.js"></script>
-<script src="js/more.js"></script>
-<script src="js/play.js?v=20261123c"></script>
-<script src="js/game.js?v=20261123c"></script>
-<script src="js/game-mount.js?v=20261123c"></script>
-<script src="js/game-farm.js?v=20261123c"></script>
-<script src="js/game-star.js?v=20261123c"></script>
+<script src="js/lunar.js?v=20261124q"></script>
+<script src="js/report.js?v=20261124q"></script>
+<script src="js/today.js?v=20261124q"></script>
+<script src="js/sea.js?v=20261124q"></script>
+<script src="js/docs.js?v=20261124q"></script>
+<script src="js/plan.js?v=20261124q"></script>
+<script src="js/farm-data.js?v=20261124q"></script>
+<script src="js/farm.js?v=20261124q"></script>
+<script src="js/more.js?v=20261124q"></script>
+<script src="js/play.js?v=20261124q"></script>
+<script src="js/game.js?v=20261124q"></script>
+<script src="js/game-mount.js?v=20261124q"></script>
+<script src="js/game-farm.js?v=20261124q"></script>
+<script src="js/game-star.js?v=20261124q"></script>
 </body>
 </html>

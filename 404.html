@@ -6,7 +6,7 @@
 <title>Zepi</title>
 <script>
   // 잘못된 주소로 들어와도 제피 웹으로 돌려보내요 (로그인 정보가 담긴 # 뒷부분은 그대로)
-  location.replace("/zepi-web/" + location.hash);
+  location.replace("/zepi-web/" + location.search + location.hash); // ?lang=·?login 등도 그대로 (QA 11-23)
 </script>
 <style>
   body { font-family: system-ui, sans-serif; background: #F5F7F1; color: #17201A; padding: 40px 16px; text-align: center; }

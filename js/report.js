@@ -52,9 +52,15 @@
         e.preventDefault();
         const msg = d.querySelector("#fbMsg").value.trim(), out = d.querySelector("#fbMsgOut"), b = d.querySelector("#fbSend");
         if (!msg) { out.textContent = t("내용을 적어 주세요."); return; }
+        const email = d.querySelector("#fbEmail").value.trim().slice(0, 120);
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { out.textContent = t("이메일 주소를 확인해 주세요."); return; }
+        // 연타·도배 막기: 보낸 뒤 30초는 다시 못 보내요 (QA 11-23: 1초에 3건 들어감)
+        let last = 0; try { last = +localStorage.getItem("jepi.fbLast") || 0; } catch (err) {}
+        if (Date.now() - last < 30000) { out.textContent = t("요청이 많아요. 잠시 뒤에 다시 해 주세요."); return; }
         b.disabled = true; out.textContent = t("보내는 중이에요…");
         try {
-          await send({ kind: "feedback", message: msg, email: d.querySelector("#fbEmail").value.trim().slice(0, 120) });
+          await send({ kind: "feedback", message: msg, email });
+          try { localStorage.setItem("jepi.fbLast", String(Date.now())); } catch (err) {}
           d.querySelector("#fbMsg").value = "";
           out.textContent = t("잘 받았어요. 고마워요!");
           setTimeout(() => d.open && d.close(), 1500);

@@ -158,7 +158,7 @@
     if (document.getElementById("playCss")) return;
     const st = document.createElement("style"); st.id = "playCss";
     st.textContent =
-      ".playLayer{position:fixed;inset:0;z-index:60;background:var(--bg,#F7F5EE);overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}" +
+      ".playLayer{position:fixed;inset:0;z-index:60;background:var(--bg,#F7F5EE);overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}.playLayer:focus{outline:none}" +
       ".playBar{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:10px;padding:10px 14px;padding-top:max(10px,env(safe-area-inset-top));background:var(--surface,#fff);border-bottom:1px solid var(--line)}" +
       ".playBar b{font-family:var(--font-display);font-size:20px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" +
       ".playBar .btn{font-size:16px;min-height:48px}" +
@@ -203,7 +203,7 @@
     if (layer) return;
     css();
     layer = document.createElement("div");
-    layer.className = "playLayer"; layer.hidden = true;
+    layer.className = "playLayer"; layer.hidden = true; layer.tabIndex = -1;
     layer.setAttribute("role", "dialog"); layer.setAttribute("aria-modal", "true"); layer.setAttribute("aria-labelledby", "playTitle");
     layer.innerHTML = '<div class="playBar"><b id="playTitle"></b><button type="button" class="btn" id="playClose">' + esc(t("✕ 닫기")) + '</button></div><div class="playBody" id="playBody"></div>';
     document.body.appendChild(layer);
@@ -241,7 +241,8 @@
     cur = kind;
     layer.scrollTop = 0;
     g.start();
-    layer.querySelector("#playClose").focus({ preventScroll: true });
+    // 닫기 단추에 포커스를 두면 열자마자 Space·Enter로 닫혀요 (앱 웹뷰에선 앱으로 돌아감) → 창 자체에
+    layer.focus({ preventScroll: true });
   }
   function close() {
     if (!layer || layer.hidden) return;
