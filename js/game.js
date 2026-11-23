@@ -364,12 +364,12 @@
     try { const r = await fetch(u, ctl ? { signal: ctl.signal } : undefined); if (!r.ok) throw new Error("HTTP " + r.status); return await r.json(); }
     finally { clearTimeout(tm); }
   }
-  let condBusy = false;
+  let condBusy = false, condAgain = false;
   async function loadCond() {
     const sp = spot(), key = spot().id;
     const hit = condCache[key];
     if (hit && Date.now() - hit.at < 15 * 60e3) { COND = stormy(hit.v); return; }
-    if (condBusy) return;
+    if (condBusy) { condAgain = true; return; }
     condBusy = true;
     const c = defaultCond(); c.spotKey = key;
     try {
@@ -393,6 +393,8 @@
     condCache[key] = { at: Date.now(), v: c };
     if (spot().id === key) COND = stormy(c);
     condBusy = false;
+    // 불러오는 사이 낚시 방법·장소를 바꿨으면 지금 낚시터로 다시 (QA 11-24)
+    if (condAgain) { condAgain = false; if (spot().id !== key) { loadCond(); return; } }
     renderPanel();
   }
   // 물 흐름 세기: 만조·간조(물돌이)엔 약하고 중간 물높이에서 세요. 사리엔 더 세고 조금엔 약해요
@@ -702,7 +704,8 @@
       const b = tackle();
       if (gull.ph === "in") { gull.x = lerp(gull.sx, b.x - 6 * S, Math.min(1, gull.t / 1.8)); gull.y = lerp(gull.sy, b.y - 34 * S, Math.min(1, gull.t / 1.8)); if (gull.t > 1.8) { gull.ph = "hover"; gull.t = 0; beep(1900, 0.06, "triangle", 0.08); setTimeout(() => beep(1700, 0.08, "triangle", 0.08), 90); } }
       else if (gull.ph === "hover") { gull.x = b.x - 6 * S + Math.sin(now * 4) * 8 * S; gull.y = b.y - 30 * S + Math.sin(now * 7) * 4; if (gull.t > 1.8) {
-        if (easy()) { flash(t("갈매기가 그냥 날아갔어요")); gull.ph = "out"; gull.t = 0; }
+        if (!["wait", "settle"].includes(G.s)) { gull.ph = "out"; gull.t = 0; } // 그사이 입질·파이팅이면 고기를 지켜요 (QA 11-24)
+        else if (easy()) { flash(t("갈매기가 그냥 날아갔어요")); gull.ph = "out"; gull.t = 0; }
         else { flash(t("🐦 갈매기가 미끼를 채 갔어요! 다시 던져요")); K.splash(0.3, false); breakStreak(); gull = null; toReady(); return; }
       } }
       else { gull.x += 140 * S * dt; gull.y -= 90 * S * dt; if (gull.t > 1.5) gull = null; }
@@ -2271,15 +2274,17 @@
     P2.innerHTML = h;
   }
   function busy() { return !["ready", "result"].includes(G.s); }
+  // 걸린 고기를 다루는 중(파이팅·뜰채·들어뽑기)에는 판을 바꾸지 않아요 — 바꾸면 고기가 기록 없이 사라져요 (QA 11-24)
+  function landingNow() { return ["fight", "net", "scoop", "lift"].includes(G.s); }
   function onPanel(e) {
     const b = e.target.closest("button");
     if (!b) return;
-    if (b.dataset.gmode) { if (G.s === "fight" || G.s === "net") return; save.mode = b.dataset.gmode; store(); target = null; refreshCond(); toReady(); renderPanel(); if (together()) rtConnect(); }
-    else if (b.dataset.gdiff) { if (G.s === "fight" || G.s === "net") return; save.diff = +b.dataset.gdiff; store(); target = null; toReady(); renderPanel(); }
-    else if (b.dataset.gspot) { if (G.s === "fight" || G.s === "net") return; (save.spots = save.spots || {})[mode()] = b.dataset.gspot; store(); target = null; refreshCond(); toReady(); renderPanel(); if (together()) rtConnect(); }
+    if (b.dataset.gmode) { if (landingNow()) return; save.mode = b.dataset.gmode; store(); target = null; refreshCond(); toReady(); renderPanel(); if (together()) rtConnect(); }
+    else if (b.dataset.gdiff) { if (landingNow()) return; save.diff = +b.dataset.gdiff; store(); target = null; toReady(); renderPanel(); }
+    else if (b.dataset.gspot) { if (landingNow()) return; (save.spots = save.spots || {})[mode()] = b.dataset.gspot; store(); target = null; refreshCond(); toReady(); renderPanel(); if (together()) rtConnect(); }
     else if (b.hasAttribute("data-ggps")) {
       const msg = root.querySelector("#gGpsMsg"); if (msg) msg.textContent = t("찾는 중…");
-      const done = () => { save.spots = {}; store(); target = null; refreshCond(); toReady(); renderPanel(); };
+      const done = () => { save.spots = {}; store(); target = null; refreshCond(); if (!landingNow()) toReady(); renderPanel(); };
       const fail = () => { const m2 = root.querySelector("#gGpsMsg"); if (m2) m2.textContent = t("위치를 찾지 못했어요. 지금 기준으로 보여 줘요"); };
       if (window.ZLOC && ZLOC.gps) ZLOC.gps().then((l) => { ZLOC.set(l, true); done(); }, fail);
       else if (navigator.geolocation) navigator.geolocation.getCurrentPosition((p) => { gpsLoc = { lat: p.coords.latitude, lng: p.coords.longitude, src: "gps", label: "" }; done(); }, fail, { timeout: 10000, maximumAge: 600000 });
@@ -2287,7 +2292,7 @@
     }
 
     else if (b.dataset.gtk) {
-      if (G.s === "fight" || G.s === "net") return;
+      if (landingNow()) return;
       const [k, v] = b.dataset.gtk.split(":");
       (save.tk[mode()] = save.tk[mode()] || {})[k] = v; store(); if (k === "sinker") target = null; if (busy()) toReady(); else if (mode() === "surf" && !target) newTarget(); renderPanel();
     }
@@ -2374,7 +2379,7 @@
     root.querySelector("#gPanel").addEventListener("toggle", (e) => { const d = e.target.closest && e.target.closest("[data-gfish]"); if (d && d.open) loadPhoto(d.dataset.gfish); }, true);
     window.addEventListener("zapp-auth", () => { cloudPulled = false; cloudPull(); });
     window.addEventListener("resize", () => { if (K.visible(root)) resize(); });
-    K.onOpt((k) => { if (!K.visible(root)) return; if (k === "easy" && !["fight", "net"].includes(G.s)) toReady(); renderPanel(); btnKey = ""; setBtn(); });
+    K.onOpt((k) => { if (!K.visible(root)) return; if (k === "easy" && !landingNow()) toReady(); renderPanel(); btnKey = ""; setBtn(); });
   }
   function loop(ts) {
     if (!K.visible(root)) { running = false; holding = false; K.drag(0, 0); return; }

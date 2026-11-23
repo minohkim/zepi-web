@@ -13,6 +13,9 @@ async function page(lang) {
   const pg = await ctx.newPage();
   pg.errors = [];
   pg.on("pageerror", (e) => pg.errors.push(String(e)));
+  // 우리 저장소 파일(report.js·i18n.js 등)이 404면 잡아요 (pageerror로는 안 잡혀요)
+  pg.bad = [];
+  pg.on("response", (r) => { if (r.url().startsWith(BASE) && r.status() >= 400) pg.bad.push(r.status() + " " + r.url().slice(BASE.length)); });
   return pg;
 }
 
@@ -22,6 +25,31 @@ for (const path of ["?home", "beta.html", "privacy.html", "terms.html"]) {
   const r = await pg.goto(BASE + path, { waitUntil: "load" });
   ok(r.ok(), "열림 " + path);
   ok(pg.errors.length === 0, "오류 없음 " + path, pg.errors.join(" | "));
+  ok(pg.bad.length === 0, "빠진 파일 없음 " + path, pg.bad.join(" | "));
+  await pg.close();
+}
+
+// 1-2) 놀이 페이지(play.html, 앱 웹뷰용): 4개 언어로 ?g= 바로 열기, 게임 4개, 번역 빠짐·오류·빠진 파일
+for (const lang of ["ko", "en", "zh", "ja"]) {
+  const pg = await page(lang);
+  const r = await pg.goto(BASE + "play.html?lang=" + lang + "&g=fish", { waitUntil: "load" });
+  ok(r.ok(), lang + " 놀이 페이지 열림");
+  ok(await pg.evaluate(() => window.ZPLAY && ZPLAY.current() === "fish"), lang + " 놀이 페이지 ?g=fish 로 낚시 게임이 바로 열림");
+  for (const kind of ["fish", "mount", "farm", "star"]) {
+    await pg.evaluate((k) => ZPLAY.open(k), kind);
+    await pg.waitForTimeout(300);
+    for (let i = 0; i < 10; i++) { await pg.click('[data-pgame="' + kind + '"] .gbig', { force: true }); await pg.waitForTimeout(300); }
+    ok(await pg.evaluate((k) => ZPLAY.current() === k, kind), lang + " 놀이 페이지 " + kind + " 열림·진행");
+  }
+  await pg.evaluate(() => ZPLAY.close());
+  ok(pg.errors.length === 0, lang + " 놀이 페이지 오류 없음", pg.errors.join(" | "));
+  ok(pg.bad.length === 0, lang + " 놀이 페이지 빠진 파일 없음", pg.bad.join(" | "));
+  if (lang !== "ko") {
+    const missing = await pg.evaluate(() => Object.keys(ZI18N.missing || {}));
+    ok(missing.length === 0, lang + " 놀이 페이지 번역 빠진 문구 없음", missing.slice(0, 10).join(" / "));
+    const title = await pg.title();
+    ok(!/[가-힣]/.test(title), lang + " 놀이 페이지 제목 번역", title);
+  }
   await pg.close();
 }
 
@@ -50,6 +78,7 @@ for (const lang of ["ko", "en"]) {
   }
   await pg.evaluate(() => ZPLAY.close());
   ok(pg.errors.length === 0, lang + " 메뉴 전부 오류 없음", pg.errors.join(" | "));
+  ok(pg.bad.length === 0, lang + " 웹 앱 빠진 파일 없음", pg.bad.join(" | "));
   if (lang === "en") {
     const missing = await pg.evaluate(() => Object.keys(ZI18N.missing || {}));
     ok(missing.length === 0, "영어 번역 빠진 문구 없음", missing.slice(0, 10).join(" / "));

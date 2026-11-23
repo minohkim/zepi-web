@@ -35,13 +35,16 @@
   let summitSet = new Set(); // 제피 앱의 100대 명산에서 실제로 오른 산
   function visitedSet() {
     const out = new Set();
+    summitSet = new Set(); // 로그아웃·예시 데이터로 바뀌면 지난 🏅가 남지 않게
     try {
       const R = window.ZAPP && ZAPP.recs && ZAPP.recs();
       if (!R || R.sample || !R.regions) return out;
-      summitSet = new Set(R.summits || []);
+      // 앱이 넘기는 모양이 배열이 아니어도(Set 등) 깨지지 않게, 문자열만
+      const peaks = R.summits && typeof R.summits === "object" ? Array.from(R.summits).filter((x) => typeof x === "string").map((x) => x.trim()) : [];
+      summitSet = new Set(peaks);
       const names = [];
       for (const r of R.regions) if ((R.conq && (R.conq.has(r.c) || R.conq.has(String(r.c)))) || (R.manual && R.manual.has && (R.manual.has(r.c) || R.manual.has(String(r.c))))) names.push(r.n);
-      for (const m of MOUNTS) if (m.sgg.some((g) => names.some((n) => n.indexOf(g) === 0)) || (R.summits && R.summits.indexOf(m.n) >= 0)) out.add(m.id);
+      for (const m of MOUNTS) if (m.sgg.some((g) => names.some((n) => n.indexOf(g) === 0)) || summitSet.has(m.n)) out.add(m.id);
     } catch (e) {}
     return out;
   }
@@ -49,7 +52,7 @@
   // ---------- 상태 ----------
   let st = "ready", prog = 0, stam = 100, idle = 0, restT = 0, stopIdx = 0, pauseT = 0, elapsed = 0, holding = false, bob = 0, now = 0, msg = "", msgT = 0, good = 0, lastBeat = -1, topT = 0;
   const per = () => (K.opt.easy ? 1.05 : 0.8);
-  function reset() { st = "ready"; prog = 0; stam = 100; idle = 0; stopIdx = 0; pauseT = 0; elapsed = 0; good = 0; holding = false; setBtn(); }
+  function reset() { st = "ready"; prog = 0; stam = 100; idle = 0; stopIdx = 0; pauseT = 0; restT = 0; msgT = 0; elapsed = 0; good = 0; holding = false; setBtn(); }
   function flash(m) { msg = m; msgT = 2.2; }
   function step() {
     if (st === "ready") { st = "climb"; K.beep(523, 0.12); setBtn(); return; }
@@ -222,7 +225,7 @@
     fit(t(m.peak), W / 2, y + h * 0.36, 34, w - 30, "#2b2b2b", "800");
     fit(m.h + " m", W / 2, y + h * 0.6, 20, w - 30, "#2b2b2b", "700");
     fit(t(m.n), W / 2, y + h * 0.8, 15, w - 30, "#4a4a4a", "600");
-    const mm = Math.floor(elapsed / 60), ss = Math.round(elapsed % 60);
+    const sec = Math.round(elapsed), mm = Math.floor(sec / 60), ss = sec % 60; // 59.6초가 '0분 60초'로 안 보이게
     stxt(t("🎉 정상 도착!"), W / 2, y + h + 30, 22, "#ffe14a");
     stxt(t("{m}분 {s}초 · 박자 맞춘 걸음 {n}번", { m: mm, s: ss, n: good }), W / 2, y + h + 58, 15, "#fff", "center", "600");
     if (topT > 0.8) stxt(t("아래 버튼을 누르면 다시 내려가요"), W / 2, H - 22, 13, "#fff", "center", "500");
@@ -261,7 +264,7 @@
     const b = e.target.closest("button"); if (!b) return;
     if (b.dataset.msel) { save.sel = b.dataset.msel; store(); reset(); renderPanel(); }
     else if (b.hasAttribute("data-mshare")) {
-      const m = M(), text = t("제피 다시 오르는 산: {name} {peak} {h}m 완등! ({m}분 {s}초)", { name: t(m.n), peak: t(m.peak), h: m.h, m: Math.floor(elapsed / 60), s: Math.round(elapsed % 60) });
+      const m = M(), sec = Math.round(elapsed), text = t("제피 다시 오르는 산: {name} {peak} {h}m 완등! ({m}분 {s}초)", { name: t(m.n), peak: t(m.peak), h: m.h, m: Math.floor(sec / 60), s: sec % 60 });
       const out = root.querySelector("#mShareMsg");
       try { navigator.clipboard.writeText(text).then(() => { out.textContent = t("복사했어요"); }, () => { out.textContent = text; }); } catch (err) { out.textContent = text; }
     }
