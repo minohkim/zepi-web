@@ -1151,12 +1151,13 @@ body { margin: 0; }
         manual: B.manual_regions || [],
         photo: (B.photo_days || []).map(([code, day, first_ts, last_ts]) => ({ code, day, first_ts, last_ts })),
       });
-      if (!data.days.length) {
-        setNotice(t("<strong>{email}</strong>으로 로그인했어요. 아직 올라온 기록이 없어요. 폰의 제피 앱 <strong>설정 → 내 계정 · 클라우드</strong>에서 같은 계정으로 로그인하면 자동으로 올라와요.", { email: esc(session.email) }));
-        return;
-      }
       source = "cloud";
       $("sampleBtn").hidden = true;
+      // 기록이 0이어도 로그인했으면 내(빈) 클라우드 데이터로 열어요. 예시 메모가 내 것처럼 보이거나 장소 저장·메모 고치기가 막히지 않게 (QA 11-24, 베타 #12)
+      if (!data.days.length) {
+        showData(data, t("<strong>{email}</strong>으로 로그인했어요. 아직 올라온 기록이 없어요. 폰의 제피 앱 <strong>설정 → 내 계정 · 클라우드</strong>에서 같은 계정으로 로그인하면 자동으로 올라와요.", { email: esc(session.email) }));
+        return;
+      }
       showData(data, t("<strong>{email}</strong> 계정의 기록이에요. {from}부터 {to}까지, {n}일. 장소 메모는 여기서 고치면 폰에도 반영돼요.", {
         email: esc(session.email), from: fmtDayShort(data.days[0]), to: fmtDayShort(data.days[data.days.length - 1]), n: fmtInt.format(data.days.length) }));
     } catch (e) {
@@ -1301,12 +1302,24 @@ body { margin: 0; }
   function renderAll() {
     renderAccount();
     renderStats();
-    curDay = D.days[D.days.length - 1];
-    calMonth = Math.floor(curDay / 100);
-    renderDay();
+    if (D.days.length) {
+      curDay = D.days[D.days.length - 1];
+      calMonth = Math.floor(curDay / 100);
+      renderDay();
+      renderReport(new Date(D.ts[D.n - 1]).getFullYear());
+    } else renderNoDays();
     renderConquest();
-    renderReport(new Date(D.ts[D.n - 1]).getFullYear());
     renderNotes();
+  }
+  // 로그인했지만 아직 폰 기록이 없을 때 하루·올해 화면 (QA 11-24, 베타 #12)
+  function renderNoDays() {
+    curDay = null;
+    const msg = '<li class="empty" style="display:block">' + t("<strong>{email}</strong>으로 로그인했어요. 아직 올라온 기록이 없어요. 폰의 제피 앱 <strong>설정 → 내 계정 · 클라우드</strong>에서 같은 계정으로 로그인하면 자동으로 올라와요.", { email: esc(session ? session.email : "") }) + "</li>";
+    $("prevDay").disabled = $("nextDay").disabled = true;
+    $("dayTitle").textContent = ""; $("daySub").textContent = ""; $("cal").innerHTML = "";
+    $("timeline").innerHTML = msg;
+    $("yearSel").innerHTML = ""; $("monthChart").innerHTML = ""; $("newCount").textContent = "";
+    $("topPlaces").innerHTML = msg; $("newRegions").innerHTML = "";
   }
 
   // 한 번이라도 지나가거나 머문 시군구 (해가 주어지면 그 해만)
@@ -1333,7 +1346,7 @@ body { margin: 0; }
       stat(t("정복한 시군구"), conqueredCount(), "/ " + regions.length) +
       stat(t("다닌 시군구"), visitedCount(), t("곳")) +
       stat(t("이동 거리"), fmtInt.format(Math.round(totalM / 1000)), "km");
-    $("stats").title = fmtDayShort(first) + " ~ " + fmtDayShort(last);
+    $("stats").title = D.days.length ? fmtDayShort(first) + " ~ " + fmtDayShort(last) : "";
   }
   function stat(k, v, unit) {
     return '<div class="stat"><span class="k">' + esc(k) + '</span><span class="v">' + esc(v) + "<small>" + esc(unit) + "</small></span></div>";
@@ -1674,7 +1687,7 @@ body { margin: 0; }
     if (name === "trips" && window.ZMORE) ZMORE.trips();
     if (name === "badges" && window.ZMORE) ZMORE.badges();
     if (location.hash.slice(1) !== name) { try { history.replaceState(null, "", "#" + name); } catch (e) {} }
-    if (name === "day") drawDayMap(timelineOf(curDay));
+    if (name === "day" && curDay != null) drawDayMap(timelineOf(curDay));
     if (name === "conquest") drawConqMap();
     if (name === "io") { updateExHint(); $("ioNeed").hidden = canEdit() || $("ioPreview").hidden; }
     try { localStorage.setItem("jepi.tab", name); } catch (e) {}
@@ -1960,7 +1973,7 @@ body { margin: 0; }
       pending = [];
       $("ioPreview").hidden = true;
       renderNotes();
-      renderTimeline(timelineOf(curDay));
+      if (curDay != null) renderTimeline(timelineOf(curDay));
       updateExHint();
       setNotice(t("{n}곳을 장소 메모로 저장했어요. 리스트 이름이 태그로 붙었어요. 폰 앱에는 다음에 앱을 열 때 들어가요.", { n: rowsUp.length }));
       showTab("notes");
@@ -2226,8 +2239,7 @@ body { margin: 0; }
       if (!noteIsEmpty(n)) D.notes.unshift(n);
       noteDlg.close();
       renderNotes();
-      renderTimeline(timelineOf(curDay));
-      renderReport(repYear);
+      if (curDay != null) { renderTimeline(timelineOf(curDay)); renderReport(repYear); }
       setNotice(t(del ? "메모를 지웠어요. 폰에는 다음에 앱을 열 때 반영돼요." : "저장했어요. 폰에는 다음에 앱을 열 때 반영돼요."));
     } catch (err) {
       noteMsg(t("저장하지 못했어요.") + " " + err.message, true);
