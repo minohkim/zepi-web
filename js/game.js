@@ -177,7 +177,9 @@
     { id: "conger", n: "붕장어", m: "s", r: [2, 2, 2], min: 40, max: 90, str: 1.2, p: 1.5, c: "#5a4a3a", shape: "eel", night: 1, tip: "밤에 잘 물어요 (아나고)" },
     { id: "croaker", n: "백조기", m: "s", r: [3, 1, 0], min: 20, max: 35, str: 0.7, p: 2, c: "#c8c8c0", tip: "서해 여름 원투의 손님" },
     { id: "redbream", n: "참돔", m: "fs", r: [1, 2, 1], min: 40, max: 80, str: 1.8, p: 6, c: "#d9666a", rare: 1, tip: "귀한 바다의 여왕" },
-    { id: "boot", n: "장화", m: "fls", r: [1, 1, 1], min: 0, max: 0, str: 0.3, p: 0, c: "#2b2b2b", junk: 1, tip: "바다 청소도 낚시꾼의 몫" },
+    { id: "boot", n: "장화", m: "fls", r: [1, 1, 1], min: 0, max: 0, str: 0.3, p: 0, c: "#2b2b2b", junk: 1, jw: 0.3, tip: "바다 청소도 낚시꾼의 몫" },
+    { id: "bottle", n: "병편지", m: "fls", r: [1, 1, 1], min: 0, max: 0, str: 0.25, p: 0, c: "#6fbf9a", junk: 1, jw: 0.16, tip: "누가 띄운 편지일까요?" },
+    { id: "chest", n: "보물상자", m: "fls", r: [1, 1, 1], min: 0, max: 0, str: 0.9, p: 0, c: "#a8742c", junk: 1, jw: 0.045, tip: "바닷속에 가라앉아 있던 보물!" },
   ];
   const SHOP = [
     { id: "line", n: "튼튼한 원줄", d: "줄이 덜 터지고, 감기가 쉬워져요", cost: 150 },
@@ -481,7 +483,7 @@
     const accBonus = acc ? acc.big : 1;
     let tot = 0;
     const ws = list.map((s) => {
-      let w = s.junk ? 0.35 : Math.max(1, s.r[pi]) * baitMul(s) * depthMulAt(s, bz);
+      let w = s.junk ? (s.jw || 0.3) : Math.max(1, s.r[pi]) * baitMul(s) * depthMulAt(s, bz);
       if (!s.junk && s.str >= 1.2) w *= (0.6 + 0.8 * cast) * accBonus;
       if (s.night && COND.night) w *= 2;
       if (s.rare) w *= 0.35 * (save.gear.shiny ? 1.8 : 1) * (1 + 0.04 * (lvOf(save.xp) - 1)) * (rushT > 0 ? 1.5 : 1);
@@ -621,13 +623,13 @@
     setBtn();
   }
   function endFight(kind) {
-    let pts = 0, isNew = false, second = null, grade = -1, record = false, lvUp = 0, perfFight = false;
+    let res0 = null, pts = 0, isNew = false, second = null, grade = -1, record = false, lvUp = 0, perfFight = false;
     if (kind === "catch") {
       grade = gradeOf(fish);
       perfFight = !easy() && !fish.junk && outT < 0.35 && fightT > 1.5;
       streak = fish.junk ? streak : streak + 1; bestStreak = Math.max(bestStreak, streak);
       const comboMul = 1 + Math.min(streak - 1, 10) * 0.1;
-      pts = fish.junk ? 5 : Math.round(fish.size * fish.p * GRADE[grade].mul * comboMul * (perfect ? 1.2 : 1) * (perfFight ? 1.3 : 1) * (easy() ? 1 : hard() ? 2 : 1.5) * (acc && mode() === "surf" && acc.grade === "hit" ? 1.2 : 1));
+      pts = fish.id === "chest" ? 300 : fish.id === "bottle" ? 50 : fish.junk ? 5 : Math.round(fish.size * fish.p * GRADE[grade].mul * comboMul * (perfect ? 1.2 : 1) * (perfFight ? 1.3 : 1) * (easy() ? 1 : hard() ? 2 : 1.5) * (acc && mode() === "surf" && acc.grade === "hit" ? 1.2 : 1));
       const d = save.dex[fish.id];
       record = !!d && !fish.junk && fish.size > d.max;
       isNew = !d && !fish.junk;
@@ -638,6 +640,7 @@
         save.net = [{ id: fish.id, n: fish.n, size: fish.size, kg: fish.kg, g: grade, sp: spot().id, at: Date.now(), boss: !!fish.boss }, ...(save.net || [])].slice(0, 60);
         if (isNew) { save.xp = (save.xp || 0) + 80; setTimeout(() => flash(t("🎓 {name} 잡는 법을 익혔어요! +80 경험치 · 도감이 열렸어요", { name: t(fish.n) })), 1800); }
         peerSend("catch", { f: fish.id, size: fish.size, g: grade });
+        if (tour) { tour.kg += fish.kg; tour.n++; }
       }
       if (mode() === "surf" && tk("hooks") === "h2" && !fish.junk && Math.random() < 0.3) {
         const keep = fish; let two = pickFish(); fish = keep;
@@ -656,17 +659,186 @@
       if (fish.boss) save.bosses = (save.bosses || 0) + 1;
       if (lvOf(save.xp) > lv0) lvUp = lvOf(save.xp);
       cheer();
+      if (fish.id === "bottle") res0 = { note: t(NOTES[Math.floor(Math.random() * NOTES.length)]) };
+      if (fish.id === "chest") {
+        const no = SHOP.filter((it) => !save.gear[it.id]);
+        if (no.length && Math.random() < 0.35) { const it = no[Math.floor(Math.random() * no.length)]; save.gear[it.id] = 1; res0 = { note: t("상자 안에 {g}이(가) 들어 있었어요!", { g: t(it.n) }) }; }
+        else res0 = { note: t("금화 300개가 반짝반짝!") };
+        confetti(60, ["#ffcf3a", "#fff", "#e8a23a"]);
+      }
       if (!fish.junk) { mission("any", 1); mission("species", 1, fish.id); if (fish.size >= 40) mission("big", 1); if (grade >= 2) mission("grade", 1); mission("streak", streak, null, true); }
       // 연속이 쌓이면 피딩 러시
       if (!fish.junk && rushT <= 0 && (streak === 3 || streak === 6 || streak === 10 || Math.random() < 0.07)) { rushT = 30; flash(t("🐟 피딩 러시! 30초 동안 입질 폭발")); }
       store();
       // 소리 · 진동은 등급 연출(drawResult)에서
     } else { breakStreak(); beep(150, 0.35, "sawtooth", 0.08); buzz(200); }
-    res = { kind, fish, pts, isNew, second, t: 0, grade, record, lvUp, perfFight, streak, rolled: 0, stamped: false };
+    res = { note: res0 && res0.note, kind, fish, pts, isNew, second, t: 0, grade, record, lvUp, perfFight, streak, rolled: 0, stamped: false };
     target = null;
     G.s = "result"; holding = false; setBtn(); renderPanel();
   }
 
+  // ---------- 바다 친구: 가끔 나타나는 돌고래·고래·거북·해파리·물범 — 눌러서 사진 찍기 ----------
+  const FRIENDS = {
+    dolphin: { n: "남방큰돌고래", ico: "🐬", sea: "SE", xp: 40 },
+    whale: { n: "밍크고래", ico: "🐋", sea: "E", xp: 90 },
+    turtle: { n: "푸른바다거북", ico: "🐢", sea: "S", xp: 70 },
+    jelly: { n: "보름달물해파리", ico: "🪼", sea: "WSE", xp: 15 },
+    seal: { n: "점박이물범", ico: "🦭", sea: "W", xp: 80 },
+  };
+  let friend = null, friendT = 18, gull = null, gullT = 25;
+  function friendTick(dt) {
+    if (friend) { friend.t += dt; if (friend.t > friend.dur) friend = null; }
+    else if (["ready", "wait", "settle", "set", "retr"].includes(G.s) && storm() < 2) {
+      friendT -= dt;
+      if (friendT <= 0) {
+        friendT = rnd(28, 55);
+        const ok = Object.keys(FRIENDS).filter((k) => FRIENDS[k].sea.includes(place()) && (k !== "whale" || Math.random() < 0.3) && (k !== "seal" || Math.random() < 0.4));
+        if (ok.length) { const id = ok[Math.floor(Math.random() * ok.length)]; friend = { id, x: rnd(0.14, 0.52), y: rnd(0.08, 0.24), t: 0, dur: id === "whale" ? 6 : 4.5 }; }
+      }
+    }
+    // 갈매기 도둑: 미끼가 물에 있을 때 가끔 내려와요. 눌러서 쫓지 않으면 미끼를 채 가요
+    if (gull) {
+      gull.t += dt;
+      const b = tackle();
+      if (gull.ph === "in") { gull.x = lerp(gull.sx, b.x - 6 * S, Math.min(1, gull.t / 1.8)); gull.y = lerp(gull.sy, b.y - 34 * S, Math.min(1, gull.t / 1.8)); if (gull.t > 1.8) { gull.ph = "hover"; gull.t = 0; beep(1900, 0.06, "triangle", 0.08); setTimeout(() => beep(1700, 0.08, "triangle", 0.08), 90); } }
+      else if (gull.ph === "hover") { gull.x = b.x - 6 * S + Math.sin(now * 4) * 8 * S; gull.y = b.y - 30 * S + Math.sin(now * 7) * 4; if (gull.t > 1.8) {
+        if (easy()) { flash(t("갈매기가 그냥 날아갔어요")); gull.ph = "out"; gull.t = 0; }
+        else { flash(t("🐦 갈매기가 미끼를 채 갔어요! 다시 던져요")); K.splash(0.3, false); breakStreak(); gull = null; toReady(); return; }
+      } }
+      else { gull.x += 140 * S * dt; gull.y -= 90 * S * dt; if (gull.t > 1.5) gull = null; }
+    } else if (["wait", "settle"].includes(G.s) && mode() !== "surf" && storm() < 2) {
+      gullT -= dt;
+      if (gullT <= 0) { gullT = rnd(30, 60); gull = { ph: "in", t: 0, sx: -20, sy: hy() - 40, x: -20, y: hy() - 40 }; }
+    }
+  }
+  function tapSpecial(p) {
+    if (gull && gull.ph !== "out" && Math.hypot(p.x - gull.x, p.y - gull.y) < 44) {
+      gull.ph = "out"; gull.t = 0; save.xp = (save.xp || 0) + 5; store();
+      flash(t("훠이! 갈매기를 쫓았어요 +5 경험치")); beep(600, 0.08, "square", 0.08); return true;
+    }
+    if (friend) {
+      const fp = friendPos();
+      if (Math.hypot(p.x - fp.x, p.y - fp.y) < 48) {
+        const F0 = FRIENDS[friend.id], first = !(save.friends && save.friends[friend.id]);
+        save.friends = save.friends || {}; save.friends[friend.id] = (save.friends[friend.id] || 0) + 1;
+        const xp = first ? F0.xp : 5; save.xp = (save.xp || 0) + xp; store();
+        flashT = 0.18; flashCol = "#ffffff"; K.click(4000, 0.5); setTimeout(() => K.click(2500, 0.4), 60);
+        flash(t("📸 찰칵! {ico} {n}을(를) 만났어요 +{x} 경험치", { ico: F0.ico, n: t(F0.n), x: xp }) + (first ? " · " + t("바다 친구 도감에 올렸어요") : ""));
+        friend = null; renderPanel(); return true;
+      }
+    }
+    return false;
+  }
+  function friendPos() { const h = hy(); return { x: friend.x * W, y: h + friend.y * (H - h) }; }
+  function drawFriend() {
+    if (friend) {
+      const p = friendPos(), k = friend.t / friend.dur, s = S * (1.1 + friend.y * 1.8), id = friend.id;
+      ctx.save();
+      if (id === "dolphin") {
+        for (let i = 0; i < 3; i++) {
+          const ph = (friend.t * 1.1 + i * 0.33) % 1, jx = p.x + (i - 1) * 26 * s + ph * 30 * s, jy = p.y - Math.sin(ph * Math.PI) * 24 * s;
+          if (ph > 0.05 && ph < 0.95) { ctx.save(); ctx.translate(jx, jy); ctx.rotate(-Math.cos(ph * Math.PI) * 0.9); ctx.fillStyle = "#6c8796"; ctx.beginPath(); ctx.ellipse(0, 0, 13 * s, 4.5 * s, 0, 0, 7); ctx.fill(); ctx.beginPath(); ctx.moveTo(-2 * s, -4 * s); ctx.lineTo(2 * s, -9 * s); ctx.lineTo(5 * s, -3 * s); ctx.fill(); ctx.beginPath(); ctx.moveTo(-12 * s, 0); ctx.lineTo(-17 * s, -4 * s); ctx.lineTo(-17 * s, 4 * s); ctx.fill(); ctx.restore(); }
+          else { ctx.strokeStyle = "rgba(255,255,255,0.7)"; ctx.beginPath(); ctx.ellipse(jx, p.y, 8 * s, 2 * s, 0, 0, 7); ctx.stroke(); }
+        }
+      } else if (id === "whale") {
+        const up = Math.sin(Math.min(1, k * 1.4) * Math.PI);
+        ctx.fillStyle = "#3f4f5c"; ctx.beginPath(); ctx.ellipse(p.x, p.y + 4 * s, 46 * s, 9 * s * up + 1, 0, Math.PI, 0); ctx.fill();
+        if (k > 0.2 && k < 0.6) { ctx.fillStyle = "rgba(255,255,255,0.8)"; for (let i = 0; i < 10; i++) { ctx.beginPath(); ctx.arc(p.x - 20 * s + Math.sin(i) * 6 * s, p.y - 10 * s - (k - 0.2) * 90 * s * (i / 10), 3 * s, 0, 7); ctx.fill(); } }
+      } else if (id === "turtle") {
+        const bob = Math.sin(now * 2) * 2;
+        ctx.fillStyle = "#5b8a4a"; ctx.beginPath(); ctx.ellipse(p.x, p.y + bob, 14 * s, 9 * s, 0, 0, 7); ctx.fill();
+        ctx.strokeStyle = "#3f6b33"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.ellipse(p.x, p.y + bob, 8 * s, 5 * s, 0, 0, 7); ctx.stroke();
+        ctx.fillStyle = "#8fb07a"; ctx.beginPath(); ctx.arc(p.x + 16 * s, p.y + bob - 2 * s, 4.5 * s, 0, 7); ctx.fill();
+        ctx.beginPath(); ctx.ellipse(p.x + 8 * s, p.y + bob + 9 * s, 7 * s, 2.5 * s, 0.6 + Math.sin(now * 3) * 0.3, 0, 7); ctx.fill();
+      } else if (id === "jelly") {
+        for (let i = 0; i < 3; i++) { const jx = p.x + (i - 1) * 22 * s, jy = p.y + Math.sin(now * 1.6 + i) * 4 + i * 6 * s; ctx.fillStyle = "rgba(220,230,255,0.55)"; ctx.beginPath(); ctx.ellipse(jx, jy, 9 * s, 6 * s, 0, Math.PI, 0); ctx.fill(); ctx.strokeStyle = "rgba(220,230,255,0.5)"; ctx.lineWidth = 1; for (let j = -2; j <= 2; j++) { ctx.beginPath(); ctx.moveTo(jx + j * 3 * s, jy); ctx.quadraticCurveTo(jx + j * 3 * s + Math.sin(now * 3 + j) * 3, jy + 8 * s, jx + j * 3 * s, jy + 14 * s); ctx.stroke(); } }
+      } else if (id === "seal") {
+        const up = Math.sin(Math.min(1, k * 1.2) * Math.PI);
+        ctx.fillStyle = "#8a8f94"; ctx.beginPath(); ctx.ellipse(p.x, p.y - 6 * s * up, 8 * s, 10 * s * up + 1, 0, 0, 7); ctx.fill();
+        ctx.fillStyle = "#222"; ctx.beginPath(); ctx.arc(p.x - 3 * s, p.y - 10 * s * up, 1.4 * s, 0, 7); ctx.arc(p.x + 3 * s, p.y - 10 * s * up, 1.4 * s, 0, 7); ctx.fill();
+      }
+      ctx.restore();
+      ctx.strokeStyle = "rgba(255,255,255," + (0.5 + 0.4 * Math.sin(now * 8)) + ")"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(p.x, p.y - 8 * s, 30 * s, 0, 7); ctx.stroke();
+      stxt(t("📸 눌러서 찰칵!"), p.x, p.y - 44 * s, 12, "#fff", "center", "800");
+    }
+    if (gull) {
+      const x = gull.x, y = gull.y, s = S, fl = Math.sin(now * (gull.ph === "hover" ? 18 : 10)) * 6 * s;
+      ctx.fillStyle = "#f4f6f7"; ctx.beginPath(); ctx.ellipse(x, y, 9 * s, 4.5 * s, 0, 0, 7); ctx.fill();
+      ctx.strokeStyle = "#f4f6f7"; ctx.lineWidth = 3 * s; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo(x - 2 * s, y - 2 * s); ctx.lineTo(x - 14 * s, y - 6 * s - fl); ctx.moveTo(x + 2 * s, y - 2 * s); ctx.lineTo(x + 12 * s, y - 6 * s - fl); ctx.stroke();
+      ctx.strokeStyle = "#4a5560"; ctx.lineWidth = 1.5 * s; ctx.beginPath(); ctx.moveTo(x - 14 * s, y - 6 * s - fl); ctx.lineTo(x - 18 * s, y - 5 * s - fl); ctx.stroke();
+      ctx.fillStyle = "#f2b705"; ctx.beginPath(); ctx.moveTo(x + 8 * s, y - 1 * s); ctx.lineTo(x + 13 * s, y); ctx.lineTo(x + 8 * s, y + 1.5 * s); ctx.fill();
+      if (gull.ph === "hover") stxt(t("🐦 미끼 도둑! 눌러서 쫓아요"), x, y - 22 * s, 12, "#ffe14a", "center", "800");
+    }
+  }
+
+  // ---------- 5분 낚시 대회 (동네 꾼들과 잡은 무게로 겨뤄요) ----------
+  let tour = null, tourRes = null;
+  const RIVALS = ["김씨 아저씨", "낚시왕 박", "동네 고수 이"];
+  function startTour() {
+    tour = { t: 300, kg: 0, n: 0, npc: RIVALS.map((n, i) => ({ n, kg: 0, next: rnd(15, 50), skill: 0.7 + i * 0.25 })) };
+    flash(t("🏆 5분 낚시 대회 시작! 잡은 무게로 순위를 다퉈요")); [523, 659, 784].forEach((f, i) => setTimeout(() => beep(f, 0.15, "square", 0.08), i * 120));
+  }
+  function tourTick(dt) {
+    if (tourRes) { tourRes.t -= dt; if (tourRes.t <= 0) tourRes = null; }
+    if (!tour) return;
+    tour.t -= dt;
+    for (const n of tour.npc) { n.next -= dt; if (n.next <= 0) { n.kg += rnd(0.15, 1.8) * n.skill; n.next = rnd(28, 70); } }
+    if (tour.t <= 0) endTour();
+  }
+  function endTour() {
+    const list = [{ n: t("나"), kg: tour.kg, me: 1 }, ...tour.npc.map((n) => ({ n: t(n.n), kg: n.kg }))].sort((a, b) => b.kg - a.kg);
+    const rank = list.findIndex((x) => x.me) + 1, prize = tour.kg > 0 ? [500, 200, 100, 0][rank - 1] : 0;
+    save.coins += prize; save.xp = (save.xp || 0) + prize / 2; save.tourBest = Math.max(save.tourBest || 0, tour.kg); if (rank === 1) save.tourWins = (save.tourWins || 0) + 1; store();
+    tourRes = { list, rank, prize, t: 7 }; tour = null;
+    if (rank === 1) { confetti(80, ["#ffcf3a", "#fff", "#62BE84"]); [523, 659, 784, 1047, 1319].forEach((f, i) => setTimeout(() => beep(f, 0.22, "triangle", 0.12), i * 110)); }
+    else beep(392, 0.3, "triangle", 0.1);
+    renderPanel();
+  }
+  function drawTour() {
+    if (tour) {
+      const mm = Math.floor(tour.t / 60), ss = String(Math.floor(tour.t % 60)).padStart(2, "0");
+      const all = [tour.kg, ...tour.npc.map((n) => n.kg)].sort((a, b) => b - a), rank = all.indexOf(tour.kg) + 1;
+      stxt("🏆 " + mm + ":" + ss + " · " + kgTxt(tour.kg) + " · " + t("{n}위", { n: rank }), W - 10, H - 44, 13, tour.t < 30 ? "#ff8a7a" : "#ffe14a", "right", "800");
+    }
+    if (tourRes) {
+      const w = Math.min(300, W - 30), h = 40 + tourRes.list.length * 26 + 40, x = W / 2 - w / 2, y = H * 0.18;
+      ctx.fillStyle = "rgba(14,30,26,0.94)"; rr(x, y, w, h, 16); ctx.fill(); ctx.strokeStyle = "#ffcf3a"; ctx.lineWidth = 2; rr(x, y, w, h, 16); ctx.stroke();
+      fitTxt(tourRes.rank === 1 ? t("🥇 대회 우승!") : t("🏆 대회 결과: {n}위", { n: tourRes.rank }), W / 2, y + 22, 18, w - 20, "#ffcf3a", "800");
+      tourRes.list.forEach((r, i) => { txt((["🥇", "🥈", "🥉", "4."][i]) + " " + r.n, x + 18, y + 52 + i * 26, 14, r.me ? "#ffe14a" : "#fff", "left", r.me ? "800" : "600"); txt(kgTxt(r.kg), x + w - 18, y + 52 + i * 26, 14, r.me ? "#ffe14a" : "#fff", "right", "700"); });
+      if (tourRes.prize) fitTxt(t("상금 +{n}🪙", { n: tourRes.prize }), W / 2, y + h - 16, 14, w - 20, "#F2B705", "800");
+    }
+  }
+
+  // ---------- 인증샷 카드 (잡은 고기를 사진 카드로) ----------
+  function makeShot(f) {
+    const c = document.createElement("canvas"); c.width = 720; c.height = 900;
+    const g = c.getContext("2d"), old = ctx, oF = F, oS = S; ctx = g; F = 1; S = 2;
+    const sea = (SCENES[f.sp] || {}).water || SEA_COL[(SPOT_LIST.find((x) => x.id === f.sp) || {}).sea || "S"] || SEA_COL.S;
+    const bg = g.createLinearGradient(0, 0, 0, 900); bg.addColorStop(0, "#8ec5ea"); bg.addColorStop(0.45, "#d6eef8"); bg.addColorStop(0.46, sea[0]); bg.addColorStop(1, sea[1]); g.fillStyle = bg; g.fillRect(0, 0, 720, 900);
+    g.fillStyle = "rgba(255,255,255,0.18)"; for (let i = 0; i < 30; i++) g.fillRect((i * 97) % 720, 420 + i * 15, 40 + (i * 13) % 60, 2);
+    g.fillStyle = "rgba(255,255,255,0.92)"; rr(40, 60, 640, 780, 36); g.fill();
+    const sp0 = SP.find((x) => x.id === f.id) || { c: "#888" }, gr = f.g >= 0 ? GRADE[f.g] : null;
+    txt("🎣 " + t("제피 낚시"), 360, 120, 30, "#1F6B3A", "center", "800");
+    drawFish(360, 330, 420, Object.assign({}, sp0, { id: f.id }));
+    txt(t(f.n), 360, 520, 56, "#1c211e", "center", "900");
+    txt(f.size + "cm · " + kgTxt(f.kg || 0), 360, 590, 40, "#1c211e", "center", "800");
+    if (gr) { g.strokeStyle = gr.c; g.lineWidth = 6; rr(250, 625, 220, 60, 14); g.stroke(); txt(t(gr.n), 360, 656, 32, gr.c, "center", "900"); }
+    const spn = (SPOT_LIST.find((x) => x.id === f.sp) || {}).n || "";
+    txt("📍 " + t(spn), 360, 730, 26, "#5a635d", "center", "700");
+    const d = new Date(f.at); txt(d.getFullYear() + "." + (d.getMonth() + 1) + "." + d.getDate() + " · " + ((me() || {}).name || ""), 360, 776, 22, "#5a635d", "center", "600");
+    ctx = old; F = oF; S = oS;
+    return c.toDataURL("image/png");
+  }
+  const NOTES = [
+    "물때 표를 보세요. 물이 움직일 때 고기도 움직여요",
+    "밑밥은 찌보다 조금 위쪽(조류 위)에 뿌리면 같이 흘러가요",
+    "큰 고기는 서두르지 말고 드랙을 믿으세요",
+    "해 뜰 무렵과 해 질 무렵이 입질 시간이에요",
+    "바람 부는 날엔 바람을 등지고 던지면 멀리 가요",
+    "구명조끼는 꼭! 바다는 늘 조심",
+    "오늘 못 잡아도 괜찮아요. 바다를 본 것만으로 좋은 날",
+    "쓰레기는 꼭 가져가 주세요. 다음 꾼을 위해",
+  ];
   // ---------- 등급 · 연속 · 미션 ----------
   const GRADE = [
     { n: "일반", c: "#d7dee3", mul: 1 }, { n: "준수", c: "#62BE84", mul: 1.2 }, { n: "대물", c: "#5aa9ff", mul: 1.5 },
@@ -734,13 +906,17 @@
   }
 
   // ---------- 밑밥 ----------
+  // 밑밥 주걱질도 던지기처럼: 꾹 → 힘 게이지(거리) · 좌우로 밀어 방향 → 떼면 휙
+  let chumHold = null;
+  function chumPoint() {
+    const p = chumHold ? chumHold.p : 0.5;
+    return tgt(0.08 + p * 0.62, aimLat);
+  }
   function throwChum() {
     const f = tackle(), c = current();
-    let x = f.x + c.dir * W * 0.01, y = f.y;
-    if (!easy()) {
-      if (lastTap && performance.now() - lastTap.at < 80 && lastTap.y > hy() + 4) { x = lastTap.x; y = lastTap.y; }
-      else { x = f.x + rnd(-0.06, 0.06) * W; y = f.y + rnd(-0.02, 0.02) * H; }
-    }
+    let x = f.x - c.dir * W * 0.02, y = f.y; // 쉬움: 찌 조금 위쪽(조류 위)에 알아서
+    if (chumHold && !(easy() && chumHold.t < 0.2)) { const q = chumPoint(); x = q.x; y = q.y; }
+    chumHold = null;
     const h = hand();
     chumFly.push({ fx: h.x, fy: h.y - 10, x, y, t: 0 });
     K.swoosh(900, 1500, 0.22, 0.18, 2);
@@ -748,6 +924,7 @@
 
   // ---------- 입력 ----------
   function press() {
+    if (lastTap && performance.now() - lastTap.at < 80 && tapSpecial(lastTap)) { lastTap = null; holding = false; return; }
     holding = true;
     const m = mode();
     switch (G.s) {
@@ -755,7 +932,7 @@
       case "windup": break;
       case "wait":
       case "settle":
-        if (m === "float") throwChum();
+        if (m === "float") { aimLat = 0; chumHold = { t: 0, p: 0 }; break; }
         else if (easy()) flash(t("아직이에요. 방울이 울리면 탭!"));
         else { flash(t("너무 빨라요! 고기가 놀랐어요")); beep(180, 0.2, "square", 0.08); waitT = 0; }
         holding = false; break;
@@ -787,6 +964,7 @@
   function release() {
     if (G.s === "bite" && hookAt >= 0) { const h = now - hookAt; hookAt = -1; holding = false; hook(h); return; }
     if (G.s === "windup" && holding) { holding = false; releaseCast(); return; }
+    if (chumHold) { holding = false; throwChum(); return; }
     holding = false;
   }
 
@@ -798,7 +976,8 @@
     if (flashT > 0) flashT -= dt;
     for (const q of parts) { q.x += q.vx * dt; q.y += q.vy * dt; q.vy += 260 * dt; q.r += q.vr * dt; q.life -= dt; }
     parts = parts.filter((q) => q.life > 0);
-    stormTick(dt); walkTick(dt); peerTick(dt);
+    stormTick(dt); walkTick(dt); peerTick(dt); boatTick(dt); friendTick(dt); tourTick(dt);
+    if (chumHold) { chumHold.t += dt; chumHold.p = (1 - Math.cos(chumHold.t / 0.9 * Math.PI)) / 2; if (!["wait", "settle"].includes(G.s)) chumHold = null; }
     if (cloudT > 0) { cloudT -= dt; if (cloudT <= 0) cloudPush(); }
     const s = G.s, m = mode(), cur = current();
     if (s === "windup") {
@@ -1056,10 +1235,19 @@
       const nC = Math.round(COND.cloud / 18);
       for (let i = 0; i < Math.min(nC, wx.clouds.length); i++) {
         const c = wx.clouds[i], x = ((c.x + now * 0.004 * (1 + COND.wind * 0.3) * Math.sign(crossWind() || 1)) % 1.2 + 1.2) % 1.2 - 0.1;
-        ctx.fillStyle = night ? "rgba(120,130,160,0.35)" : gray > 0.4 ? "rgba(150,158,168,0.85)" : "rgba(255,255,255,0.85)";
         const cx = x * W, cy = c.y * H, r = 16 * c.s * S;
-        ctx.beginPath(); ctx.arc(cx, cy, r, 0, 7); ctx.arc(cx + r, cy - r * 0.4, r * 1.1, 0, 7); ctx.arc(cx + r * 2, cy, r * 0.9, 0, 7); ctx.fill();
+        const top = night ? "rgba(140,150,185,0.4)" : gray > 0.4 ? "rgba(170,176,186,0.95)" : "rgba(255,255,255,0.97)";
+        const bot = night ? "rgba(70,80,120,0.3)" : gray > 0.4 ? "rgba(120,128,140,0.9)" : mix("#dfe8f0", "#f2b08a", dusk);
+        const cg = ctx.createLinearGradient(0, cy - r * 1.6, 0, cy + r); cg.addColorStop(0, top); cg.addColorStop(1, bot);
+        ctx.fillStyle = cg; ctx.beginPath();
+        ctx.arc(cx, cy, r * 0.85, 0, 7); ctx.arc(cx + r * 0.9, cy - r * 0.55, r * 1.15, 0, 7); ctx.arc(cx + r * 2, cy - r * 0.2, r * 0.95, 0, 7); ctx.arc(cx + r * 2.8, cy + r * 0.1, r * 0.6, 0, 7);
+        ctx.rect(cx - r * 0.2, cy, r * 3.2, r * 0.7); ctx.fill();
       }
+      if (!night && gray < 0.5) { // 높은 새털구름
+        ctx.strokeStyle = "rgba(255,255,255,0.35)"; ctx.lineWidth = 2;
+        for (let i = 0; i < 4; i++) { const y = H * (0.05 + i * 0.03), x0 = ((i * 0.31 + now * 0.002) % 1.3) * W - W * 0.2; ctx.beginPath(); ctx.moveTo(x0, y); ctx.quadraticCurveTo(x0 + W * 0.1, y - 5, x0 + W * 0.25, y + 2); ctx.stroke(); }
+      }
+      drawBirds(h, night);
       drawLand(h, night, dusk, gray);
     }
     // 바다
@@ -1068,6 +1256,12 @@
     s.addColorStop(0, night ? "#1d2c55" : mix(mix(sc[0], "#b07a78", dusk * 0.5), "#8d9aa3", gray * 0.6));
     s.addColorStop(1, night ? "#060d24" : mix(sc[1], "#142a50", dusk * 0.5));
     ctx.fillStyle = s; ctx.fillRect(0, h, W, H - h);
+    drawReflection(h, night);
+    if (!night && gray < 0.55 && !ph) { // 햇빛이 물 위에 만드는 반짝이 길
+      const sx = W * 0.8, gc = dusk > 0.3 ? "rgba(255,190,120," : "rgba(255,255,235,";
+      for (let i = 0; i < 26; i++) { const yy = h + 3 + i * i * 0.55, ww = (26 - i) * 0.9 + 4, fl = 0.25 + 0.5 * Math.abs(Math.sin(now * 3 + i * 1.7)); ctx.fillStyle = gc + (fl * (1 - i / 30)) + ")"; ctx.fillRect(sx - ww / 2 + Math.sin(now * 2 + i) * (3 + i * 0.3), yy, ww, 1.6); }
+    }
+    drawBoatPass(h, night);
     if (night) { // 달빛 길
       ctx.fillStyle = "rgba(255,240,200,0.25)";
       for (let i = 0; i < 12; i++) ctx.fillRect(W * 0.8 - (14 - i) + Math.sin(now * 2 + i) * 4, h + 4 + i * i * 1.6, (14 - i) * 2, 1.5);
@@ -1143,6 +1337,7 @@
           ctx.beginPath(); ctx.moveTo(X - 4 * S, yb); ctx.lineTo(X - 2.6 * S, yb - ht); ctx.lineTo(X + 2.6 * S, yb - ht); ctx.lineTo(X + 4 * S, yb); ctx.fill();
           ctx.fillStyle = "#3b3f45"; ctx.fillRect(X - 3.4 * S, yb - ht - 4 * S, 6.8 * S, 4 * S);
         }
+        if (night) { const a = now * 1.2 + x0 * 5, bx = X, by = yb - ht - 2 * S; ctx.fillStyle = "rgba(255,250,210,0.12)"; ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(bx + Math.cos(a) * W * 0.5, by + Math.sin(a) * 10 - 14); ctx.lineTo(bx + Math.cos(a) * W * 0.5, by + Math.sin(a) * 10 + 14); ctx.fill(); }
         if (lightOn && Math.sin(now * 2.2 + x0 * 9) > 0.2) { const g = ctx.createRadialGradient(X, yb - ht - 2 * S, 0, X, yb - ht - 2 * S, 22 * S); g.addColorStop(0, col === "red" ? "rgba(255,90,70,0.95)" : "rgba(160,255,160,0.95)"); g.addColorStop(1, "rgba(255,255,255,0)"); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(X, yb - ht - 2 * S, 22 * S, 0, 7); ctx.fill(); }
       } else if (k === "chim") {
         for (let i = 0; i < e[2]; i++) {
@@ -1347,6 +1542,44 @@
       if (w.sayT > 0) { ctx.font = "700 " + Math.round(11 * F) + "px " + FONT; const tw = ctx.measureText(w.say).width + 12; ctx.fillStyle = "rgba(255,255,255,0.95)"; rr(x - tw / 2, y - 76 * s, tw, 18, 9); ctx.fill(); txt(w.say, x, y - 67 * s, 11, "#1c211e"); }
     }
   }
+  // 물그림자: 수평선 위 풍경을 뒤집어 물에 비추고 물결로 일렁이게 (화면을 그대로 복사해요)
+  function drawReflection(h, night) {
+    const d = cv.width / W, band = Math.min(H * 0.12, h - 4), step = 3;
+    ctx.save(); ctx.globalAlpha = night ? 0.18 : 0.22;
+    for (let y = 0; y < band; y += step) {
+      const sy = (h - 1 - y) * d, dx = Math.sin(y * 0.35 + now * 2.2) * (1 + y * 0.06);
+      try { ctx.drawImage(cv, 0, Math.max(0, sy), cv.width, step * d, dx, h + y, W, step); } catch (e) { break; }
+    }
+    ctx.restore();
+  }
+  // 갈매기 떼 (하늘을 천천히)
+  const birds = Array.from({ length: 5 }, (_, i) => ({ x: Math.random(), y: 0.08 + Math.random() * 0.14, sp: 0.01 + Math.random() * 0.012, ph: Math.random() * 6 }));
+  function drawBirds(h, night) {
+    if (night) return;
+    ctx.strokeStyle = "rgba(40,48,60,0.75)"; ctx.lineWidth = 1.4; ctx.lineCap = "round";
+    for (const b of birds) {
+      const x = ((b.x + now * b.sp) % 1.15) * W - W * 0.07, y = b.y * H + Math.sin(now * 0.8 + b.ph) * 4, fl = Math.sin(now * 6 + b.ph) * 3 * S, w = 6 * S;
+      ctx.beginPath(); ctx.moveTo(x - w, y - fl); ctx.quadraticCurveTo(x - w * 0.4, y - 3 * S, x, y); ctx.quadraticCurveTo(x + w * 0.4, y - 3 * S, x + w, y - fl); ctx.stroke();
+    }
+  }
+  // 가끔 지나가는 고깃배 (물살 자국)
+  let boatT = 8, boat = null;
+  function drawBoatPass(h, night) {
+    if (!boat) return;
+    const x = boat.x, y = h + boat.y * (H - h), s = S * (0.6 + boat.y), L = 30 * s;
+    ctx.strokeStyle = "rgba(255,255,255,0.5)"; ctx.lineWidth = 1.5;
+    for (let i = 1; i <= 4; i++) { ctx.beginPath(); ctx.moveTo(x - boat.dir * L * 0.4, y + 3 * s); ctx.lineTo(x - boat.dir * (L * 0.4 + i * 14 * s), y + 3 * s + i * 2.5 * s); ctx.stroke(); }
+    ctx.fillStyle = boat.c; ctx.beginPath(); ctx.moveTo(x - L / 2, y); ctx.lineTo(x + L / 2, y); ctx.lineTo(x + L / 2 - boat.dir * 4 * s, y + 6 * s); ctx.lineTo(x - L / 2 + boat.dir * 2 * s, y + 6 * s); ctx.fill();
+    ctx.fillStyle = "#f4f6f7"; ctx.fillRect(x - boat.dir * 4 * s - 5 * s, y - 9 * s, 10 * s, 9 * s);
+    ctx.fillStyle = "#2b4f7a"; ctx.fillRect(x - boat.dir * 4 * s - 4 * s, y - 7 * s, 8 * s, 3 * s);
+    ctx.strokeStyle = "#444"; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x + boat.dir * 8 * s, y); ctx.lineTo(x + boat.dir * 8 * s, y - 16 * s); ctx.stroke();
+    if (night) { ctx.fillStyle = "#ffe8a0"; ctx.beginPath(); ctx.arc(x + boat.dir * 8 * s, y - 16 * s, 2, 0, 7); ctx.fill(); }
+  }
+  function boatTick(dt) {
+    if (boat) { boat.x += boat.dir * boat.sp * dt; if (boat.x < -60 || boat.x > W + 60) boat = null; return; }
+    boatT -= dt;
+    if (boatT <= 0 && storm() < 2) { boatT = rnd(25, 50); const dir = Math.random() < 0.5 ? 1 : -1; boat = { dir, x: dir > 0 ? -50 : W + 50, y: rnd(0.04, 0.18), sp: rnd(14, 24) * S, c: ["#e9edf0", "#3a78c2", "#d9412f", "#2f8f5f"][Math.floor(Math.random() * 4)] }; }
+  }
   function drawMoon(x, y, r) {
     const l = lunarInfo().l, ph = ((l - 1) / 29.53) * 2 * Math.PI; // 0 = 삭, π = 보름
     ctx.fillStyle = "#2b3350"; ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill();
@@ -1373,6 +1606,13 @@
       ctx.strokeStyle = "#5b5f66"; ctx.lineWidth = 2.5 * S;
       ctx.beginPath(); ctx.moveTo(hd.x, hd.y); ctx.lineTo(hd.x - 9 * S, f.y + 2); ctx.moveTo(hd.x, hd.y); ctx.lineTo(hd.x + 9 * S, f.y + 2); ctx.moveTo(hd.x, hd.y); ctx.lineTo(hd.x + 2 * S, f.y + 5); ctx.stroke();
       ctx.fillStyle = "#c2452d"; ctx.fillRect(hd.x - 4 * S, hd.y - 3 * S, 8 * S, 4 * S);
+      // 밀려왔다 빠지는 파도 거품 · 조개 · 발자국 · 의자 · 아이스박스
+      const wash = Math.sin(now * 0.9) * 0.5 + 0.5, wy = top + 4 + wash * H * 0.03;
+      ctx.fillStyle = "rgba(255,255,255,0.55)"; ctx.beginPath(); ctx.moveTo(W * 0.32, wy); for (let x = W * 0.32; x <= W; x += 8) ctx.lineTo(x, wy + Math.sin(x * 0.07 + now * 2) * 2); ctx.lineTo(W, wy + 5); ctx.lineTo(W * 0.32, wy + 5); ctx.fill();
+      ctx.fillStyle = "rgba(160,140,110,0.35)"; ctx.beginPath(); ctx.ellipse(W * 0.6, H * 0.93, W * 0.28, H * 0.02, 0, 0, 7); ctx.fill(); // 젖은 모래
+      for (let i = 0; i < 6; i++) { ctx.fillStyle = ["#f4e3d0", "#e8c7a8", "#fff"][i % 3]; ctx.beginPath(); ctx.ellipse(W * (0.36 + i * 0.1), H * (0.9 + (i % 3) * 0.025), 2.5 * S, 1.6 * S, i, 0, 7); ctx.fill(); }
+      ctx.fillStyle = "rgba(120,100,70,0.25)"; for (let i = 0; i < 7; i++) { ctx.beginPath(); ctx.ellipse(W * (0.02 + i * 0.035), H * (0.96 - i * 0.012) + (i % 2) * 4, 2.5 * S, 1.3 * S, 0.3, 0, 7); ctx.fill(); }
+      chairBox(f.x - 30 * S, f.y);
       return;
     }
     if (m === "float") {
@@ -1381,12 +1621,27 @@
       ctx.fillStyle = "#6e6358"; ctx.beginPath(); ctx.moveTo(W * 0.24, H * 0.83); ctx.lineTo(W * 0.35, H * 0.9); ctx.lineTo(W * 0.4, H); ctx.lineTo(W * 0.26, H); ctx.fill();
       // 젖은 자국 (만조 때 높이) · 따개비
       ctx.fillStyle = "rgba(30,25,20,0.35)"; ctx.fillRect(W * 0.24, H * (0.9 - 0.05 * k), W * 0.16, H * 0.1);
+      // 바위 결 · 따개비 · 해초 · 물웅덩이
+      ctx.strokeStyle = "rgba(0,0,0,0.18)"; ctx.lineWidth = 1.2;
+      for (let i = 0; i < 6; i++) { ctx.beginPath(); ctx.moveTo(W * (0.02 + i * 0.045), H * 0.82); ctx.lineTo(W * (0.04 + i * 0.045), H * (0.88 + (i % 3) * 0.03)); ctx.stroke(); }
+      ctx.fillStyle = "rgba(235,230,220,0.75)"; for (let i = 0; i < 14; i++) { ctx.beginPath(); ctx.arc(W * (0.24 + (i % 5) * 0.025), H * (0.86 + Math.floor(i / 5) * 0.02), 1.6 * S, 0, 7); ctx.fill(); }
+      ctx.strokeStyle = "#3f6b3a"; ctx.lineWidth = 2 * S; for (let i = 0; i < 4; i++) { const x = W * (0.29 + i * 0.025), y = H * 0.93; ctx.beginPath(); ctx.moveTo(x, y); ctx.quadraticCurveTo(x + Math.sin(now * 2 + i) * 5 * S, y - 8 * S, x + Math.sin(now * 1.5 + i) * 3 * S, y - 14 * S); ctx.stroke(); }
+      ctx.fillStyle = "rgba(120,170,200,0.45)"; ctx.beginPath(); ctx.ellipse(W * 0.1, H * 0.86, W * 0.04, H * 0.008, 0, 0, 7); ctx.fill();
+      chairBox(W * 0.03, H * 0.8);
     } else {
       ctx.fillStyle = "#9aa0a6";
       ctx.beginPath(); ctx.moveTo(0, H * 0.8); ctx.lineTo(W * 0.26, H * 0.8); ctx.lineTo(W * 0.3, H); ctx.lineTo(0, H); ctx.fill();
       ctx.fillStyle = "rgba(255,255,255,0.15)"; ctx.fillRect(0, H * 0.8, W * 0.26, 3);
       const r = Math.min(W, H) * 0.05;
       [[0.27, 0.86], [0.31, 0.92], [0.25, 0.97], [0.34, 0.99]].forEach(([x, y]) => tetra(W * x, H * y, r));
+      // 난간 · 가로등 · 노란 안전선 · 아이스박스
+      ctx.fillStyle = "#e2b63a"; ctx.fillRect(0, H * 0.8 + 6, W * 0.25, 2);
+      ctx.strokeStyle = "#7d858c"; ctx.lineWidth = 2;
+      for (let i = 0; i < 5; i++) { const x = W * (0.01 + i * 0.05); ctx.beginPath(); ctx.moveTo(x, H * 0.8); ctx.lineTo(x, H * 0.8 - 14 * S); ctx.stroke(); }
+      ctx.beginPath(); ctx.moveTo(0, H * 0.8 - 14 * S); ctx.lineTo(W * 0.21, H * 0.8 - 14 * S); ctx.stroke();
+      const lx = W * 0.05; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(lx, H * 0.8); ctx.lineTo(lx, H * 0.8 - 46 * S); ctx.lineTo(lx + 8 * S, H * 0.8 - 46 * S); ctx.stroke();
+      if (COND.night || kstHour() >= 18) { const g = ctx.createRadialGradient(lx + 8 * S, H * 0.8 - 44 * S, 0, lx + 8 * S, H * 0.8 - 44 * S, 30 * S); g.addColorStop(0, "rgba(255,230,160,0.9)"); g.addColorStop(1, "rgba(255,230,160,0)"); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(lx + 8 * S, H * 0.8 - 44 * S, 30 * S, 0, 7); ctx.fill(); }
+      chairBox(W * 0.17, H * 0.8);
     }
     // 물높이: 만조일수록 물이 높이 차올라요
     const wl = H * (0.97 - 0.09 * k);
@@ -1394,6 +1649,17 @@
     ctx.strokeStyle = "rgba(255,255,255,0.7)"; ctx.lineWidth = 2; ctx.beginPath();
     for (let x = W * 0.22; x <= W * 0.42; x += 6) ctx.lineTo(x, wl + Math.sin(x * 0.2 + now * 3) * 1.5);
     ctx.stroke();
+  }
+  // 아이스박스 · 랜턴(밤엔 불빛)
+  function chairBox(x, y) {
+    const s = S;
+    ctx.fillStyle = "#2f7fc1"; rr(x, y - 12 * s, 18 * s, 12 * s, 2 * s); ctx.fill();
+    ctx.fillStyle = "#f4f6f7"; ctx.fillRect(x, y - 13 * s, 18 * s, 3 * s);
+    if (COND.night || kstHour() >= 18 || kstHour() < 6) {
+      const lx = x + 22 * s, ly = y - 8 * s, g = ctx.createRadialGradient(lx, ly, 0, lx, ly, 34 * s);
+      g.addColorStop(0, "rgba(255,220,140,0.75)"); g.addColorStop(1, "rgba(255,220,140,0)"); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(lx, ly, 34 * s, 0, 7); ctx.fill();
+      ctx.fillStyle = "#ffe8a0"; rr(lx - 3 * s, ly - 5 * s, 6 * s, 9 * s, 2 * s); ctx.fill();
+    }
   }
   function tetra(x, y, r) {
     ctx.fillStyle = "#b8bcc0"; ctx.strokeStyle = "rgba(0,0,0,0.25)"; ctx.lineWidth = 1;
@@ -1620,6 +1886,8 @@
     txt(t("집어 {n}%", { n: Math.round(gather * 100) }), x0 + w / 2, y0 + h + 34 * F, 10, "#fff", "center", "600");
   }
   function drawFish(x, y, len, f) {
+    if (f.id === "bottle") { ctx.save(); ctx.translate(x, y); ctx.rotate(-0.5); ctx.fillStyle = "rgba(111,191,154,0.85)"; rr(-len * 0.32, -len * 0.12, len * 0.5, len * 0.24, len * 0.08); ctx.fill(); ctx.fillRect(len * 0.16, -len * 0.05, len * 0.14, len * 0.1); ctx.fillStyle = "#a8742c"; ctx.fillRect(len * 0.28, -len * 0.05, len * 0.06, len * 0.1); ctx.fillStyle = "#f3e6c4"; ctx.fillRect(-len * 0.2, -len * 0.06, len * 0.28, len * 0.12); ctx.restore(); return; }
+    if (f.id === "chest") { ctx.fillStyle = "#8a5a22"; rr(x - len * 0.32, y - len * 0.1, len * 0.64, len * 0.32, 4); ctx.fill(); ctx.fillStyle = "#a8742c"; ctx.beginPath(); ctx.ellipse(x, y - len * 0.1, len * 0.32, len * 0.14, 0, Math.PI, 0); ctx.fill(); ctx.fillStyle = "#ffcf3a"; ctx.fillRect(x - len * 0.32, y - len * 0.02, len * 0.64, len * 0.04); ctx.fillRect(x - len * 0.04, y - len * 0.08, len * 0.08, len * 0.12); for (let i = 0; i < 5; i++) { ctx.beginPath(); ctx.arc(x - len * 0.2 + i * len * 0.1, y - len * 0.16 - (i % 2) * 4, 3, 0, 7); ctx.fill(); } return; }
     if (f.junk) { ctx.fillStyle = "#3a3a3a"; rr(x - len * 0.15, y - len * 0.4, len * 0.3, len * 0.6, 6); ctx.fill(); rr(x - len * 0.15, y + len * 0.05, len * 0.55, len * 0.2, 8); ctx.fill(); ctx.fillStyle = "#e8c34a"; ctx.fillRect(x - len * 0.15, y - len * 0.36, len * 0.3, 4); return; }
     ctx.fillStyle = f.c;
     if (f.shape === "squid") {
@@ -1690,7 +1958,15 @@
       if (crossTxt) stxt(crossTxt, W / 2, H * 0.1 + 24 * F, 12, "#ffe0b0", "center", "600");
     }
     else if (s === "wait" || s === "settle") {
-      if (m === "surf") hint(t("방울 소리를 기다려요… 🔔"));
+      if (chumHold) {
+        const q = chumPoint(), h0 = hand();
+        ctx.strokeStyle = "rgba(232,138,58,0.95)"; ctx.setLineDash([3, 4]); ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(q.x, q.y, 14 * S, 4.5 * S, 0, 0, 7); ctx.stroke(); ctx.setLineDash([]);
+        ctx.strokeStyle = "rgba(255,255,255,0.35)"; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(h0.x, h0.y); ctx.quadraticCurveTo((h0.x + q.x) / 2, Math.min(h0.y, q.y) - H * 0.1, q.x, q.y); ctx.stroke();
+        const gx = W - 30, gy = H * 0.3, gh = H * 0.36;
+        ctx.fillStyle = "rgba(0,0,0,0.4)"; rr(gx, gy, 16, gh, 8); ctx.fill(); ctx.fillStyle = "#e88a3a"; rr(gx + 3, gy + 3 + (gh - 6) * (1 - chumHold.p), 10, (gh - 6) * chumHold.p, 5); ctx.fill();
+        hint(t("밑밥: 누른 채 좌우로 방향 · 떼면 뿌려요 (찌보다 조류 위쪽에)"));
+      }
+      else if (m === "surf") hint(t("방울 소리를 기다려요… 🔔"));
       else if (m === "float") hint(t("찌를 보세요 · 밑밥은 찌 주변에"));
       if (m === "surf" && target) drawTarget(true);
     }
@@ -1767,7 +2043,7 @@
     ctx.fillStyle = "rgba(14,30,26,0.95)"; rr(x, y, w, h, 20); ctx.fill();
     if (G2 && res.t > 0.9) { ctx.strokeStyle = G2.c; ctx.lineWidth = res.grade >= 3 ? 4 : 2; rr(x, y, w, h, 20); ctx.stroke(); }
     if (res.kind === "catch") {
-      const title = f.junk ? t("😅 …장화네요") : f.boss ? f.title : res.isNew ? t("🎉 처음 낚았어요!") : t("🎉 낚았다!");
+      const title = f.id === "bottle" ? t("📜 병편지를 건졌어요!") : f.id === "chest" ? t("💰 보물상자다!!") : f.junk ? t("😅 …장화네요") : f.boss ? f.title : res.isNew ? t("🎉 처음 낚았어요!") : t("🎉 낚았다!");
       fitTxt(title, cx, y + 30, 21, w - 30, f.boss ? "#ffcf3a" : res.isNew ? "#ffe14a" : "#fff");
       // 물고기: 등급이 높을수록 크게 튀어나와요
       const pop = res.t < 0.25 ? res.t / 0.25 : 1, bob = Math.sin(now * 3) * 3;
@@ -1792,7 +2068,7 @@
           ctx.strokeStyle = G2.c; ctx.lineWidth = 3; rr(-62, -16, 124, 32, 8); ctx.stroke();
           txt(t(G2.n), 0, 0, 18, G2.c, "center", "900"); ctx.restore();
         }
-      } else fitTxt(t("바다 청소 완료"), cx, y + h * 0.53, 22, w - 30, "#fff");
+      } else fitTxt(res.note ? "“" + res.note + "”" : t("바다 청소 완료"), cx, y + h * 0.53, res.note ? 15 : 22, w - 30, "#fff", "700");
       if (res.t > 1.15) {
         const tags = [];
         if (res.record) tags.push(t("📈 내 신기록!"));
@@ -1828,11 +2104,13 @@
     drawScene();
     if (rushT > 0) { ctx.fillStyle = "rgba(255,200,60," + (0.08 + 0.05 * Math.sin(now * 4)) + ")"; ctx.fillRect(0, hy(), W, H - hy()); }
     drawChum();
+    drawFriend();
     drawPeers();
     if (!["ready", "result"].includes(G.s) || true) drawTackle();
     drawAngler();
     drawUnder();
     if (G.s === "result") drawResult(); else { drawHud(); if (G.s !== "fight") drawTopBadges(); }
+    drawTour();
     ctx.restore();
     for (const q of parts) { ctx.save(); ctx.globalAlpha = Math.min(1, q.life * 1.5); ctx.translate(q.x, q.y); ctx.rotate(q.r); ctx.fillStyle = q.c; ctx.fillRect(-q.s / 2, -q.s / 4, q.s, q.s / 2); ctx.restore(); }
     if (flashT > 0) { ctx.globalAlpha = clamp(flashT * 1.6, 0, 0.6); ctx.fillStyle = flashCol; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1; }
@@ -1975,7 +2253,14 @@
       h += '<button type="button" class="btn" data-gshare>' + esc(t("조과 자랑 문구 복사")) + '</button> <span class="muted" id="gShareMsg" aria-live="polite"></span>';
     }
     h += "</article>";
+    // 5분 낚시 대회
+    h += '<article class="panel gcard"><h3>' + esc(t("🏆 5분 낚시 대회")) + '</h3><p class="tk-like" style="margin:0 0 8px">' + esc(t("동네 꾼 3명과 5분 동안 잡은 무게로 겨뤄요. 1등 500🪙 · 2등 200🪙 · 3등 100🪙")) + (save.tourBest ? " · " + esc(t("내 최고 {kg} · 우승 {n}번", { kg: kgTxt(save.tourBest), n: save.tourWins || 0 })) : "") + "</p>" +
+      (tour ? '<p class="gtoday">' + esc(t("대회 중! 남은 시간 {m}분 {s}초", { m: Math.floor(tour.t / 60), s: Math.floor(tour.t % 60) })) + "</p>" : '<button type="button" class="btn primary" data-gtour>' + esc(t("대회 시작")) + "</button>") + "</article>";
+    // 인증샷
+    if ((save.net || []).length) h += '<article class="panel gcard"><h3>' + esc(t("📸 인증샷")) + '</h3><p class="tk-like" style="margin:0 0 8px">' + esc(t("마지막에 잡은 고기를 사진 카드로 만들어요")) + '</p><button type="button" class="btn" data-gshot>' + esc(t("인증샷 만들기")) + '</button><div id="gShot" style="margin-top:8px"></div></article>';
     h += netHtml();
+    const fr = save.friends || {};
+    h += '<details class="panel gcard"><summary>' + esc(t("🐬 바다 친구 도감 {n}/{all}", { n: Object.keys(fr).length, all: Object.keys(FRIENDS).length })) + '</summary><p class="tk-like">' + esc(t("기다리는 동안 가끔 바다 친구가 나타나요. 눌러서 사진을 찍어요")) + '</p><div class="gnet">' + Object.keys(FRIENDS).map((k) => "<div><b>" + (fr[k] ? FRIENDS[k].ico + " " + esc(t(FRIENDS[k].n)) : "❔ ???") + "</b>" + (fr[k] ? esc(t("{n}번 만남", { n: fr[k] })) : esc(t("아직 못 만났어요"))) + "</div>").join("") + "</div></details>";
     h += '<details class="panel gcard" id="gDex"><summary>' + esc(t("물고기 도감 {got}/{all}", { got: dx.got, all: dx.all })) + "</summary>" + dx.h + "</details>";
     h += '<details class="panel gcard"><summary>' + esc(t("낚시점 (포인트로 사기)")) + '</summary><div class="gshop">';
     for (const it of SHOP) {
@@ -2005,6 +2290,18 @@
       if (G.s === "fight" || G.s === "net") return;
       const [k, v] = b.dataset.gtk.split(":");
       (save.tk[mode()] = save.tk[mode()] || {})[k] = v; store(); if (k === "sinker") target = null; if (busy()) toReady(); else if (mode() === "surf" && !target) newTarget(); renderPanel();
+    }
+    else if (b.hasAttribute("data-gtour")) { if (!tour) { startTour(); renderPanel(); const c2 = root.querySelector(".gwrap"); c2 && c2.scrollIntoView({ behavior: "smooth", block: "start" }); } }
+    else if (b.hasAttribute("data-gshot")) {
+      const f = (save.net || [])[0]; if (!f) return;
+      let url = ""; try { url = makeShot(f); } catch (e) {}
+      const box = root.querySelector("#gShot"); if (!box || !url) return;
+      box.innerHTML = '<img src="' + url + '" alt="" style="width:100%;max-width:360px;border-radius:14px;display:block"><p class="tk-like">' + esc(t("사진을 길게 눌러 저장하세요")) + '</p><button type="button" class="btn" data-gshare2>' + esc(t("공유하기")) + "</button>";
+      box.dataset.url = url;
+    }
+    else if (b.hasAttribute("data-gshare2")) {
+      const box = root.querySelector("#gShot"), url = box && box.dataset.url; if (!url) return;
+      fetch(url).then((r) => r.blob()).then((bl) => { const file = new File([bl], "zepi-fish.png", { type: "image/png" }); if (navigator.canShare && navigator.canShare({ files: [file] })) return navigator.share({ files: [file], title: t("제피 낚시") }); throw new Error("no-share"); }).catch(() => { const p = box.querySelector("p"); if (p) p.textContent = t("이 화면에서는 공유가 안 돼요. 사진을 길게 눌러 저장하세요"); });
     }
     else if (b.hasAttribute("data-gtog")) { save.together = !save.together; store(); if (save.together) rtConnect(); else { rtStatus = "off"; rtClose(); } renderPanel(); }
     else if (b.hasAttribute("data-grelease")) {
@@ -2068,7 +2365,7 @@
     const down = (e) => { downX = e.clientX; try { e.target.setPointerCapture && e.target.setPointerCapture(e.pointerId); } catch (er) {} };
     cv.addEventListener("pointerdown", down); btn.addEventListener("pointerdown", down);
     window.addEventListener("pointermove", (e) => {
-      if (!holding || G.s !== "windup") return;
+      if (!holding || (G.s !== "windup" && !chumHold)) return;
       aimLat = clamp((e.clientX - downX) / Math.max(120, W * 0.45), -1, 1) * 0.18;
     });
     K.bindPress([cv, btn], press, release);
@@ -2091,7 +2388,7 @@
     if (!running) { running = true; last = performance.now(); requestAnimationFrame(loop); }
   }
   function stop() { rtClose(); if (cloudT > 0) { cloudT = 0; cloudPush(); } holding = false; if (["fight", "net", "windup"].includes(G.s)) toReady(); }
-  const api = { build, start, stop, state: () => G.s, press, release, _dbg: () => ({ fy, zy, jump: !!jump, P, diff: diff(), grade: res && res.grade, streak, rushT, lv: lvOf(save.xp) }), _diff: (v) => { save.diff = v; store(); toReady(); renderPanel(); }, _spot: (id) => { const sp0 = SPOT_LIST.find((x) => x.id === id); if (!sp0) return; save.mode = { f: "float", l: "lure", s: "surf" }[sp0.m]; (save.spots = save.spots || {})[save.mode] = id; target = null; refreshCond(); toReady(); renderPanel(); }, spots: () => SPOT_LIST.map((x) => x.id), _net: () => G.s === "net" && Math.abs(netFish().x - netPos().x) < W * (easy() ? 0.06 : 0.03), cond: () => COND };
+  const api = { build, start, stop, state: () => G.s, press, release, _dbg: () => ({ fy, zy, jump: !!jump, P, diff: diff(), grade: res && res.grade, streak, rushT, lv: lvOf(save.xp) }), _diff: (v) => { save.diff = v; store(); toReady(); renderPanel(); }, _spot: (id) => { const sp0 = SPOT_LIST.find((x) => x.id === id); if (!sp0) return; save.mode = { f: "float", l: "lure", s: "surf" }[sp0.m]; (save.spots = save.spots || {})[save.mode] = id; target = null; refreshCond(); toReady(); renderPanel(); }, spots: () => SPOT_LIST.map((x) => x.id), _net: () => G.s === "net" && Math.abs(netFish().x - netPos().x) < W * (easy() ? 0.06 : 0.03), cond: () => COND, _force: (k) => { if (k === "gull") gullT = 0; else if (k === "tour") { startTour(); if (tour) tour.t = 4; } else if (k) { friend = { id: k, x: 0.35, y: 0.14, t: 0, dur: 30 }; } }, _fx: () => ({ friend: friend && Object.assign({}, friend, friendPos()), gull: gull && { x: gull.x, y: gull.y, ph: gull.ph }, tour: !!tour, tourRes: tourRes && tourRes.rank }), _shot: () => { const f = (save.net || [])[0]; return f ? makeShot(f).length : 0; } };
   if (window.ZPLAY) ZPLAY.reg("fish", api);
   window.ZGAME = api;
 })();
