@@ -8918,5 +8918,15 @@
   "Sharing isn't available here. Long-press the photo to save",
   "此页面无法分享，请长按照片保存",
   "この画面では共有できません。写真を長押しして保存してください"
+ ],
+ "앱을 최신 버전으로 업데이트하면 공유할 수 있어요": [
+  "Update the app to the latest version to share",
+  "更新到最新版应用即可分享",
+  "アプリを最新版にすると共有できます"
+ ],
+ "공유하기를 누르면 갤러리 저장이나 카톡 보내기를 할 수 있어요": [
+  "Tap Share to save to your gallery or send in a chat app",
+  "点击分享即可保存到相册或发送给好友",
+  "共有をタップするとギャラリー保存やトーク送信ができます"
  ]
 }

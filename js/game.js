@@ -2296,11 +2296,12 @@
       const f = (save.net || [])[0]; if (!f) return;
       let url = ""; try { url = makeShot(f); } catch (e) {}
       const box = root.querySelector("#gShot"); if (!box || !url) return;
-      box.innerHTML = '<img src="' + url + '" alt="" style="width:100%;max-width:360px;border-radius:14px;display:block"><p class="tk-like">' + esc(t("사진을 길게 눌러 저장하세요")) + '</p><button type="button" class="btn" data-gshare2>' + esc(t("공유하기")) + "</button>";
+      box.innerHTML = '<img src="' + url + '" alt="" style="width:100%;max-width:360px;border-radius:14px;display:block"><p class="tk-like">' + esc(window.ZNATIVE ? t("공유하기를 누르면 갤러리 저장이나 카톡 보내기를 할 수 있어요") : t("사진을 길게 눌러 저장하세요")) + '</p><button type="button" class="btn" data-gshare2>' + esc(t("공유하기")) + "</button>";
       box.dataset.url = url;
     }
     else if (b.hasAttribute("data-gshare2")) {
       const box = root.querySelector("#gShot"), url = box && box.dataset.url; if (!url) return;
+      if (window.ZNATIVE) { window.ZNATIVE.call("shareImage", { data: url, name: "zepi-fish" }).catch(() => { const p = box.querySelector("p"); if (p) p.textContent = t("앱을 최신 버전으로 업데이트하면 공유할 수 있어요"); }); return; }
       fetch(url).then((r) => r.blob()).then((bl) => { const file = new File([bl], "zepi-fish.png", { type: "image/png" }); if (navigator.canShare && navigator.canShare({ files: [file] })) return navigator.share({ files: [file], title: t("제피 낚시") }); throw new Error("no-share"); }).catch(() => { const p = box.querySelector("p"); if (p) p.textContent = t("이 화면에서는 공유가 안 돼요. 사진을 길게 눌러 저장하세요"); });
     }
     else if (b.hasAttribute("data-gtog")) { save.together = !save.together; store(); if (save.together) rtConnect(); else { rtStatus = "off"; rtClose(); } renderPanel(); }
