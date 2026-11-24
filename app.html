@@ -1142,14 +1142,16 @@ body { margin: 0; }
       for (const j of decoded) for (const q of j.p) { ts[i] = j.t0 + q[0] * 1000; lat[i] = q[1] / 1e5; lng[i] = q[2] / 1e5; acc[i] = q[3] || 0; i++; }
       const B = {};
       for (const b of blobs) { try { B[b.name] = JSON.parse(b.data); } catch (e) {} }
+      // 정복 기록 문서 모양이 깨져 있어도(목록이 아니거나 줄이 null) 전체를 못 불러오지 않게, 읽을 수 있는 줄만 써요 (QA 11-25)
+      const arr = (v) => (Array.isArray(v) ? v.filter(Array.isArray) : []);
       const data = buildData({
         n: i, ts, lat, lng, acc,
         places: Object.entries(B.places || {}).map(([key, name]) => ({ key, name })),
-        notes,
-        regionDays: (B.region_days || []).map(([code, day, stay_ms, night]) => ({ code, day, stay_ms, night })),
-        visits: (B.region_visits || []).map(([code, first_ts, last_ts, days]) => ({ code, first_ts, last_ts, days })),
-        manual: B.manual_regions || [],
-        photo: (B.photo_days || []).map(([code, day, first_ts, last_ts]) => ({ code, day, first_ts, last_ts })),
+        notes: (Array.isArray(notes) ? notes : []).filter((r) => r && typeof r === "object"),
+        regionDays: arr(B.region_days).map(([code, day, stay_ms, night]) => ({ code, day, stay_ms, night })),
+        visits: arr(B.region_visits).map(([code, first_ts, last_ts, days]) => ({ code, first_ts, last_ts, days })),
+        manual: Array.isArray(B.manual_regions) ? B.manual_regions : [],
+        photo: arr(B.photo_days).map(([code, day, first_ts, last_ts]) => ({ code, day, first_ts, last_ts })),
       });
       if (!data.days.length) {
         setNotice(t("<strong>{email}</strong>으로 로그인했어요. 아직 올라온 기록이 없어요. 폰의 제피 앱 <strong>설정 → 내 계정 · 클라우드</strong>에서 같은 계정으로 로그인하면 자동으로 올라와요.", { email: esc(session.email) }));
@@ -1435,7 +1437,7 @@ body { margin: 0; }
     const all = [];
     for (const seg of segments(tl.path)) {
       const ll = seg.map((p) => [p.lat, p.lng]);
-      all.push(...ll);
+      for (const q of ll) all.push(q); // push(...ll)은 한 구간이 12만 점쯤 넘으면 'Maximum call stack size exceeded'로 지도가 안 그려져요 (QA 11-25)
       L.polyline(ll, { color: leaf, weight: 4, opacity: 0.9, lineJoin: "round" }).addTo(dayLayers);
     }
     tl.items.forEach((it, i) => {
