@@ -9,13 +9,14 @@
   function normPlan(p) {
     const str = (v) => (v == null ? "" : typeof v === "string" ? v : typeof v === "number" ? String(v) : "");
     const items = (list) => (Array.isArray(list) ? list : [])
-      .filter((it) => it && typeof it === "object" && str(it.title))
+      // 제목 없는 '비워둠' 칸은 남겨요. 빼면 칸 번호가 밀려서 폰 앱과 체크(d0i2…)가 어긋나요 (QA 11-25)
+      .filter((it) => it && typeof it === "object" && (str(it.title) || it.kind === "free"))
       .map((it) => {
         const lat = num(it.lat), lng = num(it.lng);
         const ok = lat != null && lng != null && lat > 32 && lat < 39.5 && lng > 124 && lng < 132;
         return {
           ...it,
-          time: str(it.time), title: str(it.title), why: str(it.why), tip: str(it.tip),
+          time: str(it.time), title: str(it.title) || t("비워둠"), why: str(it.why), tip: str(it.tip),
           options: Array.isArray(it.options) ? it.options.map(str).filter(Boolean) : [],
           lat: ok ? lat : undefined, lng: ok ? lng : undefined,
         };
@@ -413,6 +414,7 @@ JSON 하나만 답해:
       if (!DRIVES.includes(s.maxMin)) s.maxMin = 180;
       if (s.from && !(s.from && Number.isFinite(s.from.lat) && Number.isFinite(s.from.lng))) s.from = null;
       if (!s.plan || typeof s.plan !== "object" || Array.isArray(s.plan)) s.plan = null;
+      if (!Number.isInteger(s.day) || s.day < 0) s.day = 0; // 글자·음수면 일정 화면이 멈추던 것 (QA 11-25)
       return s;
     } catch (e) { return null; }
   }
@@ -421,7 +423,7 @@ JSON 하나만 답해:
   function planDoc() {
     const p = st.plan, n = normPlan(p); // 폰에서 받은 일정의 prep 이 문자열이어도 체크를 올릴 수 있게 (QA 11-24)
     return JSON.stringify({ key: p.key || "web|" + (p.start || "") + "|" + (st.picks || []).join(","), start: (p.start || ymd(new Date())) + "T00:00:00", title: p.title || "", hook: p.hook || "",
-      days: Array.isArray(p.days) ? p.days : [], plan_b: n.plan_b, prep: n.prep, packing: n.packing, by_ai: !!p.byAi, done: st.done || [], updated: st.planUpdated || Date.now() });
+      days: Array.isArray(p.days) ? p.days : [], plan_b: n.plan_b, prep: n.prep, packing: n.packing, by_ai: !!p.byAi, done: st.done || [], updated: Number.isFinite(st.planUpdated) ? st.planUpdated : 0 }); // 시각 없는 옛 일정은 0(가장 오래됨). 지금 시각을 붙이면 폰의 새 일정을 덮어요 (QA 11-25)
   }
   function planChanged() {
     st.planUpdated = Date.now();
@@ -436,7 +438,7 @@ JSON 하나만 답해:
       const j = JSON.parse(got);
       if (!Array.isArray(j.days) || !j.days.length) return false;
       st.plan = { key: j.key, title: j.title, hook: j.hook, days: j.days, plan_b: j.plan_b || [], prep: j.prep || [], packing: j.packing || [], byAi: !!j.by_ai, start: String(j.start || "").slice(0, 10), fromPhone: !String(j.key || "").startsWith("web|") };
-      st.done = (j.done || []).map(String); st.planUpdated = j.updated || 0; st.day = 0;
+      st.done = (Array.isArray(j.done) ? j.done : []).map(String); st.planUpdated = j.updated || 0; st.day = 0;
       if (st.step === "plan" || st.step === "wants") st.step = "plan";
       save();
       return true;
