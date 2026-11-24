@@ -1081,7 +1081,7 @@ body { margin: 0; }
     const r = await fetch(SB_URL + "/auth/v1/" + path, { method: method || (body === undefined ? "GET" : "POST"), headers, body: body === undefined ? undefined : JSON.stringify(body) });
     let j = {};
     try { j = await r.json(); } catch (e) {}
-    if (!r.ok) throw new Error(authMsg(j, r.status));
+    if (!r.ok) { const err = new Error(authMsg(j, r.status)); err.status = r.status; throw err; }
     return j;
   }
   async function token() {
@@ -1090,6 +1090,8 @@ body { margin: 0; }
     try {
       takeSession(await authFetch("token?grant_type=refresh_token", { refresh_token: session.refresh }));
     } catch (e) {
+      // 인터넷이 잠깐 끊겼거나(요청 자체가 실패) 서버가 바쁠 때(429·5xx)는 로그인을 지우지 않아요. 다음에 다시 갱신해요 (QA 11-25)
+      if (!e || !e.status || e.status === 429 || e.status >= 500) throw e;
       session = null; saveSession(); renderAccount();
       throw new Error(t("로그인이 풀렸어요. 다시 로그인해 주세요."));
     }
@@ -1179,6 +1181,12 @@ body { margin: 0; }
       : '<button class="btn" type="button" data-acct="in">' + t("로그인") + "</button>";
   }
   const canEdit = () => source === "cloud" && !!session;
+  // 저장이 막힌 까닭 안내. 로그인했는데 아직 폰 기록이 없는 사람에게 '로그인해 주세요'라고 하지 않아요 (QA 11-25, 문구만 맞춤)
+  const NEED_LOGIN = $("ioNeed").innerHTML;
+  function showIoNeed(show) {
+    if (show) $("ioNeed").innerHTML = session ? t("<strong>{email}</strong>으로 로그인했어요. 아직 올라온 기록이 없어요. 폰의 제피 앱 <strong>설정 → 내 계정 · 클라우드</strong>에서 같은 계정으로 로그인하면 자동으로 올라와요.", { email: esc(session.email) }) : t(NEED_LOGIN);
+    $("ioNeed").hidden = !show;
+  }
 
   function addSet(map, key, v) { if (!map.has(key)) map.set(key, new Set()); map.get(key).add(v); }
 
@@ -1678,7 +1686,7 @@ body { margin: 0; }
     if (location.hash.slice(1) !== name) { try { history.replaceState(null, "", "#" + name); } catch (e) {} }
     if (name === "day") drawDayMap(timelineOf(curDay));
     if (name === "conquest") drawConqMap();
-    if (name === "io") { updateExHint(); $("ioNeed").hidden = canEdit() || $("ioPreview").hidden; }
+    if (name === "io") { updateExHint(); showIoNeed(!(canEdit() || $("ioPreview").hidden)); }
     try { localStorage.setItem("jepi.tab", name); } catch (e) {}
   }
   for (const t of TABS) $("tab-" + t).addEventListener("click", () => showTab(t));
@@ -1752,7 +1760,7 @@ body { margin: 0; }
   function showPending(title) {
     $("ioTitle").textContent = title;
     $("ioPreview").hidden = false;
-    $("ioNeed").hidden = canEdit();
+    showIoNeed(!canEdit());
     drawPending();
     $("ioPreview").scrollIntoView({ behavior: "smooth", block: "start" });
   }
@@ -1914,7 +1922,7 @@ body { margin: 0; }
   $("nGo").addEventListener("click", async () => {
     const link = $("nUrl").value.trim();
     if (!link) { $("nUrl").focus(); return; }
-    if (!canEdit()) { $("ioNeed").hidden = false; setNotice(t("네이버 리스트를 불러오려면 먼저 로그인해 주세요."), true); return; }
+    if (!canEdit()) { showIoNeed(true); setNotice(session ? $("ioNeed").innerHTML : t("네이버 리스트를 불러오려면 먼저 로그인해 주세요."), true); return; }
     $("nGo").disabled = true;
     setNotice(t("네이버 리스트를 불러오는 중이에요…"));
     try {
