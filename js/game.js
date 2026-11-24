@@ -249,8 +249,19 @@
 
   // ---------- 저장 ----------
   function fresh() { return { v: 1, coins: 0, total: 0, dex: {}, gear: {}, mode: "float", place: "W", tk: {}, shots: 0, hits: 0 }; }
+  // 깨진 저장값(낚시 방법 이름이 틀림 · 도감이 null 등)이면 게임이 아예 안 떠서, 모양을 맞춰 줘요 (QA 11-25)
+  function tidy(s) {
+    const obj = (v) => (v && typeof v === "object" && !Array.isArray(v) ? v : {});
+    if (!MODES[s.mode]) s.mode = "float";
+    for (const k of ["dex", "gear", "tk"]) s[k] = obj(s[k]);
+    for (const k of ["spots", "studied", "friends"]) if (s[k] != null) s[k] = obj(s[k]);
+    for (const k of ["coins", "total", "shots", "hits"]) s[k] = +s[k] || 0;
+    if (s.xp != null) s.xp = +s.xp || 0;
+    if (s.net != null) s.net = Array.isArray(s.net) ? s.net.filter((f) => f && typeof f === "object" && typeof f.id === "string") : [];
+    return s;
+  }
   function load() {
-    try { const s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s && s.v === 1) return Object.assign(fresh(), s); } catch (e) {}
+    try { const s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s && s.v === 1) return tidy(Object.assign(fresh(), s)); } catch (e) {}
     return fresh();
   }
   let save = load();
@@ -268,6 +279,9 @@
     if (!b || b.v !== 1) return a;
     const o = Object.assign({}, a);
     for (const k of ["xp", "total", "coins", "fish", "bosses", "shots", "hits"]) o[k] = Math.max(a[k] || 0, b[k] || 0);
+    // 바다 친구 도감 · 대회 기록도 합쳐요 (빠져 있어서 다시 로그인하면 서버 것이 지워졌어요, QA 11-25)
+    for (const k of ["tourBest", "tourWins"]) if (a[k] || b[k]) o[k] = Math.max(+a[k] || 0, +b[k] || 0);
+    if (a.friends || b.friends) { o.friends = Object.assign({}, b.friends || {}, a.friends || {}); for (const id of Object.keys(b.friends || {})) o.friends[id] = Math.max(+(a.friends || {})[id] || 0, +b.friends[id] || 0); }
     o.dex = Object.assign({}, b.dex || {}, a.dex || {});
     for (const id of Object.keys(b.dex || {})) { const x = (a.dex || {})[id], y = b.dex[id]; if (x && y) o.dex[id] = { n: Math.max(x.n, y.n), max: Math.max(x.max, y.max) }; }
     o.gear = Object.assign({}, b.gear || {}, a.gear || {});
@@ -281,7 +295,7 @@
   async function cloudPull() {
     const A = cloudApi(); if (!A || cloudPulled) return;
     cloudPulled = true;
-    try { const d = await A.docGet(CLOUD_DOC); if (d) { save = mergeSave(save, typeof d === "string" ? JSON.parse(d) : d); try { localStorage.setItem(KEY, JSON.stringify(save)); } catch (e) {} renderPanel(); } cloudState = "ok"; }
+    try { const d = await A.docGet(CLOUD_DOC); if (d) { save = tidy(mergeSave(save, typeof d === "string" ? JSON.parse(d) : d)); try { localStorage.setItem(KEY, JSON.stringify(save)); } catch (e) {} renderPanel(); } cloudState = "ok"; }
     catch (e) { cloudState = "err"; cloudPulled = false; }
   }
   async function cloudPush() {
@@ -380,9 +394,14 @@
       ]);
       if (w && w.current) {
         const x = w.current;
-        Object.assign(c, { live: true, temp: x.temperature_2m, code: x.weather_code, cloud: x.cloud_cover, rain: x.precipitation || 0, wind: x.wind_speed_10m, windDir: x.wind_direction_10m, gust: x.wind_gusts_10m, night: x.is_day === 0 });
+        // 값이 비어 있으면(null·없음) 기본값을 그대로 둬요 — 그대로 넣으면 그리다가 멈춰요 (QA 11-25)
+        const num = (v) => typeof v === "number" && isFinite(v);
+        for (const [k, v] of [["temp", x.temperature_2m], ["code", x.weather_code], ["cloud", x.cloud_cover], ["wind", x.wind_speed_10m], ["windDir", x.wind_direction_10m], ["gust", x.wind_gusts_10m]]) if (num(v)) c[k] = v;
+        c.rain = num(x.precipitation) ? x.precipitation : 0;
+        if (x.is_day === 0 || x.is_day === 1) c.night = x.is_day === 0;
+        c.live = num(x.wind_speed_10m);
       }
-      if (m && m.current) { if (m.current.wave_height != null) c.wave = m.current.wave_height; c.sst = m.current.sea_surface_temperature; }
+      if (m && m.current) { if (typeof m.current.wave_height === "number") c.wave = m.current.wave_height; if (typeof m.current.sea_surface_temperature === "number") c.sst = m.current.sea_surface_temperature; }
     } catch (e) {}
     try {
       if (window.ZSEA && ZSEA.tideNow && window.ZAPP && ZAPP.signedIn && ZAPP.signedIn()) {
@@ -828,7 +847,7 @@
     if (gr) { g.strokeStyle = gr.c; g.lineWidth = 6; rr(250, 625, 220, 60, 14); g.stroke(); txt(t(gr.n), 360, 656, 32, gr.c, "center", "900"); }
     const spn = (SPOT_LIST.find((x) => x.id === f.sp) || {}).n || "";
     txt("📍 " + t(spn), 360, 730, 26, "#5a635d", "center", "700");
-    const d = new Date(f.at); txt(d.getFullYear() + "." + (d.getMonth() + 1) + "." + d.getDate() + " · " + ((me() || {}).name || ""), 360, 776, 22, "#5a635d", "center", "600");
+    const d = new Date(f.at); txt(d.getFullYear() + "." + (d.getMonth() + 1) + "." + d.getDate() + ((me() || {}).name ? " · " + me().name : ""), 360, 776, 22, "#5a635d", "center", "600");
     ctx = old; F = oF; S = oS;
     return c.toDataURL("image/png");
   }
@@ -1441,6 +1460,13 @@
     const st = { ready: "쉬는 중", windup: "던지려는 중", cast: "던지는 중", fly: "던지는 중", wait: "기다리는 중", settle: "기다리는 중", set: "기다리는 중", retr: "루어 움직이는 중", bite: "입질!", fight: "파이팅 중!", net: "뜰채질!", scoop: "뜰채질!", lift: "올리는 중", result: "쉬는 중" }[G.s] || "쉬는 중";
     return { n: (m.name || t("손님")).slice(0, 12), av: m.avatar || "", m: mode(), s: st, lv: lvOf(save.xp), at: Date.now() };
   }
+  // 남이 보낸 값은 그대로 믿지 않아요: 이름·상태는 글자만, 사진 주소는 https 만 (숫자 이름 하나로 화면이 멈췄어요, QA 11-25)
+  function peerOf(x) {
+    const p = x && (x.metas || [])[0];
+    if (!p || typeof p !== "object") return null;
+    const av = typeof p.av === "string" && /^https?:\/\//.test(p.av) && p.av.length < 600 ? p.av.replace(/^http:/, "https:") : "";
+    return { n: (typeof p.n === "string" ? p.n : "").slice(0, 12) || t("손님"), av, m: typeof p.m === "string" ? p.m : "", s: typeof p.s === "string" ? p.s.slice(0, 20) : "", lv: +p.lv || 1 };
+  }
   function rtConnect() {
     if (!together() || typeof WebSocket === "undefined") return;
     const topic = "realtime:zepi-fish-" + spot().id;
@@ -1457,16 +1483,16 @@
       if (m.topic !== rtTopic) return;
       if (m.event === "phx_reply" && m.payload && m.payload.status === "ok" && rtStatus !== "on") { rtStatus = "on"; rtSend("presence", { type: "presence", event: "track", payload: myMeta() }); renderPeople(); }
       else if (m.event === "phx_reply" && m.payload && m.payload.status === "error") { rtStatus = "err"; renderPeople(); }
-      else if (m.event === "presence_state") { peers = {}; for (const k of Object.keys(m.payload || {})) if (k !== myKey) peers[k] = (m.payload[k].metas || [])[0]; renderPeople(); }
+      else if (m.event === "presence_state") { peers = {}; for (const k of Object.keys(m.payload || {})) if (k !== myKey) { const p = peerOf(m.payload[k]); if (p) peers[k] = p; } renderPeople(); }
       else if (m.event === "presence_diff") {
         const p = m.payload || {};
         for (const k of Object.keys(p.leaves || {})) delete peers[k];
-        for (const k of Object.keys(p.joins || {})) if (k !== myKey) { const was = !!peers[k]; peers[k] = (p.joins[k].metas || [])[0]; if (!was) peerMsgs.push({ k, txt: t("👋 {n}님이 왔어요", { n: peers[k].n }), t: 3 }); }
+        for (const k of Object.keys(p.joins || {})) if (k !== myKey) { const q = peerOf(p.joins[k]); if (!q) continue; const was = !!peers[k]; peers[k] = q; if (!was) peerMsgs.push({ k, txt: t("👋 {n}님이 왔어요", { n: q.n }), t: 3 }); }
         renderPeople();
       }
       else if (m.event === "broadcast" && m.payload && m.payload.event === "catch") {
-        const d = m.payload.payload || {}, sp = SP.find((x) => x.id === d.f), who = Object.keys(peers).find((k) => peers[k] && peers[k].n === d.n) || "";
-        if (sp) { peerMsgs.push({ k: who, txt: t("🎉 {n}님이 {f} {c}cm!", { n: d.n || t("손님"), f: t(sp.n), c: d.size }), t: 3.5 }); beep(1175, 0.1, "triangle", 0.08); }
+        const d = m.payload.payload || {}, sp = SP.find((x) => x.id === d.f), dn = (typeof d.n === "string" ? d.n : "").slice(0, 12), who = Object.keys(peers).find((k) => peers[k] && peers[k].n === dn) || "";
+        if (sp) { peerMsgs.push({ k: who, txt: t("🎉 {n}님이 {f} {c}cm!", { n: dn || t("손님"), f: t(sp.n), c: Math.round(+d.size) || 0 }), t: 3.5 }); beep(1175, 0.1, "triangle", 0.08); }
       }
     };
     rt.onclose = () => { if (rtStatus !== "off") rtStatus = rtStatus === "on" ? "lost" : "err"; renderPeople(); };
@@ -2384,7 +2410,8 @@
   function loop(ts) {
     if (!K.visible(root)) { running = false; holding = false; K.drag(0, 0); return; }
     const dt = Math.min(0.05, Math.max(0, (ts - last) / 1000)); last = ts; now += dt;
-    update(dt); draw(); setBtn();
+    try { update(dt); draw(); setBtn(); }
+    catch (e) { running = false; throw e; } // 오류가 나면 '도는 중' 표시를 풀어 둬야 닫았다 다시 열 때 살아나요 (QA 11-25)
     requestAnimationFrame(loop);
   }
   function start() {
