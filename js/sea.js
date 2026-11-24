@@ -196,20 +196,21 @@
       try {
         const m = await marine(st.lat, st.lng);
         const c = m.sea && m.sea.current;
-        if (!c || c.wave_height == null) throw new Error(t("이 자리는 바다 예보가 없어요."));
+        if (!c || c.wave_height == null) throw Object.assign(new Error(t("이 자리는 바다 예보가 없어요.")), { own: true });
         const wh = c.wave_height;
         const lvl = wh < 0.5 ? ["잔잔해요", ""] : wh < 1.5 ? ["조금 일렁여요", ""] : wh < 2.5 ? ["파도가 높아요", "warn"] : ["매우 높아요 · 바다에 들어가지 마세요", "bad"];
         h += '<div style="display:flex;gap:14px;align-items:baseline"><span class="big">' + wh.toFixed(1) + ' <small style="font-size:14px">m</small></span><span class="pill ' + lvl[1] + '">' + esc(t(lvl[0])) + "</span></div>" +
           '<dl class="kv">' +
           (c.wave_period != null ? "<dt>" + esc(t("파도 주기")) + "</dt><dd>" + c.wave_period.toFixed(0) + " " + esc(t("초")) + "</dd>" : "") +
           (c.sea_surface_temperature != null ? "<dt>" + esc(t("바닷물 온도")) + "</dt><dd>" + c.sea_surface_temperature.toFixed(1) + "°</dd>" : "") +
-          (m.wind && m.wind.current ? "<dt>" + esc(t("바람")) + "</dt><dd>" + esc(fromDir(m.wind.current.wind_direction_10m)) + " " + m.wind.current.wind_speed_10m.toFixed(1) + " m/s · " + esc(t("돌풍 {n} m/s", { n: m.wind.current.wind_gusts_10m.toFixed(0) })) + "</dd>" : "") +
+          (m.wind && m.wind.current && typeof m.wind.current.wind_speed_10m === "number" && typeof m.wind.current.wind_direction_10m === "number" ? "<dt>" + esc(t("바람")) + "</dt><dd>" + esc(fromDir(m.wind.current.wind_direction_10m)) + " " + m.wind.current.wind_speed_10m.toFixed(1) + " m/s" + (typeof m.wind.current.wind_gusts_10m === "number" ? " · " + esc(t("돌풍 {n} m/s", { n: m.wind.current.wind_gusts_10m.toFixed(0) })) : "") + "</dd>" : "") +
           "</dl>";
         const dl = m.sea.daily;
-        if (dl && dl.time) h += '<dl class="kv">' + dl.time.slice(1).map((d, i) => "<dt>" + esc(fmtDay.format(new Date(d + "T12:00:00+09:00"))) + "</dt><dd>" + esc(t("최고 파고 {n} m", { n: (dl.wave_height_max[i + 1] ?? 0).toFixed(1) })) + "</dd>").join("") + "</dl>";
+        if (dl && Array.isArray(dl.time) && Array.isArray(dl.wave_height_max)) h += '<dl class="kv">' + dl.time.slice(1).map((d, i) => "<dt>" + esc(fmtDay.format(new Date(d + "T12:00:00+09:00"))) + "</dt><dd>" + esc(t("최고 파고 {n} m", { n: (dl.wave_height_max[i + 1] ?? 0).toFixed(1) })) + "</dd>").join("") + "</dl>";
         h += '<div class="muted">' + esc(t("바다에 나가기 전에는 기상청 해상 특보를 꼭 확인하세요.")) + "</div>";
       } catch (e) {
-        h += '<div class="muted">' + esc(t("바다 예보를 불러오지 못했어요.")) + " " + esc(e.message || e) + "</div>";
+        // 우리가 만든 안내만 덧붙여요 ("Failed to fetch" 같은 브라우저 오류 글은 보여 주지 않아요)
+        h += '<div class="muted">' + esc(t("바다 예보를 불러오지 못했어요.")) + (e && e.own ? " " + esc(e.message) : "") + "</div>";
       }
       h += "</article></div>";
 
