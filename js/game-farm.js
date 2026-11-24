@@ -18,7 +18,7 @@
   ];
   const month = () => new Date(Date.now() + 9 * 3600e3).getUTCMonth() + 1;
   const inSeason = (c) => c.mon.includes(month());
-  function load() { try { const s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s && s.v === 1) return s; } catch (e) {} return { v: 1, seed: null, basket: {}, pts: 0 }; }
+  function load() { try { const s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s && s.v === 1) return { v: 1, seed: typeof s.seed === "string" ? s.seed : null, basket: s.basket && typeof s.basket === "object" && !Array.isArray(s.basket) ? s.basket : {}, pts: Number.isFinite(+s.pts) ? +s.pts : 0 }; } catch (e) {} /* 깨진 저장값이면 수확이 계속 실패하던 것 (QA 11-25) */ return { v: 1, seed: null, basket: {}, pts: 0 }; }
   let save = load();
   function store() { try { localStorage.setItem(KEY, JSON.stringify(save)); } catch (e) {} }
   const seed = () => CROPS.find((c) => c.id === save.seed) || CROPS.find(inSeason) || CROPS[0];
