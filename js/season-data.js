@@ -799,7 +799,7 @@ window.ZDATA = {
 "종로구",
 "중구"
 ],
-"sido": "",
+"sido": "서울",
 "moment": ""
 },
 {

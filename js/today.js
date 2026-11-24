@@ -141,7 +141,10 @@
   function songNow(k, o) {
     const pick = (f) => { const l = DATA.songs.filter(f); return l.length ? l[(k.d + k.h) % l.length] : null; };
     // 기본 위치(서울)일 때는 '왔으니까'가 사실이 아니라서 장소 노래를 건너뛰어요
-    const byPlace = o.region && !o.isDefault && pick((s) => s.places.includes(o.region) || (s.sido && (o.sido || "").includes(s.sido)));
+    // 시군구 이름을 적어 둔 노래는 그 시군구에서만, 시도까지 적혀 있으면 시도도 맞아야 해요
+    // (서울 '중구' 노래가 대구·대전·울산 중구에서 '중구에 왔으니까'로 나오던 것)
+    const inSido = (s) => !!s.sido && (o.sido || "").includes(s.sido);
+    const byPlace = o.region && !o.isDefault && pick((s) => (s.places.length ? s.places.includes(o.region) && (!s.sido || inSido(s)) : inSido(s)));
     if (byPlace) return { song: byPlace, why: t("{place}에 왔으니까", { place: o.region }) };
     if (o.snow) return { song: pick((s) => s.moment === "snow"), why: t("눈 오는 날") };
     if (o.rain) return { song: pick((s) => s.moment === "rain"), why: t("비 오는 날") };
