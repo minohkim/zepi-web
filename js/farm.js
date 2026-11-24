@@ -101,7 +101,8 @@
   let farm = normFarm((() => { try { return JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { return null; } })());
   // 고칠 때마다 시각을 붙이고, 로그인했으면 폰과 맞춰요 (서버 이름 'farm', 앱 farm_v1 과 같은 모양)
   const save = () => {
-    farm.updated = Date.now();
+    // 시계가 늦은 기기에서 고쳐도 방금 받은 것보다 새것이 되게 (QA 11-25: 폰 시계가 빠르면 웹 수정이 다음 맞추기 때 되돌아가던 것)
+    farm.updated = Math.max(Date.now(), (farm.updated || 0) + 1);
     const s = JSON.stringify(farm);
     try { localStorage.setItem(KEY, s); } catch (e) {}
     if (window.ZDOCS) ZDOCS.push("farm", s);
@@ -122,20 +123,21 @@
       return true;
     } catch (e) { return false; }
   }
-  let picking = !farm.crops.length, openCrop = null, wx = null, wxErr = "", diag = null;
+  let picking = !farm.crops.length, openCrop = null, memoOrig = "", wx = null, wxErr = "", diag = null;
 
   // ---------- 그리기 ----------
   const cropName = (c) => tOpt(c.name);
   const kindLabel = (k) => t(KIND[k][0]);
   function pickerHtml() {
     const groups = [...new Set(CROPS.map((c) => c.group))];
+    const nMine = farm.crops.filter(byId).length; // 이 버전이 모르는 작물 id는 세지 않아요 (QA 11-25)
     return '<article class="card2"><h2>' + esc(t("무엇을 키우나요?")) + "<small>" + esc(t("{zone} 기준 · 노란 테두리는 곧 심을 때예요", { zone: t(ZONES[zoneOf(farm.lat, farm.lng)][0]) })) + "</small></h2>" +
       groups.map((g) => "<div><b>" + esc(t(g)) + '</b><div class="chips" style="margin-top:6px">' + CROPS.filter((c) => c.group === g).map((c) => {
         const on = farm.crops.includes(c.id);
         const soon = upcoming([c], day0(new Date()), zoneOf(farm.lat, farm.lng), 30).some((u) => u.tk.k === "plant" || u.tk.k === "sow");
         return '<button type="button" class="' + (on ? "on" : "") + (soon ? " soon" : "") + '" data-crop="' + c.id + '" aria-pressed="' + on + '">' + c.emoji + " " + esc(cropName(c)) + "</button>";
       }).join("") + "</div></div>").join("") +
-      '<div class="row" style="display:flex;gap:8px"><button class="btn primary" type="button" data-fa="pickdone"' + (farm.crops.length ? "" : " disabled") + ">" + esc(t("{n}가지 저장", { n: farm.crops.length })) + "</button>" + (farm.crops.length ? '<button class="btn" type="button" data-fa="pickcancel">' + esc(t("닫기")) + "</button>" : "") + "</div></article>";
+      '<div class="row" style="display:flex;gap:8px"><button class="btn primary" type="button" data-fa="pickdone"' + (nMine ? "" : " disabled") + ">" + esc(t("{n}가지 저장", { n: nMine })) + "</button>" + (nMine ? '<button class="btn" type="button" data-fa="pickcancel">' + esc(t("닫기")) + "</button>" : "") + "</div></article>";
   }
   function placeHtml() {
     const z = zoneOf(farm.lat, farm.lng);
@@ -224,7 +226,8 @@
     if (!root) return;
     // 작물 안내 창을 연 채로 다시 그리면(날씨 도착·동기화) 쓰던 메모가 사라지던 것 (QA 11-23)
     const memo = $("cropMemo");
-    if (memo && openCrop) farm.notes[openCrop] = memo.value;
+    // 손대지 않은 메모는 옮기지 않아요 — 그사이 폰에서 받은 새 메모를 옛 글로 덮던 것 (QA 11-25)
+    if (memo && openCrop) { if (memo.value !== memoOrig) farm.notes[openCrop] = memo.value; else memoOrig = typeof farm.notes[openCrop] === "string" ? farm.notes[openCrop] : ""; }
     const zone = zoneOf(farm.lat, farm.lng);
     const mine = farm.crops.map(byId).filter(Boolean);
     let h = placeHtml();
@@ -238,7 +241,12 @@
     if (openCrop) h += cropDetailHtml(byId(openCrop), zone);
     root.innerHTML = h;
     const dlg = $("cropDlg");
-    if (dlg) { dlg.showModal(); dlg.addEventListener("close", () => { if (openCrop) { farm.notes[openCrop] = $("cropMemo").value.trim(); if (!farm.notes[openCrop]) delete farm.notes[openCrop]; save(); openCrop = null; render(); } }); }
+    if (dlg) { dlg.showModal(); dlg.addEventListener("close", () => { if (openCrop) {
+      // 메모를 고쳤을 때만 저장해요. 보기만 하고 닫아도 '방금 고침'이 돼서 폰의 더 새 수정을 덮던 것 (QA 11-25)
+      const v = $("cropMemo").value.trim();
+      if (v !== memoOrig.trim()) { if (v) farm.notes[openCrop] = v; else delete farm.notes[openCrop]; save(); }
+      openCrop = null; render();
+    } }); }
     const ph = $("farmPhoto");
     if (ph) ph.addEventListener("change", () => ph.files[0] && diagnose(ph.files[0]));
   }
@@ -309,7 +317,7 @@
       try { const g = await ZLOC.gps(); farm.lat = g.lat; farm.lng = g.lng; farm.label = ""; save(); await loadWx(); } catch (err) { wxErr = err.message; }
       render(); return;
     }
-    if (d.open) { openCrop = d.open; render(); return; }
+    if (d.open) { openCrop = d.open; memoOrig = typeof farm.notes[openCrop] === "string" ? farm.notes[openCrop] : ""; render(); return; }
     if (d.fa === "closecrop") { $("cropDlg").close(); return; }
     if (d.login !== undefined) { ZAPP.openLogin(); return; }
   });
