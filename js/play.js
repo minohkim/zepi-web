@@ -1,4 +1,4 @@
-// 제피 웹 · 놀이 (탭마다 그 활동을 게임으로)
+// 바람소리 웹 · 놀이 (탭마다 그 활동을 게임으로)
 // - 바다 → 낚시 · 정복 지도 → 다시 오르는 산 · 주말농장 → 텃밭 · 오늘 → 별자리 잇기
 // - 게임은 화면 전체를 덮는 놀이 창에서 열려요 (✕ 닫기 / Esc)
 // - 모든 게임이 같은 설정을 써요: 쉬운 모드(기본), 큰 글씨, 소리
@@ -93,7 +93,7 @@
   // rate: 초당 딸깍 수 (0 이면 조용). 매 화면마다 불러요
   function drag(rate, dt) { if (rate <= 0) { dragAcc = 0; return; } dragAcc += rate * dt; let n = 0; while (dragAcc >= 1 && n < 6) { dragAcc -= 1; n++; click(3600 + Math.random() * 900, 0.5); } }
   function reel(rate, dt) { if (rate <= 0) { reelAcc = 0; return; } reelAcc += rate * dt; let n = 0; while (reelAcc >= 1 && n < 3) { reelAcc -= 1; n++; click(1500 + Math.random() * 300, 0.22); } }
-  // 진동: 제피 앱 안이면 폰의 햅틱으로 (웹뷰는 진동이 잘 안 돼요), 아니면 브라우저 진동
+  // 진동: 바람소리 앱 안이면 폰의 햅틱으로 (웹뷰는 진동이 잘 안 돼요), 아니면 브라우저 진동
   function buzz(ms) {
     if (window.ZNATIVE) { const total = Array.isArray(ms) ? ms.filter((_, i) => i % 2 === 0).reduce((a, b) => a + b, 0) : ms; window.ZNATIVE.send("buzz", { ms: total }); return; }
     try { navigator.vibrate && navigator.vibrate(ms); } catch (e) {}
@@ -158,7 +158,7 @@
     if (document.getElementById("playCss")) return;
     const st = document.createElement("style"); st.id = "playCss";
     st.textContent =
-      ".playLayer{position:fixed;inset:0;z-index:60;background:var(--bg,#F7F5EE);overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}.playLayer:focus{outline:none}" +
+      ".playLayer{position:fixed;inset:0;z-index:60;background:var(--bg,#F4F8F5);overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}.playLayer:focus{outline:none}" +
       ".playBar{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:10px;padding:10px 14px;padding-top:max(10px,env(safe-area-inset-top));background:var(--surface,#fff);border-bottom:1px solid var(--line)}" +
       ".playBar b{font-family:var(--font-display);font-size:20px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" +
       ".playBar .btn{font-size:16px;min-height:48px}" +

@@ -1,4 +1,4 @@
-// 제피 웹 · 주말농장 (이번 주말 할 일 · 물주기 · 서리 · 병해충 · 텃밭 달력 · 사진 진단)
+// 바람소리 웹 · 주말농장 (이번 주말 할 일 · 물주기 · 서리 · 병해충 · 텃밭 달력 · 사진 진단)
 // 앱의 lib/farm/*.dart, lib/screens/farm_screen.dart 를 옮겨 왔어요.
 (function () {
   const Z = window.ZI18N, t = Z.t, tOpt = Z.tOpt;

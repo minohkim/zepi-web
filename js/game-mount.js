@@ -1,4 +1,4 @@
-// 제피 웹 · 놀이 · 다시 오르는 산 — 정복 지도 탭에서 열려요 (js/play.js)
+// 바람소리 웹 · 놀이 · 다시 오르는 산 — 정복 지도 탭에서 열려요 (js/play.js)
 // - 산을 고르면 입구 → 쉼터 → 쉼터 → 정상. 큰 버튼을 "똑-딱" 박자에 맞춰 누르면 성큼, 아무 때나 눌러도 한 걸음
 // - 쉬운 모드: 버튼을 꾹 누르고 있으면 천천히 걸어가요. 힘이 떨어지면 저절로 쉬었다 가요 (실패 없음)
 // - 내 기록에서 가 본 시군구에 있는 산은 '가 본 산'으로 먼저 보여요
@@ -32,7 +32,7 @@
   const M = () => MOUNTS.find((m) => m.id === save.sel) || MOUNTS[0];
 
   // 내 기록에서 가 본 시군구 → 가 본 산
-  let summitSet = new Set(); // 제피 앱의 100대 명산에서 실제로 오른 산
+  let summitSet = new Set(); // 바람소리 앱의 100대 명산에서 실제로 오른 산
   function visitedSet() {
     const out = new Set();
     summitSet = new Set(); // 로그아웃·예시 데이터로 바뀌면 지난 🏅가 남지 않게
@@ -170,7 +170,7 @@
     for (let i = 0; i <= n; i++) { const [x, y] = trailAt(i / 80 * (prog * 80 / n)); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
     ctx.stroke();
     // 쉼터 표시
-    [1 / 3, 2 / 3].forEach((k, i) => { const [x, y] = trailAt(k); ctx.fillStyle = stopIdx > i ? "#F2B705" : "#fff"; ctx.beginPath(); ctx.arc(x, y, 6, 0, 7); ctx.fill(); ctx.strokeStyle = "#1F6B3A"; ctx.lineWidth = 2; ctx.stroke(); });
+    [1 / 3, 2 / 3].forEach((k, i) => { const [x, y] = trailAt(k); ctx.fillStyle = stopIdx > i ? "#F2B705" : "#fff"; ctx.beginPath(); ctx.arc(x, y, 6, 0, 7); ctx.fill(); ctx.strokeStyle = "#0E8465"; ctx.lineWidth = 2; ctx.stroke(); });
     // 정상 깃발
     const [px, py] = trailAt(1);
     ctx.strokeStyle = "#333"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px, py - 26); ctx.stroke();
@@ -178,7 +178,7 @@
     // 등산객
     const [cx, cy] = trailAt(prog), s = Math.min(W, H) / 380 * 1.1, b = -Math.abs(Math.sin(bob * Math.PI)) * 4;
     ctx.fillStyle = "#e8742c"; rr(cx - 7 * s, cy - 30 * s + b, 12 * s, 16 * s, 4 * s); ctx.fill();
-    ctx.fillStyle = "#1F6B3A"; rr(cx - 11 * s, cy - 28 * s + b, 6 * s, 12 * s, 3 * s); ctx.fill(); // 배낭
+    ctx.fillStyle = "#0E8465"; rr(cx - 11 * s, cy - 28 * s + b, 6 * s, 12 * s, 3 * s); ctx.fill(); // 배낭
     ctx.fillStyle = "#e9c3a0"; ctx.beginPath(); ctx.arc(cx, cy - 36 * s + b, 6 * s, 0, 7); ctx.fill();
     ctx.fillStyle = "#F2B705"; ctx.beginPath(); ctx.arc(cx, cy - 38 * s + b, 6.5 * s, Math.PI, 0); ctx.fill();
     ctx.strokeStyle = "#1d2430"; ctx.lineWidth = 3 * s; ctx.beginPath();
@@ -192,7 +192,7 @@
     stxt(alt + " m / " + m.h + " m", W - 14, 22, 15, "#fff", "right", "600");
     // 힘 막대
     ctx.fillStyle = "rgba(0,0,0,0.35)"; rr(14, 40, W * 0.42, 14, 7); ctx.fill();
-    ctx.fillStyle = stam > 40 ? "#62BE84" : stam > 15 ? "#F2B705" : "#ff6b5a"; rr(16, 42, Math.max(4, (W * 0.42 - 4) * stam / 100), 10, 5); ctx.fill();
+    ctx.fillStyle = stam > 40 ? "#4FC9A4" : stam > 15 ? "#F2B705" : "#ff6b5a"; rr(16, 42, Math.max(4, (W * 0.42 - 4) * stam / 100), 10, 5); ctx.fill();
     stxt(t("힘"), 14 + W * 0.42 + 8, 47, 13, "#fff", "left", "600");
     if (st === "climb" || st === "ready") stxt(Math.floor(elapsed / 60) + ":" + String(Math.floor(elapsed % 60)).padStart(2, "0"), W - 14, 47, 14, "#fff", "right", "600");
     // 박자 원
@@ -247,7 +247,7 @@
     const vis = visitedSet();
     const list = MOUNTS.slice().sort((a, b) => (vis.has(b.id) - vis.has(a.id)));
     let h = '<article class="panel gcard"><h3>' + esc(t("어느 산에 오를까요?")) + "</h3>";
-    if (vis.size) h += '<p class="muted" style="margin:0 0 8px">' + esc(t("✓ 표시는 내 기록에 있는 동네의 산이에요")) + (summitSet.size ? " · " + esc(t("🏅 는 제피 앱 기록으로 실제로 오른 산")) : "") + "</p>";
+    if (vis.size) h += '<p class="muted" style="margin:0 0 8px">' + esc(t("✓ 표시는 내 기록에 있는 동네의 산이에요")) + (summitSet.size ? " · " + esc(t("🏅 는 바람소리 앱 기록으로 실제로 오른 산")) : "") + "</p>";
     h += '<div class="chips">' + list.map((m) => {
       const d = save.done[m.id];
       return '<button type="button" data-msel="' + m.id + '" class="' + (save.sel === m.id ? "on" : "") + '">' + (summitSet.has(m.n) ? "🏅 " : vis.has(m.id) ? "✓ " : "") + esc(t(m.n)) + (d ? " 🏁" : "") + "</button>";
@@ -264,7 +264,7 @@
     const b = e.target.closest("button"); if (!b) return;
     if (b.dataset.msel) { save.sel = b.dataset.msel; store(); reset(); renderPanel(); }
     else if (b.hasAttribute("data-mshare")) {
-      const m = M(), sec = Math.round(elapsed), text = t("제피 다시 오르는 산: {name} {peak} {h}m 완등! ({m}분 {s}초)", { name: t(m.n), peak: t(m.peak), h: m.h, m: Math.floor(sec / 60), s: sec % 60 });
+      const m = M(), sec = Math.round(elapsed), text = t("바람소리 다시 오르는 산: {name} {peak} {h}m 완등! ({m}분 {s}초)", { name: t(m.n), peak: t(m.peak), h: m.h, m: Math.floor(sec / 60), s: sec % 60 });
       const out = root.querySelector("#mShareMsg");
       try { navigator.clipboard.writeText(text).then(() => { out.textContent = t("복사했어요"); }, () => { out.textContent = text; }); } catch (err) { out.textContent = text; }
     }

@@ -1,13 +1,13 @@
 {
- "제피 웹": [
-  "Zepi Web",
-  "Zepi 网页版",
-  "Zepi Web"
+ "바람소리 웹": [
+  "BaramSori Web",
+  "BaramSori 网页版",
+  "BaramSori Web"
  ],
- "제피": [
-  "Zepi",
-  "Zepi",
-  "Zepi"
+ "바람소리": [
+  "BaramSori",
+  "BaramSori",
+  "BaramSori"
  ],
  "폰에 쌓인 발자취를 큰 화면으로": [
   "Your phone's footprints, on a big screen",
@@ -304,15 +304,15 @@
   "登录后只显示你自己账号的记录。备份文件只在这个浏览器里打开。",
   "ログインすると自分のアカウントの記録だけが表示されます。バックアップファイルはこのブラウザの中だけで開きます。"
  ],
- "제피 로그인": [
-  "Log in to Zepi",
-  "登录 Zepi",
-  "Zepi にログイン"
+ "바람소리 로그인": [
+  "Log in to BaramSori",
+  "登录 BaramSori",
+  "BaramSori にログイン"
  ],
- "폰의 제피 앱 <b>설정 → 내 계정 · 클라우드</b>와 같은 계정으로 로그인하면 폰에서 올린 기록이 보여요.": [
-  "Log in with the same account as in the Zepi app (<b>Settings → My account · Cloud</b>) to see what your phone has uploaded.",
-  "用与手机 Zepi App（<b>设置 → 我的账号 · 云端</b>）相同的账号登录，就能看到手机上传的记录。",
-  "スマホの Zepi アプリ（<b>設定 → マイアカウント · クラウド</b>）と同じアカウントでログインすると、スマホからアップロードした記録が見られます。"
+ "폰의 바람소리 앱 <b>설정 → 내 계정 · 클라우드</b>와 같은 계정으로 로그인하면 폰에서 올린 기록이 보여요.": [
+  "Log in with the same account as in the BaramSori app (<b>Settings → My account · Cloud</b>) to see what your phone has uploaded.",
+  "用与手机 BaramSori App（<b>设置 → 我的账号 · 云端</b>）相同的账号登录，就能看到手机上传的记录。",
+  "スマホの BaramSori アプリ（<b>設定 → マイアカウント · クラウド</b>）と同じアカウントでログインすると、スマホからアップロードした記録が見られます。"
  ],
  "이메일": [
   "Email",
@@ -449,10 +449,10 @@
   "正在打开示例数据…",
   "サンプルデータを開いています…"
  ],
- "제피 백업 파일이 아니에요. 앱의 <strong>설정 → 기록 백업</strong>으로 만든 <strong>.db</strong> 파일을 골라 주세요.": [
-  "That's not a Zepi backup. Choose the <strong>.db</strong> file made with <strong>Settings → Back up records</strong> in the app.",
-  "这不是 Zepi 备份文件。请选择在 App 的<strong>设置 → 备份记录</strong>中生成的 <strong>.db</strong> 文件。",
-  "Zepi のバックアップファイルではありません。アプリの<strong>設定 → 記録のバックアップ</strong>で作った <strong>.db</strong> ファイルを選んでください。"
+ "바람소리 백업 파일이 아니에요. 앱의 <strong>설정 → 기록 백업</strong>으로 만든 <strong>.db</strong> 파일을 골라 주세요.": [
+  "That's not a BaramSori backup. Choose the <strong>.db</strong> file made with <strong>Settings → Back up records</strong> in the app.",
+  "这不是 BaramSori 备份文件。请选择在 App 的<strong>设置 → 备份记录</strong>中生成的 <strong>.db</strong> 文件。",
+  "BaramSori のバックアップファイルではありません。アプリの<strong>設定 → 記録のバックアップ</strong>で作った <strong>.db</strong> ファイルを選んでください。"
  ],
  "파일을 읽지 못했어요. 앱에서 백업을 다시 만들어 주세요.": [
   "Couldn't read the file. Please make a new backup in the app.",
@@ -594,10 +594,10 @@
   "正在从云端读取… {n} 天",
   "クラウドから読み込み中… {n}日分"
  ],
- "<strong>{email}</strong>으로 로그인했어요. 아직 올라온 기록이 없어요. 폰의 제피 앱 <strong>설정 → 내 계정 · 클라우드</strong>에서 같은 계정으로 로그인하면 자동으로 올라와요.": [
-  "Logged in as <strong>{email}</strong>. No records have been uploaded yet. Log in with the same account in the Zepi app under <strong>Settings → My account · Cloud</strong> and they'll upload automatically.",
-  "已用 <strong>{email}</strong> 登录。还没有上传的记录。在手机 Zepi App 的<strong>设置 → 我的账号 · 云端</strong>用同一账号登录后会自动上传。",
-  "<strong>{email}</strong> でログインしました。まだアップロードされた記録がありません。スマホの Zepi アプリの<strong>設定 → マイアカウント · クラウド</strong>で同じアカウントにログインすると自動でアップロードされます。"
+ "<strong>{email}</strong>으로 로그인했어요. 아직 올라온 기록이 없어요. 폰의 바람소리 앱 <strong>설정 → 내 계정 · 클라우드</strong>에서 같은 계정으로 로그인하면 자동으로 올라와요.": [
+  "Logged in as <strong>{email}</strong>. No records have been uploaded yet. Log in with the same account in the BaramSori app under <strong>Settings → My account · Cloud</strong> and they'll upload automatically.",
+  "已用 <strong>{email}</strong> 登录。还没有上传的记录。在手机 BaramSori App 的<strong>设置 → 我的账号 · 云端</strong>用同一账号登录后会自动上传。",
+  "<strong>{email}</strong> でログインしました。まだアップロードされた記録がありません。スマホの BaramSori アプリの<strong>設定 → マイアカウント · クラウド</strong>で同じアカウントにログインすると自動でアップロードされます。"
  ],
  "<strong>{email}</strong> 계정의 기록이에요. {from}부터 {to}까지, {n}일. 장소 메모는 여기서 고치면 폰에도 반영돼요.": [
   "Records for <strong>{email}</strong>: {from} to {to}, {n} days. Place notes you edit here also update on your phone.",
@@ -789,10 +789,10 @@
   "没有可导出的地点备注。",
   "書き出す場所メモがありません。"
  ],
- "제피 장소 메모": [
-  "Zepi place notes",
-  "Zepi 地点备注",
-  "Zepi 場所メモ"
+ "바람소리 장소 메모": [
+  "BaramSori place notes",
+  "BaramSori 地点备注",
+  "BaramSori 場所メモ"
  ],
  "위도": [
   "Wido",
@@ -1084,25 +1084,25 @@
   "忠清北道",
   "忠清北道"
  ],
- "제피 베타 신청": [
-  "Zepi Beta Sign-up",
-  "Zepi 内测申请",
-  "Zepi ベータ申し込み"
+ "바람소리 베타 신청": [
+  "BaramSori Beta Sign-up",
+  "BaramSori 内测申请",
+  "BaramSori ベータ申し込み"
  ],
- "제피 베타 테스터 모집": [
-  "Zepi is looking for beta testers",
-  "Zepi 招募内测用户",
-  "Zepi ベータテスター募集"
+ "바람소리 베타 테스터 모집": [
+  "BaramSori is looking for beta testers",
+  "BaramSori 招募内测用户",
+  "BaramSori ベータテスター募集"
  ],
- "J 같은 P의 여행": [
-  "Travel like a planner, even if you're spontaneous",
-  "随性的人，也能像计划派一样旅行",
-  "気ままな人でも、計画派みたいに旅をする"
+ "바람 따라 걷고, 소리처럼 남기고": [
+  "Walk with the wind, leave it like a sound",
+  "随风而行，如声留痕",
+  "風にまかせて歩き、音のように残す"
  ],
- "제피가 하는 일": [
-  "What Zepi does",
-  "Zepi 能做什么",
-  "Zepi でできること"
+ "바람소리가 하는 일": [
+  "What BaramSori does",
+  "BaramSori 能做什么",
+  "BaramSori でできること"
  ],
  "다닌 길이 저절로 지도에": [
   "Your routes, mapped automatically",
@@ -1294,10 +1294,10 @@
   "<li>在 Galaxy 上打开邮件，点<b>开始使用</b>接受邀请。</li>",
   "<li>Galaxy でメールを開き、<b>使ってみる</b>を押して招待を受け取ります。</li>"
  ],
- "<li>안내대로 제피를 내려받아 설치해요. \"출처를 알 수 없는 앱\" 허용을 물으면 허용해 주세요.</li>": [
-  "<li>Follow the steps to download and install Zepi. If asked to allow \"unknown apps\", allow it.</li>",
-  "<li>按提示下载并安装 Zepi。如果询问是否允许“未知来源应用”，请允许。</li>",
-  "<li>案内どおりに Zepi をダウンロードしてインストールします。「不明なアプリ」の許可を求められたら許可してください。</li>"
+ "<li>안내대로 바람소리를 내려받아 설치해요. \"출처를 알 수 없는 앱\" 허용을 물으면 허용해 주세요.</li>": [
+  "<li>Follow the steps to download and install BaramSori. If asked to allow \"unknown apps\", allow it.</li>",
+  "<li>按提示下载并安装 BaramSori。如果询问是否允许“未知来源应用”，请允许。</li>",
+  "<li>案内どおりに BaramSori をダウンロードしてインストールします。「不明なアプリ」の許可を求められたら許可してください。</li>"
  ],
  "<li>새 버전이 나오면 메일로 알려드려요.</li></ol>": [
   "<li>We'll email you when a new version is out.</li></ol>",
@@ -1324,10 +1324,10 @@
   "<li>在邮件链接中点<b>“成为测试人员”</b>。</li>",
   "<li>メールのリンクで<b>「テスターになる」</b>を押します。</li>"
  ],
- "<li>Play 스토어에서 제피를 설치해요.</li>": [
-  "<li>Install Zepi from the Play Store.</li>",
-  "<li>在 Play 商店安装 Zepi。</li>",
-  "<li>Play ストアで Zepi をインストールします。</li>"
+ "<li>Play 스토어에서 바람소리를 설치해요.</li>": [
+  "<li>Install BaramSori from the Play Store.</li>",
+  "<li>在 Play 商店安装 BaramSori。</li>",
+  "<li>Play ストアで BaramSori をインストールします。</li>"
  ],
  "<li><b>2주 동안 지우지 말고 가끔 열어 주세요.</b> 정식 출시 조건이에요 🙏</li></ol>": [
   "<li><b>Please keep it for 2 weeks and open it now and then.</b> It's required for the official launch 🙏</li></ol>",
@@ -1379,10 +1379,10 @@
   "{season}之选",
   "{season}に"
  ],
- "© 2026 제피": [
-  "© 2026 Zepi",
-  "© 2026 Zepi",
-  "© 2026 Zepi"
+ "© 2026 바람소리": [
+  "© 2026 BaramSori",
+  "© 2026 BaramSori",
+  "© 2026 BaramSori"
  ],
  "☕ 바닷가 카페 · 1시간 20분": [
   "☕ Seaside café · 1 h 20 min",
@@ -2100,7 +2100,7 @@
   "位置情報の許可がオフです。アドレスバーの鍵アイコンからオンにできます。"
  ],
  "위치 기록은 민감한 정보라서 처음부터 조심스럽게 만들었어요.": [
-  "Location history is sensitive, so we built Zepi carefully from day one.",
+  "Location history is sensitive, so we built BaramSori carefully from day one.",
   "位置记录属于敏感信息，因此从一开始就谨慎设计。",
   "位置の記録は大切な情報なので、最初から慎重に作りました。"
  ],
@@ -2159,20 +2159,20 @@
   "征服地图 · 年度足迹",
   "制覇マップ · 今年の足あと"
  ],
- "제피 · J 같은 P의 여행": [
-  "Zepi · Travel for P's who plan like J's",
-  "Zepi · 像J一样的P的旅行",
-  "Zepi · Jっぽい Pの旅"
+ "바람소리 · 바람 따라 걷고, 소리처럼 남기고": [
+  "BaramSori · Walk with the wind, leave it like a sound",
+  "BaramSori · 随风而行，如声留痕",
+  "BaramSori · 風にまかせて歩き、音のように残す"
  ],
- "제피 백업 파일 열기": [
-  "Open a Zepi backup file",
-  "打开 Zepi 备份文件",
-  "Zepiのバックアップを開く"
+ "바람소리 백업 파일 열기": [
+  "Open a BaramSori backup file",
+  "打开 BaramSori 备份文件",
+  "BaramSoriのバックアップを開く"
  ],
- "제피는 하루 동안 다닌 길과 머문 곳을 알아서 기록하는 여행 앱이에요. 큰 화면에서는 지도로 돌아보고, 오늘 날씨와 물때까지 한 번에 봐요.": [
-  "Zepi is a travel app that records where you went and stopped each day on its own. On a big screen, look back on a map and check today's weather and tides in one place.",
-  "Zepi 是一款自动记录你每天走过的路和停留地点的旅行应用。在大屏幕上用地图回顾，还能一次看到今日天气和潮汐。",
-  "Zepiは1日の道のりと立ち寄り先を自動で記録する旅アプリです。大きな画面では地図で振り返り、今日の天気や潮汐までまとめて見られます。"
+ "바람소리는 하루 동안 다닌 길과 머문 곳을 알아서 기록하는 여행 앱이에요. 큰 화면에서는 지도로 돌아보고, 오늘 날씨와 물때까지 한 번에 봐요.": [
+  "BaramSori is a travel app that records where you went and stopped each day on its own. On a big screen, look back on a map and check today's weather and tides in one place.",
+  "BaramSori 是一款自动记录你每天走过的路和停留地点的旅行应用。在大屏幕上用地图回顾，还能一次看到今日天气和潮汐。",
+  "BaramSoriは1日の道のりと立ち寄り先を自動で記録する旅アプリです。大きな画面では地図で振り返り、今日の天気や潮汐までまとめて見られます。"
  ],
  "조금 일렁여요": [
   "A little choppy",
@@ -2299,10 +2299,10 @@
   "手机上轻松开着，电脑上用大地图回顾。同一账号下，两边都能修改备注。",
   "スマホでは気軽にオンにして、パソコンでは大きな地図で振り返り。同じアカウントならメモも両方で直せます。"
  ],
- "폰의 제피 앱을 켜 두면 다닌 길이 저절로 쌓여요. 앱은 지금 베타예요.": [
-  "Keep the Zepi app on and your routes are recorded automatically. The app is in beta.",
-  "开着 Zepi 应用，走过的路会自动记录。应用目前为测试版。",
-  "Zepiアプリをオンにしておけば道のりが自動で記録されます。アプリはいまベータ版です。"
+ "폰의 바람소리 앱을 켜 두면 다닌 길이 저절로 쌓여요. 앱은 지금 베타예요.": [
+  "Keep the BaramSori app on and your routes are recorded automatically. The app is in beta.",
+  "开着 BaramSori 应用，走过的路会自动记录。应用目前为测试版。",
+  "BaramSoriアプリをオンにしておけば道のりが自動で記録されます。アプリはいまベータ版です。"
  ],
  "하늘이 완전히 어두워지는 시각 {time}": [
   "Fully dark from {time}",
@@ -3534,10 +3534,10 @@
   "导入 · 导出地点",
   "場所の取り込み · 書き出し"
  ],
- "구글 지도·네이버 지도에 <b>저장해 둔 장소</b>(가고 싶은 곳, 맛집 리스트 등)를 제피 장소 메모로 가져오거나, 내 장소를 구글 내 지도로 내보내요. 다닌 길(경로)은 <a href=\"#routes\">경로 가져오기</a>에서 해요.": [
-  "Bring <b>places you saved</b> in Google Maps or Naver Map (want-to-go spots, restaurant lists, etc.) into Zepi place notes, or export your places to Google My Maps. For the routes you travelled, use <a href=\"#routes\">Import routes</a>.",
-  "将 Google 地图·Naver 地图中<b>保存的地点</b>（想去的地方、美食清单等）导入为 Zepi 地点备注，或把我的地点导出到 Google 我的地图。走过的路线请在<a href=\"#routes\">导入路线</a>中操作。",
-  "Googleマップ・NAVERマップに<b>保存した場所</b>（行きたい所、グルメリストなど）をZepiの場所メモに取り込んだり、自分の場所をGoogleマイマップに書き出します。歩いた道（ルート）は<a href=\"#routes\">ルートを取り込む</a>で行います。"
+ "구글 지도·네이버 지도에 <b>저장해 둔 장소</b>(가고 싶은 곳, 맛집 리스트 등)를 바람소리 장소 메모로 가져오거나, 내 장소를 구글 내 지도로 내보내요. 다닌 길(경로)은 <a href=\"#routes\">경로 가져오기</a>에서 해요.": [
+  "Bring <b>places you saved</b> in Google Maps or Naver Map (want-to-go spots, restaurant lists, etc.) into BaramSori place notes, or export your places to Google My Maps. For the routes you travelled, use <a href=\"#routes\">Import routes</a>.",
+  "将 Google 地图·Naver 地图中<b>保存的地点</b>（想去的地方、美食清单等）导入为 BaramSori 地点备注，或把我的地点导出到 Google 我的地图。走过的路线请在<a href=\"#routes\">导入路线</a>中操作。",
+  "Googleマップ・NAVERマップに<b>保存した場所</b>（行きたい所、グルメリストなど）をBaramSoriの場所メモに取り込んだり、自分の場所をGoogleマイマップに書き出します。歩いた道（ルート）は<a href=\"#routes\">ルートを取り込む</a>で行います。"
  ],
  "폰에 쌓인 <b>다닌 길(경로)</b>을 웹에서 보는 방법이에요. 장소 리스트는 <a href=\"#io\">장소 가져오기</a>에서 해요.": [
   "How to see the <b>routes</b> recorded on your phone here on the web. For saved place lists, use <a href=\"#io\">Import places</a>.",
@@ -3554,10 +3554,10 @@
   "方法 2 · 打开备份文件",
   "方法2 · バックアップファイルを開く"
  ],
- "폰의 제피 앱 → <b>설정 → 내 계정 · 클라우드</b>에서 로그인": [
-  "In the Zepi phone app, sign in at <b>Settings → My account · Cloud</b>",
-  "在手机 Zepi 应用中，于<b>设置 → 我的账号 · 云端</b>登录",
-  "スマホのZepiアプリで<b>設定 → マイアカウント · クラウド</b>からログイン"
+ "폰의 바람소리 앱 → <b>설정 → 내 계정 · 클라우드</b>에서 로그인": [
+  "In the BaramSori phone app, sign in at <b>Settings → My account · Cloud</b>",
+  "在手机 BaramSori 应用中，于<b>设置 → 我的账号 · 云端</b>登录",
+  "スマホのBaramSoriアプリで<b>設定 → マイアカウント · クラウド</b>からログイン"
  ],
  "<b>지금 맞추기</b>를 누르면 경로가 계정에 올라가요": [
   "Tap <b>Sync now</b> to upload your routes to your account",
@@ -3574,10 +3574,10 @@
   "同步一次后，应用会自动上传。",
   "一度同期すれば、あとはアプリが自動で上げます。"
  ],
- "폰의 제피 앱 → <b>설정 → 기록 백업</b>으로 .db 파일 만들기": [
-  "In the Zepi phone app, make a .db file with <b>Settings → Backup</b>",
-  "在手机 Zepi 应用中通过<b>设置 → 记录备份</b>生成 .db 文件",
-  "スマホのZepiアプリの<b>設定 → 記録のバックアップ</b>で .db ファイルを作成"
+ "폰의 바람소리 앱 → <b>설정 → 기록 백업</b>으로 .db 파일 만들기": [
+  "In the BaramSori phone app, make a .db file with <b>Settings → Backup</b>",
+  "在手机 BaramSori 应用中通过<b>设置 → 记录备份</b>生成 .db 文件",
+  "スマホのBaramSoriアプリの<b>設定 → 記録のバックアップ</b>で .db ファイルを作成"
  ],
  "파일을 이 컴퓨터로 옮기기 (메일·카톡·드라이브 등)": [
   "Move the file to this computer (email, KakaoTalk, Drive, etc.)",
@@ -3619,10 +3619,10 @@
   "我的账户",
   "マイアカウント"
  ],
- "제피 사용자": [
-  "Zepi user",
-  "Zepi 用户",
-  "Zepiユーザー"
+ "바람소리 사용자": [
+  "BaramSori user",
+  "BaramSori 用户",
+  "BaramSoriユーザー"
  ],
  "카카오로 로그인": [
   "Signed in with Kakao",
@@ -3669,10 +3669,10 @@
   "账户已注销，感谢使用。手机应用里的记录仍会保留。",
   "退会しました。ありがとうございました。スマホアプリの記録はそのまま残ります。"
  ],
- "제피 계정과 클라우드에 올린 이동 기록·장소 메모·정복 기록이 모두 지워지고 되돌릴 수 없어요. 폰 앱에 있는 기록은 그대로 남아요.": [
-  "Your Zepi account and all routes, place notes and region records uploaded to the cloud will be deleted permanently. Records in the phone app stay.",
-  "Zepi 账户及上传到云端的路线、地点备注、足迹版图都会被永久删除。手机应用里的记录会保留。",
-  "Zepiアカウントとクラウドに上げた移動記録・場所メモ・制覇記録がすべて削除され、元に戻せません。スマホアプリの記録は残ります。"
+ "바람소리 계정과 클라우드에 올린 이동 기록·장소 메모·정복 기록이 모두 지워지고 되돌릴 수 없어요. 폰 앱에 있는 기록은 그대로 남아요.": [
+  "Your BaramSori account and all routes, place notes and region records uploaded to the cloud will be deleted permanently. Records in the phone app stay.",
+  "BaramSori 账户及上传到云端的路线、地点备注、足迹版图都会被永久删除。手机应用里的记录会保留。",
+  "BaramSoriアカウントとクラウドに上げた移動記録・場所メモ・制覇記録がすべて削除され、元に戻せません。スマホアプリの記録は残ります。"
  ],
  "계속하려면 \"탈퇴\"라고 적어 주세요": [
   "To continue, type \"탈퇴\"",
@@ -4124,15 +4124,15 @@
   "应季风景名胜",
   "季節の景勝地"
  ],
- "제피 추천": [
-  "Zepi picks",
-  "Zepi 推荐",
-  "Zepiのおすすめ"
+ "바람소리 추천": [
+  "BaramSori picks",
+  "BaramSori 推荐",
+  "BaramSoriのおすすめ"
  ],
- "제피가 골라요": [
-  "Zepi chooses",
-  "由 Zepi 挑选",
-  "Zepiが選びます"
+ "바람소리가 골라요": [
+  "BaramSori chooses",
+  "由 BaramSori 挑选",
+  "BaramSoriが選びます"
  ],
  "조건에 맞는 곳이 없어요. 운전 시간을 늘려 보세요.": [
   "No places match. Try a longer drive time.",
@@ -6589,10 +6589,10 @@
   "已拥有",
   "持っています"
  ],
- "제피 낚시 게임 오늘 조과 🎣 {list}": [
-  "Zepi fishing game, today's catch 🎣 {list}",
-  "Zepi 钓鱼游戏今日渔获 🎣 {list}",
-  "Zepi 釣りゲーム 今日の釣果 🎣 {list}"
+ "바람소리 낚시 게임 오늘 조과 🎣 {list}": [
+  "BaramSori fishing game, today's catch 🎣 {list}",
+  "BaramSori 钓鱼游戏今日渔获 🎣 {list}",
+  "BaramSori 釣りゲーム 今日の釣果 🎣 {list}"
  ],
  "복사했어요": [
   "Copied",
@@ -7069,10 +7069,10 @@
   "复制登顶打卡文字",
   "完登の証の文をコピー"
  ],
- "제피 다시 오르는 산: {name} {peak} {h}m 완등! ({m}분 {s}초)": [
-  "Zepi Climb it again: summited {name} {peak} {h} m! ({m} min {s} s)",
-  "Zepi 再登一次山：{name} {peak} {h}米 登顶！（{m}分{s}秒）",
-  "Zepi もう一度登る山：{name} {peak} {h}m 完登！（{m}分{s}秒）"
+ "바람소리 다시 오르는 산: {name} {peak} {h}m 완등! ({m}분 {s}초)": [
+  "BaramSori Climb it again: summited {name} {peak} {h} m! ({m} min {s} s)",
+  "BaramSori 再登一次山：{name} {peak} {h}米 登顶！（{m}分{s}秒）",
+  "BaramSori もう一度登る山：{name} {peak} {h}m 完登！（{m}分{s}秒）"
  ],
  "배추": [
   "Napa cabbage",
@@ -8129,20 +8129,20 @@
   "难度",
   "難易度"
  ],
- "제피 놀이": [
-  "Zepi Play",
-  "Zepi 游戏",
-  "Zepi あそび"
+ "바람소리 놀이": [
+  "BaramSori Play",
+  "BaramSori 游戏",
+  "BaramSori あそび"
  ],
- "제피 앱의 활동을 게임으로": [
-  "Zepi's activities, as games",
-  "把 Zepi 的活动变成游戏",
-  "Zepi のアクティビティをゲームに"
+ "바람소리 앱의 활동을 게임으로": [
+  "BaramSori's activities, as games",
+  "把 BaramSori 的活动变成游戏",
+  "BaramSori のアクティビティをゲームに"
  ],
- "🏅 는 제피 앱 기록으로 실제로 오른 산": [
-  "🏅 = a mountain you actually summited, from your Zepi app records",
-  "🏅 表示 Zepi App 记录中真正登顶过的山",
-  "🏅 は Zepi アプリの記録で実際に登った山"
+ "🏅 는 바람소리 앱 기록으로 실제로 오른 산": [
+  "🏅 = a mountain you actually summited, from your BaramSori app records",
+  "🏅 表示 BaramSori App 记录中真正登顶过的山",
+  "🏅 は BaramSori アプリの記録で実際に登った山"
  ],
  "갯바위·방파제 가까운 곳. 크릴·갯지렁이 찌낚시, 얕은 수심. 봄이 제철": [
   "Close to rocks and breakwaters. Float fishing with krill or worms, shallow. Best in spring",
@@ -8789,10 +8789,10 @@
   "奖金 +{n}🪙",
   "賞金 +{n}🪙"
  ],
- "제피 낚시": [
-  "Zepi Fishing",
-  "Zepi 钓鱼",
-  "Zepi 釣り"
+ "바람소리 낚시": [
+  "BaramSori Fishing",
+  "BaramSori 钓鱼",
+  "BaramSori 釣り"
  ],
  "물때 표를 보세요. 물이 움직일 때 고기도 움직여요": [
   "Check the tide table. When the water moves, fish move",
@@ -8944,9 +8944,9 @@
   "这是在手机App里做的行程，请在App里重新安排。",
   "スマホアプリで作った日程です。アプリで作り直してください。"
  ],
- "<strong>{email}</strong>으로 로그인했어요. 다닌 길·장소 같은 위치 기록은 서버에 올리지 않아요. 폰의 제피 앱 <strong>설정 → 백업 → 백업 파일 만들기</strong>로 만든 <strong>.db</strong> 파일을 여기에 끌어다 놓거나 열어 주세요.": [
-  "Signed in as <strong>{email}</strong>. Location records such as routes and places are not uploaded to the server. In the Zepi app on your phone, go to <strong>Settings → Backup → Create backup file</strong>, then drop or open the <strong>.db</strong> file here.",
-  "已用 <strong>{email}</strong> 登录。路线、地点等位置记录不会上传到服务器。请在手机 Zepi 应用中进入 <strong>设置 → 备份 → 创建备份文件</strong>，然后把 <strong>.db</strong> 文件拖到这里或打开。",
-  "<strong>{email}</strong> でログインしました。移動ルートや場所などの位置記録はサーバーにアップロードしません。スマホの Zepi アプリで <strong>設定 → バックアップ → バックアップファイルを作成</strong> し、<strong>.db</strong> ファイルをここにドラッグするか開いてください。"
+ "<strong>{email}</strong>으로 로그인했어요. 다닌 길·장소 같은 위치 기록은 서버에 올리지 않아요. 폰의 바람소리 앱 <strong>설정 → 백업 → 백업 파일 만들기</strong>로 만든 <strong>.db</strong> 파일을 여기에 끌어다 놓거나 열어 주세요.": [
+  "Signed in as <strong>{email}</strong>. Location records such as routes and places are not uploaded to the server. In the BaramSori app on your phone, go to <strong>Settings → Backup → Create backup file</strong>, then drop or open the <strong>.db</strong> file here.",
+  "已用 <strong>{email}</strong> 登录。路线、地点等位置记录不会上传到服务器。请在手机 BaramSori 应用中进入 <strong>设置 → 备份 → 创建备份文件</strong>，然后把 <strong>.db</strong> 文件拖到这里或打开。",
+  "<strong>{email}</strong> でログインしました。移動ルートや場所などの位置記録はサーバーにアップロードしません。スマホの BaramSori アプリで <strong>設定 → バックアップ → バックアップファイルを作成</strong> し、<strong>.db</strong> ファイルをここにドラッグするか開いてください。"
  ]
 }

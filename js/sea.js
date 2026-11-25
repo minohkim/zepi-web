@@ -1,4 +1,4 @@
-// 제피 웹 · 바다 (가까운 관측소 물때표 · 사리/조금 · 파도와 수온)
+// 바람소리 웹 · 바다 (가까운 관측소 물때표 · 사리/조금 · 파도와 수온)
 // 앱의 lib/services/tide.dart, sea.dart 를 옮겨 왔어요.
 (function () {
   const Z = window.ZI18N, t = Z.t, tOpt = Z.tOpt;

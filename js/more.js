@@ -1,4 +1,4 @@
-// 제피 웹 · 내 여행 (집 밖 며칠을 자동으로 묶은 목록) · 배지·레벨
+// 바람소리 웹 · 내 여행 (집 밖 며칠을 자동으로 묶은 목록) · 배지·레벨
 // 앱의 lib/trips.dart, lib/badges.dart, lib/explore_grid.dart, screens/trips·badges_screen.dart 를 옮겨 왔어요.
 (function () {
   const Z = window.ZI18N, t = Z.t, tOpt = Z.tOpt;

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>바람소리 설치하기</title>
+<meta name="description" content="바람 따라 걷고, 소리처럼 남기고, 바람소리 베타. 아이폰·갤럭시 무료로 먼저 써 보세요.">
+<meta property="og:title" content="바람소리 · 바람 따라 걷고, 소리처럼 남기고">
+<meta property="og:description" content="이번 주말 날씨·제철·축제, 물때·바람·수온, 230개 시군구 정복 지도까지. 베타 무료.">
+<meta name="robots" content="noindex">
+<style>
+:root { --bg: #F4F8F5; --surface: #FFFFFF; --ink: #1C211E; --muted: #5A635D; --line: #E5E2D8; --leaf: #0E8465; --sun: #F2B705; }
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0F1411; --surface: #161D18; --ink: #E5EBE3; --muted: #9AA69D; --line: #29332C; --leaf: #4FC9A4; color-scheme: dark; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif; line-height: 1.6;
+  min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 32px 20px; }
+main { width: 100%; max-width: 440px; display: flex; flex-direction: column; gap: 20px; text-align: center; align-items: center; }
+.icon { width: 88px; height: 88px; }
+h1 { margin: 0; font-size: 28px; line-height: 1.3; }
+p { margin: 0; color: var(--muted); }
+.btns { width: 100%; display: grid; gap: 12px; }
+a.btn { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 64px; border-radius: 18px; text-decoration: none; font-weight: 700; font-size: 18px; }
+a.btn small { font-weight: 400; font-size: 13px; opacity: .8; }
+a.primary { background: var(--sun); color: #1C211E; }
+a.secondary { background: var(--surface); color: var(--ink); border: 1px solid var(--line); }
+a:focus-visible { outline: 3px solid var(--leaf); outline-offset: 2px; }
+.note { font-size: 14px; }
+.url { font-family: ui-monospace, Menlo, monospace; font-size: 14px; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; word-break: break-all; }
+</style>
+</head>
+<body>
+<main>
+  <svg class="icon" viewBox="0 0 132 132" role="img" aria-label="바람소리 아이콘"><rect width="132" height="132" rx="30" fill="#0E8465"/><path d="M30 34 H78 V82 a22 22 0 0 1 -44 0" fill="none" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" stroke-dasharray="1 17"/><circle cx="34" cy="84" r="11" fill="#F2B705"/><circle cx="102" cy="34" r="6" fill="#FFFFFF" opacity="0.5"/></svg>
+  <h1 id="title">바람소리 설치하기</h1>
+  <p id="msg">바람 따라 걷고, 소리처럼 남기고 · 베타 무료</p>
+  <div class="btns">
+    <a class="btn primary" id="ios" href="#">아이폰<small>TestFlight로 바로 설치</small></a>
+    <a class="btn secondary" id="android" href="beta.html">갤럭시 · 안드로이드<small>구글 계정을 남기면 설치 메일이 가요</small></a>
+  </div>
+  <p class="note" id="pc" hidden>폰에서 이 주소를 열면 바로 설치로 이어져요</p>
+  <div class="url" id="pcUrl" hidden></div>
+</main>
+<script>
+(() => {
+  // 아이폰 설치 링크 (beta.html의 TESTFLIGHT_URL과 같게)
+  const TESTFLIGHT_URL = "https://testflight.apple.com/join/K4vm2seY";
+  const SB_URL = "https://xkhfannbztgvarxqhzno.supabase.co";
+  const SB_KEY = "sb_publishable__uulkrUbHekv5cxsE-UyHw_oXkR7wtM";
+
+  const params = new URLSearchParams(location.search);
+  const from = (params.get("from") || "direct").replace(/[^\w.-]/g, "").slice(0, 60) || "direct";
+  const ua = navigator.userAgent || "";
+  const isIOS = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  const isAndroid = /Android/.test(ua);
+  const platform = isIOS ? "ios" : isAndroid ? "android" : "other";
+
+  const androidUrl = "beta.html?p=android&from=" + encodeURIComponent(from);
+  document.getElementById("ios").href = TESTFLIGHT_URL;
+  document.getElementById("android").href = androidUrl;
+
+  // 어느 광고에서 몇 번 눌렀는지 (link_clicks 표: 넣기만 가능). 표가 없어도 설치는 그대로 돼요.
+  function log(action) {
+    try {
+      fetch(SB_URL + "/rest/v1/link_clicks", {
+        method: "POST", keepalive: true,
+        headers: { apikey: SB_KEY, Authorization: "Bearer " + SB_KEY, "Content-Type": "application/json", Prefer: "return=minimal" },
+        body: JSON.stringify({ source: from, platform, action }),
+      }).catch(() => {});
+    } catch (e) {}
+  }
+
+  if (isIOS) {
+    log("open_testflight");
+    document.getElementById("msg").textContent = "TestFlight로 이동하고 있어요…";
+    setTimeout(() => location.replace(TESTFLIGHT_URL), 250);
+  } else if (isAndroid) {
+    log("open_beta_android");
+    document.getElementById("msg").textContent = "베타 신청으로 이동하고 있어요…";
+    setTimeout(() => location.replace(androidUrl), 250);
+  } else {
+    log("view_pc");
+    document.getElementById("pc").hidden = false;
+    const u = document.getElementById("pcUrl");
+    u.hidden = false;
+    u.textContent = location.origin + location.pathname.replace(/\.html$/, "") + (from !== "direct" ? "?from=" + from : "");
+    document.getElementById("ios").addEventListener("click", () => log("click_ios"));
+    document.getElementById("android").addEventListener("click", () => log("click_android"));
+  }
+})();
+</script>
+</body>
+</html>
