@@ -100,7 +100,7 @@
   ZLOC.regionAt = regionAt;
   // 에어코리아 시도 이름
   function airSido(sido) {
-    const m = { "서울특별시": "서울", "부산광역시": "부산", "대구광역시": "대구", "인천광역시": "인천", "광주광역시": "광주", "대전광역시": "대전", "울산광역시": "울산", "세종특별자치시": "세종", "경기도": "경기", "강원특별자치도": "강원", "강원도": "강원", "충청북도": "충북", "충청남도": "충남", "전북특별자치도": "전북", "전라북도": "전북", "전라남도": "전남", "경상북도": "경북", "경상남도": "경남", "제주특별자치도": "제주" };
+    const m = { "서울특별시": "서울", "부산광역시": "부산", "대구광역시": "대구", "인천광역시": "인천", "광주광역시": "광주", "대전광역시": "대전", "울산광역시": "울산", "세종특별자치시": "세종", "경기도": "경기", "강원특별자치도": "강원", "강원도": "강원", "충청북도": "충북", "충청남도": "충남", "전북특별자치도": "전북", "전라북도": "전북", "전라남도": "전남", "경상북도": "경북", "경상남도": "경남", "제주특별자치도": "제주", "전남광주통합특별시": "전남" };
     return m[sido] || "";
   }
 
@@ -129,8 +129,10 @@
   }
   function actLeft(a, k) {
     const today = ymd(k.y, k.m, k.d);
-    let end = ymd(k.y, Math.floor(a.to / 100), a.to % 100);
-    if (end < today) end = ymd(k.y + 1, Math.floor(a.to / 100), a.to % 100);
+    // 윤년에는 2/28로 끝나는 것도 2/29까지 보여요 (actsNow와 맞춤, QA 11-26)
+    const endOf = (y) => (a.to === 228 && y % 4 === 0 && (y % 100 !== 0 || y % 400 === 0) ? ymd(y, 2, 29) : ymd(y, Math.floor(a.to / 100), a.to % 100));
+    let end = endOf(k.y);
+    if (end < today) end = endOf(k.y + 1);
     return Math.round((end - today) / 864e5);
   }
   function actsNow(k) {
@@ -179,10 +181,14 @@
     cache.set(key, { at: Date.now(), v });
     return v;
   }
+  // 응답이 오지 않으면 10초에 끊어요 (안 그러면 오늘 탭 전체가 '준비하는 중'에 멈춰요)
   async function getJson(url) {
-    const r = await fetch(url);
-    if (!r.ok) throw new Error("HTTP " + r.status);
-    return r.json();
+    const ac = new AbortController(), to = setTimeout(() => ac.abort(), 10000);
+    try {
+      const r = await fetch(url, { signal: ac.signal });
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return await r.json();
+    } finally { clearTimeout(to); }
   }
   function openMeteo(lat, lng) {
     const u = "https://api.open-meteo.com/v1/forecast?latitude=" + lat.toFixed(3) + "&longitude=" + lng.toFixed(3) +
@@ -217,6 +223,7 @@
   }
   function items(j) {
     const it = j && j.response && j.response.body && j.response.body.items;
+    if (Array.isArray(it)) return it; // 에어코리아 JSON 은 items 가 바로 배열 (기상청은 items.item)
     const v = it && it.item;
     return Array.isArray(v) ? v : v ? [v] : [];
   }
@@ -311,7 +318,7 @@
   let shownFor = "", busy = false, again = 0; // again: 불러오는 중에 들어온 요청 (1 보통, 2 force)
   function locLabel(l, reg) {
     if (l.label) return tOpt(l.label);
-    if (reg) return (Z.lang === "ko" ? reg.sido.replace(/(특별자치도|특별자치시|광역시|특별시)$/, "") : tOpt(reg.sido)) + " " + reg.name;
+    if (reg) return (Z.lang === "ko" ? reg.sido.replace(/(통합특별시|특별자치도|특별자치시|광역시|특별시)$/, "") : tOpt(reg.sido)) + " " + reg.name;
     return l.lat.toFixed(3) + ", " + l.lng.toFixed(3);
   }
   function locBar(l, reg) {
@@ -360,7 +367,7 @@
       let wx = null, air = null, kma = null, wxErr = "", airSrc = "";
       const signed = ZAPP.signedIn();
       const jobs = [
-        openMeteo(l.lat, l.lng).then((v) => (wx = v)).catch((e) => (wxErr = e.message)),
+        openMeteo(l.lat, l.lng).then((v) => (wx = v)).catch((e) => { wxErr = e.message; console.warn("open-meteo", e); }),
         (async () => {
           const sd = reg && airSido(reg.sido);
           if (signed && sd) { try { air = await airKorea(sd); airSrc = t("에어코리아 · {sido} 평균", { sido: Z.lang === "ko" ? sd : tOpt(reg.sido) }); return; } catch (e) {} }
@@ -396,12 +403,15 @@
       h += '<div class="cardgrid">';
       // 날씨
       if (cur) {
-        const [em, txt] = wmo(code, cur.is_day);
+        let [em, txt] = wmo(code, cur.is_day);
+        // 기상청 실황이 비·눈이면 그림·말도 맞춰요 ('-3° 맑음'인데 눈 노래가 나오던 것)
+        if (kma && snow) [em, txt] = ["🌨️", "눈"];
+        else if (kma && rain) [em, txt] = ["🌧️", "비"];
         const temp = kma && isFinite(kma.T1H) ? kma.T1H : cur.temperature_2m;
         const hum = kma && isFinite(kma.REH) ? kma.REH : cur.relative_humidity_2m;
         const wind = kma && isFinite(kma.WSD) ? kma.WSD : cur.wind_speed_10m;
         const rn = kma && isFinite(kma.RN1) ? kma.RN1 : cur.precipitation;
-        h += '<article class="card2"><h2>' + esc(t("지금 날씨")) + "<small>" + esc(kma ? t("기상청 초단기 실황") : "Open-Meteo") + "</small></h2>" +
+        h += '<article class="card2"><h2>' + esc(t("지금 날씨")) + "<small>" + esc(kma && isFinite(kma.T1H) ? t("기상청 초단기 실황") : "Open-Meteo") + "</small></h2>" +
           '<div style="display:flex;align-items:center;gap:14px"><span style="font-size:44px" aria-hidden="true">' + em + '</span><div><div class="big">' + pct(temp) + '°</div><div class="muted">' + esc(t(txt)) + " · " + esc(t("체감 {n}°", { n: pct(cur.apparent_temperature) })) + "</div></div></div>" +
           '<dl class="kv"><dt>' + esc(t("습도")) + "</dt><dd>" + pct(hum) + "%</dd><dt>" + esc(t("바람")) + "</dt><dd>" + fix1(wind) + " m/s</dd><dt>" + esc(t("강수")) + "</dt><dd>" + fix1(rn) + " mm</dd>" +
           (daily ? "<dt>" + esc(t("오늘")) + "</dt><dd>" + pct(arr(daily, "temperature_2m_min")[0]) + "° / " + pct(arr(daily, "temperature_2m_max")[0]) + "° · " + esc(t("비 올 확률 {n}%", { n: pct(arr(daily, "precipitation_probability_max")[0]) })) + "</dd>" : "") +
@@ -428,7 +438,7 @@
         if (!signed) h += '<div class="muted">' + esc(t("로그인하면 기상청 실황 값으로 보여요.")) + "</div>";
         h += "</article>";
       } else {
-        h += '<article class="card2"><h2>' + esc(t("지금 날씨")) + '</h2><div class="muted">' + esc(t("날씨를 불러오지 못했어요.")) + " " + esc(wxErr) + "</div></article>";
+        h += '<article class="card2"><h2>' + esc(t("지금 날씨")) + '</h2><div class="muted">' + esc(t("날씨를 불러오지 못했어요.")) + "</div></article>";
       }
 
       // 공기
@@ -520,6 +530,8 @@
 
   ZLOC.on(() => { shownFor = ""; if (!$("view-today").hidden) render(true); });
   window.ZTODAY = { show: () => render(false), refresh: () => render(true) };
+  // 켜 둔 채 자정·시간이 바뀌면 다시 그려요 (key 에 날짜·시가 들어 있어 같은 시간엔 그대로, QA 11-26)
+  setInterval(() => { const v = document.getElementById("view-today"); if (window.ZAPP_READY && v && !v.hidden && !document.hidden) render(false); }, 60e3);
   // 로그인 상태가 바뀌면 다시
   window.addEventListener("zapp-auth", () => { shownFor = ""; if (window.ZAPP_READY && !$("view-today").hidden) render(true); });
   // app.html 준비가 이 파일보다 먼저 끝났으면(예: CDN 실패) 지금 그려요
