@@ -1,4 +1,4 @@
-// 제피 웹 · 음력 날짜와 물때 (앱 lib/services/fish_plan.dart 의 lunarDay · mulName 을 옮겨 왔어요)
+// 바람소리 웹 · 음력 날짜와 물때 (앱 lib/services/fish_plan.dart 의 lunarDay · mulName 을 옮겨 왔어요)
 // - 삭(새달) 시각: Meeus 「Astronomical Algorithms」 49장 (평균 삭 + 주요 주기 보정항 25개 + 행성 보정 14개)
 // - 음력 날짜: 한국 시각(KST) 달력 날짜로, 그날 안에 삭이 든 날이 초하루
 // - 물때 이름: 서해식 7물때 (음력 1일 = 7물, 8일·23일 = 조금, 9일·24일 = 무시)

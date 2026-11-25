@@ -1,4 +1,4 @@
-// 제피 웹 · 놀이 · 바다 낚시 게임 (찌낚시 · 루어 · 원투) — 바다 탭에서 열려요 (js/play.js)
+// 바람소리 웹 · 놀이 · 바다 낚시 게임 (찌낚시 · 루어 · 원투) — 바다 탭에서 열려요 (js/play.js)
 // - 낚시 방법마다 낚싯대 · 던지는 동작 · 소리가 달라요
 //   · 찌낚시: 5.3m 긴 갯바위 낚싯대, 살짝 던지기, 밑밥 주걱질, 반유동/전유동, 조류 따라 흐르는 찌, 뜰채로 떠올리기
 //   · 루어: 짧고 빳빳한 대, 짧게 후려치는 "휙!" + 베일 닫는 "칸!", 톡톡 액션
@@ -34,7 +34,7 @@
   const PLACES = { W: "서해", S: "남해", E: "동해" };
   const PI = { W: 0, S: 1, E: 2 };
   // 실제 낚시터 (좌표는 대략 · 지도에서 찾아 보기). sea: 서해 W · 남해 S · 동해 E, m: f=갯바위 찌 · l=방파제 루어 · s=백사장 원투
-  // 내 위치(제피 '오늘'의 위치 · 내 기록의 마지막 위치 · GPS)에서 가까운 순으로 보여 줘요
+  // 내 위치(바람소리 '오늘'의 위치 · 내 기록의 마지막 위치 · GPS)에서 가까운 순으로 보여 줘요
   const SPOT_LIST = [
     { id: "sinjindo", n: "태안 신진도 갯바위", sea: "W", m: "f", lat: 36.676, lng: 126.131 },
     { id: "oeyeondo", n: "보령 외연도 갯바위", sea: "W", m: "f", lat: 36.224, lng: 126.08 },
@@ -147,7 +147,7 @@
     croaker: { sci: "Pennahia argentata", how: "서해 여름 원투, 청갯지렁이. 물때 좋을 때 떼로", d: "'백조기'(보구치). 끌어올리면 '꾸욱' 소리를 내요" },
     redbream: { sci: "Pagrus major", how: "깊은 곳, 쏙·새우·참갯지렁이. 물살 있을 때. 귀해요", d: "'참돔'. 바다의 여왕, 분홍빛에 파란 점" },
   };
-  let gpsLoc = null; // 제피 밖(미리보기)에서 GPS로 찾은 위치
+  let gpsLoc = null; // 바람소리 밖(미리보기)에서 GPS로 찾은 위치
   function distKm(a, b, c, d) { const r = Math.PI / 180, x = (d - b) * r * Math.cos(((a + c) / 2) * r), y = (c - a) * r; return Math.sqrt(x * x + y * y) * 6371; }
   function myLoc() {
     try { if (window.ZLOC) { const l = ZLOC.init(); if (l && isFinite(l.lat)) return { lat: l.lat, lng: l.lng, src: l.src, label: l.label || "" }; } } catch (e) {}
@@ -271,7 +271,7 @@
   const diff = () => save.diff || 2;
   const easy = () => diff() === 1;
   const hard = () => diff() === 3;
-  // ---------- 내 계정에 저장 (제피 로그인: 웹은 ZAPP, 앱 안에서는 앱이 열어 준 길) ----------
+  // ---------- 내 계정에 저장 (바람소리 로그인: 웹은 ZAPP, 앱 안에서는 앱이 열어 준 길) ----------
   const CLOUD_DOC = "game_fish";
   let cloudT = 0, cloudState = "", cloudPulled = false;
   function cloudApi() { try { return window.ZAPP && ZAPP.docGet && ZAPP.signedIn && ZAPP.signedIn() ? ZAPP : null; } catch (e) { return null; } }
@@ -840,7 +840,7 @@
     g.fillStyle = "rgba(255,255,255,0.18)"; for (let i = 0; i < 30; i++) g.fillRect((i * 97) % 720, 420 + i * 15, 40 + (i * 13) % 60, 2);
     g.fillStyle = "rgba(255,255,255,0.92)"; rr(40, 60, 640, 780, 36); g.fill();
     const sp0 = SP.find((x) => x.id === f.id) || { c: "#888" }, gr = f.g >= 0 ? GRADE[f.g] : null;
-    txt("🎣 " + t("제피 낚시"), 360, 120, 30, "#1F6B3A", "center", "800");
+    txt("🎣 " + t("바람소리 낚시"), 360, 120, 30, "#1F6B3A", "center", "800");
     drawFish(360, 330, 420, Object.assign({}, sp0, { id: f.id }));
     txt(t(f.n), 360, 520, 56, "#1c211e", "center", "900");
     txt(f.size + "cm · " + kgTxt(f.kg || 0), 360, 590, 40, "#1c211e", "center", "800");
@@ -2333,7 +2333,7 @@
     else if (b.hasAttribute("data-gshare2")) {
       const box = root.querySelector("#gShot"), url = box && box.dataset.url; if (!url) return;
       if (window.ZNATIVE) { window.ZNATIVE.call("shareImage", { data: url, name: "zepi-fish" }).catch(() => { const p = box.querySelector("p"); if (p) p.textContent = t("앱을 최신 버전으로 업데이트하면 공유할 수 있어요"); }); return; }
-      fetch(url).then((r) => r.blob()).then((bl) => { const file = new File([bl], "zepi-fish.png", { type: "image/png" }); if (navigator.canShare && navigator.canShare({ files: [file] })) return navigator.share({ files: [file], title: t("제피 낚시") }); throw new Error("no-share"); }).catch(() => { const p = box.querySelector("p"); if (p) p.textContent = t("이 화면에서는 공유가 안 돼요. 사진을 길게 눌러 저장하세요"); });
+      fetch(url).then((r) => r.blob()).then((bl) => { const file = new File([bl], "zepi-fish.png", { type: "image/png" }); if (navigator.canShare && navigator.canShare({ files: [file] })) return navigator.share({ files: [file], title: t("바람소리 낚시") }); throw new Error("no-share"); }).catch(() => { const p = box.querySelector("p"); if (p) p.textContent = t("이 화면에서는 공유가 안 돼요. 사진을 길게 눌러 저장하세요"); });
     }
     else if (b.hasAttribute("data-gtog")) { save.together = !save.together; store(); if (save.together) rtConnect(); else { rtStatus = "off"; rtClose(); } renderPanel(); }
     else if (b.hasAttribute("data-grelease")) {
@@ -2351,7 +2351,7 @@
     }
     else if (b.hasAttribute("data-gshare")) {
       const sum = sess.filter((c) => !c.junk).map((c) => t(c.n) + " " + c.size + "cm");
-      const text = t("제피 낚시 게임 오늘 조과 🎣 {list}", { list: sum.join(", ") || t("장화") }) + " — " + t(spot().n);
+      const text = t("바람소리 낚시 게임 오늘 조과 🎣 {list}", { list: sum.join(", ") || t("장화") }) + " — " + t(spot().n);
       const msg = root.querySelector("#gShareMsg");
       try { navigator.clipboard.writeText(text).then(() => { if (msg) msg.textContent = t("복사했어요"); }, () => { if (msg) msg.textContent = text; }); } catch (err) { if (msg) msg.textContent = text; }
     }

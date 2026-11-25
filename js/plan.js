@@ -53,7 +53,7 @@
     ["nopo", "🏮", "노포·백년가게", "오래 검증된 집", [39, 38], ["시장"], "제피"],
     ["remote", "🏔️", "오지·한적한 곳", "도시에서 먼 깊은 곳", [12], ["계곡", "마을", "숲", "섬"], "제피", { rural: 1 }],
     ["unconquered", "🗺️", "미정복 땅", "안 가 본 시군구", [12], [], "제피"],
-    ["random", "🎲", "P처럼 아무거나", "제피가 골라요", [12, 39], [], "제피"],
+    ["random", "🎲", "P처럼 아무거나", "바람소리가 골라요", [12, 39], [], "제피"],
     ["sea", "🌊", "바다·해변", "해변 산책·노을", [12], ["해변", "해수욕장", "해안", "등대", "바다", "섬"], "자연", { sea: 1 }],
     ["forest", "🌲", "숲·휴양림", "휴양림·수목원", [12, 32], ["휴양림", "숲", "수목원", "자연"], "자연", { rural: 1 }],
     ["trek", "🥾", "산·트레킹", "등산·둘레길", [12], ["산", "둘레길", "트레킹", "국립공원", "오름", "길"], "자연", { rural: 1 }],
@@ -308,7 +308,7 @@
   }
 
   // ---------- 3단계: AI 일정 ----------
-  const SYSTEM = `너는 개인 여행 앱 "제피"의 주말 일정 설계자야. 사용자는 "J 같은 P"(숙소·물때처럼 놓치면 안 되는 건 미리 잡고, 나머지는 현장에서 즐기는 사람).
+  const SYSTEM = `너는 개인 여행 앱 "바람소리"의 주말 일정 설계자야. 사용자는 "J 같은 P"(숙소·물때처럼 놓치면 안 되는 건 미리 잡고, 나머지는 현장에서 즐기는 사람).
 교과서 같은 무난한 코스 말고, 이 사람이 이번 주말 실제로 들고 따라갈 수 있는 구체적인 일정을 짜.
 
 규칙:
@@ -463,7 +463,7 @@ JSON 하나만 답해:
       '<button type="button" data-from="gps">◎ ' + esc(t("내 위치")) + "</button>" +
       DRIVES.map((m) => '<button type="button" class="' + (st.maxMin === m ? "on" : "") + '" data-max="' + m + '">' + esc(t("{n}시간 안", { n: m / 60 })) + "</button>").join("") + "</div></div>";
     for (const g of GROUPS) {
-      h += '<div class="card2"><h2>' + esc(t(g === "제피" ? "제피 추천" : g)) + '</h2><div class="wants">' +
+      h += '<div class="card2"><h2>' + esc(t(g === "제피" ? "바람소리 추천" : g)) + '</h2><div class="wants">' +
         WANTS.filter((w) => w.group === g).map((w) => '<button type="button" class="want' + (st.wants.includes(w.id) ? " on" : "") + '" data-want="' + w.id + '" aria-pressed="' + st.wants.includes(w.id) + '"><span aria-hidden="true">' + w.emoji + "</span><b>" + esc(t(w.label)) + "</b><small>" + esc(t(w.sub)) + "</small></button>").join("") + "</div></div>";
     }
     h += '<div class="planbar"><span>' + esc(st.wants.length ? t("{n}개 골랐어요", { n: st.wants.length }) : t("하나 이상 골라 주세요")) + '</span><button class="btn primary" type="button" data-act="rank"' + (st.wants.length ? "" : " disabled") + ">" + esc(t("어디로 갈지 추천받기")) + "</button></div>";

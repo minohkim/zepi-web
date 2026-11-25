@@ -1,4 +1,4 @@
-// 제피 웹 · 문의하기 + 오류 알림 → 서버 reports 표 (넣기만 되고, 읽기는 Supabase 대시보드에서만)
+// 바람소리 웹 · 문의하기 + 오류 알림 → 서버 reports 표 (넣기만 되고, 읽기는 Supabase 대시보드에서만)
 (function () {
   const SB_URL = "https://xkhfannbztgvarxqhzno.supabase.co";
   const SB_KEY = "sb_publishable__uulkrUbHekv5cxsE-UyHw_oXkR7wtM";

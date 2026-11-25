@@ -1,4 +1,4 @@
-// 제피 웹 · 놀이 · 다시 오르는 산 — 정복 지도 탭에서 열려요 (js/play.js)
+// 바람소리 웹 · 놀이 · 다시 오르는 산 — 정복 지도 탭에서 열려요 (js/play.js)
 // - 산을 고르면 입구 → 쉼터 → 쉼터 → 정상. 큰 버튼을 "똑-딱" 박자에 맞춰 누르면 성큼, 아무 때나 눌러도 한 걸음
 // - 쉬운 모드: 버튼을 꾹 누르고 있으면 천천히 걸어가요. 힘이 떨어지면 저절로 쉬었다 가요 (실패 없음)
 // - 내 기록에서 가 본 시군구에 있는 산은 '가 본 산'으로 먼저 보여요
@@ -32,7 +32,7 @@
   const M = () => MOUNTS.find((m) => m.id === save.sel) || MOUNTS[0];
 
   // 내 기록에서 가 본 시군구 → 가 본 산
-  let summitSet = new Set(); // 제피 앱의 100대 명산에서 실제로 오른 산
+  let summitSet = new Set(); // 바람소리 앱의 100대 명산에서 실제로 오른 산
   function visitedSet() {
     const out = new Set();
     summitSet = new Set(); // 로그아웃·예시 데이터로 바뀌면 지난 🏅가 남지 않게
@@ -247,7 +247,7 @@
     const vis = visitedSet();
     const list = MOUNTS.slice().sort((a, b) => (vis.has(b.id) - vis.has(a.id)));
     let h = '<article class="panel gcard"><h3>' + esc(t("어느 산에 오를까요?")) + "</h3>";
-    if (vis.size) h += '<p class="muted" style="margin:0 0 8px">' + esc(t("✓ 표시는 내 기록에 있는 동네의 산이에요")) + (summitSet.size ? " · " + esc(t("🏅 는 제피 앱 기록으로 실제로 오른 산")) : "") + "</p>";
+    if (vis.size) h += '<p class="muted" style="margin:0 0 8px">' + esc(t("✓ 표시는 내 기록에 있는 동네의 산이에요")) + (summitSet.size ? " · " + esc(t("🏅 는 바람소리 앱 기록으로 실제로 오른 산")) : "") + "</p>";
     h += '<div class="chips">' + list.map((m) => {
       const d = save.done[m.id];
       return '<button type="button" data-msel="' + m.id + '" class="' + (save.sel === m.id ? "on" : "") + '">' + (summitSet.has(m.n) ? "🏅 " : vis.has(m.id) ? "✓ " : "") + esc(t(m.n)) + (d ? " 🏁" : "") + "</button>";
@@ -264,7 +264,7 @@
     const b = e.target.closest("button"); if (!b) return;
     if (b.dataset.msel) { save.sel = b.dataset.msel; store(); reset(); renderPanel(); }
     else if (b.hasAttribute("data-mshare")) {
-      const m = M(), sec = Math.round(elapsed), text = t("제피 다시 오르는 산: {name} {peak} {h}m 완등! ({m}분 {s}초)", { name: t(m.n), peak: t(m.peak), h: m.h, m: Math.floor(sec / 60), s: sec % 60 });
+      const m = M(), sec = Math.round(elapsed), text = t("바람소리 다시 오르는 산: {name} {peak} {h}m 완등! ({m}분 {s}초)", { name: t(m.n), peak: t(m.peak), h: m.h, m: Math.floor(sec / 60), s: sec % 60 });
       const out = root.querySelector("#mShareMsg");
       try { navigator.clipboard.writeText(text).then(() => { out.textContent = t("복사했어요"); }, () => { out.textContent = text; }); } catch (err) { out.textContent = text; }
     }

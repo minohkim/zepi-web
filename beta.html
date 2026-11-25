@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <script src="i18n.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>제피 베타 신청</title>
-<meta name="description" content="J 같은 P의 여행, 제피 베타 테스터를 모아요. 아이폰·갤럭시 모두 신청할 수 있어요.">
-<meta property="og:title" content="제피 베타 테스터 모집">
+<title>바람소리 베타 신청</title>
+<meta name="description" content="J 같은 P의 여행, 바람소리 베타 테스터를 모아요. 아이폰·갤럭시 모두 신청할 수 있어요.">
+<meta property="og:title" content="바람소리 베타 테스터 모집">
 <meta property="og:description" content="다닌 길은 조용히 기록하고, 떠날 땐 날씨·물때·휴양림 예약일까지 챙겨주는 여행 앱">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap">
@@ -70,12 +70,12 @@ footer a { color: inherit; }
   <div class="brand">
     <svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#1F6B3A"/><circle cx="24" cy="27" r="11" fill="#A8402A"/><circle cx="24" cy="27" r="3.6" fill="#1F6B3A"/><path d="M24 16c3-6 9-8 13-7-1 5-6 9-13 7z" fill="#9FD3A8"/></svg>
     <div>
-      <h1>제피 베타 테스터 모집</h1>
+      <h1>바람소리 베타 테스터 모집</h1>
       <p class="sub">J 같은 P의 여행</p>
     </div>
   </div>
 
-  <section class="card" aria-label="제피가 하는 일">
+  <section class="card" aria-label="바람소리가 하는 일">
     <ul class="feat">
       <li><span aria-hidden="true">🗺️</span><div><b>다닌 길이 저절로 지도에</b><span>켜두면 하루 종일 조용히 기록해요. "여기 왔었나?"도 바로 찾아요.</span></div></li>
       <li><span aria-hidden="true">🚩</span><div><b>전국 230개 시군구 정복</b><span>사진첩 위치만으로 예전 여행까지 한 번에 칠해져요.</span></div></li>
@@ -120,7 +120,7 @@ footer a { color: inherit; }
   </section>
 
   <footer>
-    <a href="./">제피 웹</a> · <a href="terms.html">이용약관</a> · <a href="privacy.html">개인정보처리방침</a> ·
+    <a href="./">바람소리 웹</a> · <a href="terms.html">이용약관</a> · <a href="privacy.html">개인정보처리방침</a> ·
     <select id="langSel" aria-label="언어 · Language" style="font:inherit;color:inherit;background:transparent;border:0"></select>
   </footer>
 </main>
@@ -213,13 +213,13 @@ footer a { color: inherit; }
       h = t("<p>갤럭시는 <b>Firebase 초대 메일</b>로 설치해요.</p><ol>") +
         t("<li>몇 분 안에 <b>Firebase App Distribution</b>에서 초대 메일이 와요. 안 보이면 스팸함도 봐 주세요.</li>") +
         t("<li>갤럭시에서 메일을 열고 <b>시작하기</b>를 눌러 초대를 받아요.</li>") +
-        t("<li>안내대로 제피를 내려받아 설치해요. \"출처를 알 수 없는 앱\" 허용을 물으면 허용해 주세요.</li>") +
+        t("<li>안내대로 바람소리를 내려받아 설치해요. \"출처를 알 수 없는 앱\" 허용을 물으면 허용해 주세요.</li>") +
         t("<li>새 버전이 나오면 메일로 알려드려요.</li></ol>");
     } else {
       h = t("<p>갤럭시는 <b>Play 스토어 비공개 테스트</b>로 설치해요.</p><ol>") +
         t("<li>테스터 명단에 넣고 메일로 알려드려요 (하루 이틀 걸려요).</li>") +
         (PLAY_TEST_URL ? t("<li>그다음 아래 버튼에서 <b>\"테스터 되기\"</b>를 눌러요.</li>") : t("<li>메일 속 링크에서 <b>\"테스터 되기\"</b>를 눌러요.</li>")) +
-        t("<li>Play 스토어에서 제피를 설치해요.</li>") +
+        t("<li>Play 스토어에서 바람소리를 설치해요.</li>") +
         t("<li><b>2주 동안 지우지 말고 가끔 열어 주세요.</b> 정식 출시 조건이에요 🙏</li></ol>") +
         (PLAY_TEST_URL ? '<a class="btn" href="' + PLAY_TEST_URL + '">' + t("테스터 되기") + '</a>' : "");
     }

@@ -1,4 +1,4 @@
-// 제피 웹 · 오늘 (날씨 · 공기 · 해와 달 · 절기 · 제철 · 즐길 거리 · 노래 · 밤하늘)
+// 바람소리 웹 · 오늘 (날씨 · 공기 · 해와 달 · 절기 · 제철 · 즐길 거리 · 노래 · 밤하늘)
 // 앱의 lib/season*.dart, lib/services/kma.dart 를 옮겨 왔어요.
 (function () {
   const Z = window.ZI18N, t = Z.t, tOpt = Z.tOpt;
