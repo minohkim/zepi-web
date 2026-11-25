@@ -8943,5 +8943,10 @@
   "This plan was made in the phone app. Please remake it there.",
   "这是在手机App里做的行程，请在App里重新安排。",
   "スマホアプリで作った日程です。アプリで作り直してください。"
+ ],
+ "<strong>{email}</strong>으로 로그인했어요. 다닌 길·장소 같은 위치 기록은 서버에 올리지 않아요. 폰의 제피 앱 <strong>설정 → 백업 → 백업 파일 만들기</strong>로 만든 <strong>.db</strong> 파일을 여기에 끌어다 놓거나 열어 주세요.": [
+  "Signed in as <strong>{email}</strong>. Location records such as routes and places are not uploaded to the server. In the Zepi app on your phone, go to <strong>Settings → Backup → Create backup file</strong>, then drop or open the <strong>.db</strong> file here.",
+  "已用 <strong>{email}</strong> 登录。路线、地点等位置记录不会上传到服务器。请在手机 Zepi 应用中进入 <strong>设置 → 备份 → 创建备份文件</strong>，然后把 <strong>.db</strong> 文件拖到这里或打开。",
+  "<strong>{email}</strong> でログインしました。移動ルートや場所などの位置記録はサーバーにアップロードしません。スマホの Zepi アプリで <strong>設定 → バックアップ → バックアップファイルを作成</strong> し、<strong>.db</strong> ファイルをここにドラッグするか開いてください。"
  ]
 }
