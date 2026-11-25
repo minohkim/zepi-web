@@ -50,6 +50,19 @@
     }
     return out.sort((a, b) => a.s - b.s);
   }
+  // 밭에 있을 때: 첫 심기(씨·모종)부터 마지막 수확 끝까지 (가을에 심어 이듬해 거두는 마늘·양파·딸기 포함)
+  function inGround(c, d, zone) {
+    const st = c.tasks.filter((x) => x.k === "sow" || x.k === "plant"), hv = c.tasks.filter((x) => x.k === "harvest");
+    if (!st.length || !hv.length) return true;
+    for (const s0 of st) for (const y of [d.getFullYear() - 1, d.getFullYear()]) {
+      const s = range(s0, y, zone)[0];
+      const ends = hv.map((h) => { let e = range(h, y, zone)[1]; if (e < s) e = range(h, y + 1, zone)[1]; return e; }).filter((e) => e >= s);
+      if (!ends.length) continue;
+      const e = new Date(Math.min(...ends)); // 이 심기에 이어지는 첫 수확 끝
+      if (d >= addDays(s, -3) && d <= addDays(e, 3)) return true;
+    }
+    return false;
+  }
   const pestsIn = (mine, m) => mine.flatMap((c) => c.pests.filter((p) => p.months.includes(m)).map((p) => ({ c, p })));
   function shouldWater(waterDays, past3, next2, tmax, leafy) {
     if (tmax < 5) return [false, t("추워서 물은 쉬어도 돼요")];
@@ -105,12 +118,34 @@
     farm.updated = Math.max(Date.now(), (farm.updated || 0) + 1);
     const s = JSON.stringify(farm);
     try { localStorage.setItem(KEY, s); } catch (e) {}
-    if (window.ZDOCS) ZDOCS.push("farm", s);
+    if (window.ZDOCS && !needMerge()) ZDOCS.push("farm", s); // 첫 로그인 합치기 전에는 폰 텃밭을 덮지 않게 기다려요
   };
+  const MERGE = "jepi.farm.merge";
+  const needMerge = () => { try { return localStorage.getItem(MERGE) === "1"; } catch (e) { return false; } };
+  // 이 브라우저 첫 로그인: 로그인 전에 만든 웹 텃밭을 서버(폰) 텃밭에 더해요. 실패하면 다음에 다시 (QA 11-26 B7)
+  async function mergeFirst() {
+    if (!window.ZAPP || !ZAPP.signedIn()) return false;
+    let remote = null;
+    try { remote = await ZAPP.docGet("farm"); } catch (e) { console.warn("farm merge", e); return false; }
+    let r = null;
+    try { r = remote ? normFarm(JSON.parse(remote)) : null; } catch (e) {}
+    if (r) {
+      const crops = [...r.crops, ...farm.crops.filter((c) => !r.crops.includes(c))];
+      const loc = r.lat != null ? { lat: r.lat, lng: r.lng, label: r.label, name: r.name } : { lat: farm.lat, lng: farm.lng, label: farm.label, name: farm.name };
+      farm = { ...farm, ...r, ...loc, crops, notes: { ...farm.notes, ...r.notes } };
+    }
+    farm.updated = Math.max(Date.now(), ((r && r.updated) || 0) + 1);
+    const s = JSON.stringify(farm);
+    try { localStorage.setItem(KEY, s); localStorage.removeItem(MERGE); } catch (e) {}
+    ZDOCS.push("farm", s);
+    picking = !farm.crops.length;
+    return true;
+  }
   async function syncFarm() {
     if (!window.ZDOCS) return false;
     let local = null;
     try { local = localStorage.getItem(KEY); } catch (e) {}
+    if (needMerge()) return mergeFirst();
     const before = farm.updated;
     const got = await ZDOCS.sync("farm", local);
     if (!got) return false;
@@ -156,17 +191,18 @@
       const today = day0(new Date());
       frost = wx.some((d) => d.day >= today && d.tmin != null && d.tmin <= 2);
       past = rainSum(wx, addDays(sat, -3), 3); next = rainSum(wx, sat, 2);
-      tmax = satWx && satWx.tmax != null ? satWx.tmax : Math.max(...wx.map((d) => d.tmax || 0));
+      const known = wx.filter((d) => d.tmax != null).map((d) => d.tmax);
+      tmax = satWx && satWx.tmax != null ? satWx.tmax : known.length ? Math.max(...known) : 20;
     }
     let h = '<article class="card2" style="background:color-mix(in srgb, #F4C542 16%, var(--surface))"><h2>' + esc(t("이번 주말 · {date}", { date: fmtMd.format(sat) })) +
       (satWx ? "<small>" + esc(fmtWd.format(sat)) + " " + Math.round(satWx.tmin) + "~" + Math.round(satWx.tmax) + "°" + (satWx.rain >= 1 ? " · " + esc(t("비 {n}mm", { n: Math.round(satWx.rain) })) : "") + (sunWx ? "  " + esc(fmtWd.format(addDays(sat, 1))) + " " + Math.round(sunWx.tmin) + "~" + Math.round(sunWx.tmax) + "°" : "") + "</small>" : "") + "</h2>";
     if (wxErr) h += '<div class="muted">' + esc(wxErr) + "</div>";
     if (frost) h += '<div class="pill bad" style="white-space:normal">🥶 ' + esc(t("열흘 안에 2° 이하로 내려가는 날이 있어요 — 모종은 미루고, 심은 건 덮어 주세요")) + "</div>";
-    if (wx && mine.length) {
+    if (wx && mine.some((c) => inGround(c, sat, zone))) {
       // 이유 문구는 물이 필요한 작물이 있으면 그 작물의 것으로 (QA 11-24: 순서에 따라 '말랐으면 주세요'가 붙던 것)
       const need = [], rest = [];
       let needWhy = null, restWhy = null;
-      for (const c of mine) { const [n, r] = shouldWater(c.water, past, next, tmax, c.group === "잎채소"); (n ? need : rest).push(cropName(c)); if (n && !needWhy) needWhy = r; if (!n && !restWhy) restWhy = r; }
+      for (const c of mine.filter((c) => inGround(c, sat, zone))) { const [n, r] = shouldWater(c.water, past, next, tmax, c.group === "잎채소"); (n ? need : rest).push(cropName(c)); if (n && !needWhy) needWhy = r; if (!n && !restWhy) restWhy = r; }
       const why = need.length ? needWhy : restWhy;
       h += "<div><b>💧 " + (need.length ? esc(need.join(", ")) + " — " : "") + esc(why || t("물은 쉬어도 돼요")) + "</b></div>";
     }
@@ -296,7 +332,8 @@
         ] }],
       });
       if (diag !== me) return;
-      diag.text = (j.content || []).filter((p) => p.type === "text").map((p) => p.text).join("").trim();
+      diag.text = (Array.isArray(j && j.content) ? j.content : []).filter((p) => p && p.type === "text").map((p) => String(p.text || "")).join("").trim();
+      if (!diag.text) throw new Error(t("답을 받지 못했어요. 잠시 뒤 다시 해 주세요.")); // 빈 답이면 'AI 추정' 안내만 남던 것 (QA 11-26 B7)
       diag.busy = false;
     } catch (e) { if (diag !== me) return; diag.busy = false; diag.err = e.message || String(e); }
     render();
@@ -329,5 +366,10 @@
     await loadWx(); render();
   });
   window.addEventListener("zapp-auth", () => { if (window.ZAPP_READY && $("view-farm") && !$("view-farm").hidden) show(); });
+  // 다른 탭에서 텃밭을 고치면 이 탭도 그것을 받아요. 안 그러면 이 탭에서 고칠 때 옛 텃밭 통째로 덮어써요 (QA 11-26)
+  window.addEventListener("storage", (e) => {
+    if (e.storageArea !== localStorage || e.key !== KEY || !e.newValue) return;
+    try { farm = normFarm(JSON.parse(e.newValue)); picking = !farm.crops.length; if ($("view-farm") && !$("view-farm").hidden) render(); } catch (err) {}
+  });
   window.ZFARM = { show };
 })();
