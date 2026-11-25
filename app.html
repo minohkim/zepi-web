@@ -1111,61 +1111,8 @@ body { margin: 0; }
 
   async function loadCloud() {
     if (!session) return;
-    setNotice(t("클라우드에서 내 기록을 불러오는 중이에요…"));
-    try {
-      const [blobs, notes] = await Promise.all([
-        // 기록에 쓰는 것만 받아요. 운동 기록(workouts)·텃밭·여행 계획·놀이 저장 같은 큰 문서까지 매번 받지 않게 (QA 11-24)
-        sb("blobs?select=name,data&name=in.(places,region_days,region_visits,manual_regions,photo_days)"),
-        sb("place_notes?select=key,lat,lng,tags,rating,memo,updated"),
-      ]);
-      const tracks = [];
-      for (let off = 0; ; ) {
-        const part = await sb("day_tracks?select=day,pts&order=day.asc&limit=40&offset=" + off);
-        tracks.push(...part);
-        off += part.length;
-        setNotice(t("클라우드에서 불러오는 중이에요… {n}일", { n: fmtInt.format(off) }));
-        if (part.length < 40) break;
-      }
-      const decoded = [];
-      let n = 0;
-      for (const t of tracks) {
-        // 깨진 줄 하나 때문에 전체를 못 불러오거나(null·"{}") 시각이 NaN이라 멈추지 않게 걸러요. 점은 시각 순서로 (QA 11-23)
-        try {
-          const j = typeof t.pts === "string" ? JSON.parse(t.pts) : t.pts;
-          if (!j || !Number.isFinite(+j.t0) || !Array.isArray(j.p)) continue;
-          // 시각이 Date 범위(±8.64e15ms) 밖이면 buildData의 날짜 나누기가 끝나지 않아요 (QA 11-24)
-          const p = j.p.filter((q) => Array.isArray(q) && Number.isFinite(q[0]) && Number.isFinite(q[1]) && Number.isFinite(q[2]) && Math.abs(+j.t0 + q[0] * 1000) < 8.64e15).sort((x, y) => x[0] - y[0]);
-          decoded.push({ t0: +j.t0, p }); n += p.length;
-        } catch (e) {}
-      }
-      decoded.sort((x, y) => x.t0 - y.t0);
-      const ts = new Float64Array(n), lat = new Float64Array(n), lng = new Float64Array(n), acc = new Float32Array(n);
-      let i = 0;
-      for (const j of decoded) for (const q of j.p) { ts[i] = j.t0 + q[0] * 1000; lat[i] = q[1] / 1e5; lng[i] = q[2] / 1e5; acc[i] = q[3] || 0; i++; }
-      const B = {};
-      for (const b of blobs) { try { B[b.name] = JSON.parse(b.data); } catch (e) {} }
-      // 정복 기록 문서 모양이 깨져 있어도(목록이 아니거나 줄이 null) 전체를 못 불러오지 않게, 읽을 수 있는 줄만 써요 (QA 11-25)
-      const arr = (v) => (Array.isArray(v) ? v.filter(Array.isArray) : []);
-      const data = buildData({
-        n: i, ts, lat, lng, acc,
-        places: Object.entries(B.places || {}).map(([key, name]) => ({ key, name })),
-        notes: (Array.isArray(notes) ? notes : []).filter((r) => r && typeof r === "object"),
-        regionDays: arr(B.region_days).map(([code, day, stay_ms, night]) => ({ code, day, stay_ms, night })),
-        visits: arr(B.region_visits).map(([code, first_ts, last_ts, days]) => ({ code, first_ts, last_ts, days })),
-        manual: Array.isArray(B.manual_regions) ? B.manual_regions : [],
-        photo: arr(B.photo_days).map(([code, day, first_ts, last_ts]) => ({ code, day, first_ts, last_ts })),
-      });
-      if (!data.days.length) {
-        setNotice(t("<strong>{email}</strong>으로 로그인했어요. 아직 올라온 기록이 없어요. 폰의 제피 앱 <strong>설정 → 내 계정 · 클라우드</strong>에서 같은 계정으로 로그인하면 자동으로 올라와요.", { email: esc(session.email) }));
-        return;
-      }
-      source = "cloud";
-      $("sampleBtn").hidden = true;
-      showData(data, t("<strong>{email}</strong> 계정의 기록이에요. {from}부터 {to}까지, {n}일. 장소 메모는 여기서 고치면 폰에도 반영돼요.", {
-        email: esc(session.email), from: fmtDayShort(data.days[0]), to: fmtDayShort(data.days[data.days.length - 1]), n: fmtInt.format(data.days.length) }));
-    } catch (e) {
-      setNotice(t("클라우드에서 불러오지 못했어요.") + " " + esc(e.message || e), true);
-    }
+    // 2026-11-25: 다닌 길·장소·정복 같은 위치 기록은 서버에 두지 않아요 (위치정보 보호). 폰 앱 백업 파일(.db)로 봐요
+    setNotice(t("<strong>{email}</strong>으로 로그인했어요. 다닌 길·장소 같은 위치 기록은 서버에 올리지 않아요. 폰의 제피 앱 <strong>설정 → 백업 → 백업 파일 만들기</strong>로 만든 <strong>.db</strong> 파일을 여기에 끌어다 놓거나 열어 주세요.", { email: esc(session.email) }));
   }
 
   function renderAccount() {
