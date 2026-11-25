@@ -10,7 +10,8 @@
   const fmtMon = new Intl.DateTimeFormat(locale, { month: "short" });
   const fmtWd = new Intl.DateTimeFormat(locale, { weekday: "short" });
   const KEY = "jepi.farm.v1";
-  const KIND = { sow: ["씨 뿌리기", "#C08A2B"], plant: ["모종 심기", "#2F8F4E"], care: ["관리", "#4A7CB5"], harvest: ["수확", "#C2452D"] };
+  // 흰 글자 11px 이 AA(4.5:1)를 넘게 조금 진하게 (QA 11-26 C7: 3.0~4.3 이던 것)
+  const KIND = { sow: ["씨 뿌리기", "#8F6412"], plant: ["모종 심기", "#25763F"], care: ["관리", "#3A6797"], harvest: ["수확", "#B23B24"] };
   const byId = (id) => CROPS.find((c) => c.id === id);
   const cities = [["서울", 37.5665, 126.978], ["수원", 37.2636, 127.0286], ["춘천", 37.8813, 127.7298], ["대전", 36.3504, 127.3845], ["청주", 36.6424, 127.489], ["전주", 35.8242, 127.148], ["광주", 35.1595, 126.8526], ["대구시", 35.8714, 128.6014], ["부산", 35.1796, 129.0756], ["강릉", 37.7519, 128.8761], ["제주", 33.4996, 126.5312]];
 
@@ -132,6 +133,8 @@
     if (r) {
       const crops = [...r.crops, ...farm.crops.filter((c) => !r.crops.includes(c))];
       const loc = r.lat != null ? { lat: r.lat, lng: r.lng, label: r.label, name: r.name } : { lat: farm.lat, lng: farm.lng, label: farm.label, name: farm.name };
+      const added = farm.crops.filter((c) => !r.crops.includes(c) && byId(c)).length;
+      if (added) mergedMsg = t("이 브라우저에서 고른 작물 {n}가지를 폰 텃밭에 더했어요. 이제 폰과 같이 맞춰져요.", { n: added });
       farm = { ...farm, ...r, ...loc, crops, notes: { ...farm.notes, ...r.notes } };
     }
     farm.updated = Math.max(Date.now(), ((r && r.updated) || 0) + 1);
@@ -158,7 +161,7 @@
       return true;
     } catch (e) { return false; }
   }
-  let picking = !farm.crops.length, openCrop = null, memoOrig = "", wx = null, wxErr = "", diag = null;
+  let mergedMsg = "", picking = !farm.crops.length, openCrop = null, memoOrig = "", wx = null, wxErr = "", diag = null;
 
   // ---------- 그리기 ----------
   const cropName = (c) => tOpt(c.name);
@@ -172,7 +175,7 @@
         const soon = upcoming([c], day0(new Date()), zoneOf(farm.lat, farm.lng), 30).some((u) => u.tk.k === "plant" || u.tk.k === "sow");
         return '<button type="button" class="' + (on ? "on" : "") + (soon ? " soon" : "") + '" data-crop="' + c.id + '" aria-pressed="' + on + '">' + c.emoji + " " + esc(cropName(c)) + "</button>";
       }).join("") + "</div></div>").join("") +
-      '<div class="row" style="display:flex;gap:8px"><button class="btn primary" type="button" data-fa="pickdone"' + (nMine ? "" : " disabled") + ">" + esc(t("{n}가지 저장", { n: nMine })) + "</button>" + (nMine ? '<button class="btn" type="button" data-fa="pickcancel">' + esc(t("닫기")) + "</button>" : "") + "</div></article>";
+      '<div class="row" style="display:flex;gap:8px"><button class="btn primary" type="button" data-fa="pickdone"' + (nMine ? "" : " disabled") + ">" + esc(nMine ? t("{n}가지 저장", { n: nMine }) : t("키울 작물을 골라 주세요")) + "</button>" + (nMine ? '<button class="btn" type="button" data-fa="pickcancel">' + esc(t("닫기")) + "</button>" : "") + "</div></article>";
   }
   function placeHtml() {
     const z = zoneOf(farm.lat, farm.lng);
@@ -185,7 +188,7 @@
     const sat = weekendOf(new Date());
     const tasks = tasksAround(mine, sat, zone);
     const pests = pestsIn(mine, sat.getMonth() + 1);
-    let satWx = null, sunWx = null, frost = false, past = 0, next = 0, tmax = 20;
+    let waterNeeded = false, satWx = null, sunWx = null, frost = false, past = 0, next = 0, tmax = 20;
     if (wx) {
       satWx = wx.find((d) => +d.day === +sat); sunWx = wx.find((d) => +d.day === +addDays(sat, 1));
       const today = day0(new Date());
@@ -204,9 +207,11 @@
       let needWhy = null, restWhy = null;
       for (const c of mine.filter((c) => inGround(c, sat, zone))) { const [n, r] = shouldWater(c.water, past, next, tmax, c.group === "잎채소"); (n ? need : rest).push(cropName(c)); if (n && !needWhy) needWhy = r; if (!n && !restWhy) restWhy = r; }
       const why = need.length ? needWhy : restWhy;
+      waterNeeded = need.length > 0;
       h += "<div><b>💧 " + (need.length ? esc(need.join(", ")) + " — " : "") + esc(why || t("물은 쉬어도 돼요")) + "</b></div>";
     }
-    if (!tasks.length && !pests.length) h += '<div class="muted">' + esc(t("이번 주말은 둘러보기만 해도 돼요 🌱")) + "</div>";
+    // 바로 위에 '흠뻑 주세요'가 있는데 '둘러보기만 해도 돼요'가 붙던 것 (QA 11-26 C7)
+    if (!tasks.length && !pests.length) h += '<div class="muted">' + esc(waterNeeded ? t("물 주기 말고 따로 할 일은 없어요 🌱") : t("이번 주말은 둘러보기만 해도 돼요 🌱")) + "</div>";
     for (const x of tasks) h += '<div class="ftask"><span class="fk" style="background:' + KIND[x.tk.k][1] + '">' + esc(kindLabel(x.tk.k)) + "</span> " + x.c.emoji + " " + esc(cropName(x.c)) + (x.tk.n ? " · " + esc(tOpt(x.tk.n)) : "") + ' <span class="muted">(' + fmtMd.format(x.s) + "~" + fmtMd.format(x.e) + ")</span></div>";
     if (pests.length) h += "<div><b>🐛 " + esc(t("{m}월에 조심할 것", { m: sat.getMonth() + 1 })) + "</b>" + pests.map((x) => '<div class="muted" style="color:var(--ink)">' + esc(cropName(x.c)) + " · " + esc(tOpt(x.p.name)) + " — " + esc(tOpt(x.p.tip)) + "</div>").join("") + "</div>";
     return h + "</article>";
@@ -266,7 +271,7 @@
     if (memo && openCrop) { if (memo.value !== memoOrig) farm.notes[openCrop] = memo.value; else memoOrig = typeof farm.notes[openCrop] === "string" ? farm.notes[openCrop] : ""; }
     const zone = zoneOf(farm.lat, farm.lng);
     const mine = farm.crops.map(byId).filter(Boolean);
-    let h = placeHtml();
+    let h = (mergedMsg ? '<div class="needlogin" role="status">🌱 ' + esc(mergedMsg) + "</div>" : "") + placeHtml();
     if (picking || !mine.length) h += pickerHtml();
     if (mine.length) {
       h += '<div class="cardgrid">' + weekendHtml(mine, zone) + upcomingHtml(mine, zone) + diagHtml() + calendarHtml(mine, zone) +
@@ -283,6 +288,9 @@
       if (v !== memoOrig.trim()) { if (v) farm.notes[openCrop] = v; else delete farm.notes[openCrop]; save(); }
       openCrop = null; render();
     } }); }
+    // 좁은 화면에서 달력이 1월부터 보여 '지금' 선이 화면 밖이던 것 — 지금이 왼쪽 1/3쯤 오게 (QA 11-26 C7, A7)
+    const cal = root.querySelector(".fcal"), fnow = cal && cal.querySelector(".fnow");
+    if (fnow && cal.scrollWidth > cal.clientWidth) { const name = cal.querySelector(".fcal-row > span"); cal.scrollLeft = Math.max(0, fnow.getBoundingClientRect().left - cal.getBoundingClientRect().left - (name ? name.offsetWidth : 0) - (cal.clientWidth - (name ? name.offsetWidth : 0)) / 3); }
     const ph = $("farmPhoto");
     if (ph) ph.addEventListener("change", () => ph.files[0] && diagnose(ph.files[0]));
   }
@@ -290,7 +298,7 @@
     if (farm.lat == null) { wx = null; return; }
     try { wx = await farmWx(farm.lat, farm.lng); wxErr = ""; } catch (e) { wx = null; wxErr = t("텃밭 날씨를 못 받았어요"); }
   }
-  async function show() { render(); await syncFarm(); await loadWx(); render(); }
+  async function show() { const had = mergedMsg; render(); await syncFarm(); await loadWx(); render(); if (had && had === mergedMsg) mergedMsg = ""; }
 
   // ---------- 사진 진단 ----------
   function shrink(file) {
