@@ -6,7 +6,9 @@
 <title>BaramSori</title>
 <script>
   // 잘못된 주소로 들어와도 바람소리 웹으로 돌려보내요 (로그인 정보가 담긴 # 뒷부분은 그대로)
-  location.replace("/zepi-web/" + location.search + location.hash); // ?lang=·?login 등도 그대로 (QA 11-23)
+  // baramsori.kr에서는 맨 위(/), 예전 github.io 주소에서는 /zepi-web/ 아래에 있어요 (11-25 도메인 연결)
+  var ZEPI_HOME = /\.github\.io$/.test(location.hostname) ? "/zepi-web/" : "/";
+  location.replace(ZEPI_HOME + location.search + location.hash); // ?lang=·?login 등도 그대로 (QA 11-23)
 </script>
 <style>
   body { font-family: system-ui, sans-serif; background: #F5F7F1; color: #17201A; padding: 40px 16px; text-align: center; }
@@ -14,6 +16,7 @@
 </style>
 </head>
 <body>
-<p><a href="/zepi-web/">바람소리 웹으로 이동 · Go to BaramSori Web · 前往 BaramSori · BaramSori へ移動</a></p>
+<p><a href="/" id="home-link">바람소리 웹으로 이동 · Go to BaramSori Web · 前往 BaramSori · BaramSori へ移動</a></p>
+<script>document.getElementById("home-link").href = ZEPI_HOME;</script>
 </body>
 </html>
