@@ -9,7 +9,10 @@
   // 잘못된 주소로 들어와도 바람소리 웹으로 돌려보내요 (로그인 정보가 담긴 # 뒷부분은 그대로)
   // baramsori.kr에서는 맨 위(/), 예전 github.io 주소에서는 /zepi-web/ 아래에 있어요 (11-25 도메인 연결)
   var ZEPI_HOME = /\.github\.io$/.test(location.hostname) ? "/zepi-web/" : "/";
-  location.replace(ZEPI_HOME + location.search + location.hash); // ?lang=·?login 등도 그대로 (QA 11-23)
+  // 예전 주소의 페이지 이름(app·play·beta·go·privacy·terms)은 살려요. 정해 둔 이름만이라 다른 곳으로 새지 않아요 (QA 11-26)
+  var rest = location.pathname.replace(/^\/zepi-web\//, "/").slice(1);
+  var page = /^(app|play|beta|go|privacy|terms)(\.html)?$/.test(rest) ? rest.replace(/(\.html)?$/, ".html") : "";
+  location.replace(ZEPI_HOME + page + location.search + location.hash); // ?lang=·?login 등도 그대로 (QA 11-23)
 </script>
 <style>
   body { font-family: system-ui, sans-serif; background: #F5F7F1; color: #17201A; padding: 40px 16px; text-align: center; }

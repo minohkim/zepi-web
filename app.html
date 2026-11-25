@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<script src="i18n.js?v=20261125q"></script>
+<script src="i18n.js?v=20261126a"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>바람소리 웹</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -707,8 +707,9 @@ body { margin: 0; }
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-asm-memory-growth.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
-<script src="js/season-data.js?v=20261125q"></script>
+<!-- 밤하늘 계산용(없어도 됨): 느린 CDN이 화면 전체를 막지 않게 async, 늦게 오면 오늘 탭을 다시 그려요 (QA 11-26) -->
+<script async src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js" onload="window.ZTODAY && window.ZAPP_READY && ZTODAY.refresh()"></script>
+<script src="js/season-data.js?v=20261126a"></script>
 <script>
 (function () {
   "use strict";
@@ -827,12 +828,17 @@ body { margin: 0; }
   async function readAuthHash() {
     const h = location.hash.slice(1);
     const qs = new URLSearchParams(location.search);
+    // 폰 앱(PKCE)으로 가입한 확인 메일이 웹으로 오면 ?code= 만 와요. 이메일 확인은 이미 끝났으니 로그인을 안내하고 주소에서 지워요 (QA 11-26)
+    if (qs.get("code") && !/access_token=|error=/.test(h) && !qs.get("error")) {
+      try { history.replaceState(null, "", location.pathname + location.hash); } catch (e) {}
+      return session ? null : t("이메일 확인이 끝났어요. 가입한 이메일로 로그인해 주세요.");
+    }
     if (!/access_token=|error=/.test(h) && !qs.get("error")) return null;
     const q = new URLSearchParams(/access_token=|error=/.test(h) ? h : location.search);
     try { history.replaceState(null, "", location.pathname); } catch (e) {}
     if (q.get("error")) {
       if (q.get("error_code") === "otp_expired") return t("확인 링크가 만료됐거나 이미 쓰였어요. 로그인해 보시고, 안 되면 다시 가입해 주세요.");
-      return t("로그인하지 못했어요.") + " (" + esc(q.get("error_description") || q.get("error")) + ")";
+      return t("로그인하지 못했어요.") + " (" + esc((q.get("error_code") || q.get("error") || "").replace(/[^\w.-]/g, "").slice(0, 40)) + ")"; // 주소의 긴 글(error_description)은 남이 꾸밀 수 있어 보여 주지 않아요 (QA 11-26)
     }
     try {
       const j = { access_token: q.get("access_token"), refresh_token: q.get("refresh_token"), expires_in: +q.get("expires_in") || 3600 };
@@ -910,10 +916,13 @@ body { margin: 0; }
   }
 
   function readAll(db) {
-    const cnt = rows(db, "SELECT COUNT(*) AS c FROM points")[0];
+    // 시각·좌표가 말이 안 되는 점(초 단위·미래·글자·0,0·범위 밖)은 빼요. 한 점 때문에 파일 전체가 안 열리거나 1970년·2100년이 첫 화면이 되지 않게 (QA 11-26)
+    const OK = "typeof(ts) IN ('integer','real') AND ts BETWEEN 946684800000 AND " + (Date.now() + 2 * 86400000) +
+      " AND lat BETWEEN -90 AND 90 AND lng BETWEEN -180 AND 180 AND NOT (abs(lat) < 0.01 AND abs(lng) < 0.01)";
+    const cnt = rows(db, "SELECT COUNT(*) AS c FROM points WHERE " + OK)[0];
     const n = cnt ? cnt.c : 0;
     const ts = new Float64Array(n), lat = new Float64Array(n), lng = new Float64Array(n), acc = new Float32Array(n);
-    const st = db.prepare("SELECT ts, lat, lng, acc FROM points ORDER BY ts");
+    const st = db.prepare("SELECT ts, lat, lng, acc FROM points WHERE " + OK + " ORDER BY ts");
     let i = 0;
     while (st.step() && i < n) {
       const r = st.get();
@@ -1023,12 +1032,14 @@ body { margin: 0; }
     try { const s = JSON.parse(localStorage.getItem("jepi.session") || "null"); if (s && s.refresh && s.uid) session = s; } catch (e) {}
   }
   function takeSession(j) {
-    const u = j.user || {};
+    const u = j.user || {}, prev = session;
     session = {
       access: j.access_token, refresh: j.refresh_token,
       exp: Date.now() + (+j.expires_in || 3600) * 1000,
       email: u.email || (u.user_metadata && (u.user_metadata.name || u.user_metadata.full_name || u.user_metadata.nickname)) || (session && session.email) || "", uid: u.id || (session && session.uid) || "",
     };
+    // 갱신 응답에 user 가 없어도 이름·사진·로그인 방식이 사라지지 않게 (QA 11-26)
+    if (prev && prev.uid === session.uid) for (const k of ["name", "avatar", "provider", "created"]) if (prev[k]) session[k] = prev[k];
     readProfile(u);
     saveSession();
     // 이 브라우저의 텃밭·여행 계획·낚시 게임이 다른 계정 것이면 새 계정으로 올라가지 않게 지우고 새로 열어요
@@ -1040,6 +1051,13 @@ body { margin: 0; }
       try { localStorage.setItem("jepi.owner", session.uid); sessionStorage.setItem("jepi.notice", t("로그인됐어요.")); } catch (e) {}
       location.reload();
       return true;
+    }
+    // 이 브라우저에서 처음 로그인: 로그인 전에 만든 텃밭이 폰의 텃밭을 통째로 덮지 않게, 서버에 있으면 서버 것을 받아요 (QA 11-26)
+    if (!owner && session.uid) {
+      // 서버에 폰 텃밭이 있으면 서버 것에 웹 작물·메모를 더해요(합치기 전에는 올리지 않아요). 서버에 없거나 비어 있으면 웹 것이 올라가요 (QA 11-26 B7)
+      try { const f = JSON.parse(localStorage.getItem("jepi.farm.v1") || "null"); if (f && typeof f === "object" && ((Array.isArray(f.crops) && f.crops.length) || (f.notes && Object.keys(f.notes).length))) localStorage.setItem("jepi.farm.merge", "1"); } catch (e) {}
+      // 여행 계획도 같아요: 로그인 전 웹 일정은 가장 오래된 것으로 — 폰 일정이 있으면 폰 것을 받아요
+      try { const p = JSON.parse(localStorage.getItem("jepi.plan.v1") || "null"); if (p && typeof p === "object") { p.planUpdated = 0; p.dismissed = 0; localStorage.setItem("jepi.plan.v1", JSON.stringify(p)); } } catch (e) {}
     }
     try { if (session.uid) localStorage.setItem("jepi.owner", session.uid); } catch (e) {}
     renderAccount();
@@ -1081,9 +1099,16 @@ body { margin: 0; }
     if (!r.ok) { const err = new Error(authMsg(j, r.status)); err.status = r.status; throw err; }
     return j;
   }
+  // 여러 요청이 동시에 만료를 만나도 갱신은 한 번만 (같은 refresh token 을 두 번 쓰면 서버가 로그인을 끊을 수 있어요) (QA 11-26)
+  let refreshing = null;
   async function token() {
     if (!session) throw new Error(t("로그인이 필요해요."));
     if (Date.now() < session.exp - 60000) return session.access;
+    if (!refreshing) refreshing = refreshNow().finally(() => { refreshing = null; });
+    await refreshing;
+    return session.access;
+  }
+  async function refreshNow() {
     try {
       takeSession(await authFetch("token?grant_type=refresh_token", { refresh_token: session.refresh }));
     } catch (e) {
@@ -1092,7 +1117,6 @@ body { margin: 0; }
       session = null; saveSession(); renderAccount();
       throw new Error(t("로그인이 풀렸어요. 다시 로그인해 주세요."));
     }
-    return session.access;
   }
   async function sb(path, opts) {
     opts = opts || {};
@@ -1109,7 +1133,7 @@ body { margin: 0; }
   async function loadCloud() {
     if (!session) return;
     // 2026-11-25: 다닌 길·장소·정복 같은 위치 기록은 서버에 두지 않아요 (위치정보 보호). 폰 앱 백업 파일(.db)로 봐요
-    setNotice(t("<strong>{email}</strong>으로 로그인했어요. 다닌 길·장소 같은 위치 기록은 서버에 올리지 않아요. 폰의 바람소리 앱 <strong>설정 → 백업 → 백업 파일 만들기</strong>로 만든 <strong>.db</strong> 파일을 여기에 끌어다 놓거나 열어 주세요.", { email: esc(session.email) }));
+    setNotice(t("<strong>{email}</strong>으로 로그인했어요. 다닌 길·장소 같은 위치 기록은 서버에 올리지 않아요. 폰의 바람소리 앱 <strong>설정 → 백업 → 백업 파일 만들기</strong>로 만든 <strong>.db</strong> 파일을 여기에 끌어다 놓거나 열어 주세요.", { email: esc(session.email) }) + (D && source === "sample" ? " " + t("지금은 예시 데이터를 보여 드려요.") : ""));
   }
 
   function renderAccount() {
@@ -1792,7 +1816,8 @@ body { margin: 0; }
     if (!jszipP) jszipP = new Promise((res, rej) => {
       const s = document.createElement("script");
       s.src = "https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js";
-      s.onload = res; s.onerror = () => rej(new Error(t("압축 풀기 도구를 불러오지 못했어요")));
+      // 실패를 기억해 두면 인터넷이 돌아와도 새로고침 전까지 계속 실패해요 → 다음에 다시 받게 (QA 11-26)
+      s.onload = res; s.onerror = () => { jszipP = null; s.remove(); rej(new Error(t("압축 풀기 도구를 불러오지 못했어요. 압축을 풀고 안의 .csv·.json 파일을 골라 주세요."))); };
       document.head.appendChild(s);
     });
     return jszipP;
@@ -1974,18 +1999,22 @@ body { margin: 0; }
     const b = e.target.closest("[data-acct]");
     if (!b) return;
     if (b.dataset.acct === "in") { loginMsg(""); loginDlg.showModal(); $("loginEmail").focus(); }
-    if (b.dataset.acct === "load") await loadCloud();
+    if (b.dataset.acct === "load") { $("file").click(); await loadCloud(); }
     if (b.dataset.acct === "out") await signOut();
     if (b.dataset.acct === "me") openAccount();
   });
 
   function clearLocalDocs() {
     try {
-      for (const k of Object.keys(localStorage)) if (/^jepi\.(farm\.v1|plan\.v1|loc$|play\.photo\.|game\.v1$|owner$)/.test(k)) localStorage.removeItem(k);
+      for (const k of Object.keys(localStorage)) if (/^jepi\.(farm\.v1|plan\.v1|loc$|play\.photo\.|game\.v1$|game\.(mount|farm|star)\.v1$|farm\.merge$|owner$)/.test(k)) localStorage.removeItem(k);
     } catch (e) {}
   }
   async function signOut(msg) {
-    try { await authFetch("logout", {}, await token()); } catch (err) {}
+    // 방금 고친 텃밭·여행 계획이 1.5초 기다리는 중이면 먼저 올려요 (QA 11-26)
+    // 인터넷이 느리거나 응답이 없어도 로그아웃이 멈추지 않게 3초까지만 기다려요 (QA 11-26)
+    const upTo = (p) => Promise.race([p, new Promise((r) => setTimeout(r, 3000))]);
+    try { if (window.ZDOCS && ZDOCS.flush) await upTo(ZDOCS.flush()); } catch (err) {}
+    try { await upTo(authFetch("logout", {}, await token())); } catch (err) {}
     session = null; saveSession();
     // 공용 PC에서 다음 사람에게 내 텃밭·여행 계획·위치가 보이거나 그 사람 계정으로 올라가지 않게 지우고 새로 엽니다 (QA 11-23)
     clearLocalDocs();
@@ -2236,7 +2265,7 @@ body { margin: 0; }
     const b = e.target.closest("[data-rl]");
     if (!b) return;
     if (b.dataset.rl === "in") { loginMsg(""); loginDlg.showModal(); }
-    if (b.dataset.rl === "load") { await loadCloud(); drawRoutesLogin(); }
+    if (b.dataset.rl === "load") { $("file").click(); await loadCloud(); drawRoutesLogin(); }
     if (b.dataset.rl === "day") showTab("day");
   });
   window.addEventListener("zapp-auth", drawRoutesLogin);
@@ -2274,8 +2303,9 @@ body { margin: 0; }
       try {
         if (!D || source === "sample" || !D.days || !D.days.length) return null;
         const pts = dayPoints(D.days[D.days.length - 1]);
-        const pt = pts[pts.length - 1];
-        return pt ? { lat: pt.lat, lng: pt.lng } : null;
+        // 정확도가 나쁜 마지막 점은 건너뛰어요 (QA 11-26)
+        for (let i = pts.length - 1; i >= 0; i--) if (pts[i].acc <= MAX_ACC) return { lat: pts[i].lat, lng: pts[i].lng };
+        return null;
       } catch (e) { return null; }
     },
     placeName: (lat, lng) => { try { return placeName(lat, lng); } catch (e) { return ""; } },
@@ -2296,19 +2326,19 @@ body { margin: 0; }
   });
 })();
 </script>
-<script src="js/lunar.js?v=20261125q"></script>
-<script src="js/report.js?v=20261125q"></script>
-<script src="js/today.js?v=20261125q"></script>
-<script src="js/sea.js?v=20261125q"></script>
-<script src="js/docs.js?v=20261125q"></script>
-<script src="js/plan.js?v=20261125q"></script>
-<script src="js/farm-data.js?v=20261125q"></script>
-<script src="js/farm.js?v=20261125q"></script>
-<script src="js/more.js?v=20261125q"></script>
-<script src="js/play.js?v=20261125q"></script>
-<script src="js/game.js?v=20261125q"></script>
-<script src="js/game-mount.js?v=20261125q"></script>
-<script src="js/game-farm.js?v=20261125q"></script>
-<script src="js/game-star.js?v=20261125q"></script>
+<script src="js/lunar.js?v=20261126a"></script>
+<script src="js/report.js?v=20261126a"></script>
+<script src="js/today.js?v=20261126a"></script>
+<script src="js/sea.js?v=20261126a"></script>
+<script src="js/docs.js?v=20261126a"></script>
+<script src="js/plan.js?v=20261126a"></script>
+<script src="js/farm-data.js?v=20261126a"></script>
+<script src="js/farm.js?v=20261126a"></script>
+<script src="js/more.js?v=20261126a"></script>
+<script src="js/play.js?v=20261126a"></script>
+<script src="js/game.js?v=20261126a"></script>
+<script src="js/game-mount.js?v=20261126a"></script>
+<script src="js/game-farm.js?v=20261126a"></script>
+<script src="js/game-star.js?v=20261126a"></script>
 </body>
 </html>
