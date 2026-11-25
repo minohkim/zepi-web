@@ -157,6 +157,8 @@
   function txt(s, x, y, size, color, align, weight) { ctx.font = (weight || "700") + " " + Math.round(size * F) + "px " + FONT; ctx.textAlign = align || "center"; ctx.textBaseline = "middle"; ctx.fillStyle = color || "#fff"; ctx.fillText(s, x, y); }
   function stxt(s, x, y, size, color, align, weight) { ctx.save(); ctx.shadowColor = "rgba(0,0,0,0.65)"; ctx.shadowBlur = 6; txt(s, x, y, size, color, align, weight); ctx.restore(); }
   function fit(s, x, y, size, maxW, color, weight) { ctx.font = (weight || "700") + " " + Math.round(size * F) + "px " + FONT; const w = ctx.measureText(s).width; txt(s, x, y, w > maxW ? size * maxW / w : size, color, "center", weight); }
+  // 글자가 maxW 보다 넓으면 줄인 크기를 돌려줘요 (영어 산 이름이 높이 숫자와 겹쳤어요)
+  function shrink(s, size, maxW, weight) { ctx.font = (weight || "700") + " " + Math.round(size * F) + "px " + FONT; const w = ctx.measureText(s).width; return w > maxW ? Math.max(10 / F, size * maxW / w) : size; }
   function rr(x, y, w, h, r) { r = Math.min(r, w / 2, h / 2); ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
   function draw() {
     F = K.opt.big ? 1.25 : 1;
@@ -212,8 +214,10 @@
 
     // 위쪽 정보
     const m = M(), base = Math.round(m.h * 0.15), alt = Math.round(lerp(base, m.h, prog));
-    stxt(t(m.n) + " · " + t(m.peak), 14, 22, 17, "#fff", "left");
-    stxt(alt + " m / " + m.h + " m", W - 14, 22, 15, "#fff", "right", "600");
+    const altS = alt + " m / " + m.h + " m", ttl = t(m.n) + " · " + t(m.peak);
+    ctx.font = "600 " + Math.round(15 * F) + "px " + FONT; const aw = ctx.measureText(altS).width;
+    stxt(ttl, 14, 22, shrink(ttl, 17, W - aw - 40), "#fff", "left");
+    stxt(altS, W - 14, 22, 15, "#fff", "right", "600");
     // 힘 막대
     ctx.fillStyle = "rgba(0,0,0,0.35)"; rr(14, 40, W * 0.42, 14, 7); ctx.fill();
     ctx.fillStyle = stam > 40 ? "#4FC9A4" : stam > 15 ? "#F2B705" : "#ff6b5a"; rr(16, 42, Math.max(4, (W * 0.42 - 4) * stam / 100), 10, 5); ctx.fill();
@@ -227,7 +231,7 @@
       stxt(t("박자"), bx, by, 11, "#fff", "center", "600");
     }
     // 안내
-    if (st === "ready") stxt(t("{stop}에서 출발해요", { stop: t(m.stops[0]) }), W / 2, H * 0.62, 18);
+    if (st === "ready") { const s0 = t("{stop}에서 출발해요", { stop: t(m.stops[0]) }); stxt(s0, W / 2, H * 0.62, shrink(s0, 18, W - 28)); }
     else if (restT > 0) stxt(t("쉬는 중… 😮‍💨"), W / 2, H * 0.62, 20, "#ffe14a");
     if (msgT > 0) {
       ctx.globalAlpha = Math.min(1, msgT * 2);
@@ -256,7 +260,7 @@
   }
 
   // ---------- 버튼 · 패널 ----------
-  let btnKey = "";
+  let btnKey = "", pendSel = "";
   function setBtn() {
     if (!btn) return;
     let l = "", c = "";
@@ -286,7 +290,12 @@
   }
   function onPanel(e) {
     const b = e.target.closest("button"); if (!b) return;
-    if (b.dataset.msel) { save.sel = b.dataset.msel; store(); reset(); renderPanel(); }
+    if (b.dataset.msel) {
+      if (b.dataset.msel === save.sel) return;
+      // 오르는 중에 다른 산을 누르면 묻지 않고 처음부터였어요 → 같은 칩을 한 번 더 눌러야 바꿔요 (웹뷰 confirm 창은 앱에서 안 뜰 수 있어 안 씀)
+      if (st === "climb" && prog > 0 && pendSel !== b.dataset.msel) { pendSel = b.dataset.msel; flash(t("오르는 중이에요. 한 번 더 누르면 {name}(으)로 바꿔요", { name: t(MOUNTS.find((m) => m.id === pendSel).n) })); return; }
+      pendSel = ""; save.sel = b.dataset.msel; store(); reset(); renderPanel();
+    }
     else if (b.hasAttribute("data-mshare")) {
       const m = M(), sec = Math.round(elapsed), text = t("바람소리 다시 오르는 산: {name} {peak} {h}m 완등! ({m}분 {s}초)", { name: t(m.n), peak: t(m.peak), h: m.h, m: Math.floor(sec / 60), s: sec % 60 });
       const out = root.querySelector("#mShareMsg");

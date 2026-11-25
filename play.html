@@ -18,6 +18,7 @@
   --sun: #F2B705;
   --sun-ink: #8A6A00;
   --sun-soft: #FFF1C2;
+  --on-leaf: #FFFFFF; /* 청록 위 글자: 밝은 화면 흰색 4.66:1 (var(--bg)는 4.35로 AA 미달) */
   --on-sun: #1B1A12; /* 노랑 위 글자는 다크 모드에서도 어둡게 */
   --font-display: "Gowun Dodum", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
   --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
@@ -28,13 +29,13 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0F1411; --surface: #161D18; --ink: #E5EBE3; --muted: #9AA69D; --line: #29332C;
-    --leaf: #4FC9A4; --leaf-soft: #163329; --pepper: #E5805F; --land: #19211C; --land-line: #34413A; --passed: #2A3B2F; --sun-ink: #F2C94C; --sun-soft: #3A3114;
+    --leaf: #4FC9A4; --leaf-soft: #163329; --pepper: #E5805F; --land: #19211C; --land-line: #34413A; --passed: #2A3B2F; --sun-ink: #F2C94C; --sun-soft: #3A3114; --on-leaf: #0F1411;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0F1411; --surface: #161D18; --ink: #E5EBE3; --muted: #9AA69D; --line: #29332C;
-  --leaf: #4FC9A4; --leaf-soft: #163329; --pepper: #E5805F; --land: #19211C; --land-line: #34413A; --passed: #2A3B2F; --sun-ink: #F2C94C; --sun-soft: #3A3114;
+  --leaf: #4FC9A4; --leaf-soft: #163329; --pepper: #E5805F; --land: #19211C; --land-line: #34413A; --passed: #2A3B2F; --sun-ink: #F2C94C; --sun-soft: #3A3114; --on-leaf: #0F1411;
   color-scheme: dark;
 }
 body {
@@ -61,7 +62,7 @@ button, label.btn { font: inherit; cursor: pointer; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chips a, .chips button { display: inline-flex; align-items: center; gap: 4px; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font: inherit; font-size: 13px; text-decoration: none; cursor: pointer; }
 .chips a:hover, .chips button:hover { border-color: var(--leaf); }
-.chips button.on { background: var(--leaf); border-color: var(--leaf); color: var(--bg); }
+.chips button.on { background: var(--leaf); border-color: var(--leaf); color: var(--on-leaf, #fff); }
 .chips button.soon { box-shadow: inset 0 0 0 2px #E2A400; }
 html { -webkit-text-size-adjust: 100%; }
 body { margin: 0; }
