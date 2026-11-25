@@ -32,7 +32,9 @@
     cur: null, // { lat, lng, label, src: gps|city|record|default }
     subs: [],
     on(f) { this.subs.push(f); },
+    seq: 0,
     set(l, save) {
+      this.seq++;
       this.cur = l;
       if (save) { try { localStorage.setItem(LOC_KEY, JSON.stringify(l)); } catch (e) {} }
       for (const f of this.subs) { try { f(l); } catch (e) { console.error(e); } }
@@ -227,6 +229,8 @@
     const v = it && it.item;
     return Array.isArray(v) ? v : v ? [v] : [];
   }
+  // jepi-proxy(기상청·에어코리아)도 10초에 끊어요 — 안 그러면 로그인한 사람의 오늘 탭이 멈추고 도시 바꾸기도 안 먹어요
+  const viaProxy = (q) => Promise.race([ZAPP.proxy("/datago/" + q), new Promise((_, no) => setTimeout(() => no(new Error("timeout")), 10000))]);
   async function kmaNow(lat, lng) {
     const g = kmaGrid(lat, lng);
     let d = new Date();
@@ -234,7 +238,7 @@
     const k = kst(d);
     const q = "1360000/VilageFcstInfoService_2.0/getUltraSrtNcst?pageNo=1&numOfRows=60&dataType=JSON&base_date=" + k.y + pad(k.m) + pad(k.d) + "&base_time=" + pad(k.h) + "00&nx=" + g.nx + "&ny=" + g.ny;
     return cached("kma" + g.nx + "," + g.ny + k.h, 20 * 60e3, async () => {
-      const it = items(await ZAPP.proxy("/datago/" + q));
+      const it = items(await viaProxy(q));
       if (!it.length) throw new Error("no data");
       const o = {};
       for (const x of it) o[x.category] = +x.obsrValue;
@@ -244,7 +248,7 @@
   async function airKorea(sido) {
     const q = "B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty?sidoName=" + encodeURIComponent(sido) + "&returnType=json&numOfRows=200&pageNo=1&ver=1.0";
     return cached("air" + sido, 30 * 60e3, async () => {
-      const it = items(await ZAPP.proxy("/datago/" + q));
+      const it = items(await viaProxy(q));
       const avg = (key) => { const v = it.map((x) => parseFloat(x[key])).filter((x) => isFinite(x) && x >= 0); return v.length ? Math.round(v.reduce((a, b) => a + b, 0) / v.length) : null; };
       const r = { pm10: avg("pm10Value"), pm25: avg("pm25Value"), at: (it[0] && it[0].dataTime) || "" };
       if (r.pm10 == null && r.pm25 == null) throw new Error("no data");
@@ -331,7 +335,9 @@
   function bindLoc(root, msgEl) {
     root.querySelector('[data-loc="gps"]').addEventListener("click", async (e) => {
       const b = e.currentTarget; b.disabled = true;
-      try { ZLOC.set(await ZLOC.gps(), true); } catch (err) { if (msgEl) msgEl.textContent = err.message; else alertInline(root, err.message); }
+      const at = ZLOC.seq;
+      // 위치를 기다리는 사이 다른 곳을 골랐으면 늦게 온 위치로 덮지 않아요
+      try { const p = await ZLOC.gps(); if (ZLOC.seq === at) ZLOC.set(p, true); } catch (err) { if (msgEl) msgEl.textContent = err.message; else alertInline(root, err.message); }
       finally { b.disabled = false; }
     });
     root.querySelector('[data-loc="city"]').addEventListener("change", (e) => {
@@ -407,12 +413,16 @@
         // 기상청 실황이 비·눈이면 그림·말도 맞춰요 ('-3° 맑음'인데 눈 노래가 나오던 것)
         if (kma && snow) [em, txt] = ["🌨️", "눈"];
         else if (kma && rain) [em, txt] = ["🌧️", "비"];
+        // 기상청이 '강수 없음'이면 모델의 비·눈 그림을 '흐림'으로 ('비 · 강수 0.0 mm' 이던 것)
+        else if (kma && kma.PTY === 0 && (code >= 51 && code <= 86 || code >= 95)) [em, txt] = ["☁️", "흐림"];
         const temp = kma && isFinite(kma.T1H) ? kma.T1H : cur.temperature_2m;
+        // 체감도 기상청 기온만큼 옮겨요 ('-3° · 체감 8°' 이던 것)
+        const feel = kma && isFinite(kma.T1H) && isFinite(cur.temperature_2m) && isFinite(cur.apparent_temperature) ? cur.apparent_temperature + (kma.T1H - cur.temperature_2m) : cur.apparent_temperature;
         const hum = kma && isFinite(kma.REH) ? kma.REH : cur.relative_humidity_2m;
         const wind = kma && isFinite(kma.WSD) ? kma.WSD : cur.wind_speed_10m;
         const rn = kma && isFinite(kma.RN1) ? kma.RN1 : cur.precipitation;
         h += '<article class="card2"><h2>' + esc(t("지금 날씨")) + "<small>" + esc(kma && isFinite(kma.T1H) ? t("기상청 초단기 실황") : "Open-Meteo") + "</small></h2>" +
-          '<div style="display:flex;align-items:center;gap:14px"><span style="font-size:44px" aria-hidden="true">' + em + '</span><div><div class="big">' + pct(temp) + '°</div><div class="muted">' + esc(t(txt)) + " · " + esc(t("체감 {n}°", { n: pct(cur.apparent_temperature) })) + "</div></div></div>" +
+          '<div style="display:flex;align-items:center;gap:14px"><span style="font-size:44px" aria-hidden="true">' + em + '</span><div><div class="big">' + pct(temp) + '°</div><div class="muted">' + esc(t(txt)) + " · " + esc(t("체감 {n}°", { n: pct(feel) })) + "</div></div></div>" +
           '<dl class="kv"><dt>' + esc(t("습도")) + "</dt><dd>" + pct(hum) + "%</dd><dt>" + esc(t("바람")) + "</dt><dd>" + fix1(wind) + " m/s</dd><dt>" + esc(t("강수")) + "</dt><dd>" + fix1(rn) + " mm</dd>" +
           (daily ? "<dt>" + esc(t("오늘")) + "</dt><dd>" + pct(arr(daily, "temperature_2m_min")[0]) + "° / " + pct(arr(daily, "temperature_2m_max")[0]) + "° · " + esc(t("비 올 확률 {n}%", { n: pct(arr(daily, "precipitation_probability_max")[0]) })) + "</dd>" : "") +
           "</dl>";
@@ -518,7 +528,8 @@
       bindLoc(root);
       root.querySelectorAll('[data-act="sky"]').forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); $("skyCard").scrollIntoView({ behavior: "smooth", block: "center" }); }));
       root.querySelectorAll('[data-act="tide"]').forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); ZAPP.showTab("sea"); }));
-      shownFor = key;
+      // 날씨를 못 받았으면 기억하지 않아요 — 다른 탭 갔다 오거나 1분 뒤(자동)에 다시 받아요
+      shownFor = cur ? key : "";
     } catch (e) {
       console.error(e);
       root.innerHTML = '<div class="needlogin">' + esc(t("오늘 정보를 준비하지 못했어요.")) + " " + esc(e.message || e) + "</div>";
