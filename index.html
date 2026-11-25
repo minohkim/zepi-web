@@ -2,6 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <script>
   // 로그인 링크(#access_token…)나 오류가 첫 화면으로 오면 앱 화면으로 넘겨요.
   // 이미 로그인한 사람도 바로 앱으로 (첫 화면을 보려면 ?home)
@@ -14,30 +15,30 @@
 </script>
 <script src="i18n.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>바람소리 · J 같은 P의 여행</title>
+<title>바람소리 · 바람 따라 걷고, 소리처럼 남기고</title>
 <meta name="description" content="켜 두기만 하면 다닌 길이 쌓이는 여행 기록 앱. 오늘 날씨·물때·제철까지 한 화면에.">
-<meta property="og:title" content="바람소리 · J 같은 P의 여행">
+<meta property="og:title" content="바람소리 · 바람 따라 걷고, 소리처럼 남기고">
 <meta property="og:description" content="켜 두기만 하면 다닌 길이 쌓이는 여행 기록 앱">
-<meta name="theme-color" content="#1F6B3A">
+<meta name="theme-color" content="#0E8465">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap">
 <style>
 :root {
-  --bg: #F7F5EE; --surface: #FFFFFF; --ink: #17201A; --muted: #56615A; --line: #D9D5C7;
-  --leaf: #1F6B3A; --leaf-soft: #DCE9DD; --pepper: #A8402A; --sea: #2C7FB8;
+  --bg: #F4F8F5; --surface: #FFFFFF; --ink: #17201A; --muted: #56615A; --line: #D5E0DA;
+  --leaf: #0E8465; --leaf-soft: #D5EDE5; --pepper: #A8402A; --sea: #2C7FB8;
   --sun: #F2B705; --sun-ink: #8A6A00; --sun-soft: #FFF1C2; --on-sun: #1B1A12;
-  --font-display: "Gowun Batang", "Nanum Myeongjo", serif;
+  --font-display: "Gowun Dodum", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
   --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
   --font-num: "IBM Plex Mono", ui-monospace, Menlo, monospace;
   --radius: 20px;
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { --bg: #0F1411; --surface: #161D18; --ink: #E5EBE3; --muted: #9AA69D; --line: #29332C; --leaf: #62BE84; --leaf-soft: #1D3324; --pepper: #E5805F; --sea: #6DB6E3; --sun-ink: #F2C94C; --sun-soft: #3A3114; color-scheme: dark; }
+  :root:not([data-theme="light"]) { --bg: #0F1411; --surface: #161D18; --ink: #E5EBE3; --muted: #9AA69D; --line: #29332C; --leaf: #4FC9A4; --leaf-soft: #163329; --pepper: #E5805F; --sea: #6DB6E3; --sun-ink: #F2C94C; --sun-soft: #3A3114; color-scheme: dark; }
 }
-:root[data-theme="dark"] { --bg: #0F1411; --surface: #161D18; --ink: #E5EBE3; --muted: #9AA69D; --line: #29332C; --leaf: #62BE84; --leaf-soft: #1D3324; --pepper: #E5805F; --sea: #6DB6E3; --sun-ink: #F2C94C; --sun-soft: #3A3114; color-scheme: dark; }
-:root:lang(zh) { --font-display: "Noto Serif SC", "Songti SC", serif; --font-body: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif; }
-:root:lang(ja) { --font-display: "Hiragino Mincho ProN", "Yu Mincho", serif; --font-body: "Hiragino Sans", "Yu Gothic", "Meiryo", system-ui, sans-serif; }
-:root:lang(en) { --font-display: Georgia, "Times New Roman", serif; --font-body: "IBM Plex Sans KR", system-ui, sans-serif; }
+:root[data-theme="dark"] { --bg: #0F1411; --surface: #161D18; --ink: #E5EBE3; --muted: #9AA69D; --line: #29332C; --leaf: #4FC9A4; --leaf-soft: #163329; --pepper: #E5805F; --sea: #6DB6E3; --sun-ink: #F2C94C; --sun-soft: #3A3114; color-scheme: dark; }
+:root:lang(zh) { --font-display: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif; --font-body: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif; }
+:root:lang(ja) { --font-display: "Hiragino Sans", "Yu Gothic UI", "Meiryo", system-ui, sans-serif; --font-body: "Hiragino Sans", "Yu Gothic", "Meiryo", system-ui, sans-serif; }
+:root:lang(en) { --font-display: "Gowun Dodum", system-ui, sans-serif; --font-body: "IBM Plex Sans KR", system-ui, sans-serif; }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
@@ -116,11 +117,7 @@ footer .in { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: spa
 <header class="band">
   <div class="in">
     <a class="logo" href="./?home" aria-label="바람소리">
-      <svg viewBox="0 0 40 40" aria-hidden="true">
-        <circle cx="18" cy="23" r="11" fill="var(--pepper)"/>
-        <path d="M22 13c2-6 8-8 13-7-1 6-6 10-13 7z" fill="var(--leaf)"/>
-        <path d="M20 13c0-2 1-4 2-5" stroke="var(--leaf)" stroke-width="2" fill="none" stroke-linecap="round"/>
-      </svg>
+      <svg viewBox="0 0 48 48" aria-hidden="true" fill="none" stroke="var(--leaf)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 24h11a5 5 0 1 0-5-5"/><path d="M5 32h14"/><path d="M27 18v12"/><path d="M34 13v22"/><path d="M41 20v8"/></svg>
       <b>바람소리</b>
     </a>
     <nav aria-label="메뉴">
@@ -136,7 +133,7 @@ footer .in { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: spa
   <div class="hero band">
     <div class="in">
       <div>
-        <div class="eyebrow">J 같은 P의 여행</div>
+        <div class="eyebrow">바람 따라 걷고, 소리처럼 남기고</div>
         <h1>켜 두기만 하면<br>다닌 길이 쌓여요</h1>
         <p class="lead">바람소리는 하루 동안 다닌 길과 머문 곳을 알아서 기록하는 여행 앱이에요. 큰 화면에서는 지도로 돌아보고, 오늘 날씨와 물때까지 한 번에 봐요.</p>
         <div class="cta">

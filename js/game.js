@@ -812,7 +812,7 @@
     const rank = list.findIndex((x) => x.me) + 1, prize = tour.kg > 0 ? [500, 200, 100, 0][rank - 1] : 0;
     save.coins += prize; save.xp = (save.xp || 0) + prize / 2; save.tourBest = Math.max(save.tourBest || 0, tour.kg); if (rank === 1) save.tourWins = (save.tourWins || 0) + 1; store();
     tourRes = { list, rank, prize, t: 7 }; tour = null;
-    if (rank === 1) { confetti(80, ["#ffcf3a", "#fff", "#62BE84"]); [523, 659, 784, 1047, 1319].forEach((f, i) => setTimeout(() => beep(f, 0.22, "triangle", 0.12), i * 110)); }
+    if (rank === 1) { confetti(80, ["#ffcf3a", "#fff", "#4FC9A4"]); [523, 659, 784, 1047, 1319].forEach((f, i) => setTimeout(() => beep(f, 0.22, "triangle", 0.12), i * 110)); }
     else beep(392, 0.3, "triangle", 0.1);
     renderPanel();
   }
@@ -840,7 +840,7 @@
     g.fillStyle = "rgba(255,255,255,0.18)"; for (let i = 0; i < 30; i++) g.fillRect((i * 97) % 720, 420 + i * 15, 40 + (i * 13) % 60, 2);
     g.fillStyle = "rgba(255,255,255,0.92)"; rr(40, 60, 640, 780, 36); g.fill();
     const sp0 = SP.find((x) => x.id === f.id) || { c: "#888" }, gr = f.g >= 0 ? GRADE[f.g] : null;
-    txt("🎣 " + t("바람소리 낚시"), 360, 120, 30, "#1F6B3A", "center", "800");
+    txt("🎣 " + t("바람소리 낚시"), 360, 120, 30, "#0E8465", "center", "800");
     drawFish(360, 330, 420, Object.assign({}, sp0, { id: f.id }));
     txt(t(f.n), 360, 520, 56, "#1c211e", "center", "900");
     txt(f.size + "cm · " + kgTxt(f.kg || 0), 360, 590, 40, "#1c211e", "center", "800");
@@ -863,7 +863,7 @@
   ];
   // ---------- 등급 · 연속 · 미션 ----------
   const GRADE = [
-    { n: "일반", c: "#d7dee3", mul: 1 }, { n: "준수", c: "#62BE84", mul: 1.2 }, { n: "대물", c: "#5aa9ff", mul: 1.5 },
+    { n: "일반", c: "#d7dee3", mul: 1 }, { n: "준수", c: "#4FC9A4", mul: 1.2 }, { n: "대물", c: "#5aa9ff", mul: 1.5 },
     { n: "초대물", c: "#c27cff", mul: 2.2 }, { n: "전설", c: "#ffcf3a", mul: 4 },
   ];
   function gradeOf(f) {
@@ -1715,7 +1715,7 @@
     if (av) drawHead(f.x + 1 * s, f.y - 64 * s, 9 * s, av, (me() || {}).name || "");
     else {
       ctx.fillStyle = "#e9c3a0"; ctx.beginPath(); ctx.arc(f.x + 1 * s, f.y - 64 * s, 8 * s, 0, 7); ctx.fill();
-      ctx.fillStyle = "#1F6B3A"; ctx.beginPath(); ctx.arc(f.x + 1 * s, f.y - 66 * s, 8.5 * s, Math.PI, 0); ctx.fill(); ctx.fillRect(f.x + 1 * s, f.y - 67 * s, 13 * s, 3 * s);
+      ctx.fillStyle = "#0E8465"; ctx.beginPath(); ctx.arc(f.x + 1 * s, f.y - 66 * s, 8.5 * s, Math.PI, 0); ctx.fill(); ctx.fillRect(f.x + 1 * s, f.y - 67 * s, 13 * s, 3 * s);
     }
     if (m === "float") { ctx.fillStyle = "#3a6ea5"; rr(f.x - 26 * s, f.y - 14 * s, 14 * s, 14 * s, 3 * s); ctx.fill(); ctx.fillStyle = "#e88a3a"; ctx.fillRect(f.x - 25 * s, f.y - 13 * s, 12 * s, 4 * s); } // 밑밥통
     drawRod();
@@ -1726,7 +1726,7 @@
       const ring = { x: lerp(np.x, hand().x + 20 * S, sc), y: lerp(np.y, hand().y - 10 * S, sc) };
       ctx.strokeStyle = "#c9ccd0"; ctx.lineWidth = 2.5 * s; ctx.beginPath(); ctx.moveTo(f.x - 2 * s, f.y - 40 * s); ctx.lineTo(ring.x - 14 * s, ring.y); ctx.stroke();
       const over = Math.abs(netFish().x - np.x) < W * (easy() ? 0.06 : 0.03);
-      ctx.strokeStyle = G.s === "net" && over ? "#62BE84" : "#F2B705"; ctx.lineWidth = 3 * s; ctx.beginPath(); ctx.ellipse(ring.x, ring.y, 16 * s, 6 * s, 0, 0, 7); ctx.stroke();
+      ctx.strokeStyle = G.s === "net" && over ? "#4FC9A4" : "#F2B705"; ctx.lineWidth = 3 * s; ctx.beginPath(); ctx.ellipse(ring.x, ring.y, 16 * s, 6 * s, 0, 0, 7); ctx.stroke();
       ctx.strokeStyle = "rgba(255,255,255,0.4)"; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(ring.x - 14 * s, ring.y); ctx.lineTo(ring.x, ring.y + 14 * s); ctx.lineTo(ring.x + 14 * s, ring.y); ctx.stroke();
     }
   }
@@ -1734,7 +1734,7 @@
   function drawHead(x, y, r, img, name) {
     ctx.save(); ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.closePath();
     if (img) { ctx.clip(); try { ctx.drawImage(img, x - r, y - r, r * 2, r * 2); } catch (e) {} }
-    else { ctx.fillStyle = "#1F6B3A"; ctx.fill(); txt((name || "?").slice(0, 1), x, y + 0.5, r * 1.1 / F, "#fff", "center", "800"); }
+    else { ctx.fillStyle = "#0E8465"; ctx.fill(); txt((name || "?").slice(0, 1), x, y + 0.5, r * 1.1 / F, "#fff", "center", "800"); }
     ctx.restore();
     ctx.strokeStyle = "#fff"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.stroke();
   }
@@ -2090,7 +2090,7 @@
             if (g >= 2) { confetti(g >= 3 ? 70 : 35, [G2.c, "#ffe14a", "#ffffff", "#ff8a5a"]); buzz(g >= 3 ? [80, 50, 80, 50, 160] : [60, 40, 60]); }
             if (g >= 3) { shake = 0.9; flashT = 0.35; flashCol = G2.c; }
             if (res.record) setTimeout(() => { [1047, 1319, 1568, 2093].forEach((fq, i) => setTimeout(() => beep(fq, 0.18, "triangle", 0.12), i * 70)); }, 600);
-            if (res.lvUp) setTimeout(() => { [523, 784, 1047, 1568].forEach((fq, i) => setTimeout(() => beep(fq, 0.2, "square", 0.08), i * 100)); confetti(40, ["#ffe14a", "#62BE84", "#ffffff"]); }, 1100);
+            if (res.lvUp) setTimeout(() => { [523, 784, 1047, 1568].forEach((fq, i) => setTimeout(() => beep(fq, 0.2, "square", 0.08), i * 100)); confetti(40, ["#ffe14a", "#4FC9A4", "#ffffff"]); }, 1100);
           }
           const sc = res.t < 1.05 ? 1.8 - (res.t - 0.9) / 0.15 * 0.8 : 1;
           ctx.save(); ctx.translate(cx, y + h * 0.66); ctx.scale(sc, sc); ctx.rotate(-0.06);
@@ -2121,7 +2121,7 @@
     const lv = lvOf(save.xp), a = xpAt(lv), b = xpAt(lv + 1), k = clamp(((save.xp || 0) - a) / (b - a), 0, 1);
     const y = 30;
     ctx.fillStyle = "rgba(0,0,0,0.35)"; rr(8, y - 9, 92, 18, 9); ctx.fill();
-    ctx.fillStyle = "#62BE84"; rr(10, y - 7, Math.max(4, 88 * k), 14, 7); ctx.fill();
+    ctx.fillStyle = "#4FC9A4"; rr(10, y - 7, Math.max(4, 88 * k), 14, 7); ctx.fill();
     txt("Lv." + lv, 54, y, 11, "#fff", "center", "800");
     if (streak >= 2) stxt("🔥 " + t("{n}연속", { n: streak }) + " x" + (1 + Math.min(streak - 1, 10) * 0.1).toFixed(1), 108, y, 12, "#ffb46a", "left", "800");
     if (rushT > 0) stxt(t("🐟 피딩 러시 {n}초", { n: Math.ceil(rushT) }), W - 10, y, 12, "#ffe14a", "right", "800");
@@ -2332,8 +2332,8 @@
     }
     else if (b.hasAttribute("data-gshare2")) {
       const box = root.querySelector("#gShot"), url = box && box.dataset.url; if (!url) return;
-      if (window.ZNATIVE) { window.ZNATIVE.call("shareImage", { data: url, name: "zepi-fish" }).catch(() => { const p = box.querySelector("p"); if (p) p.textContent = t("앱을 최신 버전으로 업데이트하면 공유할 수 있어요"); }); return; }
-      fetch(url).then((r) => r.blob()).then((bl) => { const file = new File([bl], "zepi-fish.png", { type: "image/png" }); if (navigator.canShare && navigator.canShare({ files: [file] })) return navigator.share({ files: [file], title: t("바람소리 낚시") }); throw new Error("no-share"); }).catch(() => { const p = box.querySelector("p"); if (p) p.textContent = t("이 화면에서는 공유가 안 돼요. 사진을 길게 눌러 저장하세요"); });
+      if (window.ZNATIVE) { window.ZNATIVE.call("shareImage", { data: url, name: "baramsori-fish" }).catch(() => { const p = box.querySelector("p"); if (p) p.textContent = t("앱을 최신 버전으로 업데이트하면 공유할 수 있어요"); }); return; }
+      fetch(url).then((r) => r.blob()).then((bl) => { const file = new File([bl], "baramsori-fish.png", { type: "image/png" }); if (navigator.canShare && navigator.canShare({ files: [file] })) return navigator.share({ files: [file], title: t("바람소리 낚시") }); throw new Error("no-share"); }).catch(() => { const p = box.querySelector("p"); if (p) p.textContent = t("이 화면에서는 공유가 안 돼요. 사진을 길게 눌러 저장하세요"); });
     }
     else if (b.hasAttribute("data-gtog")) { save.together = !save.together; store(); if (save.together) rtConnect(); else { rtStatus = "off"; rtClose(); } renderPanel(); }
     else if (b.hasAttribute("data-grelease")) {

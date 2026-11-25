@@ -158,7 +158,7 @@
     if (document.getElementById("playCss")) return;
     const st = document.createElement("style"); st.id = "playCss";
     st.textContent =
-      ".playLayer{position:fixed;inset:0;z-index:60;background:var(--bg,#F7F5EE);overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}.playLayer:focus{outline:none}" +
+      ".playLayer{position:fixed;inset:0;z-index:60;background:var(--bg,#F4F8F5);overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}.playLayer:focus{outline:none}" +
       ".playBar{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:10px;padding:10px 14px;padding-top:max(10px,env(safe-area-inset-top));background:var(--surface,#fff);border-bottom:1px solid var(--line)}" +
       ".playBar b{font-family:var(--font-display);font-size:20px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" +
       ".playBar .btn{font-size:16px;min-height:48px}" +

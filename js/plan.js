@@ -526,7 +526,7 @@ JSON 하나만 답해:
     if (!(window.naver && naver.maps && naver.maps.Map)) { el.innerHTML = '<div class="muted" style="padding:12px">' + esc(t("지도를 불러오지 못했어요.")) + "</div>"; return; }
     pmap = new naver.maps.Map(el, { zoomControl: true, zoomControlOptions: { position: naver.maps.Position.TOP_RIGHT } });
     const path = items.map((i) => new naver.maps.LatLng(i.lat, i.lng));
-    new naver.maps.Polyline({ map: pmap, path, strokeColor: "#1F6B3A", strokeWeight: 4, strokeOpacity: 0.8 });
+    new naver.maps.Polyline({ map: pmap, path, strokeColor: "#0E8465", strokeWeight: 4, strokeOpacity: 0.8 });
     items.forEach((it, n) => new naver.maps.Marker({ map: pmap, position: path[n], title: it.title, icon: { content: '<div class="pmark">' + (n + 1) + "</div>", anchor: new naver.maps.Point(13, 13) } }));
     const b = new naver.maps.LatLngBounds(path[0], path[0]);
     path.forEach((p) => b.extend(p));

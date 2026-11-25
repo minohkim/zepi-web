@@ -1,14 +1,15 @@
-<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>바람소리 놀이</title><link rel="preconnect" href="https://fonts.googleapis.com"><style>/* 레이아웃: 위에 요약 띠, 아래 탭. "하루"는 넓은 화면에서 왼쪽 지도 · 오른쪽 타임라인 (폴드 펼친 화면과 같은 배치) */
 :root {
-  --bg: #F7F5EE;
+  --bg: #F4F8F5;
   --surface: #FFFFFF;
   --ink: #17201A;
   --muted: #56615A;
-  --line: #D9D5C7;
-  --leaf: #1F6B3A;
-  --leaf-soft: #DCE9DD;
+  --line: #D5E0DA;
+  --leaf: #0E8465;
+  --leaf-soft: #D5EDE5;
   --pepper: #A8402A;
   --land: #ECF0E7;
   --land-line: #C3CCBF;
@@ -18,7 +19,7 @@
   --sun-ink: #8A6A00;
   --sun-soft: #FFF1C2;
   --on-sun: #1B1A12; /* 노랑 위 글자는 다크 모드에서도 어둡게 */
-  --font-display: "Gowun Batang", "Nanum Myeongjo", serif;
+  --font-display: "Gowun Dodum", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
   --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
   --font-num: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
   --radius: 20px;
@@ -27,13 +28,13 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0F1411; --surface: #161D18; --ink: #E5EBE3; --muted: #9AA69D; --line: #29332C;
-    --leaf: #62BE84; --leaf-soft: #1D3324; --pepper: #E5805F; --land: #19211C; --land-line: #34413A; --passed: #2A3B2F; --sun-ink: #F2C94C; --sun-soft: #3A3114;
+    --leaf: #4FC9A4; --leaf-soft: #163329; --pepper: #E5805F; --land: #19211C; --land-line: #34413A; --passed: #2A3B2F; --sun-ink: #F2C94C; --sun-soft: #3A3114;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0F1411; --surface: #161D18; --ink: #E5EBE3; --muted: #9AA69D; --line: #29332C;
-  --leaf: #62BE84; --leaf-soft: #1D3324; --pepper: #E5805F; --land: #19211C; --land-line: #34413A; --passed: #2A3B2F; --sun-ink: #F2C94C; --sun-soft: #3A3114;
+  --leaf: #4FC9A4; --leaf-soft: #163329; --pepper: #E5805F; --land: #19211C; --land-line: #34413A; --passed: #2A3B2F; --sun-ink: #F2C94C; --sun-soft: #3A3114;
   color-scheme: dark;
 }
 body {
@@ -53,9 +54,9 @@ button, label.btn { font: inherit; cursor: pointer; }
 .btn.dangerbtn:disabled { opacity: .45; }
 .dlg .row .btn { flex: 1 1 auto; justify-content: center; }
 /* 중국어·일본어는 그 나라 글꼴로 (한국어 글꼴은 한자를 한국식 모양으로 그려요) */
-:root:lang(zh) { --font-display: "Songti SC", "Noto Serif SC", "SimSun", serif; --font-body: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif; }
-:root:lang(ja) { --font-display: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif; --font-body: "Hiragino Sans", "Yu Gothic UI", "Meiryo", "Noto Sans JP", system-ui, sans-serif; }
-:root:lang(en) { --font-display: Georgia, "Times New Roman", serif; }
+:root:lang(zh) { --font-display: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif; --font-body: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif; }
+:root:lang(ja) { --font-display: "Hiragino Sans", "Yu Gothic UI", "Meiryo", "Noto Sans JP", system-ui, sans-serif; --font-body: "Hiragino Sans", "Yu Gothic UI", "Meiryo", "Noto Sans JP", system-ui, sans-serif; }
+:root:lang(en) { --font-display: "Gowun Dodum", system-ui, sans-serif; }
 .card2 .muted { color: var(--muted); font-size: 13px; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chips a, .chips button { display: inline-flex; align-items: center; gap: 4px; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font: inherit; font-size: 13px; text-decoration: none; cursor: pointer; }

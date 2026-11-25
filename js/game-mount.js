@@ -170,7 +170,7 @@
     for (let i = 0; i <= n; i++) { const [x, y] = trailAt(i / 80 * (prog * 80 / n)); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
     ctx.stroke();
     // 쉼터 표시
-    [1 / 3, 2 / 3].forEach((k, i) => { const [x, y] = trailAt(k); ctx.fillStyle = stopIdx > i ? "#F2B705" : "#fff"; ctx.beginPath(); ctx.arc(x, y, 6, 0, 7); ctx.fill(); ctx.strokeStyle = "#1F6B3A"; ctx.lineWidth = 2; ctx.stroke(); });
+    [1 / 3, 2 / 3].forEach((k, i) => { const [x, y] = trailAt(k); ctx.fillStyle = stopIdx > i ? "#F2B705" : "#fff"; ctx.beginPath(); ctx.arc(x, y, 6, 0, 7); ctx.fill(); ctx.strokeStyle = "#0E8465"; ctx.lineWidth = 2; ctx.stroke(); });
     // 정상 깃발
     const [px, py] = trailAt(1);
     ctx.strokeStyle = "#333"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px, py - 26); ctx.stroke();
@@ -178,7 +178,7 @@
     // 등산객
     const [cx, cy] = trailAt(prog), s = Math.min(W, H) / 380 * 1.1, b = -Math.abs(Math.sin(bob * Math.PI)) * 4;
     ctx.fillStyle = "#e8742c"; rr(cx - 7 * s, cy - 30 * s + b, 12 * s, 16 * s, 4 * s); ctx.fill();
-    ctx.fillStyle = "#1F6B3A"; rr(cx - 11 * s, cy - 28 * s + b, 6 * s, 12 * s, 3 * s); ctx.fill(); // 배낭
+    ctx.fillStyle = "#0E8465"; rr(cx - 11 * s, cy - 28 * s + b, 6 * s, 12 * s, 3 * s); ctx.fill(); // 배낭
     ctx.fillStyle = "#e9c3a0"; ctx.beginPath(); ctx.arc(cx, cy - 36 * s + b, 6 * s, 0, 7); ctx.fill();
     ctx.fillStyle = "#F2B705"; ctx.beginPath(); ctx.arc(cx, cy - 38 * s + b, 6.5 * s, Math.PI, 0); ctx.fill();
     ctx.strokeStyle = "#1d2430"; ctx.lineWidth = 3 * s; ctx.beginPath();
@@ -192,7 +192,7 @@
     stxt(alt + " m / " + m.h + " m", W - 14, 22, 15, "#fff", "right", "600");
     // 힘 막대
     ctx.fillStyle = "rgba(0,0,0,0.35)"; rr(14, 40, W * 0.42, 14, 7); ctx.fill();
-    ctx.fillStyle = stam > 40 ? "#62BE84" : stam > 15 ? "#F2B705" : "#ff6b5a"; rr(16, 42, Math.max(4, (W * 0.42 - 4) * stam / 100), 10, 5); ctx.fill();
+    ctx.fillStyle = stam > 40 ? "#4FC9A4" : stam > 15 ? "#F2B705" : "#ff6b5a"; rr(16, 42, Math.max(4, (W * 0.42 - 4) * stam / 100), 10, 5); ctx.fill();
     stxt(t("힘"), 14 + W * 0.42 + 8, 47, 13, "#fff", "left", "600");
     if (st === "climb" || st === "ready") stxt(Math.floor(elapsed / 60) + ":" + String(Math.floor(elapsed % 60)).padStart(2, "0"), W - 14, 47, 14, "#fff", "right", "600");
     // 박자 원
