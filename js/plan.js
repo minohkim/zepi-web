@@ -324,6 +324,7 @@
 - title은 이번 여행의 콘셉트를 8~18자로, hook은 이 조합을 고른 이유 한 문장.
 - plan_b: 비 오면 바꿀 2~4칸. prep: 출발 전에 할 일 (예: {"when":"금요일 밤","what":"미끼·얼음 사기"}).
 - kind: move|spot|food|stay|free|fish|walk|view|cafe 중 하나.
+- days는 "날짜" 하나에 하나씩 꼭 만들어(1박이면 2개). 둘째 날은 숙소 체크아웃부터 귀가 출발까지 채우고, 첫날에 다 몰아넣지 마.
 - 사용자 언어가 한국어가 아니면 모든 글(title·hook·why·tip·label·prep·packing)을 그 언어로 쓰되, 장소 이름(title 중 장소)은 목록의 한국어 이름 그대로 둬.
 
 JSON 하나만 답해:
@@ -378,7 +379,7 @@ JSON 하나만 답해:
     try { return JSON.parse(text.slice(a, cut) + cutStack.reverse().join("")); } catch (e) { return null; }
   }
   async function askClaude(ctx) {
-    const j = await ZAPP.post("/claude/v1/messages", { model: MODEL, max_tokens: 4000, system: SYSTEM, messages: [{ role: "user", content: JSON.stringify(ctx) }] });
+    const j = await ZAPP.post("/claude/v1/messages", { model: MODEL, max_tokens: 7000, system: SYSTEM, messages: [{ role: "user", content: JSON.stringify(ctx) }] });
     return (j.content || []).filter((p) => p.type === "text").map((p) => p.text).join("");
   }
   function localPlan(st, picks, day) {
@@ -414,6 +415,7 @@ JSON 하나만 답해:
       if (!DRIVES.includes(s.maxMin)) s.maxMin = 180;
       if (s.from && !(s.from && Number.isFinite(s.from.lat) && Number.isFinite(s.from.lng))) s.from = null;
       if (!s.plan || typeof s.plan !== "object" || Array.isArray(s.plan)) s.plan = null;
+      if (!Number.isFinite(s.dismissed)) s.dismissed = 0;
       if (!Number.isInteger(s.day) || s.day < 0) s.day = 0; // 글자·음수면 일정 화면이 멈추던 것 (QA 11-25)
       return s;
     } catch (e) { return null; }
@@ -426,17 +428,20 @@ JSON 하나만 답해:
       days: Array.isArray(p.days) ? p.days : [], plan_b: n.plan_b, prep: n.prep, packing: n.packing, by_ai: !!p.byAi, done: st.done || [], updated: Number.isFinite(st.planUpdated) ? st.planUpdated : 0 }); // 시각 없는 옛 일정은 0(가장 오래됨). 지금 시각을 붙이면 폰의 새 일정을 덮어요 (QA 11-25)
   }
   function planChanged() {
-    st.planUpdated = Date.now();
+    st.planUpdated = Math.max(Date.now(), (Number.isFinite(st.planUpdated) ? st.planUpdated : 0) + 1); // 폰 시계가 빨라도 updated 가 거꾸로 가지 않게 (QA 11-26 B4)
     save();
     if (st.plan && window.ZDOCS) ZDOCS.push("trip_plan", planDoc());
   }
   async function syncPlan() {
     if (!window.ZDOCS) return false;
+    // 첫 로그인 때 app.html 이 저장값의 시각을 0으로 내렸으면 화면의 것도 맞춰요 (QA 11-26 B7)
+    try { const ls = JSON.parse(localStorage.getItem(SAVE_KEY) || "null"); if (ls && ls.planUpdated === 0 && st.planUpdated) { st.planUpdated = 0; st.dismissed = 0; } } catch (e) {}
     const got = await ZDOCS.sync("trip_plan", st.plan ? planDoc() : null);
     if (!got) return false;
     try {
       const j = JSON.parse(got);
       if (!Array.isArray(j.days) || !j.days.length) return false;
+      if (st.dismissed && j.updated === st.dismissed) return false; // '새 여행 만들기'로 치운 그 판(같은 updated)만 다시 꺼내지 않아요. 크기 비교는 폰·PC 시계가 어긋나면 폰의 새 일정까지 숨겨요 (QA 11-26 B4)
       st.plan = { key: j.key, title: j.title, hook: j.hook, days: j.days, plan_b: j.plan_b || [], prep: j.prep || [], packing: j.packing || [], byAi: !!j.by_ai, start: String(j.start || "").slice(0, 10), fromPhone: !String(j.key || "").startsWith("web|") };
       st.done = (Array.isArray(j.done) ? j.done : []).map(String); st.planUpdated = j.updated || 0; st.day = 0;
       if (st.step === "plan" || st.step === "wants") st.step = "plan";
@@ -452,7 +457,8 @@ JSON 하나만 답해:
   function stepper() {
     const steps = [["wants", "1. 뭐가 당겨요"], ["regions", "2. 어디로"], ["plan", "3. 일정"]];
     const idx = steps.findIndex((s) => s[0] === st.step);
-    return '<ol class="steps3">' + steps.map(([id, l], i) => '<li class="' + (i === idx ? "on" : i < idx ? "done" : "") + '">' + (i < idx ? '<button type="button" data-go="' + id + '">' + esc(t(l)) + "</button>" : esc(t(l))) + "</li>").join("") + "</ol>";
+    const hasPlan = !!(st.plan && normPlan(st.plan).days.length); // 폰에서 온 일정·지난 일정으로 돌아가기
+    return '<ol class="steps3">' + steps.map(([id, l], i) => '<li class="' + (i === idx ? "on" : i < idx ? "done" : "") + '">' + (i < idx || (id === "plan" && i !== idx && hasPlan) ? '<button type="button" data-go="' + id + '">' + esc(t(l)) + "</button>" : esc(t(l))) + "</li>").join("") + "</ol>";
   }
   function viewWants() {
     const loc = window.ZLOC ? ZLOC.init() : { lat: 37.5665, lng: 126.978, label: "서울" };
@@ -563,6 +569,7 @@ JSON 하나만 답해:
     const picks = st.cands.filter((c) => st.picks.includes(c.code));
     if (!picks.length) return;
     const day = startDay(st.when, new Date());
+    const keepAi = !!(st.plan && st.plan.byAi && st.step === "plan"); // 기다리는 동안 단계 버튼을 눌러도 다시 짜기로 봐요 (QA 11-26 B4)
     busy = true; errMsg = "";
     let n = 0;
     busyMsg = t("관광공사 장소·숙소·날씨·물때를 모으는 중이에요… ({n}/{total})", { n, total: picks.length }); render();
@@ -576,7 +583,7 @@ JSON 하나만 답해:
       if (!plan.days.length) throw new Error(t("AI 답을 읽지 못했어요"));
     } catch (e) {
       // 이미 AI 일정이 있으면(다시 짜기) 간단 일정으로 덮지 않고 그대로 둬요. 폰 쪽 일정도 지켜요 (QA 11-23)
-      if (st.plan && st.plan.byAi && st.step === "plan") {
+      if (keepAi && st.plan && st.plan.byAi) {
         errMsg = t("AI 일정을 받지 못했어요.") + " " + (e.message || e);
         busy = false; render(); return;
       }
@@ -609,7 +616,7 @@ JSON 하나만 답해:
     if (d.act === "reroll") { st.roll = (st.roll || 0) + 1; return doRank(); }
     if (d.act === "remake" && st.plan && st.plan.fromPhone) { errMsg = t("폰 앱에서 짠 일정은 폰 앱에서 다시 짜 주세요."); render(); return; } // 웹의 옛 후보로 폰 일정을 덮지 않게 (QA 11-23)
     if (d.act === "make" || d.act === "remake") return doMake();
-    if (d.act === "new") { st = { step: "wants", when: st.when, wants: [], maxMin: st.maxMin, from: st.from, cands: [], picks: [], plan: null, done: [], day: 0 }; errMsg = ""; save(); render(); return; }
+    if (d.act === "new") { st = { step: "wants", when: st.when, wants: [], maxMin: st.maxMin, from: st.from, cands: [], picks: [], plan: null, done: [], day: 0, dismissed: st.planUpdated || st.dismissed || 0 }; errMsg = ""; save(); render(); return; }
   });
   document.addEventListener("change", (e) => {
     const c = e.target.closest && e.target.closest("[data-done]");
