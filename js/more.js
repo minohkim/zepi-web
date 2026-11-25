@@ -153,7 +153,7 @@
     const byCode = new Map(x.rec.regions.map((r) => [String(r.c), r]));
     const trips = x.trips;
     let h = '<div class="iohead"><h2>' + esc(t("내 여행 {n}", { n: trips.length })) + "</h2><p>" + esc(t("집 밖에서 하룻밤 잤거나 3시간 넘게 머문 날을 이어서 여행 하나로 묶었어요. 사는 곳(한 해 30밤 이상 잔 곳, '집' 태그)과 '회사' 태그가 있는 곳은 빼요.")) + "</p>" +
-      (x.rec.sample ? '<p class="muted">' + esc(t("지금은 예시 데이터예요. 로그인하면 내 여행이 보여요.")) + "</p>" : "") + "</div>";
+      (x.rec.sample ? '<p class="muted">' + esc(t("지금은 예시 데이터예요. 폰 앱의 백업 파일(.db)을 열면 내 여행이 보여요.")) + '</p><p><label class="btn primary" for="file">' + esc(t("백업 파일 열기")) + "</label></p>" : "") + "</div>";
     if (!trips.length) { root.innerHTML = h + '<div class="card2"><div class="muted">' + esc(t("아직 묶인 여행이 없어요. 집 밖에서 하룻밤 자면 여기에 생겨요.")) + "</div></div>"; return; }
     // 해마다 묶기
     let year = null;
@@ -212,7 +212,7 @@
       '<div class="lvbar" role="progressbar" aria-valuemin="0" aria-valuemax="' + need + '" aria-valuenow="' + cur + '"><i style="width:' + Math.round((cur / need) * 100) + '%"></i></div>' +
       '<div class="lvsub"><span>' + esc(t("다음 레벨까지 {n}", { n: fmtNum.format(need - cur) })) + "</span><span>" + esc(t("정복 100 · 안개 칸 1 · 배지 200")) + "</span></div>" +
       '<div class="lvsub"><span>' + esc(t("정복 {n}곳 · 안개 {k}㎢ · 내 장소 {s}곳", { n: x.conquered.size, k: (x.cells * 0.028).toFixed(1), s: saved })) + "</span></div></div>";
-    if (x.rec.sample) h += '<p class="muted">' + esc(t("지금은 예시 데이터예요. 로그인하면 내 배지가 보여요.")) + "</p>";
+    if (x.rec.sample) h += '<p class="muted">' + esc(t("지금은 예시 데이터예요. 폰 앱의 백업 파일(.db)을 열면 내 배지가 보여요.")) + '</p><p><label class="btn primary" for="file">' + esc(t("백업 파일 열기")) + "</label></p>";
     const tr = (b) => ({ title: t(b.title, b.vars), desc: t(b.desc, b.vars) });
     // 딴 것 먼저, 그다음 가까운 순
     const order = [...bs].sort((a, b) => (earned(b) - earned(a)) || (b.cur / b.goal - a.cur / a.goal));

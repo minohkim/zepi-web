@@ -25,7 +25,7 @@
 <style>
 :root {
   --bg: #F4F8F5; --surface: #FFFFFF; --ink: #17201A; --muted: #56615A; --line: #D5E0DA;
-  --leaf: #0E8465; --leaf-soft: #D5EDE5; --pepper: #A8402A; --sea: #2C7FB8;
+  --leaf: #0E8465; --leaf-ink: #0B7559; --leaf-soft: #D5EDE5; --pepper: #A8402A; --sea: #2C7FB8;
   --sun: #F2B705; --sun-ink: #8A6A00; --sun-soft: #FFF1C2; --on-sun: #1B1A12;
   --font-display: "Gowun Dodum", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
   --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
@@ -33,9 +33,9 @@
   --radius: 20px;
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { --bg: #0F1411; --surface: #161D18; --ink: #E5EBE3; --muted: #9AA69D; --line: #29332C; --leaf: #4FC9A4; --leaf-soft: #163329; --pepper: #E5805F; --sea: #6DB6E3; --sun-ink: #F2C94C; --sun-soft: #3A3114; color-scheme: dark; }
+  :root:not([data-theme="light"]) { --bg: #0F1411; --surface: #161D18; --ink: #E5EBE3; --muted: #9AA69D; --line: #29332C; --leaf: #4FC9A4; --leaf-ink: #4FC9A4; --leaf-soft: #163329; --pepper: #E5805F; --sea: #6DB6E3; --sun-ink: #F2C94C; --sun-soft: #3A3114; color-scheme: dark; }
 }
-:root[data-theme="dark"] { --bg: #0F1411; --surface: #161D18; --ink: #E5EBE3; --muted: #9AA69D; --line: #29332C; --leaf: #4FC9A4; --leaf-soft: #163329; --pepper: #E5805F; --sea: #6DB6E3; --sun-ink: #F2C94C; --sun-soft: #3A3114; color-scheme: dark; }
+:root[data-theme="dark"] { --bg: #0F1411; --surface: #161D18; --ink: #E5EBE3; --muted: #9AA69D; --line: #29332C; --leaf: #4FC9A4; --leaf-ink: #4FC9A4; --leaf-soft: #163329; --pepper: #E5805F; --sea: #6DB6E3; --sun-ink: #F2C94C; --sun-soft: #3A3114; color-scheme: dark; }
 :root:lang(zh) { --font-display: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif; --font-body: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif; }
 :root:lang(ja) { --font-display: "Hiragino Sans", "Yu Gothic UI", "Meiryo", system-ui, sans-serif; --font-body: "Hiragino Sans", "Yu Gothic", "Meiryo", system-ui, sans-serif; }
 :root:lang(en) { --font-display: "Gowun Dodum", system-ui, sans-serif; --font-body: "IBM Plex Sans KR", system-ui, sans-serif; }
@@ -46,6 +46,7 @@ body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f
 .in { max-width: 1080px; margin: 0 auto; }
 a { color: inherit; }
 h1, h2, h3 { margin: 0; text-wrap: balance; }
+:lang(ja) h1, :lang(ja) h2, :lang(ja) h3 { word-break: auto-phrase; }
 :focus-visible { outline: 2px solid var(--leaf); outline-offset: 2px; }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; font-size: 15px; font-weight: 500; text-decoration: none; cursor: pointer; }
 .btn.primary { background: var(--sun); border-color: var(--sun); color: var(--on-sun); font-weight: 600; }
@@ -55,16 +56,16 @@ h1, h2, h3 { margin: 0; text-wrap: balance; }
 header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
 header .in { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 10px; }
-.logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.logo { display: flex; align-items: center; gap: 10px; min-height: 44px; text-decoration: none; }
 .logo svg { width: 34px; height: 34px; }
 .logo b { font-family: var(--font-display); font-size: 22px; }
 header nav { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
-header nav .btn { min-height: 38px; padding: 0 14px; font-size: 14px; }
+header nav .btn { min-height: 44px; padding: 0 14px; font-size: 14px; }
 .langsel { appearance: auto; padding: 0 10px; }
-@media (max-width: 560px) { header nav .hide-s { display: none; } }
+@media (max-width: 560px) { header nav .hide-s { display: none; } header .in { flex-wrap: nowrap; } header nav { flex-wrap: nowrap; } .langsel { max-width: 92px; } .logo b { font-size: 20px; } }
 /* 첫 화면 */
 .hero .in { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 40px; align-items: center; padding-block: 64px 56px; }
-.eyebrow { font-size: 13px; letter-spacing: .08em; color: var(--leaf); font-weight: 600; }
+.eyebrow { font-size: 13px; letter-spacing: .08em; color: var(--leaf-ink); font-weight: 600; }
 .hero h1 { font-family: var(--font-display); font-size: clamp(36px, 6vw, 60px); line-height: 1.15; letter-spacing: -0.01em; margin-top: 10px; }
 .hero p.lead { font-size: 18px; color: var(--muted); max-width: 32em; margin: 18px 0 26px; }
 .cta { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -91,12 +92,13 @@ section .sub { color: var(--muted); margin: 8px 0 28px; max-width: 40em; }
 .alt { background: var(--surface); border-block: 1px solid var(--line); }
 .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; counter-reset: s; }
 .steps div { counter-increment: s; display: flex; flex-direction: column; gap: 6px; }
-.steps div::before { content: counter(s); font-family: var(--font-num); font-size: 14px; width: 30px; height: 30px; display: grid; place-items: center; border-radius: 50%; background: var(--leaf); color: var(--bg); }
+.steps div::before { content: counter(s); font-family: var(--font-num); font-size: 14px; width: 30px; height: 30px; display: grid; place-items: center; border-radius: 50%; background: var(--leaf-ink); color: var(--bg); }
 .steps b { font-size: 17px; }
 .steps p { margin: 0; color: var(--muted); font-size: 15px; }
 .trust { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px 32px; }
 .trust div { display: flex; gap: 12px; }
 .trust div > span { font-size: 22px; }
+.trust > div > div { display: block; }
 .trust p { margin: 2px 0 0; color: var(--muted); font-size: 15px; }
 .final { text-align: center; }
 .final .cta { justify-content: center; margin-top: 20px; }
@@ -110,6 +112,7 @@ footer { padding-block: 28px 40px; color: var(--muted); font-size: 13px; border-
 .dlg textarea, .dlg input { font: inherit; padding: 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
 .dlg .row { display: flex; gap: 8px; justify-content: flex-end; }
 .dlg .msg { font-size: 13px; color: var(--muted); min-height: 1em; }
+footer .in a { display: inline-block; padding-block: 10px; }
 footer .in { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: space-between; }
 </style>
 </head>
@@ -124,7 +127,7 @@ footer .in { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: spa
       <a class="btn hide-s" href="#features">기능</a>
       <a class="btn hide-s" href="beta.html">베타 신청</a>
       <select class="btn langsel" id="langSel" aria-label="언어 · Language"></select>
-      <a class="btn primary" href="app.html?login" id="loginLink">로그인</a>
+      <a class="btn" href="app.html?login" id="loginLink">로그인</a>
     </nav>
   </div>
 </header>
@@ -140,7 +143,7 @@ footer .in { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: spa
           <a class="btn primary" href="app.html#today">지금 둘러보기</a>
           <a class="btn" href="beta.html">앱 베타 신청</a>
         </div>
-        <div class="small">가입 없이 예시 기록으로 먼저 써 볼 수 있어요. 구글·카카오로 바로 로그인돼요.</div>
+        <div class="small">가입 없이 예시 기록으로 먼저 써 볼 수 있어요. 내 기록은 폰 앱에서 만든 백업 파일(.db)을 열어서 봐요.</div>
       </div>
       <div class="mock" aria-hidden="true">
         <svg viewBox="0 0 400 240">
@@ -165,12 +168,12 @@ footer .in { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: spa
   <section class="band" id="features">
     <div class="in">
       <h2>앱에서 쌓고, 웹에서 넓게 봐요</h2>
-      <p class="sub">폰에서는 가볍게 켜 두고, 컴퓨터에서는 큰 지도로 돌아보세요. 같은 계정이면 메모도 양쪽에서 고쳐져요.</p>
+      <p class="sub">폰에서는 가볍게 켜 두고, 컴퓨터에서는 앱 백업 파일(.db)을 열어 큰 지도로 돌아보세요. 텃밭·여행 계획은 로그인하면 폰과 맞춰져요.</p>
       <div class="feat">
         <article><span class="ic">☀️</span><h3>오늘</h3><p>지금 있는 곳의 날씨·미세먼지, 해와 달, 절기와 이달의 제철 음식, 지금 즐길 거리까지.</p><span class="tag">로그인 없이도</span></article>
         <article><span class="ic">🌊</span><h3>바다</h3><p>가까운 관측소의 만조·간조 시각과 물높이 그래프, 사리·조금, 파도와 바닷물 온도.</p><span class="tag">물때표는 로그인</span></article>
-        <article><span class="ic">🗺️</span><h3>하루 지도</h3><p>그날 다닌 길과 머문 곳을 시간 순서대로. 머문 곳마다 별점·태그·메모를 남겨요.</p><span class="tag">앱 기록</span></article>
-        <article><span class="ic">🏁</span><h3>정복 지도 · 올해의 발자취</h3><p>가 본 시군구를 색칠하고, 한 해 동안 얼마나, 어디를 다녔는지 한눈에.</p><span class="tag">앱 기록</span></article>
+        <article><span class="ic">🗺️</span><h3>하루 지도</h3><p>그날 다닌 길과 머문 곳을 시간 순서대로. 머문 곳마다 별점·태그·메모를 남겨요.</p><span class="tag">백업 파일(.db)로</span></article>
+        <article><span class="ic">🏁</span><h3>정복 지도 · 올해의 발자취</h3><p>가 본 시군구를 색칠하고, 한 해 동안 얼마나, 어디를 다녔는지 한눈에.</p><span class="tag">백업 파일(.db)로</span></article>
         <article><span class="ic">⇄</span><h3>가져오기 · 내보내기</h3><p>구글 지도와 네이버 지도에 저장한 장소를 가져오고, 내 장소를 구글 내 지도용 파일로 내보내요.</p><span class="tag">웹 전용</span></article>
       </div>
     </div>
@@ -181,9 +184,9 @@ footer .in { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: spa
       <h2>시작은 세 단계</h2>
       <p class="sub">설정할 것이 거의 없어요.</p>
       <div class="steps">
-        <div><b>로그인</b><p>구글이나 카카오로 바로, 또는 이메일로 가입해요.</p></div>
         <div><b>앱 켜 두기</b><p>폰의 바람소리 앱을 켜 두면 다닌 길이 저절로 쌓여요. 앱은 지금 베타예요.</p></div>
-        <div><b>웹에서 돌아보기</b><p>같은 계정으로 이 사이트에 들어오면 폰 기록이 큰 지도로 보여요.</p></div>
+        <div><b>백업 파일 만들기</b><p>앱 설정에서 백업 파일(.db)을 만들어 컴퓨터로 옮겨요.</p></div>
+        <div><b>웹에서 열어 보기</b><p>이 사이트에서 백업 파일을 열면 다닌 길이 큰 지도로 보여요. 로그인은 필요 없어요.</p></div>
       </div>
     </div>
   </section>
@@ -193,8 +196,8 @@ footer .in { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: spa
       <h2>내 기록은 내 것</h2>
       <p class="sub">위치 기록은 민감한 정보라서 처음부터 조심스럽게 만들었어요.</p>
       <div class="trust">
-        <div><span>🔒</span><div><b>나만 보여요</b><p>클라우드에 올린 기록은 내 계정으로만 읽을 수 있게 막혀 있어요.</p></div></div>
-        <div><span>📱</span><div><b>폰에 먼저 저장</b><p>기록은 폰에 먼저 쌓이고, 올릴지 말지는 직접 정해요.</p></div></div>
+        <div><span>📱</span><div><b>위치 기록은 서버로 안 보내요</b><p>다닌 길·머문 곳·정복 지도는 내 폰과 내가 만든 백업 파일에만 있어요. 로그인해도 올라가지 않아요.</p></div></div>
+        <div><span>🔒</span><div><b>로그인은 텃밭·여행 계획만</b><p>로그인하면 텃밭·여행 계획·게임 기록만 폰과 맞춰지고, 내 계정으로만 읽을 수 있게 막혀 있어요.</p></div></div>
         <div><span>💾</span><div><b>백업 파일은 브라우저 안에서만</b><p>앱 백업 파일을 열면 이 브라우저 안에서만 읽고, 어디로도 보내지 않아요.</p></div></div>
       </div>
     </div>
