@@ -257,6 +257,7 @@
     for (const k of ["spots", "studied", "friends"]) if (s[k] != null) s[k] = obj(s[k]);
     for (const k of ["coins", "total", "shots", "hits"]) s[k] = +s[k] || 0;
     if (s.xp != null) s.xp = +s.xp || 0;
+    for (const id of Object.keys(s.dex)) { const d = s.dex[id]; if (!d || typeof d !== "object") delete s.dex[id]; else { d.n = +d.n || 0; d.max = +d.max || 0; } } // 서버·옛 저장의 깨진 도감 칸 (B2 11-26)
     if (s.net != null) s.net = Array.isArray(s.net) ? s.net.filter((f) => f && typeof f === "object" && typeof f.id === "string") : [];
     return s;
   }
@@ -273,7 +274,7 @@
   const hard = () => diff() === 3;
   // ---------- 내 계정에 저장 (바람소리 로그인: 웹은 ZAPP, 앱 안에서는 앱이 열어 준 길) ----------
   const CLOUD_DOC = "game_fish";
-  let cloudT = 0, cloudState = "", cloudPulled = false;
+  let cloudT = 0, cloudState = "", cloudPulled = false, cloudMerged = false;
   function cloudApi() { try { return window.ZAPP && ZAPP.docGet && ZAPP.signedIn && ZAPP.signedIn() ? ZAPP : null; } catch (e) { return null; } }
   function mergeSave(a, b) {
     if (!b || b.v !== 1) return a;
@@ -283,7 +284,7 @@
     for (const k of ["tourBest", "tourWins"]) if (a[k] || b[k]) o[k] = Math.max(+a[k] || 0, +b[k] || 0);
     if (a.friends || b.friends) { o.friends = Object.assign({}, b.friends || {}, a.friends || {}); for (const id of Object.keys(b.friends || {})) o.friends[id] = Math.max(+(a.friends || {})[id] || 0, +b.friends[id] || 0); }
     o.dex = Object.assign({}, b.dex || {}, a.dex || {});
-    for (const id of Object.keys(b.dex || {})) { const x = (a.dex || {})[id], y = b.dex[id]; if (x && y) o.dex[id] = { n: Math.max(x.n, y.n), max: Math.max(x.max, y.max) }; }
+    for (const id of Object.keys(b.dex || {})) { const x = (a.dex || {})[id], y = b.dex[id]; if (x && y) o.dex[id] = { n: Math.max(+x.n || 0, +y.n || 0), max: Math.max(+x.max || 0, +y.max || 0) }; }
     o.gear = Object.assign({}, b.gear || {}, a.gear || {});
     o.studied = Object.assign({}, b.studied || {}, a.studied || {});
     const seen = new Set(), net = [];
@@ -295,11 +296,13 @@
   async function cloudPull() {
     const A = cloudApi(); if (!A || cloudPulled) return;
     cloudPulled = true;
-    try { const d = await A.docGet(CLOUD_DOC); if (d) { save = tidy(mergeSave(save, typeof d === "string" ? JSON.parse(d) : d)); try { localStorage.setItem(KEY, JSON.stringify(save)); } catch (e) {} renderPanel(); } cloudState = "ok"; }
+    try { const d = await A.docGet(CLOUD_DOC); if (d) { save = tidy(mergeSave(save, typeof d === "string" ? JSON.parse(d) : d)); try { localStorage.setItem(KEY, JSON.stringify(save)); } catch (e) {} renderPanel(); } cloudMerged = true; cloudState = "ok"; }
     catch (e) { cloudState = "err"; cloudPulled = false; }
   }
   async function cloudPush() {
     const A = cloudApi(); if (!A) return;
+    // 서버 것을 한 번도 못 받았으면 올리지 않아요: 받기가 실패한 채 올리면 서버 기록이 이 기기 것으로 통째로 덮여요 (B2 11-26)
+    if (!cloudMerged) { await cloudPull(); if (!cloudMerged) { cloudState = "err"; cloudT = 15; const el0 = root && root.querySelector("#gCloud"); if (el0) el0.textContent = cloudText(); return; } }
     try { await A.docPut(CLOUD_DOC, JSON.stringify(save)); cloudState = "saved"; } catch (e) { cloudState = "err"; }
     const el = root && root.querySelector("#gCloud"); if (el) el.textContent = cloudText();
   }
@@ -1470,15 +1473,18 @@
   function rtConnect() {
     if (!together() || typeof WebSocket === "undefined") return;
     const topic = "realtime:zepi-fish-" + spot().id;
-    if (rt && rtTopic === topic && rt.readyState <= 1) return;
+    if (rt && rtTopic === topic && rt.readyState <= 1 && rtStatus !== "err") return; // 입장 거절(err)이면 소켓이 열려 있어도 새로 (B2 11-26)
     rtClose();
     rtTopic = topic; peers = {}; rtStatus = "connecting";
-    try { rt = new WebSocket(RT_URL); } catch (e) { rtStatus = "err"; return; }
-    rt.onopen = () => {
+    let ws;
+    try { ws = rt = new WebSocket(RT_URL); } catch (e) { rtStatus = "err"; return; }
+    // 자리를 바꾸면 옛 소켓의 close·error 가 늦게 와서 새 연결을 '끊김'으로 바꿔요 → 지금 소켓 것만 받아요 (B2 11-26)
+    const mine = (f) => function (ev) { if (rt === ws) return f(ev); };
+    rt.onopen = mine(() => {
       rtSend("phx_join", { config: { broadcast: { self: false, ack: false }, presence: { key: myKey }, private: false } });
       rtHb = 0;
-    };
-    rt.onmessage = (ev) => {
+    });
+    rt.onmessage = mine((ev) => {
       let m; try { m = JSON.parse(ev.data); } catch (e) { return; }
       if (m.topic !== rtTopic) return;
       if (m.event === "phx_reply" && m.payload && m.payload.status === "ok" && rtStatus !== "on") { rtStatus = "on"; rtSend("presence", { type: "presence", event: "track", payload: myMeta() }); renderPeople(); }
@@ -1494,9 +1500,9 @@
         const d = m.payload.payload || {}, sp = SP.find((x) => x.id === d.f), dn = (typeof d.n === "string" ? d.n : "").slice(0, 12), who = Object.keys(peers).find((k) => peers[k] && peers[k].n === dn) || "";
         if (sp) { peerMsgs.push({ k: who, txt: t("🎉 {n}님이 {f} {c}cm!", { n: dn || t("손님"), f: t(sp.n), c: Math.round(+d.size) || 0 }), t: 3.5 }); beep(1175, 0.1, "triangle", 0.08); }
       }
-    };
-    rt.onclose = () => { if (rtStatus !== "off") rtStatus = rtStatus === "on" ? "lost" : "err"; renderPeople(); };
-    rt.onerror = () => { rtStatus = "err"; };
+    });
+    rt.onclose = mine(() => { if (rtStatus !== "off") rtStatus = rtStatus === "on" ? "lost" : "err"; renderPeople(); });
+    rt.onerror = mine(() => { rtStatus = "err"; });
   }
   function rtClose() { if (rt) { try { rtSend("phx_leave", {}); rt.close(); } catch (e) {} } rt = null; peers = {}; }
   function peerSend(ev, data) { if (!together() || rtStatus !== "on") return; rtSend("broadcast", { type: "broadcast", event: ev, payload: Object.assign({ n: myMeta().n }, data) }); }
@@ -1508,7 +1514,7 @@
     if (rtHb > 25) { rtHb = 0; if (rt.readyState === 1) rt.send(JSON.stringify({ topic: "phoenix", event: "heartbeat", payload: {}, ref: String(++rtRef) })); }
     const st = myMeta().s;
     if (rtStatus === "on" && (st !== rtLastState && rtTrack > 1.5 || rtTrack > 30)) { rtLastState = st; rtTrack = 0; rtSend("presence", { type: "presence", event: "track", payload: myMeta() }); }
-    if (rtStatus === "lost" && rtTrack > 8) { rtTrack = 0; rtConnect(); }
+    if ((rtStatus === "lost" && rtTrack > 8) || (rtStatus === "err" && rtTrack > 20)) { rtTrack = 0; rtConnect(); } // 처음부터 안 붙었어도 다시 (안내 글이 '다시 해 볼게요')
   }
   const peerImgs = {};
   function peerImg(u) { if (!u) return null; u = String(u).replace(/^http:/, "https:"); if (!(u in peerImgs)) { peerImgs[u] = null; const im = new Image(); im.referrerPolicy = "no-referrer"; im.onload = () => { peerImgs[u] = im; }; im.src = u; } return peerImgs[u]; }
@@ -2403,7 +2409,7 @@
     K.bindPress([cv, btn], press, release);
     root.querySelector("#gPanel").addEventListener("click", onPanel);
     root.querySelector("#gPanel").addEventListener("toggle", (e) => { const d = e.target.closest && e.target.closest("[data-gfish]"); if (d && d.open) loadPhoto(d.dataset.gfish); }, true);
-    window.addEventListener("zapp-auth", () => { cloudPulled = false; cloudPull(); });
+    window.addEventListener("zapp-auth", () => { cloudPulled = false; cloudMerged = false; cloudPull(); });
     window.addEventListener("resize", () => { if (K.visible(root)) resize(); });
     K.onOpt((k) => { if (!K.visible(root)) return; if (k === "easy" && !landingNow()) toReady(); renderPanel(); btnKey = ""; setBtn(); });
   }
