@@ -8,14 +8,16 @@
     if (local != null && (remote == null || lu > ru || (lu === 0 && ru === 0))) return "push";
     return null;
   }
-  const timers = {};
+  const timers = {}, pending = {};
   window.ZDOCS = {
     updatedOf, decide,
     // 로그인했으면 서버와 맞추고, 서버 것이 더 새로우면 그 글을 돌려줘요
     async sync(name, local) {
       if (!window.ZAPP || !ZAPP.signedIn()) return null;
       try {
-        const remote = await ZAPP.docGet(name);
+        // 서버 data 가 글자가 아니라 객체(jsonb)로 와도 비교·받기가 되게 (QA 11-26)
+        let remote = await ZAPP.docGet(name);
+        if (remote != null && typeof remote !== "string") remote = JSON.stringify(remote);
         const d = decide(local, remote);
         if (d === "pull") return remote;
         if (d === "push") await ZAPP.docPut(name, updatedOf(local) ? local : JSON.stringify({ ...JSON.parse(local), updated: Date.now() }));
@@ -26,7 +28,13 @@
     push(name, data) {
       if (!window.ZAPP || !ZAPP.signedIn()) return;
       clearTimeout(timers[name]);
-      timers[name] = setTimeout(() => ZAPP.docPut(name, data).catch((e) => console.warn("docs push", name, e)), 1500);
+      pending[name] = data;
+      timers[name] = setTimeout(() => { delete pending[name]; ZAPP.docPut(name, data).catch((e) => console.warn("docs push", name, e)); }, 1500);
+    },
+    // 로그아웃 전에 기다리는 것을 바로 올려요
+    flush() {
+      const jobs = Object.keys(pending).map((name) => { clearTimeout(timers[name]); const d = pending[name]; delete pending[name]; return ZAPP.docPut(name, d).catch((e) => console.warn("docs flush", name, e)); });
+      return Promise.all(jobs);
     },
   };
 })();
