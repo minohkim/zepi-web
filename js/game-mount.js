@@ -22,11 +22,26 @@
     { id: "deogyu", n: "덕유산", peak: "향적봉", h: 1614, sgg: ["무주", "거창", "장수", "함양"], stops: ["구천동 탐방지원센터", "백련사", "오수자굴", "향적봉"] },
     { id: "songni", n: "속리산", peak: "문장대", h: 1054, sgg: ["보은", "괴산", "상주"], stops: ["법주사", "세심정", "보현재", "문장대"] },
     { id: "gyeryong", n: "계룡산", peak: "관음봉", h: 766, sgg: ["공주", "계룡", "논산"], stops: ["동학사", "은선폭포", "관음봉 고개", "관음봉"] },
-    { id: "mudeung", n: "무등산", peak: "서석대", h: 1100, sgg: ["광주", "화순", "담양"], stops: ["증심사", "중머리재", "장불재", "서석대"] },
+    { id: "mudeung", n: "무등산", peak: "서석대", h: 1100, sgg: ["광주광역시", "광주 동구", "광주 북구", "화순", "담양"], codes: ["12210", "12300"], stops: ["증심사", "중머리재", "장불재", "서석대"] },
     { id: "wolchul", n: "월출산", peak: "천황봉", h: 809, sgg: ["영암", "강진"], stops: ["천황사", "구름다리", "통천문", "천황봉"] },
     { id: "juwang", n: "주왕산", peak: "주봉", h: 721, sgg: ["청송", "영덕"], stops: ["대전사", "자하교", "주봉 삼거리", "주봉"] },
   ];
-  function load() { try { const s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s && s.v === 1) return s; } catch (e) {} return { v: 1, sel: "bukhan", done: {} }; }
+  // 저장값이 깨져도(done 이 null·배열·숫자, sel 이 없는 산, best 없음) 게임이 멈추지 않게 다듬어서 읽어요 (QA 11-26 B6)
+  function load() {
+    try {
+      const s = JSON.parse(localStorage.getItem(KEY) || "null");
+      if (s && s.v === 1) {
+        const done = {}, src = s.done && typeof s.done === "object" && !Array.isArray(s.done) ? s.done : {};
+        for (const m of MOUNTS) {
+          const d = src[m.id]; if (!d || typeof d !== "object") continue;
+          const n = Math.max(1, Math.floor(+d.n) || 1), best = +d.best;
+          done[m.id] = best > 0 && isFinite(best) ? { n, best: Math.round(best) } : { n };
+        }
+        return { v: 1, sel: MOUNTS.some((m) => m.id === s.sel) ? s.sel : "bukhan", done };
+      }
+    } catch (e) {}
+    return { v: 1, sel: "bukhan", done: {} };
+  }
   let save = load();
   function store() { try { localStorage.setItem(KEY, JSON.stringify(save)); } catch (e) {} }
   const M = () => MOUNTS.find((m) => m.id === save.sel) || MOUNTS[0];
@@ -43,8 +58,9 @@
       const peaks = R.summits && typeof R.summits === "object" ? Array.from(R.summits).filter((x) => typeof x === "string").map((x) => x.trim()) : [];
       summitSet = new Set(peaks);
       const names = [];
-      for (const r of R.regions) if ((R.conq && (R.conq.has(r.c) || R.conq.has(String(r.c)))) || (R.manual && R.manual.has && (R.manual.has(r.c) || R.manual.has(String(r.c))))) names.push(r.n);
-      for (const m of MOUNTS) if (m.sgg.some((g) => names.some((n) => n.indexOf(g) === 0)) || summitSet.has(m.n)) out.add(m.id);
+      const codes = new Set();
+      for (const r of R.regions) if ((R.conq && (R.conq.has(r.c) || R.conq.has(String(r.c)))) || (R.manual && R.manual.has && (R.manual.has(r.c) || R.manual.has(String(r.c))))) { names.push(r.n); codes.add(String(r.c)); }
+      for (const m of MOUNTS) if (m.sgg.some((g) => names.some((n) => n.indexOf(g) === 0)) || (m.codes && m.codes.some((c) => codes.has(c))) || summitSet.has(m.n)) out.add(m.id);
     } catch (e) {}
     return out;
   }
@@ -53,10 +69,18 @@
   let st = "ready", prog = 0, stam = 100, idle = 0, restT = 0, stopIdx = 0, pauseT = 0, elapsed = 0, holding = false, bob = 0, now = 0, msg = "", msgT = 0, good = 0, lastBeat = -1, topT = 0;
   const per = () => (K.opt.easy ? 1.05 : 0.8);
   function reset() { st = "ready"; prog = 0; stam = 100; idle = 0; stopIdx = 0; pauseT = 0; restT = 0; msgT = 0; elapsed = 0; good = 0; holding = false; setBtn(); }
+  // '다른 산 오르기': 아직 안 오른 산(가 본 동네 산 먼저) → 다 올랐으면 목록의 다음 산 (QA 11-26)
+  function nextMount() {
+    const vis = visitedSet(), list = MOUNTS.slice().sort((a, b) => (vis.has(b.id) - vis.has(a.id)));
+    const i = list.findIndex((m) => m.id === save.sel);
+    const rest = list.slice(i + 1).concat(list.slice(0, Math.max(0, i)));
+    const nx = rest.find((m) => !save.done[m.id]) || rest[0];
+    if (nx) { save.sel = nx.id; store(); }
+  }
   function flash(m) { msg = m; msgT = 2.2; }
   function step() {
     if (st === "ready") { st = "climb"; K.beep(523, 0.12); setBtn(); return; }
-    if (st === "top") { if (topT > 0.8) { reset(); renderPanel(); } return; }
+    if (st === "top") { if (topT > 0.8) { nextMount(); reset(); renderPanel(); } return; }
     if (st !== "climb" || pauseT > 0) return;
     if (st === "climb" && restT > 0) return;
     const ph = (now % per()) / per(), off = Math.min(ph, 1 - ph) * per();
@@ -77,7 +101,7 @@
     if (prog >= 1) {
       prog = 1; st = "top"; topT = 0;
       const d = save.done[M().id];
-      save.done[M().id] = { n: (d ? d.n : 0) + 1, best: Math.min(d ? d.best : 1e9, Math.round(elapsed)) };
+      save.done[M().id] = { n: (d ? d.n : 0) + 1, best: Math.min(d && d.best > 0 ? d.best : 1e9, Math.round(elapsed)) };
       store();
       [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => K.beep(f, 0.2), i * 140));
       K.buzz([60, 40, 60]);
@@ -253,7 +277,7 @@
       return '<button type="button" data-msel="' + m.id + '" class="' + (save.sel === m.id ? "on" : "") + '">' + (summitSet.has(m.n) ? "🏅 " : vis.has(m.id) ? "✓ " : "") + esc(t(m.n)) + (d ? " 🏁" : "") + "</button>";
     }).join("") + "</div>";
     const m = M(), d = save.done[m.id];
-    h += '<p class="tk-like" style="margin:10px 0 0">' + esc(m.stops.map((s) => t(s)).join(" → ")) + " · " + m.h + "m" + (d ? " · " + esc(t("완등 {n}번 · 최고 {m}분 {s}초", { n: d.n, m: Math.floor(d.best / 60), s: d.best % 60 })) : "") + "</p></article>";
+    h += '<p class="tk-like" style="margin:10px 0 0">' + esc(m.stops.map((s) => t(s)).join(" → ")) + " · " + m.h + "m" + (d && d.best > 0 ? " · " + esc(t("완등 {n}번 · 최고 {m}분 {s}초", { n: d.n, m: Math.floor(d.best / 60), s: d.best % 60 })) : "") + "</p></article>";
     const doneN = Object.keys(save.done).length;
     h += '<article class="panel gcard"><h3>' + esc(t("완등 도장 {n}/{all}", { n: doneN, all: MOUNTS.length })) + "</h3><p class=\"gtoday\">" + (doneN ? MOUNTS.filter((x) => save.done[x.id]).map((x) => "🏁 " + esc(t(x.n))).join(" · ") : esc(t("아직 없어요. 가까운 산부터 올라 볼까요?"))) + "</p>" +
       (st === "top" ? '<button type="button" class="btn" data-mshare>' + esc(t("완등 인증 문구 복사")) + '</button> <span class="muted" id="mShareMsg" aria-live="polite"></span>' : "") + "</article>";
