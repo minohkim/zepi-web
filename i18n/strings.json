@@ -249,11 +249,6 @@
   "下载 CSV",
   "CSV をダウンロード"
  ],
- "가져온 장소를 저장하려면 오른쪽 위 <b>로그인</b>을 해 주세요. 저장하면 폰 앱에도 들어가요.": [
-  "To save imported places, <b>log in</b> at the top right. Saved places also appear in the phone app.",
-  "要保存导入的地点，请先在右上角<b>登录</b>。保存后手机 App 里也会出现。",
-  "取り込んだ場所を保存するには右上で<b>ログイン</b>してください。保存するとスマホアプリにも入ります。"
- ],
  "가져올 장소": [
   "Places to import",
   "要导入的地点",
@@ -299,20 +294,10 @@
   "位置",
   "位置"
  ],
- "로그인하면 내 계정의 기록만 보여요. 백업 파일은 이 브라우저 안에서만 열려요.": [
-  "When you log in, only your own account's records are shown. Backup files are opened only inside this browser.",
-  "登录后只显示你自己账号的记录。备份文件只在这个浏览器里打开。",
-  "ログインすると自分のアカウントの記録だけが表示されます。バックアップファイルはこのブラウザの中だけで開きます。"
- ],
  "바람소리 로그인": [
   "Log in to BaramSori",
   "登录 BaramSori",
   "BaramSori にログイン"
- ],
- "폰의 바람소리 앱 <b>설정 → 내 계정 · 클라우드</b>와 같은 계정으로 로그인하면 폰에서 올린 기록이 보여요.": [
-  "Log in with the same account as in the BaramSori app (<b>Settings → My account · Cloud</b>) to see what your phone has uploaded.",
-  "用与手机 BaramSori App（<b>设置 → 我的账号 · 云端</b>）相同的账号登录，就能看到手机上传的记录。",
-  "スマホの BaramSori アプリ（<b>設定 → マイアカウント · クラウド</b>）と同じアカウントでログインすると、スマホからアップロードした記録が見られます。"
  ],
  "이메일": [
   "Email",
@@ -449,11 +434,6 @@
   "正在打开示例数据…",
   "サンプルデータを開いています…"
  ],
- "바람소리 백업 파일이 아니에요. 앱의 <strong>설정 → 기록 백업</strong>으로 만든 <strong>.db</strong> 파일을 골라 주세요.": [
-  "That's not a BaramSori backup. Choose the <strong>.db</strong> file made with <strong>Settings → Back up records</strong> in the app.",
-  "这不是 BaramSori 备份文件。请选择在 App 的<strong>设置 → 备份记录</strong>中生成的 <strong>.db</strong> 文件。",
-  "BaramSori のバックアップファイルではありません。アプリの<strong>設定 → 記録のバックアップ</strong>で作った <strong>.db</strong> ファイルを選んでください。"
- ],
  "파일을 읽지 못했어요. 앱에서 백업을 다시 만들어 주세요.": [
   "Couldn't read the file. Please make a new backup in the app.",
   "无法读取文件。请在 App 中重新备份。",
@@ -469,25 +449,10 @@
   "你正在看<strong>示例数据</strong>。",
   "<strong>サンプルデータ</strong>を表示しています。"
  ],
- "<strong>예시 데이터</strong>를 보고 있어요. 오른쪽 위 <strong>로그인</strong>을 누르면 폰에서 올린 내 기록이 보여요. 백업 파일(.db)을 열거나 끌어다 놓아도 돼요.": [
-  "You're looking at <strong>sample data</strong>. <strong>Log in</strong> at the top right to see the records your phone uploaded. You can also open or drop a backup file (.db).",
-  "你正在看<strong>示例数据</strong>。点右上角<strong>登录</strong>即可看到手机上传的记录。也可以打开或拖入备份文件（.db）。",
-  "<strong>サンプルデータ</strong>を表示しています。右上の<strong>ログイン</strong>を押すと、スマホからアップロードした記録が見られます。バックアップファイル（.db）を開くか、ドラッグしてもOKです。"
- ],
- "<strong>{file}</strong>을 열었어요. 지점 {n}개, {from}부터 {to}까지예요.": [
-  "Opened <strong>{file}</strong>: {n} points from {from} to {to}.",
-  "已打开 <strong>{file}</strong>：共 {n} 个点，{from} 至 {to}。",
-  "<strong>{file}</strong> を開きました。{n} 地点、{from}〜{to}。"
- ],
  "내 백업": [
   "my backup",
   "我的备份",
   "マイバックアップ"
- ],
- "<strong>{file}</strong>을 여는 중이에요…": [
-  "Opening <strong>{file}</strong>…",
-  "正在打开 <strong>{file}</strong>…",
-  "<strong>{file}</strong> を開いています…"
  ],
  "파일을 읽지 못했어요.": [
   "Couldn't read the file.",
@@ -593,11 +558,6 @@
   "Loading from the cloud… {n} days",
   "正在从云端读取… {n} 天",
   "クラウドから読み込み中… {n}日分"
- ],
- "<strong>{email}</strong>으로 로그인했어요. 아직 올라온 기록이 없어요. 폰의 바람소리 앱 <strong>설정 → 내 계정 · 클라우드</strong>에서 같은 계정으로 로그인하면 자동으로 올라와요.": [
-  "Logged in as <strong>{email}</strong>. No records have been uploaded yet. Log in with the same account in the BaramSori app under <strong>Settings → My account · Cloud</strong> and they'll upload automatically.",
-  "已用 <strong>{email}</strong> 登录。还没有上传的记录。在手机 BaramSori App 的<strong>设置 → 我的账号 · 云端</strong>用同一账号登录后会自动上传。",
-  "<strong>{email}</strong> でログインしました。まだアップロードされた記録がありません。スマホの BaramSori アプリの<strong>設定 → マイアカウント · クラウド</strong>で同じアカウントにログインすると自動でアップロードされます。"
  ],
  "<strong>{email}</strong> 계정의 기록이에요. {from}부터 {to}까지, {n}일. 장소 메모는 여기서 고치면 폰에도 반영돼요.": [
   "Records for <strong>{email}</strong>: {from} to {to}, {n} days. Place notes you edit here also update on your phone.",
@@ -893,11 +853,6 @@
   "Stopped looking up locations.",
   "已停止查找位置。",
   "位置の検索を止めました。"
- ],
- "네이버 리스트를 불러오려면 먼저 로그인해 주세요.": [
-  "Please log in first to load a Naver list.",
-  "读取 Naver 列表前请先登录。",
-  "Naver のリストを読み込むには先にログインしてください。"
  ],
  "네이버 리스트를 불러오는 중이에요…": [
   "Loading the Naver list…",
@@ -3544,36 +3499,6 @@
   "在网页上查看手机记录的<b>路线</b>的方法。地点清单请在<a href=\"#io\">导入地点</a>中操作。",
   "スマホに記録された<b>道のり（ルート）</b>をウェブで見る方法です。場所リストは<a href=\"#io\">場所を取り込む</a>で行います。"
  ],
- "방법 1 · 로그인해서 보기 (추천)": [
-  "Option 1 · Sign in (recommended)",
-  "方法 1 · 登录查看（推荐）",
-  "方法1 · ログインして見る（おすすめ）"
- ],
- "방법 2 · 백업 파일 열기": [
-  "Option 2 · Open a backup file",
-  "方法 2 · 打开备份文件",
-  "方法2 · バックアップファイルを開く"
- ],
- "폰의 바람소리 앱 → <b>설정 → 내 계정 · 클라우드</b>에서 로그인": [
-  "In the BaramSori phone app, sign in at <b>Settings → My account · Cloud</b>",
-  "在手机 BaramSori 应用中，于<b>设置 → 我的账号 · 云端</b>登录",
-  "スマホのBaramSoriアプリで<b>設定 → マイアカウント · クラウド</b>からログイン"
- ],
- "<b>지금 맞추기</b>를 누르면 경로가 계정에 올라가요": [
-  "Tap <b>Sync now</b> to upload your routes to your account",
-  "点<b>立即同步</b>，路线会上传到账号",
-  "<b>今すぐ同期</b>を押すとルートがアカウントに上がります"
- ],
- "여기서 같은 계정으로 로그인하면 <b>하루</b> 메뉴에 경로가 보여요": [
-  "Sign in here with the same account and your routes appear under <b>Day</b>",
-  "在这里用同一账号登录，<b>每日</b>菜单中就会显示路线",
-  "ここで同じアカウントでログインすると<b>1日</b>メニューにルートが表示されます"
- ],
- "한 번 맞춰 두면 그다음부터는 앱이 알아서 올려요.": [
-  "After the first sync, the app uploads on its own.",
-  "同步一次后，应用会自动上传。",
-  "一度同期すれば、あとはアプリが自動で上げます。"
- ],
  "폰의 바람소리 앱 → <b>설정 → 기록 백업</b>으로 .db 파일 만들기": [
   "In the BaramSori phone app, make a .db file with <b>Settings → Backup</b>",
   "在手机 BaramSori 应用中通过<b>设置 → 记录备份</b>生成 .db 文件",
@@ -3593,11 +3518,6 @@
   "No sign-in needed. The file opens only in this browser and is never uploaded. It's gone when you close the window.",
   "无需登录。文件只在本浏览器中打开，不会上传到任何地方。关闭窗口后即消失。",
   "ログイン不要です。ファイルはこのブラウザの中だけで開き、どこにもアップロードされません。ウィンドウを閉じると消えます。"
- ],
- "로그인돼 있어요. 하루 메뉴에서 내 경로를 볼 수 있어요.": [
-  "You're signed in. See your routes under Day.",
-  "已登录。可在每日菜单查看路线。",
-  "ログイン済みです。1日メニューでルートを見られます。"
  ],
  "하루 보기": [
   "Open Day",
@@ -3675,9 +3595,9 @@
   "BaramSoriアカウントとクラウドに上げた移動記録・場所メモ・制覇記録がすべて削除され、元に戻せません。スマホアプリの記録は残ります。"
  ],
  "계속하려면 \"탈퇴\"라고 적어 주세요": [
-  "To continue, type \"탈퇴\"",
-  "如需继续，请输入「탈퇴」",
-  "続けるには「탈퇴」と入力してください"
+  "To continue, type \"DELETE\"",
+  "如需继续，请输入「注销」",
+  "続けるには「退会」と入力してください"
  ],
  "내 기록 열기": [
   "Open my records",
@@ -5379,11 +5299,6 @@
   "把在外过夜或停留 3 小时以上的连续日子合并为一次旅行。居住地（一年住满 30 晚以上或标为\"家\"的地方）不计入。",
   "家の外で一泊したか3時間以上滞在した連続した日を一つの旅にまとめました。住んでいる所（年に30泊以上、または「家」タグ）は除きます。"
  ],
- "지금은 예시 데이터예요. 로그인하면 내 여행이 보여요.": [
-  "This is sample data. Sign in to see your trips.",
-  "现在是示例数据。登录后显示你的旅行。",
-  "いまはサンプルデータです。ログインすると自分の旅が見られます。"
- ],
  "아직 묶인 여행이 없어요. 집 밖에서 하룻밤 자면 여기에 생겨요.": [
   "No trips yet. Spend a night away from home and one will appear here.",
   "还没有旅行。在外过一夜就会出现在这里。",
@@ -5433,11 +5348,6 @@
   "{n} districts · {k} km² of fog cleared · {s} saved places",
   "征服 {n} 处 · 迷雾 {k}㎢ · 我的地点 {s} 处",
   "制覇{n}か所 · 霧 {k}㎢ · 自分の場所{s}か所"
- ],
- "지금은 예시 데이터예요. 로그인하면 내 배지가 보여요.": [
-  "This is sample data. Sign in to see your badges.",
-  "现在是示例数据。登录后显示你的徽章。",
-  "いまはサンプルデータです。ログインすると自分のバッジが見られます。"
  ],
  "획득했어요!": [
   "Earned!",
@@ -8944,11 +8854,6 @@
   "这是在手机App里做的行程，请在App里重新安排。",
   "スマホアプリで作った日程です。アプリで作り直してください。"
  ],
- "<strong>{email}</strong>으로 로그인했어요. 다닌 길·장소 같은 위치 기록은 서버에 올리지 않아요. 폰의 바람소리 앱 <strong>설정 → 백업 → 백업 파일 만들기</strong>로 만든 <strong>.db</strong> 파일을 여기에 끌어다 놓거나 열어 주세요.": [
-  "Signed in as <strong>{email}</strong>. Location records such as routes and places are not uploaded to the server. In the BaramSori app on your phone, go to <strong>Settings → Backup → Create backup file</strong>, then drop or open the <strong>.db</strong> file here.",
-  "已用 <strong>{email}</strong> 登录。路线、地点等位置记录不会上传到服务器。请在手机 BaramSori 应用中进入 <strong>设置 → 备份 → 创建备份文件</strong>，然后把 <strong>.db</strong> 文件拖到这里或打开。",
-  "<strong>{email}</strong> でログインしました。移動ルートや場所などの位置記録はサーバーにアップロードしません。スマホの BaramSori アプリで <strong>設定 → バックアップ → バックアップファイルを作成</strong> し、<strong>.db</strong> ファイルをここにドラッグするか開いてください。"
- ],
  "이메일 확인이 끝났어요. 가입한 이메일로 로그인해 주세요.": [
   "Your email is confirmed. Please sign in with the email you signed up with.",
   "邮箱已确认。请用注册时的邮箱登录。",
@@ -8963,5 +8868,210 @@
   "No answer came back. Please try again in a moment.",
   "没有收到回答。请稍后再试。",
   "回答を受け取れませんでした。少ししてからもう一度お試しください。"
+ ],
+ "웹에서는 장소를 보기만 할 수 있어요. 가져온 장소 저장과 장소 메모는 폰의 바람소리 앱에서 해 주세요.": [
+  "On the web you can only view places. Save imported places and write place notes in the BaramSori phone app.",
+  "网页版只能查看地点。保存导入的地点、写地点备注，请在手机 BaramSori App 里进行。",
+  "ウェブでは場所を見ることだけできます。取り込んだ場所の保存や場所メモは、スマホの BaramSori アプリで行ってください。"
+ ],
+ "폰의 바람소리 앱과 같은 계정으로 로그인하면 텃밭·여행 계획이 폰과 이어져요. 다닌 길·장소 같은 위치 기록은 서버에 올리지 않으니, 앱에서 만든 <b>백업 파일(.db)</b>을 열어서 봐요.": [
+  "Log in with the same account as the BaramSori phone app to keep your garden and trip plans in sync. Location records (routes, places) are never uploaded — open a <b>backup file (.db)</b> made in the app to see them.",
+  "使用与手机 BaramSori App 相同的账号登录，菜园和旅行计划会与手机同步。路线、地点等位置记录不会上传到服务器，请打开 App 生成的<b>备份文件（.db）</b>查看。",
+  "スマホの BaramSori アプリと同じアカウントでログインすると、家庭菜園と旅行プランがスマホとつながります。歩いた道や場所などの位置記録はサーバーに送らないので、アプリで作った<b>バックアップファイル（.db）</b>を開いて見てください。"
+ ],
+ "바람소리 백업 파일이 아니에요. 앱의 <strong>설정 → 백업</strong>에서 만든 <strong>.db</strong> 파일을 골라 주세요.": [
+  "That's not a BaramSori backup. Choose the <strong>.db</strong> file made under <strong>Settings → Backup</strong> in the app.",
+  "这不是 BaramSori 备份文件。请选择在 App 的<strong>设置 → 备份</strong>中生成的 <strong>.db</strong> 文件。",
+  "BaramSori のバックアップファイルではありません。アプリの<strong>設定 → バックアップ</strong>で作った <strong>.db</strong> ファイルを選んでください。"
+ ],
+ "<strong>예시 데이터</strong>를 보고 있어요. 내 기록은 폰의 바람소리 앱 <strong>설정 → 백업</strong>에서 만든 <strong>.db</strong> 파일을 위의 <strong>백업 파일 열기</strong>로 열거나 여기에 끌어다 놓으면 보여요. 파일은 이 브라우저 안에서만 열려요.": [
+  "You're looking at <strong>sample data</strong>. To see your own records, make a <strong>.db</strong> file in the BaramSori app under <strong>Settings → Backup</strong>, then use <strong>Open backup file</strong> above or drop it here. The file only opens in this browser.",
+  "你正在看<strong>示例数据</strong>。要看自己的记录，请在手机 BaramSori App 的<strong>设置 → 备份</strong>中生成 <strong>.db</strong> 文件，然后点上方的“<strong>打开备份文件</strong>”或把文件拖到这里。文件只在这个浏览器里打开。",
+  "<strong>サンプルデータ</strong>を表示しています。自分の記録は、BaramSori アプリの<strong>設定 → バックアップ</strong>で作った <strong>.db</strong> ファイルを上の「<strong>バックアップを開く</strong>」で開くか、ここにドラッグすると見られます。ファイルはこのブラウザの中だけで開きます。"
+ ],
+ "<strong>{file}</strong> 파일을 열었어요. 지점 {n}개, {from}부터 {to}까지예요.": [
+  "Opened <strong>{file}</strong>: {n} points from {from} to {to}.",
+  "已打开 <strong>{file}</strong>：共 {n} 个点，{from} 至 {to}。",
+  "<strong>{file}</strong> を開きました。{n} 地点、{from}〜{to}。"
+ ],
+ "<strong>{file}</strong> 파일을 여는 중이에요…": [
+  "Opening <strong>{file}</strong>…",
+  "正在打开 <strong>{file}</strong>…",
+  "<strong>{file}</strong> を開いています…"
+ ],
+ "<strong>{email}</strong> 계정으로 로그인했어요. 다닌 길·장소 같은 위치 기록은 서버에 올리지 않아요. 폰의 바람소리 앱 <strong>설정 → 백업</strong>에서 만든 <strong>.db</strong> 파일을 위의 <strong>백업 파일 열기</strong>로 열거나 여기에 끌어다 놓아 주세요.": [
+  "Signed in as <strong>{email}</strong>. Location records such as routes and places are not uploaded to the server. In the BaramSori app, make a <strong>.db</strong> file under <strong>Settings → Backup</strong>, then use <strong>Open backup file</strong> above or drop it here.",
+  "已用 <strong>{email}</strong> 登录。路线、地点等位置记录不会上传到服务器。请在手机 BaramSori App 的<strong>设置 → 备份</strong>中生成 <strong>.db</strong> 文件，然后点上方的“<strong>打开备份文件</strong>”或把文件拖到这里。",
+  "<strong>{email}</strong> でログインしました。移動ルートや場所などの位置記録はサーバーにアップロードしません。BaramSori アプリの<strong>設定 → バックアップ</strong>で作った <strong>.db</strong> ファイルを、上の「<strong>バックアップを開く</strong>」で開くか、ここにドラッグしてください。"
+ ],
+ "웹에서는 보기만 돼요. 메모는 폰 앱에서 남기거나 고쳐 주세요.": [
+  "The web is view-only — add or edit notes in the phone app.",
+  "网页版仅供查看，备注请在手机 App 里添加或修改。",
+  "ウェブは閲覧専用です。メモの追加・修正はスマホアプリで行ってください。"
+ ],
+ "백업 파일로 보기": [
+  "View with a backup file",
+  "用备份文件查看",
+  "バックアップファイルで見る"
+ ],
+ "다닌 길·장소 같은 위치 기록은 서버로 보내지 않아요. 그래서 로그인해도 여기에 저절로 나오지 않아요. 폰 앱에서 만든 백업 파일(.db)을 열어야 보여요.": [
+  "Location history such as routes and places is never sent to our server, so it won't show up here just by signing in. Open a backup file (.db) made in the phone app to see it.",
+  "路线、地点等位置记录不会发送到服务器，所以登录后也不会自动出现在这里。请打开手机应用生成的备份文件（.db）查看。",
+  "歩いた道や場所などの位置記録はサーバーに送りません。そのため、ログインしてもここには自動で表示されません。スマホアプリで作ったバックアップファイル（.db）を開くと見られます。"
+ ],
+ "다닌 길·장소 같은 위치 기록은 서버로 보내지 않아요. 백업 파일은 이 브라우저 안에서만 열려요.": [
+  "Location history such as routes and places is never sent to our server. Backup files open only in this browser.",
+  "路线、地点等位置记录不会发送到服务器。备份文件只在本浏览器中打开。",
+  "歩いた道や場所などの位置記録はサーバーに送りません。バックアップファイルはこのブラウザの中だけで開きます。"
+ ],
+ "지금은 예시 데이터예요. 폰 앱의 백업 파일(.db)을 열면 내 여행이 보여요.": [
+  "This is sample data. Open a backup file (.db) from the phone app to see your trips.",
+  "现在是示例数据。打开手机应用的备份文件（.db）即可看到你的旅行。",
+  "いまはサンプルデータです。スマホアプリのバックアップファイル（.db）を開くと自分の旅が見られます。"
+ ],
+ "지금은 예시 데이터예요. 폰 앱의 백업 파일(.db)을 열면 내 배지가 보여요.": [
+  "This is sample data. Open a backup file (.db) from the phone app to see your badges.",
+  "现在是示例数据。打开手机应用的备份文件（.db）即可看到你的徽章。",
+  "いまはサンプルデータです。スマホアプリのバックアップファイル（.db）を開くと自分のバッジが見られます。"
+ ],
+ "가입 없이 예시 기록으로 먼저 써 볼 수 있어요. 내 기록은 폰 앱에서 만든 백업 파일(.db)을 열어서 봐요.": [
+  "Try it first with sample records, no sign-up needed. To see your own trips, open the backup file (.db) made in the phone app.",
+  "无需注册，先用示例记录体验。想看自己的记录，打开手机 App 生成的备份文件（.db）即可。",
+  "登録なしでサンプル記録から試せます。自分の記録は、スマホアプリで作ったバックアップファイル（.db）を開いて見ます。"
+ ],
+ "폰에서는 가볍게 켜 두고, 컴퓨터에서는 앱 백업 파일(.db)을 열어 큰 지도로 돌아보세요. 텃밭·여행 계획은 로그인하면 폰과 맞춰져요.": [
+  "Leave it running on your phone, then open the app's backup file (.db) on your computer to explore on a big map. Log in to keep your garden and trip plans in sync with your phone.",
+  "手机上轻松开着，电脑上打开 App 备份文件（.db），用大地图回顾。登录后，菜园和旅行计划会与手机同步。",
+  "スマホでは気軽にオンにして、パソコンではアプリのバックアップファイル（.db）を開いて大きな地図で振り返り。ログインすると菜園と旅行計画はスマホと同期されます。"
+ ],
+ "백업 파일(.db)로": [
+  "From a backup (.db)",
+  "通过备份文件（.db）",
+  "バックアップ（.db）で"
+ ],
+ "백업 파일 만들기": [
+  "Make a backup file",
+  "生成备份文件",
+  "バックアップを作る"
+ ],
+ "앱 설정에서 백업 파일(.db)을 만들어 컴퓨터로 옮겨요.": [
+  "Create a backup file (.db) in the app's settings and move it to your computer.",
+  "在 App 设置中生成备份文件（.db），并传到电脑上。",
+  "アプリの設定でバックアップファイル（.db）を作り、パソコンに移します。"
+ ],
+ "웹에서 열어 보기": [
+  "Open it on the web",
+  "在网页上打开",
+  "ウェブで開く"
+ ],
+ "이 사이트에서 백업 파일을 열면 다닌 길이 큰 지도로 보여요. 로그인은 필요 없어요.": [
+  "Open the backup file on this site to see your trips on a big map. No login needed.",
+  "在本站打开备份文件，就能在大地图上看到走过的路。无需登录。",
+  "このサイトでバックアップファイルを開くと、歩いた道が大きな地図で見られます。ログインは不要です。"
+ ],
+ "위치 기록은 서버로 안 보내요": [
+  "Your location history never goes to our server",
+  "位置记录不会发送到服务器",
+  "位置の記録はサーバーに送りません"
+ ],
+ "다닌 길·머문 곳·정복 지도는 내 폰과 내가 만든 백업 파일에만 있어요. 로그인해도 올라가지 않아요.": [
+  "Your routes, stops and conquest map live only on your phone and in backups you make. Logging in doesn't upload them.",
+  "走过的路、停留地点和征服地图只保存在你的手机和你生成的备份文件里。登录也不会上传。",
+  "歩いた道・立ち寄り先・制覇マップは、自分のスマホと自分で作ったバックアップにだけあります。ログインしてもアップロードされません。"
+ ],
+ "로그인은 텃밭·여행 계획만": [
+  "Login syncs only your garden and trips",
+  "登录只同步菜园和旅行计划",
+  "ログインで同期するのは菜園と旅行計画だけ"
+ ],
+ "로그인하면 텃밭·여행 계획·게임 기록만 폰과 맞춰지고, 내 계정으로만 읽을 수 있게 막혀 있어요.": [
+  "Logging in syncs only your garden, trip plans and game progress with your phone, and only your account can read them.",
+  "登录后只有菜园、旅行计划和游戏记录会与手机同步，并且只有你的账号能读取。",
+  "ログインすると菜園・旅行計画・ゲーム記録だけがスマホと同期され、自分のアカウントだけが読めるよう守られています。"
+ ],
+ "이 브라우저에서 고른 작물 {n}가지를 폰 텃밭에 더했어요. 이제 폰과 같이 맞춰져요.": [
+  "Added {n} crop(s) you picked in this browser to your phone's garden. From now on they stay in sync.",
+  "已把你在此浏览器选的 {n} 种作物加入手机上的菜园，之后会自动同步。",
+  "このブラウザで選んだ作物{n}種類をスマホの菜園に追加しました。これからはスマホと同期されます。"
+ ],
+ "키울 작물을 골라 주세요": [
+  "Pick crops to grow",
+  "请选择要种的作物",
+  "育てる作物を選んでください"
+ ],
+ "물 주기 말고 따로 할 일은 없어요 🌱": [
+  "Nothing else to do besides watering 🌱",
+  "除了浇水，没有别的要做 🌱",
+  "水やりのほかは特にすることはありません 🌱"
+ ],
+ "오르는 중이에요. 한 번 더 누르면 {name}(으)로 바꿔요": [
+  "You're mid-climb. Tap again to switch to {name}",
+  "正在爬山中。再按一次换到{name}",
+  "登山中です。もう一度押すと{name}に変えます"
+ ],
+ "지금": [
+  "Now",
+  "现在",
+  "今"
+ ],
+ "폰 앱과 맞춰지는 것: 텃밭 · 여행 계획 · 낚시 게임. 다닌 길·장소 같은 위치 기록은 서버에 올리지 않아요. 폰에서 만든 백업 파일(.db)로 봐요.": [
+  "Synced with the phone app: garden, trip plan, fishing game. Location history (routes, places) never goes to the server — open a backup file (.db) made on your phone.",
+  "与手机应用同步：菜园、旅行计划、钓鱼游戏。走过的路线、地点等位置记录不会上传服务器，请用手机生成的备份文件(.db)查看。",
+  "スマホアプリと同期されるもの：家庭菜園・旅行プラン・釣りゲーム。移動ルートや場所などの位置記録はサーバーに送りません。スマホで作ったバックアップファイル(.db)で見てください。"
+ ],
+ "바람소리 계정과 서버에 맞춰 둔 텃밭·여행 계획·낚시 게임 기록이 모두 지워지고 되돌릴 수 없어요. 폰 앱에 있는 기록은 그대로 남아요.": [
+  "Your BaramSori account and the garden, trip plan and fishing game data synced to the server will be deleted for good. Records in the phone app stay as they are.",
+  "将永久删除你的 BaramSori 账户以及同步到服务器的菜园、旅行计划、钓鱼游戏记录，无法恢复。手机应用里的记录仍会保留。",
+  "BaramSoriアカウントと、サーバーに同期した家庭菜園・旅行プラン・釣りゲームの記録がすべて削除され、元に戻せません。スマホアプリの記録は残ります。"
+ ],
+ "탈퇴": [
+  "DELETE",
+  "注销",
+  "退会"
+ ],
+ "지금은 새로 가입할 수 없어요. 잠시 뒤 다시 해 주세요.": [
+  "Sign-ups are closed right now. Please try again later.",
+  "暂时无法注册，请稍后再试。",
+  "現在、新規登録はできません。しばらくしてからお試しください。"
+ ],
+ "서버가 잠시 대답하지 않아요. 잠시 뒤 다시 해 주세요.": [
+  "The server isn't responding. Please try again shortly.",
+  "服务器暂时没有响应，请稍后再试。",
+  "サーバーが応答していません。しばらくしてからもう一度お試しください。"
+ ],
+ "잘 되지 않았어요. 잠시 뒤 다시 해 주세요.": [
+  "Something went wrong. Please try again shortly.",
+  "出了点问题，请稍后再试。",
+  "うまくいきませんでした。しばらくしてからもう一度お試しください。"
+ ],
+ "인터넷 연결을 확인하고 다시 해 주세요.": [
+  "Check your internet connection and try again.",
+  "请检查网络连接后再试。",
+  "インターネット接続を確認して、もう一度お試しください。"
+ ],
+ "{email}로 확인 메일을 보냈어요. 메일의 링크를 누르면 로그인돼요. 몇 분이 지나도 안 오면 스팸함을 보거나, 가입을 한 번 더 눌러 다시 받으세요.": [
+  "We sent a confirmation email to {email}. Tap the link in it to log in. If it hasn't arrived in a few minutes, check your spam folder or tap Sign up again to resend.",
+  "确认邮件已发送至 {email}。点邮件里的链接即可登录。几分钟后仍未收到，请查看垃圾邮件，或再点一次注册重新发送。",
+  "{email} に確認メールを送りました。メールのリンクを押すとログインできます。数分たっても届かない場合は迷惑メールフォルダを確認するか、もう一度「登録」を押して再送してください。"
+ ],
+ "구글 로그인은 카카오톡 안에서는 안 돼요. 기본 브라우저로 열어 드릴게요. 열린 창에서 다시 눌러 주세요.": [
+  "Google sign-in doesn't work inside KakaoTalk. We'll open your default browser — please tap again there.",
+  "在 KakaoTalk 内无法使用 Google 登录。将为你打开默认浏览器，请在新窗口中再点一次。",
+  "KakaoTalk の中では Google ログインが使えません。標準ブラウザで開くので、開いた画面でもう一度押してください。"
+ ],
+ "받는 주소: {email}": [
+  "Sending to: {email}",
+  "接收地址：{email}",
+  "送信先: {email}"
+ ],
+ "10분이 지나도 메일이 없으면 스팸함·프로모션 탭을 봐 주세요. 그래도 없으면 바람소리를 알려 준 분께 카톡으로 말씀해 주세요. 한 시간마다 다시 보내요.": [
+  "If there's no email after 10 minutes, check your spam or Promotions tab. Still nothing? Message the person who told you about BaramSori. We retry every hour.",
+  "如果 10 分钟后还没收到邮件，请查看垃圾邮件或推广标签页。还是没有的话，请告诉介绍你 BaramSori 的人。我们每小时会重新发送。",
+  "10分たってもメールが届かなければ、迷惑メールやプロモーションタブを見てください。それでもなければ、BaramSoriを教えてくれた人に連絡してください。1時間ごとに送り直します。"
+ ],
+ "기다리는 동안 <a href=\"./\">바람소리 웹</a>에서 이번 주 날씨·물때를 먼저 볼 수 있어요.": [
+  "While you wait, check this week's weather and tides on <a href=\"./\">BaramSori Web</a>.",
+  "等待期间，可以先在 <a href=\"./\">BaramSori 网页版</a> 看看本周天气和潮汐。",
+  "待っている間に、<a href=\"./\">BaramSori Web</a>で今週の天気や潮汐を見られます。"
  ]
 }
