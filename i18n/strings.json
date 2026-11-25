@@ -8948,5 +8948,20 @@
   "Signed in as <strong>{email}</strong>. Location records such as routes and places are not uploaded to the server. In the BaramSori app on your phone, go to <strong>Settings → Backup → Create backup file</strong>, then drop or open the <strong>.db</strong> file here.",
   "已用 <strong>{email}</strong> 登录。路线、地点等位置记录不会上传到服务器。请在手机 BaramSori 应用中进入 <strong>设置 → 备份 → 创建备份文件</strong>，然后把 <strong>.db</strong> 文件拖到这里或打开。",
   "<strong>{email}</strong> でログインしました。移動ルートや場所などの位置記録はサーバーにアップロードしません。スマホの BaramSori アプリで <strong>設定 → バックアップ → バックアップファイルを作成</strong> し、<strong>.db</strong> ファイルをここにドラッグするか開いてください。"
+ ],
+ "이메일 확인이 끝났어요. 가입한 이메일로 로그인해 주세요.": [
+  "Your email is confirmed. Please sign in with the email you signed up with.",
+  "邮箱已确认。请用注册时的邮箱登录。",
+  "メールの確認が済みました。登録したメールアドレスでログインしてください。"
+ ],
+ "압축 풀기 도구를 불러오지 못했어요. 압축을 풀고 안의 .csv·.json 파일을 골라 주세요.": [
+  "Couldn't load the unzip tool. Unzip the file yourself and choose the .csv or .json files inside.",
+  "无法加载解压工具。请先自行解压，再选择里面的 .csv·.json 文件。",
+  "解凍ツールを読み込めませんでした。自分で解凍して、中の .csv・.json ファイルを選んでください。"
+ ],
+ "답을 받지 못했어요. 잠시 뒤 다시 해 주세요.": [
+  "No answer came back. Please try again in a moment.",
+  "没有收到回答。请稍后再试。",
+  "回答を受け取れませんでした。少ししてからもう一度お試しください。"
  ]
 }
