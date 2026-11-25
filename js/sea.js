@@ -100,8 +100,10 @@
   const fromDir = (deg) => t(DIRS[Math.round(deg / 45) % 8] + "쪽에서");
 
   // ---------- 물높이 그래프 (SVG) ----------
-  function chart(pts, ex, now) {
-    const W = 640, H = 200, L = 36, R = 8, T = 14, B = 26;
+  // W 는 그릴 칸의 실제 폭(px) — viewBox 와 화면 폭을 맞춰 글자가 폰에서 5px로 줄거나 PC에서 17px로 커지지 않게 (QA C2 11-26)
+  function chart(pts, ex, now, W) {
+    W = Math.round(Math.min(720, Math.max(300, W || 640)));
+    const H = 210, L = 36, R = 16, T = 22, B = 30;
     const t0 = pts[0].time.getTime(), t1 = pts[pts.length - 1].time.getTime();
     const lo = Math.min(...pts.map((p) => p.level)), hi = Math.max(...pts.map((p) => p.level));
     const pad2 = (hi - lo) * 0.1 || 10;
@@ -114,20 +116,22 @@
     for (let hh = 0; hh <= 24; hh += 6) {
       const x = L + (hh / 24) * (W - L - R);
       g += '<line x1="' + x + '" x2="' + x + '" y1="' + T + '" y2="' + (H - B) + '" stroke="var(--line)" stroke-width="1"/>' +
-        '<text x="' + x + '" y="' + (H - 8) + '" font-size="11" text-anchor="middle" fill="var(--muted)">' + hh + ":00</text>";
+        '<text x="' + x + '" y="' + (H - 8) + '" font-size="11" text-anchor="' + (hh === 0 ? "start" : hh === 24 ? "end" : "middle") + '" fill="var(--muted)">' + hh + ":00</text>";
     }
     for (const v of [lo, hi]) g += '<text x="' + (L - 4) + '" y="' + (Y(v) + 4) + '" font-size="11" text-anchor="end" fill="var(--muted)">' + Math.round(v) + "</text>";
+    g += '<text x="' + (L - 4) + '" y="' + (T - 8) + '" font-size="11" text-anchor="end" fill="var(--muted)">cm</text>';
     let mk = "";
     for (const e of ex) {
       const x = X(e.time.getTime()), y = Y(e.level);
       mk += '<circle cx="' + x + '" cy="' + y + '" r="4" fill="' + (e.high ? "var(--leaf)" : "var(--pepper)") + '"/>' +
-        '<text x="' + x + '" y="' + (e.high ? y - 8 : y + 16) + '" font-size="11" text-anchor="middle" fill="var(--ink)">' + esc(fmtTime.format(e.time)) + "</text>";
+        '<text x="' + x + '" y="' + (e.high ? y - 8 : y + 18) + '" font-size="12" font-weight="600" text-anchor="middle" fill="var(--ink)">' + esc((e.high ? "▲" : "▼") + " " + fmtTime.format(e.time)) + "</text>";
     }
     const nt = now.getTime();
     if (nt >= t0 && nt <= t1) {
       const x = X(nt), lv = levelAt(pts, now);
       mk += '<line x1="' + x + '" x2="' + x + '" y1="' + T + '" y2="' + (H - B) + '" stroke="var(--ink)" stroke-dasharray="3 3"/>' +
-        (lv != null ? '<circle cx="' + x + '" cy="' + Y(lv) + '" r="5" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/>' : "");
+        (lv != null ? '<circle cx="' + x + '" cy="' + Y(lv) + '" r="5" fill="var(--sun)" stroke="var(--ink)" stroke-width="2"/>' : "") +
+        '<text x="' + x + '" y="' + (T - 8) + '" font-size="12" font-weight="700" text-anchor="' + (x < L + 30 ? "start" : x > W - R - 30 ? "end" : "middle") + '" fill="var(--ink)">' + esc(t("지금")) + "</text>";
     }
     return '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + esc(t("오늘 물높이 그래프")) + '">' + g +
       '<path d="' + area + '" fill="color-mix(in srgb, #2C7FB8 18%, transparent)"/><path d="' + d + '" fill="none" stroke="#2C7FB8" stroke-width="2"/>' + mk + "</svg>";
@@ -174,7 +178,7 @@
               (rising != null ? '<span class="pill">' + esc(t(rising ? "물이 들어오는 중" : "물이 빠지는 중")) + "</span>" : "") +
               (nextEx ? '<span class="muted">' + esc(t(nextEx.high ? "다음 만조 {time}" : "다음 간조 {time}", { time: fmtTime.format(nextEx.time) })) + "</span>" : "") + "</div>";
           }
-          h += '<div class="tidechart">' + chart(a.pts, ex, now) + "</div>";
+          h += '<div class="tidechart">' + chart(a.pts, ex, now, root.clientWidth - 34) + "</div>";
           h += '<dl class="kv">' + ex.map((e) => "<dt>" + (e.high ? "▲ " + esc(t("만조")) : "▼ " + esc(t("간조"))) + "</dt><dd>" + esc(fmtTime.format(e.time)) + " · " + Math.round(e.level) + " cm</dd>").join("") + "</dl>";
           if (exNext.length) h += '<div class="muted">' + esc(t("내일")) + " (" + esc(fmtDay.format(new Date(now.getTime() + 864e5))) + "): " + exNext.map((e) => (e.high ? "▲" : "▼") + " " + esc(fmtTime.format(e.time))).join(" · ") + "</div>";
           const lo = Math.min(...a.pts.map((p) => p.level)), hi = Math.max(...a.pts.map((p) => p.level));
