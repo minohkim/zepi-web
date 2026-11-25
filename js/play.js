@@ -163,12 +163,13 @@
       ".playBar b{font-family:var(--font-display);font-size:20px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" +
       ".playBar .btn{font-size:16px;min-height:48px}" +
       ".playBody{max-width:680px;margin:0 auto;padding:14px 14px 40px}" +
-      ".playGame{display:flex;flex-direction:column;gap:12px}" +
+      ".playGame{display:flex;flex-direction:column;gap:12px}.playGame[hidden]{display:none}" + // display:flex 가 hidden 을 이겨서 게임을 바꾸면 앞 게임이 위에 남았어요
+
       ".playGame .gwrap{border-radius:var(--radius,20px);overflow:hidden;background:#0b1d33;line-height:0}" +
       ".playGame canvas{display:block;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}" +
       ".playGame .gbig{min-height:76px;border-radius:999px;border:0;background:var(--sun,#F2B705);color:var(--on-sun,#1B1A12);font:inherit;font-size:24px;font-weight:800;touch-action:manipulation;-webkit-user-select:none;user-select:none;box-shadow:0 3px 0 rgba(0,0,0,.18);cursor:pointer}" +
       ".playGame .gbig:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.18)}" +
-      ".playGame .gbig.hot{background:#ff8a3d;color:#fff;animation:gpulse .5s infinite alternate}" +
+      ".playGame .gbig.hot{background:#ff8a3d;color:#1B1A12;animation:gpulse .5s infinite alternate}" +
       ".playGame .gbig.warn{background:#c2452d;color:#fff}" +
       "@keyframes gpulse{to{transform:scale(1.03)}}" +
       "@media (prefers-reduced-motion:reduce){.playGame .gbig.hot{animation:none}}" +
@@ -190,13 +191,13 @@
       ".playGame .gshop div{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center}" +
       ".playGame .gshop span{grid-column:1;font-size:13px;color:var(--muted)}.playGame .gshop .btn{grid-row:1/3;grid-column:2}" +
       ".playGame .tk{display:flex;flex-direction:column;gap:6px}.playGame .tk-h{font-weight:700;font-size:15px;margin-top:4px}" +
-      ".playGame .tk .chips button{min-height:44px;font-size:15px;padding:6px 12px}" +
+      ".playGame .tk .chips button,.playGame .gcard .chips button{min-height:44px;font-size:15px;padding:6px 12px}" +
       ".playGame .tk-like{font-size:13px;color:var(--muted)}" +
       ".playcard{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:14px 16px;margin-bottom:14px;background:linear-gradient(90deg,var(--sun-soft),var(--surface) 70%)}" +
       ".playcard .i{font-size:34px;line-height:1}.playcard .tx{flex:1 1 180px;min-width:0;display:flex;flex-direction:column}.playcard .tx b{font-size:17px}.playcard .tx small{color:var(--muted);font-size:13px}" +
       ".playcard .btn.primary{min-height:48px;font-size:16px;padding:0 22px}" +
       ".playcard .others{flex-basis:100%;display:flex;flex-wrap:wrap;gap:6px;font-size:13px}" +
-      ".playcard .others button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 10px;min-height:36px;font:inherit;font-size:13px;cursor:pointer}";
+      ".playcard .others button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 12px;min-height:44px;font:inherit;font-size:14px;cursor:pointer}";
     document.head.appendChild(st);
   }
   function ensureLayer() {
