@@ -558,14 +558,16 @@
   async function blogLoad(q) {
     const d = blogData[q] || (blogData[q] = {});
     const redraw = () => { if (blogQ === q && $("courseBox")) $("courseBox").innerHTML = courseHtml(); };
+    // 응답이 오지 않으면 끊어요 — 안 그러면 '찾는 중…'·'요약하는 중…'에서 영영 멈춰요 (QA 11-27)
+    const within = (p, ms) => Promise.race([p, new Promise((_, no) => setTimeout(() => no(new Error(t("서버가 잠시 대답하지 않아요. 잠시 뒤 다시 해 주세요."))), ms))]);
     if (!d.items && !d.busy) {
-      d.busy = true; d.err = "";
-      try { d.items = (await ZAPP.pub("/blog?q=" + encodeURIComponent(q))).items || []; } catch (e) { d.err = e.message || String(e); }
+      d.busy = true; d.err = ""; redraw(); // 누르자마자 '블로그 찾는 중…'이 보이게
+      try { d.items = (await within(ZAPP.pub("/blog?q=" + encodeURIComponent(q)), 15000)).items || []; } catch (e) { d.err = e.message || String(e); }
       d.busy = false; redraw();
     }
     if (d.items && d.items.length && ZAPP.signedIn() && !d.sum && !d.sumBusy && !d.sumErr) {
       d.sumBusy = true; redraw();
-      try { const j = await ZAPP.proxy("/blogsum?q=" + encodeURIComponent(q)); d.sum = j.sum; if (j.items && j.items.length) d.items = j.items; } catch (e) { d.sumErr = e.message || String(e); }
+      try { const j = await within(ZAPP.proxy("/blogsum?q=" + encodeURIComponent(q)), 60000); d.sum = j.sum; if (j.items && j.items.length) d.items = j.items; } catch (e) { d.sumErr = e.message || String(e); }
       d.sumBusy = false; redraw();
     }
   }
