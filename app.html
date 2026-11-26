@@ -16,7 +16,7 @@
   --ink: #17201A;
   --muted: #56615A;
   --line: #D5E0DA;
-  --leaf: #0E8465;
+  --leaf: #0E8465; --leaf-fill: #0B7259; /* 흰 글자를 얹는 채운 칸은 조금 진하게 (대비 AA, QA 11-26) */
   --leaf-soft: #D5EDE5;
   --pepper: #A8402A;
   --land: #ECF0E7;
@@ -36,7 +36,7 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0F1411; --surface: #161D18; --ink: #E5EBE3; --muted: #9AA69D; --line: #29332C;
-    --leaf: #4FC9A4; --leaf-soft: #163329; --pepper: #E5805F; --land: #19211C; --land-line: #34413A; --passed: #2A3B2F; --sun-ink: #F2C94C; --sun-soft: #3A3114;
+    --leaf: #4FC9A4; --leaf-fill: #4FC9A4; --leaf-soft: #163329; --pepper: #E5805F; --land: #19211C; --land-line: #34413A; --passed: #2A3B2F; --sun-ink: #F2C94C; --sun-soft: #3A3114;
     --danger-ink: #FF8A80;
     color-scheme: dark;
   }
@@ -44,7 +44,7 @@
 :root[data-theme="dark"] {
   --danger-ink: #FF8A80;
   --bg: #0F1411; --surface: #161D18; --ink: #E5EBE3; --muted: #9AA69D; --line: #29332C;
-  --leaf: #4FC9A4; --leaf-soft: #163329; --pepper: #E5805F; --land: #19211C; --land-line: #34413A; --passed: #2A3B2F; --sun-ink: #F2C94C; --sun-soft: #3A3114;
+  --leaf: #4FC9A4; --leaf-fill: #4FC9A4; --leaf-soft: #163329; --pepper: #E5805F; --land: #19211C; --land-line: #34413A; --passed: #2A3B2F; --sun-ink: #F2C94C; --sun-soft: #3A3114;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -287,6 +287,10 @@ nav.tabs.side .navgroup { font-size: 11px; letter-spacing: .06em; color: var(--m
 .locbar select { font: inherit; font-size: 14px; min-height: 44px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 0 12px; max-width: 100%; }
 .seasonhead { border-radius: var(--radius); padding: 18px; display: flex; flex-direction: column; gap: 6px; border: 1px solid var(--line); }
 .seasonhead .t { font-family: var(--font-display); font-size: 24px; }
+#todayRoot { display: flex; flex-direction: column; gap: 12px; } /* 위치·계절 머리·카드가 붙어 보이던 것 */
+#todayRoot .card2 a:not(.btn) { color: var(--leaf); text-underline-offset: 3px; } /* 브라우저 기본 파랑 대신 브랜드색 */
+#todayRoot .kv a { display: inline-block; padding: 13px 0; margin: -13px 0; } /* 글자 17px → 터치 44px */
+#todayRoot .chips a, #todayRoot .chips button { min-height: 44px; }
 .needlogin { font-size: 14px; padding: 12px 14px; border-radius: var(--radius-sm); background: var(--leaf-soft); }
 .tidechart svg { width: 100%; height: auto; display: block; }
 .iohead { display: flex; flex-direction: column; gap: 4px; margin-bottom: 16px; }
@@ -294,10 +298,10 @@ nav.tabs.side .navgroup { font-size: 11px; letter-spacing: .06em; color: var(--m
 .iohead p { margin: 0; color: var(--muted); max-width: 52em; }
 .steps3 { list-style: none; display: flex; gap: 6px; padding: 0; margin: 0 0 14px; flex-wrap: wrap; }
 .steps3 li { padding: 6px 12px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); font-size: 13px; color: var(--muted); }
-.steps3 li.on { background: var(--leaf); border-color: var(--leaf); color: var(--bg); font-weight: 600; }
+.steps3 li.on { background: var(--leaf-fill); border-color: var(--leaf-fill); color: var(--bg); font-weight: 600; }
 .steps3 li.done button { border: 0; background: none; color: var(--leaf); font: inherit; cursor: pointer; padding: 0; text-decoration: underline; }
 #planRoot { display: flex; flex-direction: column; gap: 16px; }
-.chips button.on { background: var(--leaf); border-color: var(--leaf); color: var(--bg); }
+.chips button.on { background: var(--leaf-fill); border-color: var(--leaf-fill); color: var(--bg); }
 .wants { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
 .want { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; column-gap: 8px; text-align: left; padding: 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font: inherit; cursor: pointer; }
 .want span { grid-row: 1 / 3; font-size: 22px; align-self: center; }
@@ -367,6 +371,14 @@ nav.tabs.side .navgroup { font-size: 11px; letter-spacing: .06em; color: var(--m
 .dlg a, footer a { color: var(--leaf); text-underline-offset: 2px; }
 .consent a { display: inline-block; padding: 6px 2px; margin: -6px 0; line-height: 1.4; }
 footer { color: var(--muted); font-size: 12px; text-align: center; padding-top: 8px; }
+/* 터치 영역 44px (390px 실측에서 34·23·15px이던 것, QA 11-26) */
+.chips a, .chips button { min-height: 44px; }
+.steps3 li { display: flex; align-items: center; min-height: 44px; }
+.steps3 li.done button { min-height: 44px; }
+.ptime, .io label.chk { min-height: 44px; align-items: center; }
+.ptime input, .io label.chk input { width: 22px; height: 22px; }
+.tl .linkish.nm, .linkish.nm { min-height: 44px; padding: 10px 0; }
+footer a { display: inline-block; padding: 12px 4px; }
 .loading { padding: 60px 16px; text-align: center; color: var(--muted); }
 
 /* Leaflet 기본 배치 (타일 없이 시군구 경계만 그려요) */
@@ -1694,7 +1706,8 @@ body { margin: 0; }
   function exportNotes() {
     if (!D) return [];
     const hide = $("exHide").checked;
-    return D.notes.filter((n) => !(hide && (n.tags.includes("집") || n.tags.includes("회사"))));
+    // 좌표가 없는 메모는 내보내지 않아요 (KML·CSV에 NaN이 들어가 가져가는 쪽이 파일 전체를 거부하던 것, QA 11-26)
+    return D.notes.filter((n) => Number.isFinite(n.lat) && Number.isFinite(n.lng) && !(hide && (n.tags.includes("집") || n.tags.includes("회사"))));
   }
   function noteName(n) { return shortName(placeName(n.lat, n.lng)) || n.memo.split("\n")[0].slice(0, 30) || n.tags[0] || t("장소"); }
   function stamp() { const d = new Date(); return d.getFullYear() + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0"); }
@@ -2071,7 +2084,7 @@ body { margin: 0; }
       });
       let j = {};
       try { j = await r.json(); } catch (e) {}
-      if (!r.ok) throw new Error((j.error && j.error.message) || t("탈퇴하지 못했어요. 잠시 뒤 다시 해 주세요."));
+      if (!r.ok || (j && j.ok === false)) { console.warn("account delete", r.status, j); throw new Error(t("탈퇴하지 못했어요. 잠시 뒤 다시 해 주세요.")); } // 서버 원문 대신 쉬운 말, {ok:false}도 실패로 (QA 11-26)
       acctDlg.close();
       session = null; saveSession();
       clearLocalDocs();
