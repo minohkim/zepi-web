@@ -475,16 +475,20 @@ JSON 하나만 답해:
     h += '<div class="planbar"><span>' + esc(st.wants.length ? t("{n}개 골랐어요", { n: st.wants.length }) : t("하나 이상 골라 주세요")) + '</span><button class="btn primary" type="button" data-act="rank"' + (st.wants.length ? "" : " disabled") + ">" + esc(t("어디로 갈지 추천받기")) + "</button></div>";
     return h;
   }
+  // '어디로': 늘어놓지 않고 1~2곳만 크게. 나머지는 접어 두고, 한 번 누르면 그곳으로 바로 일정 짜기 (QA 11-26 UX⑧)
+  function candHtml(c, top) {
+    const on = st.picks.includes(c.code);
+    return '<article class="card2 cand' + (on ? " on" : "") + '"><h2' + (top ? ' style="font-size:22px"' : "") + ">" + esc(c.sido.replace(/(특별자치도|특별자치시|광역시|특별시)$/, "")) + " " + esc(c.name) + "<small>" + esc(t("차로 약 {n}분", { n: c.driveMin })) + "</small></h2>" +
+      '<div class="chips">' + (c.why.length ? c.why : ["가 볼 만해요"]).map((w) => '<span class="pill">' + esc(reason(w)) + "</span>").join("") + (c.sea ? '<span class="pill">🌊 ' + esc(tOpt(c.sea)) + "</span>" : "") + "</div>" +
+      '<div class="row" style="display:flex;gap:8px;flex-wrap:wrap">' +
+      (top ? '<button class="btn primary" type="button" data-only="' + c.code + '">' + esc(t("이곳으로 일정 짜기")) + "</button>" : "") +
+      '<button class="btn' + (on ? " primary" : "") + '" type="button" data-pick="' + c.code + '">' + esc(on ? t("담았어요 ✓") : t("같이 담기")) + '</button><a class="btn" href="' + naverSearch(c.full + " 가볼만한곳") + '" ' + ext + ">" + esc(t("둘러보기")) + "</a></div></article>";
+  }
   function viewRegions() {
-    let h = '<p class="muted">' + esc(t("가고 싶은 곳을 1~3곳 담아 주세요. 같이 담으면 한 여행으로 이어 짜요.")) + "</p><div class=\"cardgrid\">";
-    for (const c of st.cands) {
-      const on = st.picks.includes(c.code);
-      h += '<article class="card2 cand' + (on ? " on" : "") + '"><h2>' + esc(c.sido.replace(/(특별자치도|특별자치시|광역시|특별시)$/, "")) + " " + esc(c.name) + "<small>" + esc(t("차로 약 {n}분", { n: c.driveMin })) + "</small></h2>" +
-        '<div class="chips">' + (c.why.length ? c.why : ["가 볼 만해요"]).map((w) => '<span class="pill">' + esc(reason(w)) + "</span>").join("") + (c.sea ? '<span class="pill">🌊 ' + esc(tOpt(c.sea)) + "</span>" : "") + "</div>" +
-        '<div class="row" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn' + (on ? " primary" : "") + '" type="button" data-pick="' + c.code + '">' + esc(on ? t("담았어요 ✓") : t("담기")) + '</button><a class="btn" href="' + naverSearch(c.full + " 가볼만한곳") + '" ' + ext + ">" + esc(t("둘러보기")) + "</a></div></article>";
-    }
-    h += "</div>";
-    h += '<div class="planbar"><button class="btn" type="button" data-act="reroll">' + esc(t("다른 곳 추천")) + "</button><span>" + esc(t("{n}곳 담음", { n: st.picks.length })) + '</span><button class="btn primary" type="button" data-act="make"' + (st.picks.length ? "" : " disabled") + ">" + esc(t("일정 짜기")) + "</button></div>";
+    const top = st.cands.slice(0, 2), rest = st.cands.slice(2);
+    let h = '<p class="muted">' + esc(t("지금 가기 딱 좋은 곳이에요. 누르면 바로 일정을 짜요.")) + '</p><div class="cardgrid">' + top.map((c) => candHtml(c, true)).join("") + "</div>";
+    if (rest.length) h += '<details class="candmore"' + (rest.some((c) => st.picks.includes(c.code)) ? " open" : "") + "><summary>" + esc(t("다른 후보 {n}곳 더 보기", { n: rest.length })) + '</summary><div class="cardgrid">' + rest.map((c) => candHtml(c, false)).join("") + "</div></details>";
+    h += '<div class="planbar"><button class="btn" type="button" data-act="reroll">' + esc(t("다른 곳 추천")) + "</button><span>" + esc(t("{n}곳 담음", { n: st.picks.length })) + '</span><button class="btn primary" type="button" data-act="make"' + (st.picks.length ? "" : " disabled") + ">" + esc(t("담은 곳으로 일정 짜기")) + "</button></div>";
     if (!ZAPP.signedIn()) h += '<div class="needlogin">' + esc(t("일정 짜기는 로그인하면 돼요. 관광공사 장소·날씨·물때를 모아 AI가 짜 줘요. 무료예요.")) + ' <button class="btn primary" type="button" data-login>' + esc(t("로그인")) + "</button></div>";
     return h;
   }
@@ -609,6 +613,7 @@ JSON 하나만 답해:
       save(); render(); return;
     }
     if (d.want) { const i = st.wants.indexOf(d.want); i >= 0 ? st.wants.splice(i, 1) : st.wants.push(d.want); save(); render(); return; }
+    if (d.only) { st.picks = [d.only]; save(); return doMake(); }
     if (d.pick) { const i = st.picks.indexOf(d.pick); i >= 0 ? st.picks.splice(i, 1) : st.picks.length < 3 && st.picks.push(d.pick); save(); render(); return; }
     if (d.day) { st.day = +d.day; save(); render(); return; }
     if (d.login !== undefined) { ZAPP.openLogin(); return; }
