@@ -78,9 +78,23 @@ header nav .btn { min-height: 44px; padding: 0 14px; font-size: 14px; }
 .cta { display: flex; flex-wrap: wrap; gap: 10px; }
 .cta .btn { min-height: 50px; padding: 0 22px; font-size: 16px; }
 .small { font-size: 13px; color: var(--muted); margin-top: 12px; }
-/* 첫 화면 사진 배경 (직접 찍은 동해 바닷가) */
+/* 첫 화면 사진 배경 (직접 찍은 여행 사진) */
 .hero { position: relative; isolation: isolate; overflow: hidden; color: #fff; background: #0B3B2E; }
-.hero-bg, .hero-bg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 60% 55%; z-index: -2; }
+.hero-bg { position: absolute; inset: 0; z-index: -2; }
+.hero-bg picture, .hero-bg img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hero-bg img { object-fit: cover; object-position: 60% 55%; }
+/* 사진 4장이 7초씩 천천히 바뀌어요 (바다 → 다랭이 논 노을 → 눈 내린 호숫가 → 철새) */
+.hero-bg picture { opacity: 0; animation: heroFade 28s linear infinite backwards; }
+.hero-bg picture:nth-child(1) { opacity: 1; animation-delay: -1.2s; }
+.hero-bg picture:nth-child(2) { animation-delay: 5.8s; }
+.hero-bg picture:nth-child(3) { animation-delay: 12.8s; }
+.hero-bg picture:nth-child(4) { animation-delay: 19.8s; }
+.hero-bg:not(.ready) picture { animation: none; }
+.hero-bg img { animation: heroZoom 28s ease-in-out infinite alternate; }
+.hero-bg .dim img { filter: brightness(.6) saturate(.9); }
+@keyframes heroFade { 0% { opacity: 0; } 5% { opacity: 1; } 25% { opacity: 1; } 30% { opacity: 0; } 100% { opacity: 0; } }
+@keyframes heroZoom { from { transform: scale(1); } to { transform: scale(1.06); } }
+@media (prefers-reduced-motion: reduce) { .hero-bg picture, .hero-bg img { animation: none !important; } .hero-bg picture:not(:first-child) { opacity: 0 !important; } }
 .hero::after { content: ""; position: absolute; inset: 0; z-index: -1;
   background: linear-gradient(90deg, rgba(6,32,24,.66) 0%, rgba(6,32,24,.4) 42%, rgba(6,32,24,.06) 78%, rgba(6,32,24,0) 100%),
               linear-gradient(0deg, rgba(6,32,24,.35) 0%, rgba(6,32,24,0) 30%); }
@@ -93,7 +107,7 @@ header nav .btn { min-height: 44px; padding: 0 14px; font-size: 14px; }
 .hero .btn:not(.primary):hover { background: rgba(255,255,255,.24); border-color: #fff; }
 .hero .mock { color: var(--ink); box-shadow: 0 30px 80px -30px rgba(0,0,0,.55); }
 @media (max-width: 860px) {
-  .hero-bg img { object-position: 72% 50%; }
+  .hero-bg img { object-position: var(--mpos, 60% 50%); }
   .hero::after { background: linear-gradient(180deg, rgba(6,32,24,.5) 0%, rgba(6,32,24,.36) 50%, rgba(6,32,24,.7) 100%); }
   .hero .in { min-height: 0; }
 }
@@ -160,10 +174,12 @@ footer .in { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: spa
 
 <main>
   <div class="hero band">
-    <picture class="hero-bg" aria-hidden="true">
-      <source type="image/webp" srcset="img/hero-800.webp 800w, img/hero-1280.webp 1280w, img/hero-2400.webp 2400w" sizes="100vw">
-      <img src="img/hero-1280.jpg" alt="" width="1280" height="720" fetchpriority="high" decoding="async">
-    </picture>
+    <div class="hero-bg" aria-hidden="true">
+      <picture style="--mpos:72% 50%"><source type="image/webp" srcset="img/sea-800.webp 800w, img/sea-1280.webp 1280w, img/sea-2400.webp 2400w" sizes="100vw"><img src="img/sea-1280.jpg" alt="" width="1280" height="720" fetchpriority="high" decoding="async"></picture>
+      <picture style="--mpos:45% 60%"><source type="image/webp" data-srcset="img/terrace-800.webp 800w, img/terrace-1280.webp 1280w, img/terrace-2400.webp 2400w" sizes="100vw"><img data-src="img/terrace-1280.jpg" alt="" width="1280" height="720" decoding="async"></picture>
+      <picture class="dim" style="--mpos:38% 50%"><source type="image/webp" data-srcset="img/snow-800.webp 800w, img/snow-1280.webp 1280w, img/snow-2400.webp 2400w" sizes="100vw"><img data-src="img/snow-1280.jpg" alt="" width="1280" height="720" decoding="async"></picture>
+      <picture style="--mpos:62% 60%"><source type="image/webp" data-srcset="img/birds-800.webp 800w, img/birds-1280.webp 1280w, img/birds-2400.webp 2400w" sizes="100vw"><img data-src="img/birds-1280.jpg" alt="" width="1280" height="720" decoding="async"></picture>
+    </div>
     <div class="in">
       <div>
         <div class="eyebrow">바람 따라 걷고, 소리처럼 남기고</div>
@@ -272,6 +288,20 @@ footer .in { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: spa
       a.removeAttribute("data-i18n");
     } catch (e) {}
   })();
+</script>
+<script>
+  // 첫 사진이 뜬 뒤에 나머지 사진을 불러와서 천천히 넘겨요 (첫 화면을 빨리 띄우려고)
+  window.addEventListener("load", function () {
+    var bg = document.querySelector(".hero-bg");
+    if (!bg || (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches)) return;
+    var rest = bg.querySelectorAll("picture:not(:first-child)"), left = rest.length;
+    rest.forEach(function (p) {
+      var so = p.querySelector("source"), im = p.querySelector("img");
+      var done = function () { if (--left === 0) bg.classList.add("ready"); };
+      im.addEventListener("load", done, { once: true }); im.addEventListener("error", done, { once: true });
+      so.srcset = so.dataset.srcset; im.src = im.dataset.src;
+    });
+  });
 </script>
 </body>
 </html>
