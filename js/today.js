@@ -165,8 +165,11 @@
   const MBTIS = ["ISTJ", "ISFJ", "INFJ", "INTJ", "ISTP", "ISFP", "INFP", "INTP", "ESTP", "ESFP", "ENFP", "ENTP", "ESTJ", "ESFJ", "ENFJ", "ENTJ"];
   const store = { get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* 저장 안 돼도 괜찮아요 */ } } };
-  let songCheers = false, songFire = false, songRetro = false, songDrinks = store.get("zDrinks", []), songMbti = store.get("zMbti", "");
-  let songLiked = store.get("zSongLiked", []), songBan = store.get("zSongBan", []);
+  // 저장값이 깨져 있으면(배열·글자가 아님) 버려요 — 그대로 쓰면 오늘 탭 전체가 영구히 오류 화면이 돼요 (QA 11-27)
+  const strList = (k) => { const v = store.get(k, []); return Array.isArray(v) ? v.filter((x) => typeof x === "string") : []; };
+  const strOf = (k) => { const v = store.get(k, ""); return typeof v === "string" ? v : ""; };
+  let songCheers = false, songFire = false, songRetro = false, songDrinks = strList("zDrinks"), songMbti = strOf("zMbti");
+  let songLiked = strList("zSongLiked"), songBan = strList("zSongBan");
   const songKey = (s) => s.title + "/" + s.artist;
   // ♥ 누른 곡들로 취향 배우기 (앱 lib/songs.dart 와 같은 셈)
   const STYLE = ["retro", "campfire", "whisky", "highball", "wine", "sake", "makgeolli", "somaek", "beer", "coffee", "calm", "singalong", "dreamy", "emotional", "groove", "classic", "free", "inst", "memory", "sea", "night", "rain"];
@@ -525,7 +528,7 @@
   const kdt = (s) => { if (typeof s !== "string") return null; const d = new Date(s + ":00+09:00"); return isFinite(d) ? d : null; };
   const fix1 = (v) => (v == null || !isFinite(+v) ? "–" : (+v).toFixed(1));
   let songCtx = null, songSeed = 1, courseList = [], courseIdx = 0, courseCtx = null;
-  let courseBand = (() => { try { return localStorage.getItem("zCourseBand") || "auto"; } catch (e) { return "auto"; } })();
+  let courseBand = (() => { try { const b = localStorage.getItem("zCourseBand"); return BANDS.some((x) => x[0] === b) ? b : "auto"; } catch (e) { return "auto"; } })();
   function songHtml() {
     const list = songCtx ? songsNow(songCtx.k, songCtx.o, songSeed) : [];
     const night = !songFire && songCtx && drinkNight(songCtx.k, songCtx.o);
