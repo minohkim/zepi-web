@@ -165,7 +165,21 @@
   const MBTIS = ["ISTJ", "ISFJ", "INFJ", "INTJ", "ISTP", "ISFP", "INFP", "INTP", "ESTP", "ESFP", "ENFP", "ENTP", "ESTJ", "ESFJ", "ENFJ", "ENTJ"];
   const store = { get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* 저장 안 돼도 괜찮아요 */ } } };
-  let songCheers = false, songDrinks = store.get("zDrinks", []), songMbti = store.get("zMbti", "");
+  let songCheers = false, songFire = false, songDrinks = store.get("zDrinks", []), songMbti = store.get("zMbti", "");
+  let songLiked = store.get("zSongLiked", []), songBan = store.get("zSongBan", []);
+  const songKey = (s) => s.title + "/" + s.artist;
+  // ♥ 누른 곡들로 취향 배우기 (앱 lib/songs.dart 와 같은 셈)
+  const STYLE = ["retro", "campfire", "whisky", "highball", "wine", "sake", "makgeolli", "somaek", "beer", "coffee", "calm", "singalong", "dreamy", "emotional", "groove", "classic", "free", "inst", "memory", "sea", "night", "rain"];
+  function tasteTop() {
+    const c = {};
+    for (const s of SONGS) if (songLiked.includes(songKey(s))) for (const t of s.tags || []) if (STYLE.includes(t)) c[t] = (c[t] || 0) + 1;
+    return new Set(Object.entries(c).sort((a, b) => b[1] - a[1]).slice(0, 4).map((e) => e[0]));
+  }
+  function likeW(s, top) {
+    let f = songLiked.includes(songKey(s)) ? 2.5 : 1;
+    const hit = (s.tags || []).filter((t) => top.has(t)).length;
+    return hit ? f * (1 + 0.2 * Math.min(hit, 3)) : f;
+  }
   function mbtiTags(code) {
     const c = (code || "").toUpperCase();
     if (c.length !== 4) return [];
@@ -180,15 +194,27 @@
   }
   function songsNow(k, o, seed) {
     const wd = weekdayOf(k), r = rnd(seed);
-    const mt = new Set(mbtiTags(songMbti));
+    const mt = new Set(mbtiTags(songMbti)), top = tasteTop(), banned = (x) => songBan.includes(songKey(x));
+    if (songFire) {
+      const out = [];
+      for (const s of SONGS) {
+        if (banned(s) || !(s.tags || []).includes("campfire") || !fitsMonth(s, k.m)) continue;
+        const tg = new Set(s.tags);
+        let sc = 30 + (tg.has("night") ? 3 : 0);
+        sc *= (1 + 0.35 * [...tg].filter((x) => mt.has(x)).length) * likeW(s, top);
+        out.push({ song: s, why: s.note ? tOpt(s.note) : t("모닥불 앞에서"), sc: sc + r() * 20 });
+      }
+      out.sort((a, b) => b.sc - a.sc);
+      if (out.length) return out.slice(0, 3);
+    }
     if (drinkNight(k, o)) {
       const mine = new Set(songDrinks.length ? songDrinks : ALCOHOL), out = [];
       for (const s of SONGS) {
         if (!fitsMonth(s, k.m) || (s.days && s.days.length && !s.days.includes(wd))) continue;
         const tg = new Set(s.tags || []), hit = [...tg].filter((x) => mine.has(x));
-        if (!hit.length || ((s.places.length || s.sido) && !(o.region && s.places.includes(o.region)))) continue;
+        if (banned(s) || !hit.length || ((s.places.length || s.sido) && !(o.region && s.places.includes(o.region)))) continue;
         let sc = 30 + (o.rain && tg.has("rain") ? 12 : 0) + (o.snow && tg.has("snow") ? 12 : 0) + (tg.has("night") ? 3 : 0);
-        sc *= 1 + 0.35 * [...tg].filter((x) => mt.has(x)).length;
+        sc *= (1 + 0.35 * [...tg].filter((x) => mt.has(x)).length) * likeW(s, top);
         const dw = (DRINKS.find((d) => d[0] === hit[0]) || ["", ""])[1];
         out.push({ song: s, why: s.note ? tOpt(s.note) : t("{d} 한 잔과", { d: dw }), sc: sc + r() * 20 });
       }
@@ -200,7 +226,7 @@
     const ss = seasonOf(k.m), seasonWord = t("{season}에", { season: t(SEASON_NAMES[k.m - 1]) });
     const out = [];
     for (const s of SONGS) {
-      if (!fitsMonth(s, k.m) || (s.days && s.days.length && !s.days.includes(wd))) continue;
+      if (banned(s) || !fitsMonth(s, k.m) || (s.days && s.days.length && !s.days.includes(wd))) continue;
       const tg = new Set(s.tags || []);
       let sc = 0, why = "";
       const add = (ok, n, w) => { if (ok) { sc += n; if (!why) why = w; } };
@@ -226,6 +252,7 @@
       // 장소 노래는 그곳에서만 (다른 데선 길 노래로도 안 나와요)
       if ((s.places.length || s.sido) && !here(s)) continue;
       if (!sc) continue;
+      sc *= likeW(s, top);
       out.push({ song: s, why, sc: sc + r() * 14 });
     }
     out.sort((a, b) => b.sc - a.sc);
@@ -481,10 +508,11 @@
   let courseBand = (() => { try { return localStorage.getItem("zCourseBand") || "auto"; } catch (e) { return "auto"; } })();
   function songHtml() {
     const list = songCtx ? songsNow(songCtx.k, songCtx.o, songSeed) : [];
-    const night = songCtx && drinkNight(songCtx.k, songCtx.o);
-    const head = night ? (songDrinks.length === 1 ? t("{d} 한 잔 생각나는 밤", { d: (DRINKS.find((d) => d[0] === songDrinks[0]) || ["", ""])[1] }) : t("🥃 술 생각나는 밤")) : (list[0] ? list[0].why : "");
+    const night = !songFire && songCtx && drinkNight(songCtx.k, songCtx.o);
+    const head = songFire ? t("🔥 불멍하며 듣는 노래") : night ? (songDrinks.length === 1 ? t("{d} 한 잔 생각나는 밤", { d: (DRINKS.find((d) => d[0] === songDrinks[0]) || ["", ""])[1] }) : t("🥃 술 생각나는 밤")) : (list[0] ? list[0].why : "");
     const tools = '<div class="chips">' +
       '<button type="button" data-shuffle>🔀 ' + esc(t("다른 노래")) + "</button>" +
+      '<button type="button" data-fire aria-pressed="' + songFire + '"' + (songFire ? ' class="on"' : "") + ">🔥 " + esc(t("불멍")) + "</button>" +
       '<button type="button" data-cheers aria-pressed="' + songCheers + '"' + (songCheers ? ' class="on"' : "") + ">🥃 " + esc(t("한잔")) + "</button>" +
       '<label class="mbtisel"><span class="muted">MBTI</span> <select data-mbti aria-label="' + esc(t("내 MBTI")) + '"><option value="">' + esc(t("선택 안 함")) + "</option>" +
       MBTIS.map((m) => '<option' + (m === songMbti ? " selected" : "") + ">" + m + "</option>").join("") + "</select></label></div>" +
@@ -492,7 +520,10 @@
     if (!list.length) return "<h2>" + esc(t("지금 들을 노래")) + "</h2>" + tools;
     return "<h2>" + esc(t("지금 들을 노래")) + "<small>" + esc(head) + "</small></h2>" +
       list.map((x, i) => '<div class="songrow"><div><span aria-hidden="true">🎵</span> <b' + (i ? "" : ' style="font-size:18px"') + ">" + esc(x.song.title) + "</b> · " + esc(x.song.artist) +
-        ((i || night) ? ' <span class="muted">· ' + esc(x.why) + "</span>" : "") + '</div><a class="btn" href="' + youtube(x.song.artist + " " + x.song.title) + '" ' + ext + ' aria-label="' + esc(t("유튜브에서 듣기")) + ": " + esc(x.song.title) + '">▶</a></div>').join("") + tools;
+        ((i || night || songFire) ? ' <span class="muted">· ' + esc(x.why) + "</span>" : "") + '</div><span class="songact">' +
+        '<button type="button" class="btn" data-like="' + esc(songKey(x.song)) + '" aria-pressed="' + songLiked.includes(songKey(x.song)) + '" aria-label="' + esc(t("좋아요")) + ": " + esc(x.song.title) + '">' + (songLiked.includes(songKey(x.song)) ? "♥" : "♡") + "</button>" +
+        '<button type="button" class="btn" data-ban="' + esc(songKey(x.song)) + '" aria-label="' + esc(t("이 노래 그만")) + ": " + esc(x.song.title) + '">✕</button>' +
+        '<a class="btn" href="' + youtube(x.song.artist + " " + x.song.title) + '" ' + ext + ' aria-label="' + esc(t("유튜브에서 듣기")) + ": " + esc(x.song.title) + '">▶</a></span></div>').join("") + tools;
   }
   function courseHtml() {
     const bands = '<div class="chips cband" role="group" aria-label="' + esc(t("거리로 고르기")) + '">' +
@@ -523,8 +554,19 @@
       const s2 = $("songBox").querySelector("[data-mbti]"); if (s2) s2.focus();
     });
     root.addEventListener("click", (e) => {
-      const el = e.target.closest("[data-shuffle],[data-course-next],[data-band],[data-cheers],[data-drink]");
+      const el = e.target.closest("[data-shuffle],[data-course-next],[data-band],[data-cheers],[data-drink],[data-fire],[data-like],[data-ban]");
       if (!el) return;
+      if (el.hasAttribute("data-fire")) { songFire = !songFire; songSeed = (songSeed * 7 + 13) & 0xffff; $("songBox").innerHTML = songHtml(); const b = $("songBox").querySelector("[data-fire]"); if (b) b.focus(); return; }
+      if (el.hasAttribute("data-like")) {
+        const key = el.dataset.like; songLiked = songLiked.includes(key) ? songLiked.filter((x) => x !== key) : songLiked.concat(key);
+        store.set("zSongLiked", songLiked); $("songBox").innerHTML = songHtml();
+        const b = $("songBox").querySelector('[data-like="' + CSS.escape(key) + '"]'); if (b) b.focus(); return;
+      }
+      if (el.hasAttribute("data-ban")) {
+        songBan = songBan.concat(el.dataset.ban); songLiked = songLiked.filter((x) => x !== el.dataset.ban);
+        store.set("zSongBan", songBan); store.set("zSongLiked", songLiked); $("songBox").innerHTML = songHtml();
+        const b = $("songBox").querySelector("[data-shuffle]"); if (b) b.focus(); return;
+      }
       if (el.hasAttribute("data-cheers")) { songCheers = !songCheers; songSeed = (songSeed * 7 + 13) & 0xffff; $("songBox").innerHTML = songHtml(); const b = $("songBox").querySelector("[data-cheers]"); if (b) b.focus(); return; }
       if (el.hasAttribute("data-drink")) {
         const d = el.dataset.drink; songDrinks = songDrinks.includes(d) ? songDrinks.filter((x) => x !== d) : songDrinks.concat(d);
