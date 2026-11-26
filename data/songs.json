@@ -1,7 +1,7 @@
 {
  "version": 1,
  "updated": "2026-11-26",
- "note": "바람소리 지금 이 노래. 이 파일이 원본이에요. 고치면 웹은 바로, 앱은 다음 실행 때 받아요. 태그: 날씨·시간·계절(rain snow fog wind cold clear sunset night dawn sea drive mountain spring summer autumn late winter xmas memory) · 마실거리(whisky highball wine sake makgeolli somaek beer coffee) · 분위기/MBTI(calm singalong dreamy emotional groove classic free inst)",
+ "note": "바람소리 지금 이 노래. 이 파일이 원본이에요. 고치면 웹은 바로, 앱은 다음 실행 때 받아요. 태그: 날씨·시간·계절(rain snow fog wind cold clear sunset night dawn sea drive mountain spring summer autumn late winter xmas memory) · 마실거리(whisky highball wine sake makgeolli somaek beer coffee) · 불멍(campfire) · 옛 가요(retro) · 분위기/MBTI(calm singalong dreamy emotional groove classic free inst)",
  "songs": [
   {
    "title": "울고 넘는 박달재",
@@ -10,7 +10,8 @@
     "classic",
     "drive",
     "free",
-    "memory"
+    "memory",
+    "retro"
    ],
    "places": [
     "제천시"
@@ -23,6 +24,7 @@
    "tags": [
     "classic",
     "memory",
+    "retro",
     "sea"
    ],
    "places": [
@@ -34,6 +36,7 @@
    "title": "목포는 항구다",
    "artist": "이난영",
    "tags": [
+    "retro",
     "sea"
    ],
    "places": [
@@ -65,6 +68,7 @@
    "title": "해운대 엘레지",
    "artist": "손인호",
    "tags": [
+    "retro",
     "sea"
    ],
    "places": [
@@ -121,6 +125,7 @@
    "title": "서귀포를 아시나요",
    "artist": "조미미",
    "tags": [
+    "retro",
     "sea"
    ],
    "places": [
@@ -150,7 +155,8 @@
    "artist": "김태희",
    "tags": [
     "classic",
-    "memory"
+    "memory",
+    "retro"
    ],
    "places": [
     "춘천시"
@@ -275,7 +281,8 @@
     "calm",
     "classic",
     "memory",
-    "night"
+    "night",
+    "retro"
    ],
    "places": [
     "마포구"
@@ -316,6 +323,7 @@
    "title": "연안부두",
    "artist": "김트리오",
    "tags": [
+    "retro",
     "sea"
    ],
    "sido": "인천",
@@ -338,6 +346,7 @@
    "title": "흑산도 아가씨",
    "artist": "이미자",
    "tags": [
+    "retro",
     "sea"
    ],
    "places": [
@@ -349,6 +358,7 @@
    "title": "울릉도 트위스트",
    "artist": "이시스터즈",
    "tags": [
+    "retro",
     "sea"
    ],
    "places": [
@@ -374,7 +384,8 @@
     "calm",
     "classic",
     "memory",
-    "night"
+    "night",
+    "retro"
    ],
    "sido": "대전",
    "lang": "ko"
@@ -386,7 +397,8 @@
     "classic",
     "emotional",
     "memory",
-    "rain"
+    "rain",
+    "retro"
    ],
    "places": [
     "수성구"
@@ -398,7 +410,8 @@
    "artist": "현인",
    "tags": [
     "calm",
-    "night"
+    "night",
+    "retro"
    ],
    "places": [
     "경주시"
@@ -409,6 +422,7 @@
    "title": "삼천포 아가씨",
    "artist": "은방울자매",
    "tags": [
+    "retro",
     "sea"
    ],
    "places": [
@@ -419,7 +433,9 @@
   {
    "title": "울산큰애기",
    "artist": "김상희",
-   "tags": [],
+   "tags": [
+    "retro"
+   ],
    "sido": "울산",
    "lang": "ko"
   },
@@ -429,7 +445,8 @@
    "tags": [
     "drive",
     "free",
-    "mountain"
+    "mountain",
+    "retro"
    ],
    "places": [
     "영동군",
@@ -560,6 +577,7 @@
    "title": "산할아버지",
    "artist": "산울림",
    "tags": [
+    "campfire",
     "mountain"
    ],
    "lang": "ko"
@@ -603,7 +621,8 @@
     "classic",
     "emotional",
     "memory",
-    "rain"
+    "rain",
+    "retro"
    ],
    "lang": "ko"
   },
@@ -614,7 +633,8 @@
     "classic",
     "emotional",
     "memory",
-    "rain"
+    "rain",
+    "retro"
    ],
    "lang": "ko"
   },
@@ -671,7 +691,8 @@
    "tags": [
     "classic",
     "fog",
-    "memory"
+    "memory",
+    "retro"
    ],
    "lang": "ko"
   },
@@ -679,6 +700,7 @@
    "title": "바람이 불어오는 곳",
    "artist": "김광석",
    "tags": [
+    "campfire",
     "clear",
     "coffee",
     "drive",
@@ -816,6 +838,7 @@
    "artist": "아이유",
    "tags": [
     "calm",
+    "campfire",
     "coffee",
     "night"
    ],
@@ -826,6 +849,7 @@
    "artist": "적재",
    "tags": [
     "calm",
+    "campfire",
     "clear",
     "night"
    ],
@@ -846,6 +870,7 @@
    "artist": "여행스케치",
    "tags": [
     "calm",
+    "campfire",
     "classic",
     "memory",
     "night"
@@ -901,6 +926,7 @@
    "tags": [
     "classic",
     "memory",
+    "retro",
     "spring"
    ],
    "months": [
@@ -1097,6 +1123,7 @@
    "title": "서른 즈음에",
    "artist": "김광석",
    "tags": [
+    "campfire",
     "classic",
     "emotional",
     "late",
@@ -1114,6 +1141,7 @@
    "title": "사랑했지만",
    "artist": "김광석",
    "tags": [
+    "campfire",
     "classic",
     "emotional",
     "late",
@@ -1157,6 +1185,7 @@
    "title": "걱정 말아요 그대",
    "artist": "전인권",
    "tags": [
+    "campfire",
     "classic",
     "emotional",
     "late",
@@ -1169,6 +1198,7 @@
    "title": "청춘",
    "artist": "산울림",
    "tags": [
+    "campfire",
     "classic",
     "emotional",
     "late",
@@ -1181,6 +1211,7 @@
    "title": "너의 의미",
    "artist": "산울림",
    "tags": [
+    "campfire",
     "classic",
     "makgeolli",
     "memory"
@@ -1191,6 +1222,7 @@
    "title": "회상",
    "artist": "산울림",
    "tags": [
+    "campfire",
     "classic",
     "emotional",
     "late",
@@ -1332,6 +1364,7 @@
    "artist": "김광석",
    "tags": [
     "calm",
+    "campfire",
     "classic",
     "cold",
     "makgeolli",
@@ -1520,7 +1553,8 @@
     "classic",
     "emotional",
     "late",
-    "memory"
+    "memory",
+    "retro"
    ],
    "months": [
     10,
@@ -1735,6 +1769,7 @@
    "artist": "경서",
    "tags": [
     "calm",
+    "campfire",
     "clear",
     "night"
    ],
@@ -1868,6 +1903,7 @@
    "title": "어떤 이의 꿈",
    "artist": "봄여름가을겨울",
    "tags": [
+    "campfire",
     "classic",
     "memory"
    ],
@@ -2244,6 +2280,7 @@
    "artist": "Leonard Cohen",
    "tags": [
     "calm",
+    "campfire",
     "emotional",
     "night",
     "whisky",
@@ -2750,7 +2787,8 @@
     "classic",
     "emotional",
     "makgeolli",
-    "memory"
+    "memory",
+    "retro"
    ],
    "lang": "ko",
    "note": "한국 가요의 고전"
@@ -2816,6 +2854,7 @@
    "title": "상록수",
    "artist": "양희은",
    "tags": [
+    "campfire",
     "classic",
     "makgeolli",
     "memory"
@@ -2829,6 +2868,7 @@
    "tags": [
     "autumn",
     "calm",
+    "campfire",
     "coffee",
     "makgeolli"
    ],
@@ -2840,6 +2880,7 @@
    "artist": "정태춘·박은옥",
    "tags": [
     "calm",
+    "campfire",
     "dawn",
     "fog",
     "makgeolli"
@@ -2922,6 +2963,7 @@
    "artist": "산울림",
    "tags": [
     "calm",
+    "campfire",
     "makgeolli",
     "memory"
    ],
@@ -3309,7 +3351,8 @@
     "classic",
     "coffee",
     "groove",
-    "memory"
+    "memory",
+    "retro"
    ],
    "lang": "ko",
    "note": "신중현이 만든 60년대 명곡"
@@ -3389,6 +3432,7 @@
    "title": "Take Me Home, Country Roads",
    "artist": "John Denver",
    "tags": [
+    "campfire",
     "drive",
     "memory",
     "mountain",
@@ -3396,6 +3440,545 @@
    ],
    "lang": "en",
    "note": "시골길 드라이브 떼창"
+  },
+  {
+   "title": "목포의 청춘",
+   "artist": "김태리",
+   "tags": [
+    "coffee",
+    "emotional",
+    "memory",
+    "retro",
+    "sea"
+   ],
+   "lang": "ko",
+   "note": "드라마 「정년이」에서 정년이가 부른 노래 — 다방에 울리던 그 목소리",
+   "places": [
+    "목포시"
+   ]
+  },
+  {
+   "title": "해조곡",
+   "artist": "이난영",
+   "tags": [
+    "emotional",
+    "memory",
+    "retro",
+    "sea"
+   ],
+   "lang": "ko",
+   "note": "「목포의 눈물」 이난영의 또 다른 바다 노래"
+  },
+  {
+   "title": "다방의 푸른 꿈",
+   "artist": "이난영",
+   "tags": [
+    "calm",
+    "coffee",
+    "night",
+    "retro",
+    "whisky"
+   ],
+   "lang": "ko",
+   "note": "1939년 블루스풍 가요 — 다방 커피와 재즈의 시작"
+  },
+  {
+   "title": "타향살이",
+   "artist": "고복수",
+   "tags": [
+    "emotional",
+    "memory",
+    "retro"
+   ],
+   "lang": "ko",
+   "note": "고향 떠난 사람들의 노래 — 1930년대 국민가요"
+  },
+  {
+   "title": "애수의 소야곡",
+   "artist": "남인수",
+   "tags": [
+    "calm",
+    "emotional",
+    "night",
+    "retro"
+   ],
+   "lang": "ko",
+   "note": "남인수의 맑은 고음, 밤에 부르는 세레나데"
+  },
+  {
+   "title": "나그네 설움",
+   "artist": "백년설",
+   "tags": [
+    "drive",
+    "emotional",
+    "memory",
+    "retro"
+   ],
+   "lang": "ko",
+   "note": "'오늘도 걷는다마는' — 길 위의 노래"
+  },
+  {
+   "title": "번지 없는 주막",
+   "artist": "백년설",
+   "tags": [
+    "makgeolli",
+    "memory",
+    "rain",
+    "retro"
+   ],
+   "lang": "ko",
+   "note": "비 오는 날 주막에서 막걸리 한 잔"
+  },
+  {
+   "title": "눈물 젖은 두만강",
+   "artist": "김정구",
+   "tags": [
+    "emotional",
+    "memory",
+    "retro"
+   ],
+   "lang": "ko",
+   "note": "두만강 푸른 물에 노 젓는 뱃사공"
+  },
+  {
+   "title": "알뜰한 당신",
+   "artist": "황금심",
+   "tags": [
+    "calm",
+    "memory",
+    "retro"
+   ],
+   "lang": "ko",
+   "note": "꾀꼬리 목소리 황금심"
+  },
+  {
+   "title": "빈대떡 신사",
+   "artist": "한복남",
+   "tags": [
+    "makgeolli",
+    "memory",
+    "retro",
+    "singalong"
+   ],
+   "lang": "ko",
+   "note": "'돈 없으면 집에 가서 빈대떡이나 부쳐 먹지' — 막걸리 안주 노래"
+  },
+  {
+   "title": "하숙생",
+   "artist": "최희준",
+   "tags": [
+    "calm",
+    "emotional",
+    "memory",
+    "retro"
+   ],
+   "lang": "ko",
+   "note": "'인생은 나그네 길'"
+  },
+  {
+   "title": "맨발의 청춘",
+   "artist": "최희준",
+   "tags": [
+    "free",
+    "memory",
+    "retro"
+   ],
+   "lang": "ko",
+   "note": "60년대 청춘 영화의 주제가"
+  },
+  {
+   "title": "섬마을 선생님",
+   "artist": "이미자",
+   "tags": [
+    "emotional",
+    "memory",
+    "retro",
+    "sea"
+   ],
+   "lang": "ko",
+   "note": "해당화 피는 섬마을"
+  },
+  {
+   "title": "안개 낀 장충단공원",
+   "artist": "배호",
+   "tags": [
+    "emotional",
+    "fog",
+    "night",
+    "retro"
+   ],
+   "lang": "ko",
+   "note": "배호의 낮은 목소리, 안개 낀 밤",
+   "places": [
+    "중구"
+   ],
+   "sido": "서울"
+  },
+  {
+   "title": "돌아가는 삼각지",
+   "artist": "배호",
+   "tags": [
+    "emotional",
+    "night",
+    "rain",
+    "retro"
+   ],
+   "lang": "ko",
+   "note": "비 내리는 삼각지 로터리",
+   "places": [
+    "용산구"
+   ],
+   "sido": "서울"
+  },
+  {
+   "title": "밤안개",
+   "artist": "현미",
+   "tags": [
+    "calm",
+    "fog",
+    "night",
+    "retro",
+    "whisky"
+   ],
+   "lang": "ko",
+   "note": "재즈풍 60년대 가요 — 안개 낀 밤 위스키"
+  },
+  {
+   "title": "님과 함께",
+   "artist": "남진",
+   "tags": [
+    "clear",
+    "free",
+    "retro",
+    "singalong"
+   ],
+   "lang": "ko",
+   "note": "'저 푸른 초원 위에' 다 같이"
+  },
+  {
+   "title": "고향역",
+   "artist": "나훈아",
+   "tags": [
+    "autumn",
+    "drive",
+    "memory",
+    "retro"
+   ],
+   "lang": "ko",
+   "note": "코스모스 피는 고향역"
+  },
+  {
+   "title": "동숙의 노래",
+   "artist": "문주란",
+   "tags": [
+    "emotional",
+    "night",
+    "retro"
+   ],
+   "lang": "ko",
+   "note": "열일곱에 데뷔한 저음 가수의 히트곡"
+  },
+  {
+   "title": "이별",
+   "artist": "패티김",
+   "tags": [
+    "classic",
+    "emotional",
+    "night",
+    "retro",
+    "whisky"
+   ],
+   "lang": "ko",
+   "note": "'어쩌다 생각이 나겠지' — 한국 스탠더드 팝"
+  },
+  {
+   "title": "잘했군 잘했어",
+   "artist": "하춘화·고봉산",
+   "tags": [
+    "makgeolli",
+    "retro",
+    "singalong"
+   ],
+   "lang": "ko",
+   "note": "주거니 받거니 부르는 노래"
+  },
+  {
+   "title": "수고했어, 오늘도",
+   "artist": "옥상달빛",
+   "tags": [
+    "calm",
+    "campfire",
+    "emotional",
+    "night"
+   ],
+   "lang": "ko",
+   "note": "하루 끝에 듣는 위로"
+  },
+  {
+   "title": "백야",
+   "artist": "짙은",
+   "tags": [
+    "calm",
+    "campfire",
+    "dreamy",
+    "night"
+   ],
+   "lang": "ko",
+   "note": "잔잔한 기타, 하얀 밤"
+  },
+  {
+   "title": "기다린 만큼, 더",
+   "artist": "검정치마",
+   "tags": [
+    "campfire",
+    "dreamy",
+    "emotional"
+   ],
+   "lang": "ko",
+   "note": "불 앞에서 조용히 따라 부르기"
+  },
+  {
+   "title": "취미는 사랑",
+   "artist": "가을방학",
+   "tags": [
+    "autumn",
+    "calm",
+    "campfire",
+    "emotional"
+   ],
+   "lang": "ko",
+   "note": "나지막한 목소리의 가을 노래"
+  },
+  {
+   "title": "보이나요",
+   "artist": "루시드폴",
+   "tags": [
+    "calm",
+    "campfire",
+    "dreamy"
+   ],
+   "lang": "ko",
+   "note": "루시드폴의 기타와 속삭임"
+  },
+  {
+   "title": "유자차",
+   "artist": "브로콜리너마저",
+   "tags": [
+    "calm",
+    "campfire",
+    "cold",
+    "winter"
+   ],
+   "lang": "ko",
+   "note": "따뜻한 유자차 한 잔 같은 노래"
+  },
+  {
+   "title": "너였다면",
+   "artist": "정승환",
+   "tags": [
+    "calm",
+    "emotional",
+    "night"
+   ],
+   "lang": "ko",
+   "note": "조용한 밤의 발라드"
+  },
+  {
+   "title": "깊은 밤을 날아서",
+   "artist": "이문세",
+   "tags": [
+    "dreamy",
+    "memory",
+    "night",
+    "singalong"
+   ],
+   "lang": "ko",
+   "note": "밤하늘을 나는 상상"
+  },
+  {
+   "title": "다행이다",
+   "artist": "이적",
+   "tags": [
+    "calm",
+    "emotional"
+   ],
+   "lang": "ko",
+   "note": "곁에 있어 다행이라는 노래"
+  },
+  {
+   "title": "감사",
+   "artist": "김동률",
+   "tags": [
+    "calm",
+    "classic",
+    "emotional"
+   ],
+   "lang": "ko",
+   "note": "김동률의 따뜻한 고백"
+  },
+  {
+   "title": "무릎",
+   "artist": "아이유",
+   "tags": [
+    "calm",
+    "dreamy",
+    "night"
+   ],
+   "lang": "ko",
+   "note": "잠 안 오는 밤에"
+  },
+  {
+   "title": "Square (2017)",
+   "artist": "백예린",
+   "tags": [
+    "calm",
+    "dreamy",
+    "night"
+   ],
+   "lang": "en",
+   "note": "몽환적인 백예린의 목소리"
+  },
+  {
+   "title": "도망가자",
+   "artist": "선우정아",
+   "tags": [
+    "drive",
+    "emotional",
+    "free",
+    "night"
+   ],
+   "lang": "ko",
+   "note": "'도망가자, 어디든 가야 할 것만 같아' — 떠나고 싶을 때"
+  },
+  {
+   "title": "명동콜링",
+   "artist": "카더가든",
+   "tags": [
+    "beer",
+    "emotional",
+    "night"
+   ],
+   "lang": "ko",
+   "note": "명동의 밤과 맥주 한 잔",
+   "places": [
+    "중구"
+   ],
+   "sido": "서울"
+  },
+  {
+   "title": "시퍼런 봄",
+   "artist": "쏜애플",
+   "tags": [
+    "dreamy",
+    "emotional",
+    "spring"
+   ],
+   "lang": "ko",
+   "note": "몽환적인 봄의 록"
+  },
+  {
+   "title": "제발",
+   "artist": "들국화",
+   "tags": [
+    "campfire",
+    "classic",
+    "emotional"
+   ],
+   "lang": "ko",
+   "note": "전인권의 절절한 목소리"
+  },
+  {
+   "title": "Blowin' in the Wind",
+   "artist": "Bob Dylan",
+   "tags": [
+    "calm",
+    "campfire",
+    "classic",
+    "wind"
+   ],
+   "lang": "en",
+   "note": "바람 속에 답이 있다 — 모닥불 기타 노래"
+  },
+  {
+   "title": "The Sound of Silence",
+   "artist": "Simon & Garfunkel",
+   "tags": [
+    "calm",
+    "campfire",
+    "dreamy",
+    "night"
+   ],
+   "lang": "en",
+   "note": "고요가 내려앉는 밤"
+  },
+  {
+   "title": "Bridge Over Troubled Water",
+   "artist": "Simon & Garfunkel",
+   "tags": [
+    "campfire",
+    "classic",
+    "emotional"
+   ],
+   "lang": "en",
+   "note": "험한 세상의 다리가 되어"
+  },
+  {
+   "title": "Annie's Song",
+   "artist": "John Denver",
+   "tags": [
+    "calm",
+    "campfire",
+    "emotional",
+    "mountain"
+   ],
+   "lang": "en",
+   "note": "숲속에서 듣는 사랑 노래"
+  },
+  {
+   "title": "Pink Moon",
+   "artist": "Nick Drake",
+   "tags": [
+    "calm",
+    "campfire",
+    "dreamy",
+    "night"
+   ],
+   "lang": "en",
+   "note": "기타 하나, 분홍 달"
+  },
+  {
+   "title": "I'd Rather Dance with You",
+   "artist": "Kings of Convenience",
+   "tags": [
+    "calm",
+    "campfire",
+    "free"
+   ],
+   "lang": "en",
+   "note": "어쿠스틱 기타 두 대의 가벼운 리듬"
+  },
+  {
+   "title": "Holocene",
+   "artist": "Bon Iver",
+   "tags": [
+    "calm",
+    "campfire",
+    "dreamy",
+    "winter"
+   ],
+   "lang": "en",
+   "note": "겨울 숲의 몽환"
+  },
+  {
+   "title": "Wild World",
+   "artist": "Cat Stevens",
+   "tags": [
+    "campfire",
+    "classic",
+    "emotional"
+   ],
+   "lang": "en",
+   "note": "포크 기타의 명곡"
   }
  ]
 }
