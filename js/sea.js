@@ -137,6 +137,27 @@
       '<path d="' + area + '" fill="color-mix(in srgb, #2C7FB8 18%, transparent)"/><path d="' + d + '" fill="none" stroke="#2C7FB8" stroke-width="2"/>' + mk + "</svg>";
   }
 
+  // ---------- 오늘 낚시 한 줄 (바다 탭 맨 위) ----------
+  // 파도·바람이 세면 쉬자고, 아니면 물때(사리·조금)와 만조 앞뒤 좋은 시각을 한 줄로.
+  // 로그인 전에는 만조 시각을 몰라서 음력으로 짐작한 말만 ('추정' 표시).
+  function fishLine(m, snKey, high, now) {
+    const c = m && m.sea && m.sea.current, w = m && m.wind && m.wind.current;
+    const wh = c && typeof c.wave_height === "number" ? c.wave_height : null;
+    const ws = w && typeof w.wind_speed_10m === "number" ? w.wind_speed_10m : null;
+    let say;
+    if ((wh != null && wh >= 2) || (ws != null && ws >= 12)) say = t("오늘은 쉬어요 · 파도·바람이 세요");
+    else if ((wh != null && wh >= 1.2) || (ws != null && ws >= 8)) say = t("방파제 안쪽만 · 바람을 등지고");
+    else if (snKey === "조금") say = t("물이 약해 입질이 느릴 수 있어요");
+    else if (snKey === "사리") say = t("물살이 세요 · 채비는 무겁게");
+    else say = t("물때 좋아요 · 나가 볼 만해요");
+    let when = "";
+    if (high && !(wh != null && wh >= 2)) {
+      const a = new Date(Math.max(now.getTime(), high.time.getTime() - 2 * 3600e3)), b = new Date(high.time.getTime() + 3600e3);
+      when = " · " + t("좋은 때 {from}~{to}", { from: fmtTime.format(a), to: fmtTime.format(b) });
+    } else if (!ZAPP.signedIn()) when = " · " + t("로그인하면 좋은 시각까지 알려 줘요");
+    return '<div class="fishline" role="status">🎣 ' + esc(t("오늘 낚시")) + ": " + esc(say) + esc(when) + (wh == null ? ' <span class="muted">(' + esc(t("추정")) + ")</span>" : "") + "</div>";
+  }
+
   let shownFor = "", busy = false, again = false, pickCode = "";
   async function render(force) {
     const root = $("seaRoot");
@@ -158,6 +179,9 @@
       h += '<div class="locbar"><label class="muted" for="stSel">' + esc(t("조위 관측소")) + '</label><select id="stSel">' +
         near.slice(0, 10).map((s) => '<option value="' + s.code + '"' + (s.code === st.code ? " selected" : "") + ">" + esc(tOpt(s.name)) + " · " + fmtInt.format(Math.round(s.m / 1000)) + " km</option>").join("") +
         "</select></div>";
+      const mP = marine(st.lat, st.lng).catch(() => null); // 파도는 '오늘 낚시 한 줄'에도 써요
+      let fishHigh = null; // 오늘 남은 만조 (로그인했을 때만 알아요)
+      h += "%%FISH%%";
       h += '<div class="cardgrid">';
 
       // 물때표
@@ -173,6 +197,7 @@
           const lv = levelAt(a.pts, now);
           const nextEx = [...ex, ...exNext].find((e) => e.time > now);
           const rising = nextEx ? nextEx.high : null;
+          fishHigh = [...ex, ...exNext].find((e) => e.high && e.time.getTime() + 3600e3 > now.getTime()) || null;
           if (lv != null) {
             h += '<div style="display:flex;flex-wrap:wrap;gap:8px 18px;align-items:baseline"><span class="big">' + Math.round(lv) + ' <small style="font-size:14px">cm</small></span>' +
               (rising != null ? '<span class="pill">' + esc(t(rising ? "물이 들어오는 중" : "물이 빠지는 중")) + "</span>" : "") +
@@ -198,7 +223,8 @@
       // 파도·수온·바람 (관측소 앞바다 기준)
       h += '<article class="card2"><h2>' + esc(t("파도와 바다")) + "<small>" + esc(t("{name} 앞바다 · 예측 모델", { name: tOpt(st.name) })) + "</small></h2>";
       try {
-        const m = await marine(st.lat, st.lng);
+        const m = await mP;
+        if (!m) throw new Error("marine");
         const c = m.sea && m.sea.current;
         if (!c || c.wave_height == null) throw Object.assign(new Error(t("이 자리는 바다 예보가 없어요.")), { own: true });
         const wh = c.wave_height;
@@ -218,6 +244,7 @@
       }
       h += "</article></div>";
 
+      h = h.replace("%%FISH%%", fishLine(await mP, snKey, fishHigh, now));
       root.innerHTML = h;
       ZLOC.bind(root);
       $("stSel").addEventListener("change", (e) => { pickCode = e.target.value; render(true); });
