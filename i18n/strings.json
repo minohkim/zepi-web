@@ -9608,5 +9608,80 @@
   "🍚 Oldies with a bowl of makgeolli",
   "🍚 一碗米酒配老歌",
   "🍚 マッコリ一杯に懐メロ"
+ ],
+ "다녀온 사람들 블로그": [
+  "Blogs from people who went",
+  "去过的人的博客",
+  "行った人のブログ"
+ ],
+ "블로그 볼 곳": [
+  "Place to read blogs about",
+  "看哪个地方的博客",
+  "ブログを見る場所"
+ ],
+ "장소를 누르면 다녀온 사람들 글을 모아 보여 줘요.": [
+  "Tap a place to see posts from people who went.",
+  "点一个地方，就能看到去过的人写的文章。",
+  "場所をタップすると、行った人の記事をまとめて表示します。"
+ ],
+ "블로그 찾는 중…": [
+  "Finding blogs…",
+  "正在找博客…",
+  "ブログを探しています…"
+ ],
+ "블로그를 불러오지 못했어요.": [
+  "Couldn't load blogs.",
+  "没能加载博客。",
+  "ブログを読み込めませんでした。"
+ ],
+ "이 곳은 블로그 글을 찾지 못했어요.": [
+  "No blog posts found for this place.",
+  "没找到这个地方的博客文章。",
+  "この場所のブログ記事は見つかりませんでした。"
+ ],
+ "로그인하면 이 글들을 읽고 볼거리·맛집·팁을 요약해 드려요. 무료예요.": [
+  "Sign in and AI reads these posts and sums up sights, food and tips. It's free.",
+  "登录后，AI 会读这些文章，帮你总结景点、美食和小贴士。免费。",
+  "ログインすると、AIがこれらの記事を読んで見どころ・グルメ・コツをまとめます。無料です。"
+ ],
+ "글을 읽고 요약하는 중… (10초쯤)": [
+  "Reading and summarizing… (about 10 s)",
+  "正在阅读并总结…（约10秒）",
+  "記事を読んで要約しています…（10秒ほど）"
+ ],
+ "요약하지 못했어요.": [
+  "Couldn't summarize.",
+  "没能总结。",
+  "要約できませんでした。"
+ ],
+ "볼거리": [
+  "Things to see",
+  "看点",
+  "見どころ"
+ ],
+ "먹을 곳": [
+  "Where to eat",
+  "吃什么",
+  "食事"
+ ],
+ "팁": [
+  "Tips",
+  "小贴士",
+  "コツ"
+ ],
+ "아쉬운 점": [
+  "Downsides",
+  "不足之处",
+  "残念な点"
+ ],
+ "AI가 아래 블로그 글을 읽고 정리했어요. 숫자는 글 번호예요. 가기 전에 한 번 더 확인하세요.": [
+  "AI summarized the blog posts below. Numbers point to the posts. Double-check before you go.",
+  "这是 AI 读了下面的博客后整理的，数字是文章编号。出发前请再确认一下。",
+  "AIが下のブログ記事を読んでまとめました。数字は記事番号です。行く前にもう一度確認してください。"
+ ],
+ "협찬": [
+  "Sponsored",
+  "赞助",
+  "PR"
  ]
 }
