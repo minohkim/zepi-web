@@ -3,6 +3,11 @@
 (function () {
   const Z = window.ZI18N, t = Z.t, tOpt = Z.tOpt;
   const DATA = window.ZDATA;
+  // 앱 자료(노래 174곡·즐길 거리·딱 좋은 코스). js/app-data.js 가 없으면 예전 자료로
+  const AD = window.ZAPPDATA || null;
+  const SONGS = AD ? AD.songs : DATA.songs.map((s) => ({ ...s, tags: s.moment ? [s.moment] : [] }));
+  const ACTS = AD ? AD.acts : DATA.acts;
+  const COURSES = AD ? AD.courses : [];
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const locale = { ko: "ko-KR", en: "en-US", zh: "zh-CN", ja: "ja-JP" }[Z.lang] || "ko-KR";
@@ -140,24 +145,80 @@
   function actsNow(k) {
     // 윤년 2월 29일은 2월 28일로 봐요 (to: 228 인 겨울 즐길 거리가 하루 사라지던 것)
     if (k.m === 2 && k.d === 29) k = { ...k, d: 28 };
-    return DATA.acts.filter((a) => actOn(a, k)).sort((a, b) => actLeft(a, k) - actLeft(b, k));
+    return ACTS.filter((a) => actOn(a, k)).sort((a, b) => actLeft(a, k) - actLeft(b, k));
   }
-  function songNow(k, o) {
-    const pick = (f) => { const l = DATA.songs.filter(f); return l.length ? l[(k.d + k.h) % l.length] : null; };
-    // 기본 위치(서울)일 때는 '왔으니까'가 사실이 아니라서 장소 노래를 건너뛰어요
-    // 시군구 이름을 적어 둔 노래는 그 시군구에서만, 시도까지 적혀 있으면 시도도 맞아야 해요
-    // (서울 '중구' 노래가 대구·대전·울산 중구에서 '중구에 왔으니까'로 나오던 것)
+  // ---------- 지금 들을 노래 (앱 lib/songs.dart 와 같은 생각) ----------
+  // 이 달·요일에 맞지 않는 노래는 빼고('10월의 어느 멋진 날에'가 12월에 나오지 않게),
+  // 지금 장소·날씨·시간·계절에 맞는 것을 점수로 골라 세 곡. '다른 노래'를 누르면 섞어요.
+  const TAG_MONTHS = { spring: [3, 4, 5], summer: [6, 7, 8], autumn: [9, 10, 11], late: [11, 12], winter: [12, 1, 2], xmas: [12], snow: [11, 12, 1, 2, 3] };
+  const WD = ["월", "화", "수", "목", "금", "토", "일"];
+  function fitsMonth(s, m) {
+    if (s.months) return s.months.includes(m);
+    const ms = (s.tags || []).flatMap((x) => TAG_MONTHS[x] || []);
+    return !ms.length || ms.includes(m);
+  }
+  function weekdayOf(k) { const w = new Date(Date.UTC(k.y, k.m - 1, k.d)).getUTCDay(); return w === 0 ? 7 : w; }
+  function rnd(seed) { let x = seed | 0 || 1; return () => ((x = (x * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff); }
+  function songsNow(k, o, seed) {
+    const wd = weekdayOf(k), r = rnd(seed);
     const inSido = (s) => !!s.sido && (o.sido || "").includes(s.sido);
-    const byPlace = o.region && !o.isDefault && pick((s) => (s.places.length ? s.places.includes(o.region) && (!s.sido || inSido(s)) : inSido(s)));
-    if (byPlace) return { song: byPlace, why: t("{place}에 왔으니까", { place: o.region }) };
-    if (o.snow) return { song: pick((s) => s.moment === "snow"), why: t("눈 오는 날") };
-    if (o.rain) return { song: pick((s) => s.moment === "rain"), why: t("비 오는 날") };
-    // 10월 31일 저녁·밤에만 (전에는 25일 낮부터 나오고, 정작 31일 밤에는 '밤' 노래에 밀렸어요)
-    if (k.m === 10 && k.d === 31 && (o.sunset || o.night)) { const s = DATA.songs.find((x) => x.title === "잊혀진 계절"); if (s) return { song: s, why: t("10월의 마지막 밤") }; }
-    if (o.sunset) return { song: pick((s) => s.moment === "sunset"), why: t("해 질 녘") };
-    if (o.night) return { song: pick((s) => s.moment === "night"), why: t("밤하늘 아래") };
-    if (o.dawn) return { song: pick((s) => s.moment === "dawn"), why: t("이른 아침") };
-    return { song: pick((s) => s.moment === seasonOf(k.m)), why: t("{season}에", { season: t(SEASON_NAMES[k.m - 1]) }) };
+    const here = (s) => o.region && !o.isDefault && (s.places.length ? s.places.includes(o.region) && (!s.sido || inSido(s)) : inSido(s));
+    const ss = seasonOf(k.m), seasonWord = t("{season}에", { season: t(SEASON_NAMES[k.m - 1]) });
+    const out = [];
+    for (const s of SONGS) {
+      if (!fitsMonth(s, k.m) || (s.days && !s.days.includes(wd))) continue;
+      const tg = new Set(s.tags || []);
+      let sc = 0, why = "";
+      const add = (ok, n, w) => { if (ok) { sc += n; if (!why) why = w; } };
+      // 시군구까지 맞는 노래는 크게, 시도만 맞는 노래(서울에 있으면 늘 '서울' 노래)는 조금만
+      add(here(s) && s.places.length > 0, 40, t("{place}에 왔으니까", { place: o.region }));
+      add(here(s) && !s.places.length, 8, t("{place}에 왔으니까", { place: s.sido }));
+      add(k.m === 10 && k.d === 31 && s.title === "잊혀진 계절", 50, t("10월의 마지막 밤"));
+      add(s.days && s.days.includes(wd), 16, tOpt(WD[wd - 1] + "요일이니까"));
+      add(o.snow && tg.has("snow"), 30, t("눈 오는 날"));
+      add(o.rain && tg.has("rain"), 30, t("비 오는 날"));
+      add(o.sunset && tg.has("sunset"), 20, t("해 질 녘"));
+      add(o.night && tg.has("night"), 16, t("밤하늘 아래"));
+      add(o.dawn && tg.has("dawn"), 16, t("이른 아침"));
+      add(o.cold && tg.has("cold"), 10, t("쌀쌀하니까"));
+      add(k.m === 12 && k.d >= 15 && tg.has("xmas"), 14, t("크리스마스 즈음"));
+      add(tg.has(ss) || (tg.has("late") && (k.m === 11 || k.m === 12)), 12, seasonWord);
+      add(o.clear && !o.rain && !o.snow && tg.has("clear"), 6, t("맑은 날"));
+      add(tg.has("memory"), 3, t("문득 떠오르는 노래"));
+      // 장소 노래는 그곳에서만 (다른 데선 길 노래로도 안 나와요)
+      if ((s.places.length || s.sido) && !here(s)) continue;
+      if (!sc) continue;
+      out.push({ song: s, why, sc: sc + r() * 14 });
+    }
+    out.sort((a, b) => b.sc - a.sc);
+    return out.slice(0, 3);
+  }
+
+  // ---------- 지금 딱 좋은 코스 (앱 lib/courses.dart pickCourses 와 같은 셈) ----------
+  function distKm(a, b, c, d) {
+    const R = 6371, rad = Math.PI / 180, x = Math.sin(((c - a) * rad) / 2) ** 2 + Math.cos(a * rad) * Math.cos(c * rad) * Math.sin(((d - b) * rad) / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(x));
+  }
+  function coursesNow(l, k, o) {
+    const out = [];
+    for (const c of COURSES) {
+      if (c.months.length && !c.months.includes(k.m)) continue;
+      const drive = Math.round(15 + distKm(l.lat, l.lng, c.lat, c.lng) * 0.85);
+      if (drive > 200 || (c.days === 2 && drive > 240)) continue;
+      const tg = new Set(c.tags), why = [];
+      let s = c.pop * 12;
+      if (c.peak.includes(k.m)) { s += 25; why.push(t("지금이 제일 좋을 때")); } else if (c.months.length) s += 10;
+      if (tg.has("season")) { s += 8; if (!why.length) why.push(t("제철 먹거리")); }
+      if (o.rain) { if (tg.has("indoor") || tg.has("spa")) { s += 30; why.push(t("비 와도 괜찮아요")); } if (tg.has("sea") || tg.has("trek") || tg.has("tide")) s -= 25; }
+      if (o.cold && tg.has("spa")) { s += 12; why.push(t("추운 날 몸 녹이기")); }
+      if (drive < 40) s -= 10;
+      s -= drive / 12;
+      out.push({ c, drive, s, why });
+    }
+    out.sort((a, b) => b.s - a.s);
+    const seen = new Set(), res = [];
+    for (const p of out) { const a = p.c.area.split(" ")[0] + p.c.area.split(" ").slice(-1)[0]; if (!seen.has(a)) { seen.add(a); res.push(p); } }
+    return res;
   }
 
   // ---------- 날씨 ----------
@@ -357,6 +418,40 @@
   const arr = (o, k) => (o && Array.isArray(o[k]) ? o[k] : []);
   const kdt = (s) => { if (typeof s !== "string") return null; const d = new Date(s + ":00+09:00"); return isFinite(d) ? d : null; };
   const fix1 = (v) => (v == null || !isFinite(+v) ? "–" : (+v).toFixed(1));
+  let songCtx = null, songSeed = 1, courseList = [], courseIdx = 0;
+  function songHtml() {
+    const list = songCtx ? songsNow(songCtx.k, songCtx.o, songSeed) : [];
+    if (!list.length) return "";
+    return "<h2>" + esc(t("지금 들을 노래")) + "<small>" + esc(list[0].why) + "</small></h2>" +
+      list.map((x, i) => '<div class="songrow"><div><span aria-hidden="true">🎵</span> <b' + (i ? "" : ' style="font-size:18px"') + ">" + esc(x.song.title) + "</b> · " + esc(x.song.artist) +
+        (i ? ' <span class="muted">· ' + esc(x.why) + "</span>" : "") + '</div><a class="btn" href="' + youtube(x.song.artist + " " + x.song.title) + '" ' + ext + ' aria-label="' + esc(t("유튜브에서 듣기")) + ": " + esc(x.song.title) + '">▶</a></div>').join("") +
+      '<div class="chips"><button type="button" data-shuffle>🔀 ' + esc(t("다른 노래")) + "</button></div>";
+  }
+  function courseHtml() {
+    const p = courseList[courseIdx % Math.max(1, courseList.length)];
+    if (!p) return "";
+    const c = p.c;
+    const map = (q) => naverMap(q);
+    return '<article class="card2 course"><h2>' + esc(t("지금 딱 좋은 코스")) + "<small>" + esc(t("차로 약 {n}분", { n: p.drive })) + (c.days === 2 ? " · " + esc(t("1박")) : "") + "</small></h2>" +
+      '<div class="ctitle">' + esc(tOpt(c.title)) + ' <span class="muted">' + esc(tOpt(c.area)) + "</span></div>" +
+      (c.line ? "<div>" + esc(tOpt(c.line)) + "</div>" : "") +
+      (p.why.length ? '<div class="chips">' + p.why.map((w) => '<span class="pill">' + esc(w) + "</span>").join("") + "</div>" : "") +
+      '<ol class="cstops">' + c.stops.map((st) => '<li><b>' + esc(st.time) + '</b> <a href="' + map(st.q) + '" ' + ext + ">" + esc(st.name) + '</a><div class="muted">' + esc(st.note) + "</div></li>").join("") + "</ol>" +
+      (c.eat ? '<div class="muted">🍽️ ' + esc(c.eat) + "</div>" : "") +
+      (c.story ? '<div class="cstory">' + esc(c.story) + "</div>" : "") +
+      '<div class="chips">' + (courseList.length > 1 ? '<button type="button" data-course-next>' + esc(t("다른 코스")) + "</button>" : "") +
+      '<a href="https://map.naver.com/p/directions/-/' + c.lng + "," + c.lat + "," + encodeURIComponent(c.stops[0] ? c.stops[0].name : c.title) + ',,/-/car" ' + ext + ">🚗 " + esc(t("길찾기")) + "</a></div></article>";
+  }
+  function bindExtra(root) {
+    if (root.dataset.extra) return; // root 는 그대로라 한 번만 붙여요
+    root.dataset.extra = "1";
+    root.addEventListener("click", (e) => {
+      const el = e.target.closest("[data-shuffle],[data-course-next]");
+      if (!el) return;
+      if (el.hasAttribute("data-shuffle")) { songSeed = (songSeed * 7 + 13) & 0xffff; $("songBox").innerHTML = songHtml(); }
+      else { courseIdx = (courseIdx + 1) % Math.min(courseList.length, 5); $("courseBox").innerHTML = courseHtml(); }
+    });
+  }
   async function render(force) {
     const root = $("todayRoot");
     if (!root) return;
@@ -395,9 +490,15 @@
       const isSunset = sunset && Math.abs(nowMs - sunset.getTime()) < 45 * 60e3;
       const isDawn = sunrise && nowMs < sunrise.getTime() + 60 * 60e3 && nowMs > sunrise.getTime() - 60 * 60e3;
       const isNight = sunset && sunrise && (nowMs > sunset.getTime() + 45 * 60e3 || nowMs < sunrise.getTime() - 60 * 60e3);
-      const song = songNow(k, { isDefault: l.src === "default", region: reg && reg.name, sido: reg && reg.sido, rain, snow, sunset: isSunset, night: isNight, dawn: isDawn });
+      const tNow = kma && isFinite(kma.T1H) ? kma.T1H : cur ? cur.temperature_2m : null;
+      const cold = tNow != null && isFinite(tNow) && tNow < 5;
+      songCtx = { k, o: { isDefault: l.src === "default", region: reg && reg.name, sido: reg && reg.sido, rain, snow, cold, clear: code === 0 || code === 1, sunset: isSunset, night: isNight, dawn: isDawn } };
+      if (key !== shownFor) songSeed = Date.now() & 0xffff;
+      courseList = coursesNow(l, k, { rain: rain || snow, cold });
+      if (key !== shownFor) courseIdx = 0;
       const foods = DATA.foods.filter((f) => f.months.includes(k.m));
-      const acts = actsNow(k).slice(0, 6);
+      // 비·눈 오면 실내에서 할 수 있는 것부터
+      const acts = actsNow(k).sort((a, b) => (rain || snow ? (b.indoor ? 1 : 0) - (a.indoor ? 1 : 0) : 0)).slice(0, 9);
 
       let h = locBar(l, reg);
       // 계절 머리
@@ -406,6 +507,7 @@
         '<div class="t">' + lk.emoji + " " + esc(t(SEASON_NAMES[k.m - 1])) + " · " + esc(tOpt(term.now)) + "</div>" +
         "<div>" + esc(tOpt(term.note)) + " " + esc(t("{next}까지 {n}일", { next: tOpt(term.next), n: term.days })) + "</div></div>";
 
+      h += '<div id="courseBox">' + courseHtml() + "</div>";
       h += '<div class="cardgrid">';
       // 날씨
       if (cur) {
@@ -428,6 +530,7 @@
           "</dl>";
         // 시간별 24시간
         const hr = wx.hourly, ht = arr(hr, "time"), start = ht.findIndex((x) => { const d = kdt(x); return d && d.getTime() >= nowMs - 3600e3; });
+        h += '<details class="fold"><summary>' + esc(t("시간별 · 7일 날씨 보기")) + "</summary>";
         if (start >= 0) {
           h += '<div class="hours" aria-label="' + esc(t("시간별")) + '">';
           for (let i = start; i < Math.min(start + 24, ht.length); i++) {
@@ -444,7 +547,7 @@
           const [e3, t3] = wmo(arr(daily, "weather_code")[i], 1);
           h += "<dt>" + esc(fmtWd.format(d3)) + "</dt><dd>" + e3 + " " + pct(arr(daily, "temperature_2m_min")[i]) + "° / " + pct(arr(daily, "temperature_2m_max")[i]) + "° · " + esc(t(t3)) + " · " + pct(arr(daily, "precipitation_probability_max")[i]) + "%</dd>";
         }
-        h += "</dl>";
+        h += "</dl></details>";
         if (!signed) h += '<div class="muted">' + esc(t("로그인하면 기상청 실황 값으로 보여요.")) + "</div>";
         h += "</article>";
       } else {
@@ -518,14 +621,11 @@
       h += "</article>";
 
       // 노래
-      if (song && song.song) {
-        h += '<article class="card2"><h2>' + esc(t("지금 들을 노래")) + "<small>" + esc(song.why) + "</small></h2>" +
-          '<div style="font-size:18px">🎵 <b>' + esc(song.song.title) + "</b> · " + esc(song.song.artist) + "</div>" +
-          '<div class="chips"><a href="' + youtube(song.song.artist + " " + song.song.title) + '" ' + ext + ">▶ " + esc(t("유튜브에서 듣기")) + "</a></div></article>";
-      }
+      h += '<article class="card2" id="songBox">' + songHtml() + "</article>";
       h += "</div>";
       root.innerHTML = h;
       bindLoc(root);
+      bindExtra(root);
       root.querySelectorAll('[data-act="sky"]').forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); $("skyCard").scrollIntoView({ behavior: "smooth", block: "center" }); }));
       root.querySelectorAll('[data-act="tide"]').forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); ZAPP.showTab("sea"); }));
       // 날씨를 못 받았으면 기억하지 않아요 — 다른 탭 갔다 오거나 1분 뒤(자동)에 다시 받아요
@@ -540,7 +640,7 @@
   }
 
   ZLOC.on(() => { shownFor = ""; if (!$("view-today").hidden) render(true); });
-  window.ZTODAY = { show: () => render(false), refresh: () => render(true) };
+  window.ZTODAY = { show: () => render(false), refresh: () => render(true), songsNow, coursesNow, actsNow };
   // 켜 둔 채 자정·시간이 바뀌면 다시 그려요 (key 에 날짜·시가 들어 있어 같은 시간엔 그대로, QA 11-26)
   setInterval(() => { const v = document.getElementById("view-today"); if (window.ZAPP_READY && v && !v.hidden && !document.hidden) render(false); }, 60e3);
   // 로그인 상태가 바뀌면 다시
