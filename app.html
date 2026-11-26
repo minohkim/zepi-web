@@ -427,6 +427,15 @@ body { margin: 0; }
   .cstops li{border-left:3px solid var(--leaf,#0E8465);padding-left:10px}
   .cstops a{min-height:44px;display:inline-flex;align-items:center}
   .cstory{font-style:italic;color:var(--muted,#666)}
+  .blogbox{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line,#ddd);display:flex;flex-direction:column;gap:8px}
+  .blogbox .ctitle2{font-weight:800}
+  .bsumbox{background:var(--leaf-soft,#eef7f2);border-radius:var(--radius-sm,10px);padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+  .bsumbox .bone{font-weight:700}
+  .bsum ul{margin:2px 0 0;padding-left:18px}
+  .bsum li{margin:2px 0}
+  .bloglist{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:6px}
+  .bloglist a{min-height:32px;display:inline-flex;align-items:center;word-break:break-all}
+  .small{font-size:12px}
   .songrow{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:4px 0}
   .songrow .btn{min-width:44px;min-height:44px;justify-content:center}
   .songrow .songact{display:flex;gap:4px;flex:none}
@@ -2309,6 +2318,14 @@ body { margin: 0; }
   // 다른 화면(오늘·바다)이 쓰는 통로
   window.ZAPP = {
     proxy: (path) => proxy(path),
+    // 로그인 없이 부르는 통로 (블로그 목록)
+    pub: async (path) => {
+      const r = await fetch(PROXY + path, { headers: { apikey: SB_KEY, Authorization: "Bearer " + SB_KEY } });
+      let j = {};
+      try { j = await r.json(); } catch (e) {}
+      if (!r.ok) throw new Error((j.error && j.error.message) || t("서버 오류") + " (" + r.status + ")");
+      return j;
+    },
     post: async (path, body) => {
       const r = await fetch(PROXY + path, { method: "POST", headers: { Authorization: "Bearer " + (await token()), apikey: SB_KEY, "content-type": "application/json" }, body: JSON.stringify(body) });
       let j = {};
