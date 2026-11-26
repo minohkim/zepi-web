@@ -20,8 +20,10 @@ async function page(lang) {
 }
 
 // 1) 정적 페이지
-for (const path of ["?home", "beta.html", "privacy.html", "terms.html"]) {
+for (const path of ["?home", "beta.html", "go.html", "tester.html", "privacy.html", "terms.html"]) {
   const pg = await page("ko");
+  // go.html 은 열릴 때 클릭 수(link_clicks)를 서버에 적어요. 점검이 실제 표에 줄을 넣지 않게 막아요
+  await pg.route(/\/rest\/v1\/link_clicks/, (r) => r.abort());
   const r = await pg.goto(BASE + path, { waitUntil: "load" });
   ok(r.ok(), "열림 " + path);
   ok(pg.errors.length === 0, "오류 없음 " + path, pg.errors.join(" | "));
