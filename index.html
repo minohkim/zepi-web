@@ -112,6 +112,14 @@ header nav .btn { min-height: 44px; padding: 0 14px; font-size: 14px; }
   .hero::after { background: linear-gradient(180deg, rgba(6,32,24,.5) 0%, rgba(6,32,24,.36) 50%, rgba(6,32,24,.7) 100%); }
   .hero .in { min-height: 0; }
 }
+/* 손글씨 시 (만든 사람이 직접 쓴 글씨. 글씨 색은 테마를 따라가요) */
+.poem .in { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; }
+.poem .hand { width: min(560px, 100%); aspect-ratio: 1000 / 488; background-color: var(--ink);
+  -webkit-mask: url(img/poem.png) center / contain no-repeat; mask: url(img/poem.png) center / contain no-repeat; }
+.poem .by { font-size: 13px; color: var(--muted); }
+.poem-tr { margin: 6px 0 0; font-family: var(--font-display); font-size: 17px; line-height: 1.9; color: var(--muted); }
+.poem-tr span { display: block; }
+:root:lang(ko) .poem-tr { display: none; }
 /* 오른쪽: 하루 지도 그림 */
 .mock { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 14px; box-shadow: 0 20px 60px -30px rgba(23, 32, 26, .35); }
 .mock svg { width: 100%; height: auto; display: block; border-radius: 10px; }
@@ -211,6 +219,15 @@ footer .in { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: spa
       </div>
     </div>
   </div>
+
+  <section class="band poem" aria-labelledby="poemT">
+    <div class="in">
+      <div class="eyebrow" id="poemT">이름에 담은 마음</div>
+      <div class="hand" role="img" aria-label="바람의 노래를 들어요. 휘잉거리는 겨울 바람, 길을 따라 벽을 타고 나무 사이로, 곡조도 좋지요"></div>
+      <p class="poem-tr"><span>바람의 노래를 들어요.</span><span>휘잉거리는 겨울 바람</span><span>길을 따라 벽을 타고 나무 사이로</span><span>곡조도 좋지요</span></p>
+      <div class="by">— 바람소리를 만든 사람의 손글씨</div>
+    </div>
+  </section>
 
   <section class="band" id="features">
     <div class="in">
