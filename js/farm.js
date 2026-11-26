@@ -132,19 +132,21 @@
     try { remote = await ZAPP.docGet("farm"); } catch (e) { console.warn("farm merge", e); return false; }
     let r = null;
     try { r = remote ? normFarm(JSON.parse(remote)) : null; } catch (e) {}
+    const done = () => { try { localStorage.setItem(KEY, JSON.stringify(farm)); localStorage.removeItem(MERGE); } catch (e) {} picking = !farm.crops.length; };
     if (r) {
       const crops = [...r.crops, ...farm.crops.filter((c) => !r.crops.includes(c))];
       const loc = r.lat != null ? { lat: r.lat, lng: r.lng, label: r.label, name: r.name } : { lat: farm.lat, lng: farm.lng, label: farm.label, name: farm.name };
       const added = farm.crops.filter((c) => !r.crops.includes(c) && byId(c)).length;
+      // 웹에서 더할 것이 없으면(구경만 했거나, 골랐다 뺐거나) 서버(폰) 텃밭을 그대로 받고 올리지 않아요 (QA 11-27)
+      const extra = crops.length > r.crops.length || Object.keys(farm.notes).some((k) => !(k in r.notes)) || (r.lat == null && farm.lat != null);
+      if (!extra) { farm = r; done(); return true; }
       if (added) mergedMsg = t("이 브라우저에서 고른 작물 {n}가지를 폰 텃밭에 더했어요. 이제 폰과 같이 맞춰져요.", { n: added });
       farm = { ...farm, ...r, ...loc, crops, notes: { ...farm.notes, ...r.notes } };
-    }
+    } else if (!farm.crops.length && !Object.keys(farm.notes).length && farm.lat == null) { done(); return false; } // 서버에도 웹에도 없으면 빈 텃밭을 올리지 않아요
     farm.updated = Math.max(Date.now(), ((r && r.updated) || 0) + 1);
     if (farm.lat != null && farm.lng != null) { farm.lat = Math.round(farm.lat * 1e3) / 1e3; farm.lng = Math.round(farm.lng * 1e3) / 1e3; }
-    const s = JSON.stringify(farm);
-    try { localStorage.setItem(KEY, s); localStorage.removeItem(MERGE); } catch (e) {}
-    ZDOCS.push("farm", s);
-    picking = !farm.crops.length;
+    done();
+    ZDOCS.push("farm", JSON.stringify(farm));
     return true;
   }
   async function syncFarm() {
