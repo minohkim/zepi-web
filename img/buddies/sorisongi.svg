@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="306 116 150 234" role="img" aria-label="소리송이">
+<path d="M410 300L446 286L440 302L414 312Z" fill="#0E8465"/>
+<ellipse cx="370" cy="294" rx="50" ry="44" fill="#E5B547"/><ellipse cx="370" cy="306" rx="30" ry="24" fill="#F6E7C1"/>
+<path d="M324 272q-20 16-8 38q18-8 16-30z" fill="#D9A33A"/>
+<path d="M358 336v10M382 336v10" stroke="#D9772B" stroke-width="4" stroke-linecap="round"/>
+<path d="M356 162V142M370 158V126M384 162V146" stroke="#0E8465" stroke-width="10" stroke-linecap="round"/>
+<circle cx="370" cy="206" r="50" fill="#EEC45A"/>
+<circle cx="353" cy="202" r="5.5" fill="#2A2A2A"/><circle cx="387" cy="202" r="5.5" fill="#2A2A2A"/><path d="M362 216L372 211L382 216L372 230Z" fill="#D9772B"/>
+<circle cx="336" cy="220" r="7" fill="#E9A08A" fill-opacity=".4"/><circle cx="404" cy="220" r="7" fill="#E9A08A" fill-opacity=".4"/>
+</svg>
