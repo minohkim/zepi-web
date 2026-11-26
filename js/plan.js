@@ -1,4 +1,4 @@
-// 제피 웹 · 여행 계획 (뭐가 당겨요 → 추천 시군구 → AI 일정)
+// 바람소리 웹 · 여행 계획 (뭐가 당겨요 → 추천 시군구 → AI 일정)
 // 앱의 lib/recommender.dart, lib/screens/planner_screen.dart, trip_plan_screen.dart 를 옮겨 왔어요.
 (function () {
   const Z = window.ZI18N, t = Z.t, tOpt = Z.tOpt;
@@ -217,7 +217,7 @@
   }
 
   // ---------- 2단계: 관광공사·고캠핑·날씨·물때·백년가게로 채우기 ----------
-  const common = "MobileOS=ETC&MobileApp=Jepi&_type=json&pageNo=1";
+  const common = "MobileOS=ETC&MobileApp=BaramSori&_type=json&pageNo=1";
   function itemsOf(j) {
     const it = j && j.response && j.response.body && j.response.body.items;
     const v = it && it.item;
