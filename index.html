@@ -71,13 +71,55 @@ header nav .btn { min-height: 44px; padding: 0 14px; font-size: 14px; }
 .langsel { appearance: auto; padding: 0 10px; }
 @media (max-width: 560px) { header nav .hide-s { display: none; } header .in { flex-wrap: nowrap; } header nav { flex-wrap: nowrap; } .langsel { max-width: 92px; } .logo b { font-size: 20px; } }
 /* 첫 화면 */
-.hero .in { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 40px; align-items: center; padding-block: 64px 56px; }
+.hero .in { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 40px; align-items: center; padding-block: 96px 88px; }
 .eyebrow { font-size: 13px; letter-spacing: .08em; color: var(--leaf-ink); font-weight: 600; }
 .hero h1 { font-family: var(--font-display); font-size: clamp(36px, 6vw, 60px); line-height: 1.15; letter-spacing: -0.01em; margin-top: 10px; }
+:lang(zh) .hero h1 { font-size: clamp(32px, 5vw, 52px); }
 .hero p.lead { font-size: 18px; color: var(--muted); max-width: 32em; margin: 18px 0 26px; }
 .cta { display: flex; flex-wrap: wrap; gap: 10px; }
 .cta .btn { min-height: 50px; padding: 0 22px; font-size: 16px; }
 .small { font-size: 13px; color: var(--muted); margin-top: 12px; }
+/* 첫 화면 사진 배경 (직접 찍은 여행 사진) */
+.hero { position: relative; isolation: isolate; overflow: hidden; color: #fff; background: #0B3B2E; }
+.hero-bg { position: absolute; inset: 0; z-index: -2; }
+.hero-bg picture, .hero-bg img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hero-bg img { object-fit: cover; object-position: 60% 55%; }
+/* 사진 4장이 7초씩 천천히 바뀌어요 (바다 → 다랭이 논 노을 → 눈 내린 호숫가 → 철새) */
+.hero-bg picture { opacity: 0; animation: heroFade 28s linear infinite backwards; }
+.hero-bg picture:nth-child(1) { opacity: 1; animation-delay: -1.2s; }
+.hero-bg picture:nth-child(2) { animation-delay: 5.8s; }
+.hero-bg picture:nth-child(3) { animation-delay: 12.8s; }
+.hero-bg picture:nth-child(4) { animation-delay: 19.8s; }
+.hero-bg:not(.ready) picture { animation: none; }
+.hero-bg img { animation: heroZoom 28s ease-in-out infinite alternate; }
+.hero-bg .dim img { filter: brightness(.6) saturate(.9); }
+@keyframes heroFade { 0% { opacity: 0; } 5% { opacity: 1; } 25% { opacity: 1; } 30% { opacity: 0; } 100% { opacity: 0; } }
+@keyframes heroZoom { from { transform: scale(1); } to { transform: scale(1.06); } }
+@media (prefers-reduced-motion: reduce) { .hero-bg picture, .hero-bg img { animation: none !important; } .hero-bg picture:not(:first-child) { opacity: 0 !important; } }
+.hero::after { content: ""; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(90deg, rgba(6,32,24,.66) 0%, rgba(6,32,24,.4) 42%, rgba(6,32,24,.06) 78%, rgba(6,32,24,0) 100%),
+              linear-gradient(0deg, rgba(6,32,24,.35) 0%, rgba(6,32,24,0) 30%); }
+.hero .in { min-height: min(680px, 82vh); }
+.hero .eyebrow { color: #A8EBD3; }
+.hero h1 { color: #fff; text-shadow: 0 2px 24px rgba(0,0,0,.25); }
+.hero p.lead { color: rgba(255,255,255,.92); }
+.hero .small { color: rgba(255,255,255,.82); }
+.hero .btn:not(.primary) { background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.55); color: #fff; backdrop-filter: blur(6px); }
+.hero .btn:not(.primary):hover { background: rgba(255,255,255,.24); border-color: #fff; }
+.hero .mock { color: var(--ink); box-shadow: 0 30px 80px -30px rgba(0,0,0,.55); }
+@media (max-width: 860px) {
+  .hero-bg img { object-position: var(--mpos, 60% 50%); }
+  .hero::after { background: linear-gradient(180deg, rgba(6,32,24,.5) 0%, rgba(6,32,24,.36) 50%, rgba(6,32,24,.7) 100%); }
+  .hero .in { min-height: 0; }
+}
+/* 손글씨 시 (만든 사람이 직접 쓴 글씨. 글씨 색은 테마를 따라가요) */
+.poem .in { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; }
+.poem .hand { width: min(560px, 100%); aspect-ratio: 1000 / 488; background-color: var(--ink);
+  -webkit-mask: url(img/poem.png) center / contain no-repeat; mask: url(img/poem.png) center / contain no-repeat; }
+.poem .by { font-size: 13px; color: var(--muted); }
+.poem-tr { margin: 6px 0 0; font-family: var(--font-display); font-size: 17px; line-height: 1.9; color: var(--muted); }
+.poem-tr span { display: block; }
+:root:lang(ko) .poem-tr { display: none; }
 /* 오른쪽: 하루 지도 그림 */
 .mock { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 14px; box-shadow: 0 20px 60px -30px rgba(23, 32, 26, .35); }
 .mock svg { width: 100%; height: auto; display: block; border-radius: 10px; }
@@ -85,7 +127,7 @@ header nav .btn { min-height: 44px; padding: 0 14px; font-size: 14px; }
 .mock .tl div { display: grid; grid-template-columns: 52px 1fr auto; gap: 8px; align-items: center; }
 .mock .tl span:first-child { font-family: var(--font-num); color: var(--muted); font-size: 13px; }
 .mock .tl span:last-child { color: var(--muted); font-size: 13px; font-family: var(--font-num); }
-@media (max-width: 860px) { .hero .in { grid-template-columns: minmax(0, 1fr); padding-block: 36px 32px; } }
+@media (max-width: 860px) { .hero .in { grid-template-columns: minmax(0, 1fr); padding-block: 56px 40px; } }
 /* 기능 */
 section { padding-block: 56px; }
 section h2 { font-family: var(--font-display); font-size: clamp(26px, 4vw, 36px); }
@@ -141,6 +183,12 @@ footer .in { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: spa
 
 <main>
   <div class="hero band">
+    <div class="hero-bg" aria-hidden="true">
+      <picture style="--mpos:72% 50%"><source type="image/webp" srcset="img/sea-800.webp 800w, img/sea-1280.webp 1280w, img/sea-2400.webp 2400w" sizes="100vw"><img src="img/sea-1280.jpg" alt="" width="1280" height="720" fetchpriority="high" decoding="async"></picture>
+      <picture style="--mpos:45% 60%"><source type="image/webp" data-srcset="img/terrace-800.webp 800w, img/terrace-1280.webp 1280w, img/terrace-2400.webp 2400w" sizes="100vw"><img data-src="img/terrace-1280.jpg" alt="" width="1280" height="720" decoding="async"></picture>
+      <picture class="dim" style="--mpos:38% 50%"><source type="image/webp" data-srcset="img/snow-800.webp 800w, img/snow-1280.webp 1280w, img/snow-2400.webp 2400w" sizes="100vw"><img data-src="img/snow-1280.jpg" alt="" width="1280" height="720" decoding="async"></picture>
+      <picture style="--mpos:62% 60%"><source type="image/webp" data-srcset="img/birds-800.webp 800w, img/birds-1280.webp 1280w, img/birds-2400.webp 2400w" sizes="100vw"><img data-src="img/birds-1280.jpg" alt="" width="1280" height="720" decoding="async"></picture>
+    </div>
     <div class="in">
       <div>
         <div class="eyebrow">바람 따라 걷고, 소리처럼 남기고</div>
@@ -171,6 +219,15 @@ footer .in { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: spa
       </div>
     </div>
   </div>
+
+  <section class="band poem" aria-labelledby="poemT">
+    <div class="in">
+      <div class="eyebrow" id="poemT">이름에 담은 마음</div>
+      <div class="hand" role="img" aria-label="바람의 노래를 들어요. 휘잉거리는 겨울 바람, 길을 따라 벽을 타고 나무 사이로, 곡조도 좋지요"></div>
+      <p class="poem-tr"><span>바람의 노래를 들어요.</span><span>휘잉거리는 겨울 바람</span><span>길을 따라 벽을 타고 나무 사이로</span><span>곡조도 좋지요</span></p>
+      <div class="by">— 바람소리를 만든 사람의 손글씨</div>
+    </div>
+  </section>
 
   <section class="band" id="features">
     <div class="in">
@@ -249,6 +306,20 @@ footer .in { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: spa
       a.removeAttribute("data-i18n");
     } catch (e) {}
   })();
+</script>
+<script>
+  // 첫 사진이 뜬 뒤에 나머지 사진을 불러와서 천천히 넘겨요 (첫 화면을 빨리 띄우려고)
+  window.addEventListener("load", function () {
+    var bg = document.querySelector(".hero-bg");
+    if (!bg || (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches)) return;
+    var rest = bg.querySelectorAll("picture:not(:first-child)"), left = rest.length;
+    rest.forEach(function (p) {
+      var so = p.querySelector("source"), im = p.querySelector("img");
+      var done = function () { if (--left === 0) bg.classList.add("ready"); };
+      im.addEventListener("load", done, { once: true }); im.addEventListener("error", done, { once: true });
+      so.srcset = so.dataset.srcset; im.src = im.dataset.src;
+    });
+  });
 </script>
 </body>
 </html>
