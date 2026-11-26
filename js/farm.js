@@ -105,7 +105,8 @@
     return {
       ...j,
       name: typeof j.name === "string" && j.name ? j.name : "내 텃밭",
-      lat: hasLoc ? lat : null, lng: hasLoc ? lng : null,
+      // 텃밭 위치는 약 100m(소수 3자리)로 줄여 둬요. 서버(blobs)에 GPS 원래 정밀도가 올라가지 않게 (QA 11-26, 방침과 맞춤)
+      lat: hasLoc ? Math.round(lat * 1e3) / 1e3 : null, lng: hasLoc ? Math.round(lng * 1e3) / 1e3 : null,
       label: typeof j.label === "string" ? j.label : "",
       crops: Array.isArray(j.crops) ? j.crops.map((c) => (typeof c === "string" ? c : c && typeof c.id === "string" ? c.id : null)).filter(Boolean) : [],
       notes: j.notes && typeof j.notes === "object" && !Array.isArray(j.notes) ? j.notes : {},
@@ -117,6 +118,7 @@
   const save = () => {
     // 시계가 늦은 기기에서 고쳐도 방금 받은 것보다 새것이 되게 (QA 11-25: 폰 시계가 빠르면 웹 수정이 다음 맞추기 때 되돌아가던 것)
     farm.updated = Math.max(Date.now(), (farm.updated || 0) + 1);
+    if (farm.lat != null && farm.lng != null) { farm.lat = Math.round(farm.lat * 1e3) / 1e3; farm.lng = Math.round(farm.lng * 1e3) / 1e3; } // 약 100m로 (QA 11-26)
     const s = JSON.stringify(farm);
     try { localStorage.setItem(KEY, s); } catch (e) {}
     if (window.ZDOCS && !needMerge()) ZDOCS.push("farm", s); // 첫 로그인 합치기 전에는 폰 텃밭을 덮지 않게 기다려요
@@ -138,6 +140,7 @@
       farm = { ...farm, ...r, ...loc, crops, notes: { ...farm.notes, ...r.notes } };
     }
     farm.updated = Math.max(Date.now(), ((r && r.updated) || 0) + 1);
+    if (farm.lat != null && farm.lng != null) { farm.lat = Math.round(farm.lat * 1e3) / 1e3; farm.lng = Math.round(farm.lng * 1e3) / 1e3; }
     const s = JSON.stringify(farm);
     try { localStorage.setItem(KEY, s); localStorage.removeItem(MERGE); } catch (e) {}
     ZDOCS.push("farm", s);
