@@ -1,0 +1,3401 @@
+{
+ "version": 1,
+ "updated": "2026-11-26",
+ "note": "바람소리 지금 이 노래. 이 파일이 원본이에요. 고치면 웹은 바로, 앱은 다음 실행 때 받아요. 태그: 날씨·시간·계절(rain snow fog wind cold clear sunset night dawn sea drive mountain spring summer autumn late winter xmas memory) · 마실거리(whisky highball wine sake makgeolli somaek beer coffee) · 분위기/MBTI(calm singalong dreamy emotional groove classic free inst)",
+ "songs": [
+  {
+   "title": "울고 넘는 박달재",
+   "artist": "박재홍",
+   "tags": [
+    "classic",
+    "drive",
+    "free",
+    "memory"
+   ],
+   "places": [
+    "제천시"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "목포의 눈물",
+   "artist": "이난영",
+   "tags": [
+    "classic",
+    "memory",
+    "sea"
+   ],
+   "places": [
+    "목포시"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "목포는 항구다",
+   "artist": "이난영",
+   "tags": [
+    "sea"
+   ],
+   "places": [
+    "목포시"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "돌아와요 부산항에",
+   "artist": "조용필",
+   "tags": [
+    "classic",
+    "memory",
+    "sea"
+   ],
+   "sido": "부산",
+   "lang": "ko"
+  },
+  {
+   "title": "부산 갈매기",
+   "artist": "문성재",
+   "tags": [
+    "sea"
+   ],
+   "sido": "부산",
+   "lang": "ko"
+  },
+  {
+   "title": "해운대 엘레지",
+   "artist": "손인호",
+   "tags": [
+    "sea"
+   ],
+   "places": [
+    "해운대구"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "여수 밤바다",
+   "artist": "버스커버스커",
+   "tags": [
+    "calm",
+    "night",
+    "sea",
+    "somaek"
+   ],
+   "places": [
+    "여수시"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "제주도의 푸른 밤",
+   "artist": "최성원",
+   "tags": [
+    "drive",
+    "free",
+    "highball",
+    "sea",
+    "singalong",
+    "summer"
+   ],
+   "places": [
+    "제주시",
+    "서귀포시"
+   ],
+   "months": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "서귀포를 아시나요",
+   "artist": "조미미",
+   "tags": [
+    "sea"
+   ],
+   "places": [
+    "서귀포시"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "춘천 가는 기차",
+   "artist": "김현철",
+   "tags": [
+    "classic",
+    "drive",
+    "emotional",
+    "free",
+    "highball",
+    "late",
+    "memory"
+   ],
+   "places": [
+    "춘천시"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "소양강 처녀",
+   "artist": "김태희",
+   "tags": [
+    "classic",
+    "memory"
+   ],
+   "places": [
+    "춘천시"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "안동역에서",
+   "artist": "진성",
+   "tags": [
+    "classic",
+    "emotional",
+    "memory",
+    "snow"
+   ],
+   "places": [
+    "안동시"
+   ],
+   "months": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "영일만 친구",
+   "artist": "최백호",
+   "tags": [
+    "sea"
+   ],
+   "places": [
+    "포항시"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "광화문 연가",
+   "artist": "이문세",
+   "tags": [
+    "autumn",
+    "classic",
+    "coffee",
+    "emotional",
+    "late",
+    "memory"
+   ],
+   "places": [
+    "종로구",
+    "중구"
+   ],
+   "sido": "서울",
+   "months": [
+    10,
+    11,
+    12,
+    1
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "혜화동",
+   "artist": "동물원",
+   "tags": [
+    "classic",
+    "memory"
+   ],
+   "places": [
+    "종로구"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "시청 앞 지하철 역에서",
+   "artist": "동물원",
+   "tags": [
+    "classic",
+    "memory"
+   ],
+   "places": [
+    "중구"
+   ],
+   "sido": "서울",
+   "lang": "ko"
+  },
+  {
+   "title": "서울 서울 서울",
+   "artist": "조용필",
+   "tags": [
+    "classic",
+    "emotional",
+    "memory",
+    "rain"
+   ],
+   "sido": "서울",
+   "lang": "ko"
+  },
+  {
+   "title": "서울의 달",
+   "artist": "김건모",
+   "tags": [
+    "calm",
+    "night",
+    "whisky"
+   ],
+   "sido": "서울",
+   "lang": "ko"
+  },
+  {
+   "title": "마포종점",
+   "artist": "은방울자매",
+   "tags": [
+    "calm",
+    "classic",
+    "memory",
+    "night"
+   ],
+   "places": [
+    "마포구"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "신촌을 못 가",
+   "artist": "포스트맨",
+   "tags": [
+    "classic",
+    "memory"
+   ],
+   "places": [
+    "서대문구"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "이태원 프리덤",
+   "artist": "UV",
+   "tags": [],
+   "places": [
+    "용산구"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "강남스타일",
+   "artist": "싸이",
+   "tags": [],
+   "places": [
+    "강남구"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "연안부두",
+   "artist": "김트리오",
+   "tags": [
+    "sea"
+   ],
+   "sido": "인천",
+   "lang": "ko"
+  },
+  {
+   "title": "칠갑산",
+   "artist": "주병선",
+   "tags": [
+    "classic",
+    "memory",
+    "mountain"
+   ],
+   "places": [
+    "청양군"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "흑산도 아가씨",
+   "artist": "이미자",
+   "tags": [
+    "sea"
+   ],
+   "places": [
+    "신안군"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "울릉도 트위스트",
+   "artist": "이시스터즈",
+   "tags": [
+    "sea"
+   ],
+   "places": [
+    "울릉군"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "독도는 우리 땅",
+   "artist": "정광태",
+   "tags": [
+    "sea"
+   ],
+   "places": [
+    "울릉군"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "대전 블루스",
+   "artist": "안정애",
+   "tags": [
+    "calm",
+    "classic",
+    "memory",
+    "night"
+   ],
+   "sido": "대전",
+   "lang": "ko"
+  },
+  {
+   "title": "비 내리는 고모령",
+   "artist": "현인",
+   "tags": [
+    "classic",
+    "emotional",
+    "memory",
+    "rain"
+   ],
+   "places": [
+    "수성구"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "신라의 달밤",
+   "artist": "현인",
+   "tags": [
+    "calm",
+    "night"
+   ],
+   "places": [
+    "경주시"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "삼천포 아가씨",
+   "artist": "은방울자매",
+   "tags": [
+    "sea"
+   ],
+   "places": [
+    "사천시"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "울산큰애기",
+   "artist": "김상희",
+   "tags": [],
+   "sido": "울산",
+   "lang": "ko"
+  },
+  {
+   "title": "추풍령",
+   "artist": "남상규",
+   "tags": [
+    "drive",
+    "free",
+    "mountain"
+   ],
+   "places": [
+    "영동군",
+    "김천시"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "정선 아리랑",
+   "artist": "민요",
+   "tags": [
+    "mountain"
+   ],
+   "places": [
+    "정선군"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "진도 아리랑",
+   "artist": "민요",
+   "tags": [
+    "sea"
+   ],
+   "places": [
+    "진도군"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "밀양 아리랑",
+   "artist": "민요",
+   "tags": [],
+   "places": [
+    "밀양시"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "여행을 떠나요",
+   "artist": "조용필",
+   "tags": [
+    "clear",
+    "drive",
+    "free",
+    "somaek"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "고래사냥",
+   "artist": "송창식",
+   "tags": [
+    "drive",
+    "free",
+    "sea"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "남행열차",
+   "artist": "김수희",
+   "tags": [
+    "drive",
+    "emotional",
+    "free",
+    "rain",
+    "somaek"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "출발",
+   "artist": "김동률",
+   "tags": [
+    "clear",
+    "drive",
+    "free"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "질풍가도",
+   "artist": "유정석",
+   "tags": [
+    "drive",
+    "free"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "아름다운 강산",
+   "artist": "신중현과 엽전들",
+   "tags": [
+    "clear",
+    "drive",
+    "free",
+    "makgeolli",
+    "mountain"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "그대에게",
+   "artist": "무한궤도",
+   "tags": [
+    "classic",
+    "drive",
+    "free",
+    "memory",
+    "somaek"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "해변으로 가요",
+   "artist": "키보이스",
+   "tags": [
+    "drive",
+    "free",
+    "sea",
+    "singalong",
+    "summer"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "산할아버지",
+   "artist": "산울림",
+   "tags": [
+    "mountain"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "비처럼 음악처럼",
+   "artist": "김현식",
+   "tags": [
+    "classic",
+    "emotional",
+    "memory",
+    "rain",
+    "whisky"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "비와 당신",
+   "artist": "럼블피쉬",
+   "tags": [
+    "emotional",
+    "rain"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "비 오는 날 수채화",
+   "artist": "권인하·강인원·김현식",
+   "tags": [
+    "classic",
+    "emotional",
+    "memory",
+    "rain"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "빗속의 여인",
+   "artist": "김추자",
+   "tags": [
+    "classic",
+    "emotional",
+    "memory",
+    "rain"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "빗물",
+   "artist": "채은옥",
+   "tags": [
+    "classic",
+    "emotional",
+    "memory",
+    "rain"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "우산",
+   "artist": "에픽하이",
+   "tags": [
+    "emotional",
+    "rain"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "Rain",
+   "artist": "태연",
+   "tags": [
+    "emotional",
+    "rain"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "겨울비",
+   "artist": "김종서",
+   "tags": [
+    "cold",
+    "emotional",
+    "rain",
+    "winter"
+   ],
+   "months": [
+    11,
+    12,
+    1,
+    2
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "봄비",
+   "artist": "박인수",
+   "tags": [
+    "classic",
+    "emotional",
+    "memory",
+    "rain",
+    "spring"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "안개",
+   "artist": "정훈희",
+   "tags": [
+    "classic",
+    "fog",
+    "memory"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "바람이 불어오는 곳",
+   "artist": "김광석",
+   "tags": [
+    "clear",
+    "coffee",
+    "drive",
+    "free",
+    "wind"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "바람의 노래",
+   "artist": "조용필",
+   "tags": [
+    "classic",
+    "emotional",
+    "late",
+    "memory",
+    "wind"
+   ],
+   "months": [
+    10,
+    11
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "바람 바람 바람",
+   "artist": "김범룡",
+   "tags": [
+    "classic",
+    "memory",
+    "wind"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "눈의 꽃",
+   "artist": "박효신",
+   "tags": [
+    "emotional",
+    "snow",
+    "winter"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "첫눈처럼 너에게 가겠다",
+   "artist": "에일리",
+   "tags": [
+    "emotional",
+    "snow",
+    "winter"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "첫눈이 온다구요",
+   "artist": "이정석",
+   "tags": [
+    "classic",
+    "emotional",
+    "memory",
+    "snow"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "눈",
+   "artist": "자이언티",
+   "tags": [
+    "emotional",
+    "snow",
+    "winter"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "하얀 겨울",
+   "artist": "Mr.2",
+   "tags": [
+    "classic",
+    "emotional",
+    "memory",
+    "snow",
+    "winter"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "겨울아이",
+   "artist": "이종용",
+   "tags": [
+    "classic",
+    "emotional",
+    "memory",
+    "snow",
+    "winter"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "겨울 바다",
+   "artist": "푸른하늘",
+   "tags": [
+    "classic",
+    "cold",
+    "memory",
+    "sea",
+    "winter"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "붉은 노을",
+   "artist": "이문세",
+   "tags": [
+    "classic",
+    "memory",
+    "somaek",
+    "sunset"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "저녁놀",
+   "artist": "전영록",
+   "tags": [
+    "classic",
+    "memory",
+    "sunset"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "밤편지",
+   "artist": "아이유",
+   "tags": [
+    "calm",
+    "coffee",
+    "night"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "별 보러 가자",
+   "artist": "적재",
+   "tags": [
+    "calm",
+    "clear",
+    "night"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "밤이 깊었네",
+   "artist": "크라잉넛",
+   "tags": [
+    "beer",
+    "calm",
+    "night"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "별이 진다네",
+   "artist": "여행스케치",
+   "tags": [
+    "calm",
+    "classic",
+    "memory",
+    "night"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "달의 몰락",
+   "artist": "김현철",
+   "tags": [
+    "calm",
+    "classic",
+    "memory",
+    "night"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "아침이슬",
+   "artist": "양희은",
+   "tags": [
+    "classic",
+    "dawn",
+    "memory"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "저 바다에 누워",
+   "artist": "높은음자리",
+   "tags": [
+    "sea",
+    "singalong",
+    "summer"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "벚꽃 엔딩",
+   "artist": "버스커버스커",
+   "tags": [
+    "spring"
+   ],
+   "months": [
+    3,
+    4
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "봄날은 간다",
+   "artist": "백설희",
+   "tags": [
+    "classic",
+    "memory",
+    "spring"
+   ],
+   "months": [
+    4,
+    5
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "봄봄봄",
+   "artist": "로이킴",
+   "tags": [
+    "clear",
+    "coffee",
+    "spring"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "봄날",
+   "artist": "방탄소년단",
+   "tags": [
+    "emotional",
+    "snow",
+    "spring"
+   ],
+   "months": [
+    12,
+    1,
+    2,
+    3
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "봄이 좋냐??",
+   "artist": "10cm",
+   "tags": [
+    "spring"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "해변의 여인",
+   "artist": "쿨",
+   "tags": [
+    "sea",
+    "singalong",
+    "summer"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "여름 안에서",
+   "artist": "듀스",
+   "tags": [
+    "drive",
+    "free",
+    "singalong",
+    "summer"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "여름밤의 꿈",
+   "artist": "김현식",
+   "tags": [
+    "calm",
+    "classic",
+    "memory",
+    "night",
+    "singalong",
+    "summer"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "Hot Summer",
+   "artist": "f(x)",
+   "tags": [
+    "singalong",
+    "summer"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "여름이었다",
+   "artist": "H1-KEY",
+   "tags": [
+    "singalong",
+    "summer"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "잊혀진 계절",
+   "artist": "이용",
+   "tags": [
+    "autumn",
+    "classic",
+    "emotional",
+    "late",
+    "memory"
+   ],
+   "months": [
+    10
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "가을 우체국 앞에서",
+   "artist": "김현성",
+   "tags": [
+    "autumn",
+    "emotional",
+    "late"
+   ],
+   "months": [
+    10,
+    11
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "10월의 어느 멋진 날에",
+   "artist": "김동규",
+   "tags": [
+    "autumn",
+    "clear"
+   ],
+   "months": [
+    10
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "가을이 오면",
+   "artist": "이문세",
+   "tags": [
+    "autumn",
+    "classic",
+    "memory"
+   ],
+   "months": [
+    8,
+    9
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "가을 아침",
+   "artist": "아이유",
+   "tags": [
+    "autumn",
+    "coffee",
+    "dawn"
+   ],
+   "months": [
+    9,
+    10
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "가을 편지",
+   "artist": "최양숙",
+   "tags": [
+    "autumn",
+    "classic",
+    "emotional",
+    "late",
+    "memory"
+   ],
+   "months": [
+    10,
+    11
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "가을 타나 봐",
+   "artist": "바이브",
+   "tags": [
+    "autumn"
+   ],
+   "months": [
+    9,
+    10,
+    11
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "서른 즈음에",
+   "artist": "김광석",
+   "tags": [
+    "classic",
+    "emotional",
+    "late",
+    "makgeolli",
+    "memory",
+    "winter"
+   ],
+   "months": [
+    11,
+    12
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "사랑했지만",
+   "artist": "김광석",
+   "tags": [
+    "classic",
+    "emotional",
+    "late",
+    "makgeolli",
+    "memory",
+    "rain"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "All I Want for Christmas Is You",
+   "artist": "Mariah Carey",
+   "tags": [
+    "singalong",
+    "xmas"
+   ],
+   "lang": "en"
+  },
+  {
+   "title": "크리스마스에는 축복을",
+   "artist": "조성모",
+   "tags": [
+    "singalong",
+    "xmas"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "그때 그 사람",
+   "artist": "심수봉",
+   "tags": [
+    "classic",
+    "emotional",
+    "makgeolli",
+    "memory",
+    "rain"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "걱정 말아요 그대",
+   "artist": "전인권",
+   "tags": [
+    "classic",
+    "emotional",
+    "late",
+    "makgeolli",
+    "memory"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "청춘",
+   "artist": "산울림",
+   "tags": [
+    "classic",
+    "emotional",
+    "late",
+    "makgeolli",
+    "memory"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "너의 의미",
+   "artist": "산울림",
+   "tags": [
+    "classic",
+    "makgeolli",
+    "memory"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "회상",
+   "artist": "산울림",
+   "tags": [
+    "classic",
+    "emotional",
+    "late",
+    "makgeolli",
+    "memory",
+    "wind"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "나 어떡해",
+   "artist": "샌드페블즈",
+   "tags": [
+    "classic",
+    "memory"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "세월이 가면",
+   "artist": "최호섭",
+   "tags": [
+    "classic",
+    "emotional",
+    "late",
+    "memory",
+    "whisky"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "그것만이 내 세상",
+   "artist": "들국화",
+   "tags": [
+    "beer",
+    "classic",
+    "memory"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "행진",
+   "artist": "들국화",
+   "tags": [
+    "beer",
+    "classic",
+    "clear",
+    "memory"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "사랑하기 때문에",
+   "artist": "유재하",
+   "tags": [
+    "classic",
+    "emotional",
+    "memory",
+    "rain",
+    "whisky"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "내 사랑 내 곁에",
+   "artist": "김현식",
+   "tags": [
+    "classic",
+    "memory",
+    "whisky",
+    "winter"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "이등병의 편지",
+   "artist": "김광석",
+   "tags": [
+    "classic",
+    "cold",
+    "makgeolli",
+    "memory"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "아름다운 구속",
+   "artist": "김종서",
+   "tags": [
+    "classic",
+    "memory"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "난 알아요",
+   "artist": "서태지와 아이들",
+   "tags": [
+    "classic",
+    "memory"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "가로수 그늘 아래 서면",
+   "artist": "이문세",
+   "tags": [
+    "autumn",
+    "classic",
+    "clear",
+    "memory"
+   ],
+   "months": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "옛사랑",
+   "artist": "이문세",
+   "tags": [
+    "classic",
+    "cold",
+    "emotional",
+    "late",
+    "memory",
+    "snow",
+    "whisky"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "거리에서",
+   "artist": "김광석",
+   "tags": [
+    "calm",
+    "classic",
+    "cold",
+    "makgeolli",
+    "memory",
+    "night"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "기억의 습작",
+   "artist": "전람회",
+   "tags": [
+    "classic",
+    "emotional",
+    "memory",
+    "rain",
+    "somaek"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "취중진담",
+   "artist": "전람회",
+   "tags": [
+    "calm",
+    "classic",
+    "memory",
+    "night",
+    "somaek"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "응급실",
+   "artist": "izi",
+   "tags": [
+    "classic",
+    "memory",
+    "somaek"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "12월의 기적",
+   "artist": "EXO",
+   "tags": [
+    "emotional",
+    "singalong",
+    "snow",
+    "winter",
+    "xmas"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "첫 눈",
+   "artist": "EXO",
+   "tags": [
+    "emotional",
+    "snow",
+    "winter"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "눈사람",
+   "artist": "정승환",
+   "tags": [
+    "emotional",
+    "snow",
+    "winter"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "눈이 오잖아",
+   "artist": "이무진",
+   "tags": [
+    "emotional",
+    "snow",
+    "winter"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "겨울잠",
+   "artist": "아이유",
+   "tags": [
+    "calm",
+    "night",
+    "winter"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "겨울 고백",
+   "artist": "젤리피쉬 아티스트",
+   "tags": [
+    "singalong",
+    "winter",
+    "xmas"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "크리스마스니까",
+   "artist": "젤리피쉬 아티스트",
+   "tags": [
+    "singalong",
+    "xmas"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "Last Christmas",
+   "artist": "Wham!",
+   "tags": [
+    "singalong",
+    "xmas"
+   ],
+   "lang": "en"
+  },
+  {
+   "title": "Santa Tell Me",
+   "artist": "Ariana Grande",
+   "tags": [
+    "singalong",
+    "xmas"
+   ],
+   "lang": "en"
+  },
+  {
+   "title": "White Christmas",
+   "artist": "Bing Crosby",
+   "tags": [
+    "emotional",
+    "singalong",
+    "snow",
+    "xmas"
+   ],
+   "lang": "en"
+  },
+  {
+   "title": "12월 32일",
+   "artist": "별",
+   "tags": [
+    "classic",
+    "memory",
+    "winter"
+   ],
+   "months": [
+    12,
+    1
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "이젠 안녕",
+   "artist": "015B",
+   "tags": [
+    "classic",
+    "memory"
+   ],
+   "months": [
+    12,
+    2
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "졸업",
+   "artist": "브로콜리너마저",
+   "tags": [
+    "classic",
+    "memory"
+   ],
+   "months": [
+    2
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "낙엽따라 가버린 사랑",
+   "artist": "차중락",
+   "tags": [
+    "classic",
+    "emotional",
+    "late",
+    "memory"
+   ],
+   "months": [
+    10,
+    11
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "사랑이 지나가면",
+   "artist": "이문세",
+   "tags": [
+    "classic",
+    "emotional",
+    "late",
+    "memory"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "가을밤에 든 생각",
+   "artist": "잔나비",
+   "tags": [
+    "autumn",
+    "beer",
+    "calm",
+    "night"
+   ],
+   "months": [
+    9,
+    10,
+    11
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "꽃송이가",
+   "artist": "버스커버스커",
+   "tags": [
+    "spring"
+   ],
+   "months": [
+    3,
+    4,
+    5
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "봄 사랑 벚꽃 말고",
+   "artist": "HIGH4·아이유",
+   "tags": [
+    "spring"
+   ],
+   "months": [
+    3,
+    4
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "꽃 피는 봄이 오면",
+   "artist": "BMK",
+   "tags": [
+    "spring"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "라일락",
+   "artist": "아이유",
+   "tags": [
+    "clear",
+    "coffee",
+    "spring"
+   ],
+   "months": [
+    4,
+    5
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "봄처녀",
+   "artist": "홍난파 가곡",
+   "tags": [
+    "spring"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "바다의 왕자",
+   "artist": "박명수",
+   "tags": [
+    "sea",
+    "singalong",
+    "summer"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "냉면",
+   "artist": "박명수·제시카",
+   "tags": [
+    "singalong",
+    "summer"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "빨간 맛",
+   "artist": "레드벨벳",
+   "tags": [
+    "singalong",
+    "summer"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "파도",
+   "artist": "UN",
+   "tags": [
+    "sea",
+    "singalong",
+    "summer"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "뜨거운 여름밤은 가고 남은 건 볼품없지만",
+   "artist": "잔나비",
+   "tags": [
+    "beer",
+    "calm",
+    "night",
+    "singalong",
+    "summer"
+   ],
+   "months": [
+    8,
+    9
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "비도 오고 그래서",
+   "artist": "헤이즈",
+   "tags": [
+    "emotional",
+    "rain"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "비가 오는 날엔",
+   "artist": "비스트",
+   "tags": [
+    "emotional",
+    "rain"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "비",
+   "artist": "폴킴",
+   "tags": [
+    "emotional",
+    "rain"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "금요일에 만나요",
+   "artist": "아이유",
+   "tags": [],
+   "days": [
+    5
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "토요일 밤에",
+   "artist": "손담비",
+   "tags": [
+    "calm",
+    "night"
+   ],
+   "days": [
+    6
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "좋은 날",
+   "artist": "아이유",
+   "tags": [
+    "clear"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "행복의 나라로",
+   "artist": "한대수",
+   "tags": [
+    "classic",
+    "clear",
+    "memory"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "밤하늘의 별을",
+   "artist": "경서",
+   "tags": [
+    "calm",
+    "clear",
+    "night"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "별빛이 내린다",
+   "artist": "안녕바다",
+   "tags": [
+    "calm",
+    "clear",
+    "night"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "우주를 줄게",
+   "artist": "볼빨간사춘기",
+   "tags": [
+    "calm",
+    "night"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "주저하는 연인들을 위해",
+   "artist": "잔나비",
+   "tags": [
+    "beer",
+    "calm",
+    "classic",
+    "memory",
+    "night"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "한숨",
+   "artist": "이하이",
+   "tags": [
+    "calm",
+    "night"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "밤양갱",
+   "artist": "비비",
+   "tags": [
+    "calm",
+    "night"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "좋니",
+   "artist": "윤종신",
+   "tags": [
+    "calm",
+    "classic",
+    "memory",
+    "night",
+    "somaek"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "여행",
+   "artist": "볼빨간사춘기",
+   "tags": [
+    "clear",
+    "drive",
+    "free"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "나는 문제없어",
+   "artist": "황규영",
+   "tags": [
+    "classic",
+    "drive",
+    "free",
+    "memory",
+    "somaek"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "걷고 싶다",
+   "artist": "조용필",
+   "tags": [
+    "clear"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "흰수염고래",
+   "artist": "YB",
+   "tags": [
+    "beer",
+    "sea"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "나는 나비",
+   "artist": "YB",
+   "tags": [
+    "beer",
+    "clear",
+    "drive",
+    "free"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "브라보 마이 라이프",
+   "artist": "봄여름가을겨울",
+   "tags": [
+    "beer",
+    "classic",
+    "clear",
+    "drive",
+    "free",
+    "memory"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "어떤 이의 꿈",
+   "artist": "봄여름가을겨울",
+   "tags": [
+    "classic",
+    "memory"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "사랑으로",
+   "artist": "해바라기",
+   "tags": [
+    "classic",
+    "makgeolli",
+    "memory"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "그대 내 품에",
+   "artist": "유재하",
+   "tags": [
+    "calm",
+    "classic",
+    "memory",
+    "night"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "가리워진 길",
+   "artist": "유재하",
+   "tags": [
+    "classic",
+    "fog",
+    "memory"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "그대와 영원히",
+   "artist": "유재하",
+   "tags": [
+    "classic",
+    "memory"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "너에게로 또 다시",
+   "artist": "변진섭",
+   "tags": [
+    "classic",
+    "memory"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "희망사항",
+   "artist": "변진섭",
+   "tags": [
+    "classic",
+    "memory"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "소녀",
+   "artist": "이문세",
+   "tags": [
+    "classic",
+    "memory"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "너의 모든 순간",
+   "artist": "성시경",
+   "tags": [
+    "calm",
+    "classic",
+    "memory",
+    "night"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "오래된 노래",
+   "artist": "스탠딩 에그",
+   "tags": [
+    "classic",
+    "coffee",
+    "memory"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "모든 날, 모든 순간",
+   "artist": "폴킴",
+   "tags": [
+    "classic",
+    "memory"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "어떻게 이별까지 사랑하겠어, 널 사랑하는 거지",
+   "artist": "AKMU",
+   "tags": [
+    "classic",
+    "memory"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "너를 위해",
+   "artist": "임재범",
+   "tags": [
+    "classic",
+    "memory",
+    "somaek"
+   ],
+   "lang": "ko"
+  },
+  {
+   "title": "Shinjuku Twilight",
+   "artist": "Eddie Higgins Trio",
+   "tags": [
+    "calm",
+    "groove",
+    "inst",
+    "night",
+    "whisky"
+   ],
+   "lang": "inst",
+   "note": "일본풍이 살짝 묻은 재즈 피아노 트리오 — 바 카운터의 위스키 한 잔"
+  },
+  {
+   "title": "Autumn Leaves",
+   "artist": "Bill Evans Trio",
+   "tags": [
+    "autumn",
+    "calm",
+    "inst",
+    "night",
+    "whisky"
+   ],
+   "lang": "inst",
+   "note": "낙엽 지는 밤, 빌 에반스의 피아노"
+  },
+  {
+   "title": "Waltz for Debby",
+   "artist": "Bill Evans Trio",
+   "tags": [
+    "calm",
+    "dreamy",
+    "inst",
+    "night",
+    "whisky"
+   ],
+   "lang": "inst",
+   "note": "작은 클럽 실황 — 잔 부딪히는 소리까지 들려요"
+  },
+  {
+   "title": "My Foolish Heart",
+   "artist": "Bill Evans Trio",
+   "tags": [
+    "calm",
+    "emotional",
+    "inst",
+    "night",
+    "whisky"
+   ],
+   "lang": "inst",
+   "note": "조용히 녹는 얼음처럼 느린 피아노"
+  },
+  {
+   "title": "Moanin'",
+   "artist": "Art Blakey & The Jazz Messengers",
+   "tags": [
+    "groove",
+    "inst",
+    "night",
+    "whisky"
+   ],
+   "lang": "inst",
+   "note": "하드밥 첫 소절에 어깨가 들썩"
+  },
+  {
+   "title": "Take Five",
+   "artist": "Dave Brubeck Quartet",
+   "tags": [
+    "classic",
+    "groove",
+    "inst",
+    "night",
+    "whisky"
+   ],
+   "lang": "inst",
+   "note": "5박자 재즈의 대명사"
+  },
+  {
+   "title": "So What",
+   "artist": "Miles Davis",
+   "tags": [
+    "calm",
+    "groove",
+    "inst",
+    "night",
+    "whisky"
+   ],
+   "lang": "inst",
+   "note": "「Kind of Blue」 첫 곡 — 위스키 바의 기본"
+  },
+  {
+   "title": "Blue in Green",
+   "artist": "Miles Davis",
+   "tags": [
+    "calm",
+    "dreamy",
+    "inst",
+    "night",
+    "whisky"
+   ],
+   "lang": "inst",
+   "note": "불 끄고 듣는 트럼펫"
+  },
+  {
+   "title": "'Round Midnight",
+   "artist": "Thelonious Monk",
+   "tags": [
+    "calm",
+    "dreamy",
+    "inst",
+    "night",
+    "whisky"
+   ],
+   "lang": "inst",
+   "note": "자정 무렵을 위한 곡"
+  },
+  {
+   "title": "My Funny Valentine",
+   "artist": "Chet Baker",
+   "tags": [
+    "calm",
+    "emotional",
+    "night",
+    "whisky"
+   ],
+   "lang": "en",
+   "note": "쳇 베이커의 쓸쓸한 목소리"
+  },
+  {
+   "title": "Almost Blue",
+   "artist": "Chet Baker",
+   "tags": [
+    "calm",
+    "emotional",
+    "night",
+    "whisky"
+   ],
+   "lang": "en",
+   "note": "늦은 밤 마지막 한 잔"
+  },
+  {
+   "title": "In a Sentimental Mood",
+   "artist": "Duke Ellington & John Coltrane",
+   "tags": [
+    "calm",
+    "emotional",
+    "inst",
+    "night",
+    "whisky"
+   ],
+   "lang": "inst",
+   "note": "이름 그대로 감상적인 밤"
+  },
+  {
+   "title": "Misty",
+   "artist": "Erroll Garner",
+   "tags": [
+    "calm",
+    "fog",
+    "inst",
+    "night",
+    "whisky"
+   ],
+   "lang": "inst",
+   "note": "안개 낀 밤의 재즈 피아노"
+  },
+  {
+   "title": "Fly Me to the Moon",
+   "artist": "Frank Sinatra",
+   "tags": [
+    "classic",
+    "groove",
+    "night",
+    "whisky"
+   ],
+   "lang": "en",
+   "note": "시나트라와 빅밴드, 잔을 들고"
+  },
+  {
+   "title": "Cry Me a River",
+   "artist": "Julie London",
+   "tags": [
+    "calm",
+    "emotional",
+    "night",
+    "whisky"
+   ],
+   "lang": "en",
+   "note": "기타 하나, 낮은 목소리"
+  },
+  {
+   "title": "Georgia on My Mind",
+   "artist": "Ray Charles",
+   "tags": [
+    "classic",
+    "emotional",
+    "night",
+    "whisky"
+   ],
+   "lang": "en",
+   "note": "소울 가득한 그리움"
+  },
+  {
+   "title": "The Thrill Is Gone",
+   "artist": "B.B. King",
+   "tags": [
+    "emotional",
+    "groove",
+    "night",
+    "whisky"
+   ],
+   "lang": "en",
+   "note": "블루스 기타와 버번 한 잔"
+  },
+  {
+   "title": "Feeling Good",
+   "artist": "Nina Simone",
+   "tags": [
+    "emotional",
+    "groove",
+    "night",
+    "whisky"
+   ],
+   "lang": "en",
+   "note": "느리게 시작해 크게 터지는 목소리"
+  },
+  {
+   "title": "Tom Traubert's Blues",
+   "artist": "Tom Waits",
+   "tags": [
+    "calm",
+    "emotional",
+    "night",
+    "whisky"
+   ],
+   "lang": "en",
+   "note": "갈라진 목소리로 부르는 술꾼의 노래"
+  },
+  {
+   "title": "The Piano Has Been Drinking",
+   "artist": "Tom Waits",
+   "tags": [
+    "calm",
+    "dreamy",
+    "night",
+    "whisky"
+   ],
+   "lang": "en",
+   "note": "'피아노가 취했다' — 술집 피아노 노래"
+  },
+  {
+   "title": "Famous Blue Raincoat",
+   "artist": "Leonard Cohen",
+   "tags": [
+    "calm",
+    "emotional",
+    "night",
+    "whisky",
+    "winter"
+   ],
+   "lang": "en",
+   "note": "새벽 4시에 쓰는 편지 같은 노래"
+  },
+  {
+   "title": "Don't Know Why",
+   "artist": "Norah Jones",
+   "tags": [
+    "calm",
+    "coffee",
+    "night",
+    "whisky"
+   ],
+   "lang": "en",
+   "note": "피아노와 나른한 목소리"
+  },
+  {
+   "title": "The Look of Love",
+   "artist": "Diana Krall",
+   "tags": [
+    "calm",
+    "night",
+    "whisky",
+    "wine"
+   ],
+   "lang": "en",
+   "note": "현악과 피아노, 은은한 조명"
+  },
+  {
+   "title": "What a Wonderful World",
+   "artist": "Louis Armstrong",
+   "tags": [
+    "calm",
+    "classic",
+    "clear",
+    "whisky"
+   ],
+   "lang": "en",
+   "note": "하루를 기분 좋게 닫는 노래"
+  },
+  {
+   "title": "Moon River",
+   "artist": "Audrey Hepburn",
+   "tags": [
+    "calm",
+    "dreamy",
+    "night",
+    "whisky"
+   ],
+   "lang": "en",
+   "note": "창가에서 부르던 영화 속 그 노래"
+  },
+  {
+   "title": "낭만에 대하여",
+   "artist": "최백호",
+   "tags": [
+    "emotional",
+    "makgeolli",
+    "memory",
+    "night",
+    "whisky"
+   ],
+   "lang": "ko",
+   "note": "'궂은비 내리는 날 옛날식 다방에 앉아' — 낭만을 마시는 노래"
+  },
+  {
+   "title": "Plastic Love",
+   "artist": "竹内まりや (Mariya Takeuchi)",
+   "tags": [
+    "dreamy",
+    "groove",
+    "highball",
+    "night"
+   ],
+   "lang": "ja",
+   "note": "시티팝의 상징 — 네온 아래 하이볼"
+  },
+  {
+   "title": "真夜中のドア〜Stay With Me",
+   "artist": "松原みき (Miki Matsubara)",
+   "tags": [
+    "emotional",
+    "groove",
+    "highball",
+    "night"
+   ],
+   "lang": "ja",
+   "note": "한밤의 문 — 다시 유행한 시티팝"
+  },
+  {
+   "title": "Ride on Time",
+   "artist": "山下達郎 (Tatsuro Yamashita)",
+   "tags": [
+    "drive",
+    "free",
+    "groove",
+    "highball",
+    "summer"
+   ],
+   "lang": "ja",
+   "note": "여름 해안도로 드라이브"
+  },
+  {
+   "title": "Christmas Eve",
+   "artist": "山下達郎 (Tatsuro Yamashita)",
+   "tags": [
+    "classic",
+    "highball",
+    "night",
+    "snow",
+    "xmas"
+   ],
+   "lang": "ja",
+   "note": "일본 크리스마스의 대표곡"
+  },
+  {
+   "title": "September",
+   "artist": "竹内まりや (Mariya Takeuchi)",
+   "tags": [
+    "autumn",
+    "groove",
+    "highball"
+   ],
+   "lang": "ja",
+   "note": "9월의 시티팝"
+  },
+  {
+   "title": "4:00 A.M.",
+   "artist": "大貫妙子 (Taeko Ohnuki)",
+   "tags": [
+    "dawn",
+    "dreamy",
+    "highball",
+    "night"
+   ],
+   "lang": "ja",
+   "note": "새벽 4시의 도시"
+  },
+  {
+   "title": "샴푸의 요정",
+   "artist": "빛과 소금",
+   "tags": [
+    "dreamy",
+    "groove",
+    "highball",
+    "memory"
+   ],
+   "lang": "ko",
+   "note": "한국 시티팝의 원조"
+  },
+  {
+   "title": "오랜만에",
+   "artist": "김현철",
+   "tags": [
+    "groove",
+    "highball",
+    "memory"
+   ],
+   "lang": "ko",
+   "note": "90년대 서울의 세련된 그루브"
+  },
+  {
+   "title": "빙글빙글",
+   "artist": "나미",
+   "tags": [
+    "groove",
+    "highball",
+    "memory",
+    "singalong",
+    "somaek"
+   ],
+   "lang": "ko",
+   "note": "빙글빙글 도는 80년대 댄스"
+  },
+  {
+   "title": "좋아하고 있어요",
+   "artist": "유키카",
+   "tags": [
+    "dreamy",
+    "groove",
+    "highball"
+   ],
+   "lang": "ko",
+   "note": "요즘 시티팝 — 가볍게 한 잔"
+  },
+  {
+   "title": "Everything",
+   "artist": "검정치마",
+   "tags": [
+    "dreamy",
+    "emotional",
+    "highball",
+    "night"
+   ],
+   "lang": "ko",
+   "note": "밤에 꺼내 듣는 고백"
+  },
+  {
+   "title": "Lovely Day",
+   "artist": "Bill Withers",
+   "tags": [
+    "clear",
+    "coffee",
+    "groove",
+    "highball"
+   ],
+   "lang": "en",
+   "note": "기분 좋은 하루의 주제가"
+  },
+  {
+   "title": "The Girl from Ipanema",
+   "artist": "Stan Getz & João Gilberto",
+   "tags": [
+    "calm",
+    "free",
+    "summer",
+    "wine"
+   ],
+   "lang": "pt",
+   "note": "보사노바의 첫 페이지"
+  },
+  {
+   "title": "Corcovado",
+   "artist": "Stan Getz & João Gilberto",
+   "tags": [
+    "calm",
+    "dreamy",
+    "night",
+    "wine"
+   ],
+   "lang": "pt",
+   "note": "조용한 밤, 조용한 기타"
+  },
+  {
+   "title": "Águas de Março",
+   "artist": "Elis Regina & Tom Jobim",
+   "tags": [
+    "free",
+    "groove",
+    "rain",
+    "wine"
+   ],
+   "lang": "pt",
+   "note": "3월의 비 — 주고받는 두 목소리"
+  },
+  {
+   "title": "Mas Que Nada",
+   "artist": "Sergio Mendes & Brasil '66",
+   "tags": [
+    "groove",
+    "singalong",
+    "summer",
+    "wine"
+   ],
+   "lang": "pt",
+   "note": "흥겨운 브라질 리듬"
+  },
+  {
+   "title": "La Vie en Rose",
+   "artist": "Édith Piaf",
+   "tags": [
+    "classic",
+    "emotional",
+    "night",
+    "wine"
+   ],
+   "lang": "fr",
+   "note": "장밋빛 인생 — 와인 잔에 비친 파리"
+  },
+  {
+   "title": "Non, je ne regrette rien",
+   "artist": "Édith Piaf",
+   "tags": [
+    "emotional",
+    "night",
+    "wine"
+   ],
+   "lang": "fr",
+   "note": "'난 아무것도 후회하지 않아'"
+  },
+  {
+   "title": "Les Feuilles mortes",
+   "artist": "Yves Montand",
+   "tags": [
+    "autumn",
+    "calm",
+    "emotional",
+    "late",
+    "wine"
+   ],
+   "lang": "fr",
+   "note": "「고엽」 — 가을엔 이 노래"
+  },
+  {
+   "title": "Les Champs-Élysées",
+   "artist": "Joe Dassin",
+   "tags": [
+    "clear",
+    "free",
+    "singalong",
+    "wine"
+   ],
+   "lang": "fr",
+   "note": "파리 거리를 걷는 기분"
+  },
+  {
+   "title": "Quizás, Quizás, Quizás",
+   "artist": "Nat King Cole",
+   "tags": [
+    "calm",
+    "groove",
+    "night",
+    "wine"
+   ],
+   "lang": "es",
+   "note": "'아마도, 아마도' — 부드러운 라틴"
+  },
+  {
+   "title": "舟唄",
+   "artist": "八代亜紀 (Aki Yashiro)",
+   "tags": [
+    "calm",
+    "emotional",
+    "night",
+    "sake",
+    "sea"
+   ],
+   "lang": "ja",
+   "note": "'술은 미지근하게 데운 게 좋아'로 시작하는 술 노래"
+  },
+  {
+   "title": "雨の慕情",
+   "artist": "八代亜紀 (Aki Yashiro)",
+   "tags": [
+    "emotional",
+    "rain",
+    "sake"
+   ],
+   "lang": "ja",
+   "note": "비 오는 날의 엔카"
+  },
+  {
+   "title": "川の流れのように",
+   "artist": "美空ひばり (Hibari Misora)",
+   "tags": [
+    "classic",
+    "emotional",
+    "memory",
+    "sake"
+   ],
+   "lang": "ja",
+   "note": "강물처럼 — 일본 가요의 상징"
+  },
+  {
+   "title": "北国の春",
+   "artist": "千昌夫 (Masao Sen)",
+   "tags": [
+    "memory",
+    "sake",
+    "singalong",
+    "spring"
+   ],
+   "lang": "ja",
+   "note": "고향 생각나는 봄 노래"
+  },
+  {
+   "title": "津軽海峡・冬景色",
+   "artist": "石川さゆり (Sayuri Ishikawa)",
+   "tags": [
+    "emotional",
+    "sake",
+    "sea",
+    "snow",
+    "winter"
+   ],
+   "lang": "ja",
+   "note": "눈 내리는 겨울 바다 엔카"
+  },
+  {
+   "title": "時の流れに身をまかせ",
+   "artist": "テレサ・テン (Teresa Teng)",
+   "tags": [
+    "classic",
+    "emotional",
+    "night",
+    "sake"
+   ],
+   "lang": "ja",
+   "note": "덩리쥔이 일본어로 부른 명곡"
+  },
+  {
+   "title": "昴",
+   "artist": "谷村新司 (Shinji Tanimura)",
+   "tags": [
+    "classic",
+    "emotional",
+    "night",
+    "sake"
+   ],
+   "lang": "ja",
+   "note": "별을 보며 부르는 노래"
+  },
+  {
+   "title": "傘がない",
+   "artist": "井上陽水 (Yosui Inoue)",
+   "tags": [
+    "emotional",
+    "rain",
+    "sake"
+   ],
+   "lang": "ja",
+   "note": "'우산이 없다' — 비 오는 밤"
+  },
+  {
+   "title": "少年時代",
+   "artist": "井上陽水 (Yosui Inoue)",
+   "tags": [
+    "dreamy",
+    "memory",
+    "sake",
+    "summer"
+   ],
+   "lang": "ja",
+   "note": "여름 끝 어린 시절"
+  },
+  {
+   "title": "糸",
+   "artist": "中島みゆき (Miyuki Nakajima)",
+   "tags": [
+    "calm",
+    "emotional",
+    "sake"
+   ],
+   "lang": "ja",
+   "note": "실처럼 엮이는 인연"
+  },
+  {
+   "title": "秋桜",
+   "artist": "山口百恵 (Momoe Yamaguchi)",
+   "tags": [
+    "autumn",
+    "emotional",
+    "memory",
+    "sake"
+   ],
+   "lang": "ja",
+   "note": "코스모스 피는 가을"
+  },
+  {
+   "title": "乾杯",
+   "artist": "長渕剛 (Tsuyoshi Nagabuchi)",
+   "tags": [
+    "beer",
+    "emotional",
+    "sake",
+    "singalong"
+   ],
+   "lang": "ja",
+   "note": "제목 그대로 '건배'"
+  },
+  {
+   "title": "막걸리 한잔",
+   "artist": "영탁",
+   "tags": [
+    "makgeolli",
+    "memory",
+    "singalong"
+   ],
+   "lang": "ko",
+   "note": "'막걸리 한잔' — 아버지 생각나는 노래"
+  },
+  {
+   "title": "한잔의 추억",
+   "artist": "이장희",
+   "tags": [
+    "makgeolli",
+    "memory",
+    "singalong",
+    "somaek"
+   ],
+   "lang": "ko",
+   "note": "'늦은 밤 쓸쓸히 창가에 앉아' 술잔을 드는 노래"
+  },
+  {
+   "title": "홍시",
+   "artist": "나훈아",
+   "tags": [
+    "autumn",
+    "emotional",
+    "makgeolli",
+    "memory"
+   ],
+   "lang": "ko",
+   "note": "홍시 보면 엄마 생각"
+  },
+  {
+   "title": "동백 아가씨",
+   "artist": "이미자",
+   "tags": [
+    "classic",
+    "emotional",
+    "makgeolli",
+    "memory"
+   ],
+   "lang": "ko",
+   "note": "한국 가요의 고전"
+  },
+  {
+   "title": "비 내리는 영동교",
+   "artist": "주현미",
+   "tags": [
+    "makgeolli",
+    "memory",
+    "rain",
+    "singalong"
+   ],
+   "lang": "ko",
+   "note": "비 오는 날 막걸리에 파전"
+  },
+  {
+   "title": "찔레꽃",
+   "artist": "장사익",
+   "tags": [
+    "emotional",
+    "makgeolli",
+    "spring"
+   ],
+   "lang": "ko",
+   "note": "목이 메는 소리꾼의 노래"
+  },
+  {
+   "title": "담배가게 아가씨",
+   "artist": "송창식",
+   "tags": [
+    "makgeolli",
+    "memory",
+    "singalong"
+   ],
+   "lang": "ko",
+   "note": "통기타 들고 다 같이"
+  },
+  {
+   "title": "왜 불러",
+   "artist": "송창식",
+   "tags": [
+    "makgeolli",
+    "memory",
+    "singalong"
+   ],
+   "lang": "ko",
+   "note": "'왜 불러' — 70년대 청춘"
+  },
+  {
+   "title": "한계령",
+   "artist": "양희은",
+   "tags": [
+    "drive",
+    "emotional",
+    "makgeolli",
+    "mountain"
+   ],
+   "lang": "ko",
+   "note": "산이 내게 내려가라 하는 노래"
+  },
+  {
+   "title": "상록수",
+   "artist": "양희은",
+   "tags": [
+    "classic",
+    "makgeolli",
+    "memory"
+   ],
+   "lang": "ko",
+   "note": "푸르른 소나무처럼"
+  },
+  {
+   "title": "나뭇잎 사이로",
+   "artist": "조동진",
+   "tags": [
+    "autumn",
+    "calm",
+    "coffee",
+    "makgeolli"
+   ],
+   "lang": "ko",
+   "note": "한국 포크의 조용한 숲"
+  },
+  {
+   "title": "북한강에서",
+   "artist": "정태춘·박은옥",
+   "tags": [
+    "calm",
+    "dawn",
+    "fog",
+    "makgeolli"
+   ],
+   "lang": "ko",
+   "note": "안개 낀 새벽 강가"
+  },
+  {
+   "title": "흐린 가을 하늘에 편지를 써",
+   "artist": "김광석",
+   "tags": [
+    "autumn",
+    "emotional",
+    "late",
+    "makgeolli"
+   ],
+   "lang": "ko",
+   "note": "흐린 날 막걸리 한 사발"
+  },
+  {
+   "title": "먼지가 되어",
+   "artist": "김광석",
+   "tags": [
+    "emotional",
+    "makgeolli",
+    "memory"
+   ],
+   "lang": "ko",
+   "note": "김광석의 목소리로 듣는 그리움"
+  },
+  {
+   "title": "킬리만자로의 표범",
+   "artist": "조용필",
+   "tags": [
+    "classic",
+    "emotional",
+    "makgeolli",
+    "mountain",
+    "somaek"
+   ],
+   "lang": "ko",
+   "note": "노래방 끝판왕 — 다 같이 낭송"
+  },
+  {
+   "title": "만남",
+   "artist": "노사연",
+   "tags": [
+    "classic",
+    "makgeolli",
+    "singalong",
+    "somaek"
+   ],
+   "lang": "ko",
+   "note": "마지막 곡은 늘 이 노래"
+  },
+  {
+   "title": "젊은 그대",
+   "artist": "김수철",
+   "tags": [
+    "groove",
+    "makgeolli",
+    "singalong"
+   ],
+   "lang": "ko",
+   "note": "젊은 그대 잠 깨어 오라"
+  },
+  {
+   "title": "그건 너",
+   "artist": "이장희",
+   "tags": [
+    "groove",
+    "makgeolli",
+    "memory"
+   ],
+   "lang": "ko",
+   "note": "70년대 통기타와 콧수염"
+  },
+  {
+   "title": "어머니와 고등어",
+   "artist": "산울림",
+   "tags": [
+    "calm",
+    "makgeolli",
+    "memory"
+   ],
+   "lang": "ko",
+   "note": "냉장고 속 고등어 한 손"
+  },
+  {
+   "title": "소주 한 잔",
+   "artist": "임창정",
+   "tags": [
+    "emotional",
+    "night",
+    "singalong",
+    "somaek"
+   ],
+   "lang": "ko",
+   "note": "'술이 한 잔 생각나는 밤'"
+  },
+  {
+   "title": "잘못된 만남",
+   "artist": "김건모",
+   "tags": [
+    "groove",
+    "singalong",
+    "somaek"
+   ],
+   "lang": "ko",
+   "note": "노래방 떼창 1순위"
+  },
+  {
+   "title": "핑계",
+   "artist": "김건모",
+   "tags": [
+    "groove",
+    "singalong",
+    "somaek"
+   ],
+   "lang": "ko",
+   "note": "레게 리듬 90년대 명곡"
+  },
+  {
+   "title": "이별공식",
+   "artist": "R.ef",
+   "tags": [
+    "groove",
+    "singalong",
+    "somaek"
+   ],
+   "lang": "ko",
+   "note": "90년대 댄스 가요"
+  },
+  {
+   "title": "쿵따리 샤바라",
+   "artist": "클론",
+   "tags": [
+    "groove",
+    "singalong",
+    "somaek",
+    "summer"
+   ],
+   "lang": "ko",
+   "note": "여름 바닷가 떼창"
+  },
+  {
+   "title": "DOC와 춤을",
+   "artist": "DJ DOC",
+   "tags": [
+    "groove",
+    "singalong",
+    "somaek"
+   ],
+   "lang": "ko",
+   "note": "'젓가락 행진곡'에 맞춰 춤을"
+  },
+  {
+   "title": "날개 잃은 천사",
+   "artist": "룰라",
+   "tags": [
+    "groove",
+    "singalong",
+    "somaek"
+   ],
+   "lang": "ko",
+   "note": "90년대 댄스 그룹 대표곡"
+  },
+  {
+   "title": "애상",
+   "artist": "쿨",
+   "tags": [
+    "singalong",
+    "somaek",
+    "summer"
+   ],
+   "lang": "ko",
+   "note": "쿨의 여름 떼창"
+  },
+  {
+   "title": "트위스트 킹",
+   "artist": "터보",
+   "tags": [
+    "groove",
+    "singalong",
+    "somaek"
+   ],
+   "lang": "ko",
+   "note": "다 같이 트위스트"
+  },
+  {
+   "title": "정",
+   "artist": "영턱스클럽",
+   "tags": [
+    "memory",
+    "singalong",
+    "somaek"
+   ],
+   "lang": "ko",
+   "note": "90년대 대학 축제 노래"
+  },
+  {
+   "title": "순정",
+   "artist": "코요태",
+   "tags": [
+    "groove",
+    "singalong",
+    "somaek"
+   ],
+   "lang": "ko",
+   "note": "노래방 탬버린 담당"
+  },
+  {
+   "title": "아파트",
+   "artist": "윤수일",
+   "tags": [
+    "classic",
+    "groove",
+    "singalong",
+    "somaek"
+   ],
+   "lang": "ko",
+   "note": "응원가가 된 떼창곡"
+  },
+  {
+   "title": "챔피언",
+   "artist": "싸이",
+   "tags": [
+    "beer",
+    "groove",
+    "singalong",
+    "somaek"
+   ],
+   "lang": "ko",
+   "note": "마지막엔 다 일어나서"
+  },
+  {
+   "title": "보이지 않는 사랑",
+   "artist": "신승훈",
+   "tags": [
+    "emotional",
+    "memory",
+    "somaek"
+   ],
+   "lang": "ko",
+   "note": "발라드의 황제"
+  },
+  {
+   "title": "말달리자",
+   "artist": "크라잉넛",
+   "tags": [
+    "beer",
+    "free",
+    "groove",
+    "singalong"
+   ],
+   "lang": "ko",
+   "note": "홍대 펑크 — 맥주 들고 점프"
+  },
+  {
+   "title": "넌 내게 반했어",
+   "artist": "노브레인",
+   "tags": [
+    "beer",
+    "groove",
+    "singalong"
+   ],
+   "lang": "ko",
+   "note": "청춘 록 떼창"
+  },
+  {
+   "title": "일탈",
+   "artist": "자우림",
+   "tags": [
+    "beer",
+    "free",
+    "singalong"
+   ],
+   "lang": "ko",
+   "note": "'할 일이 쌓였을 때 훌쩍 여행을'"
+  },
+  {
+   "title": "위잉위잉",
+   "artist": "혁오",
+   "tags": [
+    "beer",
+    "calm",
+    "dreamy"
+   ],
+   "lang": "ko",
+   "note": "나른한 인디 록"
+  },
+  {
+   "title": "TOMBOY",
+   "artist": "혁오",
+   "tags": [
+    "beer",
+    "dreamy",
+    "emotional",
+    "night"
+   ],
+   "lang": "ko",
+   "note": "청춘의 밤"
+  },
+  {
+   "title": "난춘",
+   "artist": "새소년",
+   "tags": [
+    "beer",
+    "dreamy",
+    "emotional",
+    "spring"
+   ],
+   "lang": "ko",
+   "note": "어지러운 봄"
+  },
+  {
+   "title": "들었다 놨다",
+   "artist": "데이브레이크",
+   "tags": [
+    "beer",
+    "groove",
+    "singalong"
+   ],
+   "lang": "ko",
+   "note": "페스티벌의 신나는 순간"
+  },
+  {
+   "title": "거울",
+   "artist": "국카스텐",
+   "tags": [
+    "beer",
+    "groove",
+    "night"
+   ],
+   "lang": "ko",
+   "note": "강렬한 록 사운드"
+  },
+  {
+   "title": "그렇고 그런 사이",
+   "artist": "장기하와 얼굴들",
+   "tags": [
+    "beer",
+    "free",
+    "groove"
+   ],
+   "lang": "ko",
+   "note": "덤덤한 말투의 록"
+  },
+  {
+   "title": "Antifreeze",
+   "artist": "검정치마",
+   "tags": [
+    "beer",
+    "cold",
+    "dreamy",
+    "winter"
+   ],
+   "lang": "ko",
+   "note": "추운 겨울, 따뜻한 노래"
+  },
+  {
+   "title": "Never Ending Story",
+   "artist": "부활",
+   "tags": [
+    "beer",
+    "emotional",
+    "memory",
+    "singalong"
+   ],
+   "lang": "ko",
+   "note": "끝나지 않는 이야기"
+  },
+  {
+   "title": "기억을 걷는 시간",
+   "artist": "넬",
+   "tags": [
+    "beer",
+    "calm",
+    "emotional",
+    "night"
+   ],
+   "lang": "ko",
+   "note": "밤길 걸으며"
+  },
+  {
+   "title": "Don't Look Back in Anger",
+   "artist": "Oasis",
+   "tags": [
+    "beer",
+    "emotional",
+    "singalong"
+   ],
+   "lang": "en",
+   "note": "펍에서 다 같이 부르는 영국 노래"
+  },
+  {
+   "title": "Wonderwall",
+   "artist": "Oasis",
+   "tags": [
+    "beer",
+    "memory",
+    "singalong"
+   ],
+   "lang": "en",
+   "note": "기타 치면 다들 따라 부르는 곡"
+  },
+  {
+   "title": "Don't Stop Me Now",
+   "artist": "Queen",
+   "tags": [
+    "beer",
+    "free",
+    "groove",
+    "singalong"
+   ],
+   "lang": "en",
+   "note": "기분 최고일 때"
+  },
+  {
+   "title": "Hey Jude",
+   "artist": "The Beatles",
+   "tags": [
+    "beer",
+    "classic",
+    "singalong"
+   ],
+   "lang": "en",
+   "note": "'나나나' 다 같이"
+  },
+  {
+   "title": "Livin' on a Prayer",
+   "artist": "Bon Jovi",
+   "tags": [
+    "beer",
+    "groove",
+    "singalong"
+   ],
+   "lang": "en",
+   "note": "맥주잔 높이"
+  },
+  {
+   "title": "싸구려 커피",
+   "artist": "장기하와 얼굴들",
+   "tags": [
+    "calm",
+    "coffee",
+    "free"
+   ],
+   "lang": "ko",
+   "note": "'싸구려 커피를 마신다' — 제목부터 커피"
+  },
+  {
+   "title": "아메리카노",
+   "artist": "10cm",
+   "tags": [
+    "coffee",
+    "groove",
+    "singalong"
+   ],
+   "lang": "ko",
+   "note": "'아메리카노 좋아 좋아'"
+  },
+  {
+   "title": "커피 한잔",
+   "artist": "펄시스터즈",
+   "tags": [
+    "classic",
+    "coffee",
+    "groove",
+    "memory"
+   ],
+   "lang": "ko",
+   "note": "신중현이 만든 60년대 명곡"
+  },
+  {
+   "title": "바람이 분다",
+   "artist": "이소라",
+   "tags": [
+    "calm",
+    "coffee",
+    "emotional",
+    "wind"
+   ],
+   "lang": "ko",
+   "note": "바람 부는 날 창가에서"
+  },
+  {
+   "title": "두 사람",
+   "artist": "성시경",
+   "tags": [
+    "calm",
+    "coffee",
+    "emotional"
+   ],
+   "lang": "ko",
+   "note": "조용한 오후의 발라드"
+  },
+  {
+   "title": "Banana Pancakes",
+   "artist": "Jack Johnson",
+   "tags": [
+    "calm",
+    "coffee",
+    "dawn",
+    "free",
+    "rain"
+   ],
+   "lang": "en",
+   "note": "비 오는 아침, 늦잠과 팬케이크"
+  },
+  {
+   "title": "Come Away with Me",
+   "artist": "Norah Jones",
+   "tags": [
+    "calm",
+    "coffee",
+    "dreamy"
+   ],
+   "lang": "en",
+   "note": "느긋한 주말 아침"
+  },
+  {
+   "title": "Hotel California",
+   "artist": "Eagles",
+   "tags": [
+    "beer",
+    "classic",
+    "drive",
+    "night",
+    "whisky"
+   ],
+   "lang": "en",
+   "note": "사막 고속도로의 밤 — 숙소 가는 길"
+  },
+  {
+   "title": "Take It Easy",
+   "artist": "Eagles",
+   "tags": [
+    "clear",
+    "drive",
+    "free"
+   ],
+   "lang": "en",
+   "note": "창문 내리고 달릴 때"
+  },
+  {
+   "title": "Take Me Home, Country Roads",
+   "artist": "John Denver",
+   "tags": [
+    "drive",
+    "memory",
+    "mountain",
+    "singalong"
+   ],
+   "lang": "en",
+   "note": "시골길 드라이브 떼창"
+  }
+ ]
+}

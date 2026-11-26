@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """앱(footprint) Dart 자료 → 웹 js/app-data.js
-노래(songs.dart) · 즐길 거리(season_theme.dart seasonActs) · 딱 좋은 코스(data/courses.json)
+노래(data/songs.json) · 즐길 거리(season_theme.dart seasonActs) · 딱 좋은 코스(data/courses.json)
 쓰는 법: python3 tools/sync_app_data.py ../footprint-repo
 """
 import json, re, sys, pathlib
@@ -12,19 +12,9 @@ un = lambda s: s.replace("\\'", "'")
 def strs(x): return [un(a) for a in re.findall(S, x or "")]
 
 # ---- 노래
-src = (app / "songs.dart").read_text()
-book = src[src.index("const songBook"):src.index("];", src.index("const songBook"))]
-songs = []
-for m in re.finditer(r"Song\(" + S + r",\s*" + S + r"(?:,\s*\{([^}]*)\})?(?:,\s*\[([^\]]*)\])?(?:,\s*" + S + r")?\)", book):
-    songs.append({"title": un(m[1]), "artist": un(m[2]), "tags": strs(m[3]), "places": strs(m[4]), "sido": un(m[5] or "")})
-def mapblock(name):
-    b = src[src.index("const " + name):]
-    b = b[:b.index("};")]
-    return {un(k): [int(n) for n in v.split(",") if n.strip()] for k, v in re.findall(S + r":\s*\{([^}]*)\}", b)}
-months, days = mapblock("songMonths"), mapblock("songDays")
-for s in songs:
-    if s["title"] in months: s["months"] = months[s["title"]]
-    if s["title"] in days: s["days"] = days[s["title"]]
+# 노래: 원본은 이 저장소의 data/songs.json (앱도 이 파일을 받아 써요)
+sj = json.loads((pathlib.Path(__file__).resolve().parent.parent / "data" / "songs.json").read_text())
+songs = [dict(x, places=x.get("places", []), sido=x.get("sido", "")) for x in sj["songs"]]
 
 # ---- 즐길 거리
 st = (app / "season_theme.dart").read_text()
