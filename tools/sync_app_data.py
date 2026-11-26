@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """앱(footprint) Dart 자료 → 웹 js/app-data.js
-노래(songs.dart) · 즐길 거리(season_theme.dart seasonActs) · 딱 좋은 코스(courses.dart)
+노래(songs.dart) · 즐길 거리(season_theme.dart seasonActs) · 딱 좋은 코스(data/courses.json)
 쓰는 법: python3 tools/sync_app_data.py ../footprint-repo
 """
 import json, re, sys, pathlib
@@ -38,23 +38,9 @@ for m in re.finditer(r"SeasonAct\(" + S + r",\s*" + S + r",\s*" + S + r",\s*(\d+
     if "indoor: true" in rest: a["indoor"] = True
     acts.append(a)
 
-# ---- 코스
-cs = (app / "courses.dart").read_text()
-body = cs[cs.index("const courses"):cs.index("int courseDriveMin")]
-stories = dict((un(k), un(v)) for k, v in re.findall(S + r":\s*" + S, cs[cs.index("const courseStories"):]))
-courses = []
-for chunk in re.split(r"\n  Course\(", body)[1:]:
-    g = lambda k: (re.search(k + r":\s*" + S, chunk) or [None, ""])[1]
-    num = lambda k, d: float(re.search(k + r":\s*([\d.]+)", chunk)[1]) if re.search(k + r":\s*([\d.]+)", chunk) else d
-    lst = lambda k: [int(n) for n in (re.search(k + r":\s*\[([^\]]*)\]", chunk) or [None, ""])[1].split(",") if n.strip()]
-    tags = strs((re.search(r"tags:\s*\{([^}]*)\}", chunk) or [None, ""])[1])
-    stops = []
-    for sm in re.finditer(r"CourseStop\(" + S + r",\s*" + S + r",\s*" + S + r"(?:,\s*query:\s*" + S + r")?\)", chunk):
-        stops.append({"time": un(sm[1]), "name": un(sm[2]), "note": un(sm[3]), "q": un(sm[4] or sm[2])})
-    cid = g("id")
-    courses.append({"id": cid, "title": un(g("title")), "area": un(g("area")), "lat": num("lat", 0), "lng": num("lng", 0),
-                    "pop": int(num("pop", 2)), "days": int(num("days", 1)), "months": lst("months"), "peak": lst("peak"),
-                    "tags": tags, "line": un(g("line")), "eat": un(g("eat")), "stops": stops, "story": stories.get(cid, "")})
+# ---- 코스: 원본은 이 저장소의 data/courses.json (앱도 이 파일을 받아 써요)
+cj = json.loads((pathlib.Path(__file__).resolve().parent.parent / "data" / "courses.json").read_text())
+courses = [dict(c, stops=[dict(st, q=st.get("q") or st["name"]) for st in c["stops"]]) for c in cj["courses"]]
 
 assert len(songs) > 150 and len(acts) > 50 and len(courses) > 20, (len(songs), len(acts), len(courses))
 out = pathlib.Path(__file__).resolve().parent.parent / "js" / "app-data.js"

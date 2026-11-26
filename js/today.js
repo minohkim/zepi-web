@@ -215,12 +215,12 @@
       if (c.months.length && !c.months.includes(k.m)) continue;
       const tg = new Set(c.tags), why = [], km = distKm(l.lat, l.lng, c.lat, c.lng);
       // 제주처럼 비행기로 가는 곳: 섬 안이면 차로, 아니면 '3시간 넘게 · 제주'에서만
-      if (tg.has("fly") && km > 80) {
+      if ((tg.has("fly") || tg.has("ferry")) && km > 80) {
         if (band !== "trip") continue;
         let s = c.pop * 12 - 8;
         if (c.peak.includes(k.m)) { s += 25; why.push(t("지금이 제일 좋을 때")); }
         if (o.rain && (tg.has("sea") || tg.has("trek"))) s -= 25;
-        out.push({ c, drive: -1, s, why });
+        out.push({ c, drive: tg.has("ferry") ? -2 : -1, s, why });
         continue;
       }
       const drive = Math.round(15 + km * 0.85);
@@ -456,7 +456,7 @@
     if (!p) return '<article class="card2 course"><h2>' + esc(t("지금 딱 좋은 코스")) + "</h2>" + bands + '<p class="muted">' + esc(t("이 거리에는 지금 맞는 코스가 없어요. 다른 거리를 골라 보세요.")) + "</p></article>";
     const c = p.c;
     const map = (q) => naverMap(q);
-    const how = p.drive < 0 ? t("✈️ 비행기 + 렌터카") : t("차로 약 {n}분", { n: p.drive });
+    const how = p.drive === -2 ? t("⛴️ 배로 가는 섬") : p.drive < 0 ? t("✈️ 비행기 + 렌터카") : t("차로 약 {n}분", { n: p.drive });
     return '<article class="card2 course"><h2>' + esc(t("지금 딱 좋은 코스")) + "<small>" + esc(how) + (c.days === 2 ? " · " + esc(t("1박")) : "") +
       (courseList.length > 1 ? " · " + (courseIdx % courseList.length + 1) + "/" + courseList.length : "") + "</small></h2>" + bands +
       '<div class="ctitle">' + esc(tOpt(c.title)) + ' <span class="muted">' + esc(tOpt(c.area)) + "</span></div>" +
