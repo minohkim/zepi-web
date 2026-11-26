@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="80 116 224 234" role="img" aria-label="바람돌이">
+<path d="M220 300C290 300 300 220 258 200C226 186 206 222 230 236C246 245 260 228 250 218" fill="none" stroke="#B98A63" stroke-width="26" stroke-linecap="round"/>
+<ellipse cx="170" cy="294" rx="60" ry="46" fill="#B98A63"/><ellipse cx="170" cy="306" rx="32" ry="24" fill="#F1E6D6"/>
+<circle cx="128" cy="152" r="16" fill="#C99A70"/><circle cx="212" cy="152" r="16" fill="#C99A70"/><circle cx="128" cy="152" r="7" fill="#E9C7AE"/><circle cx="212" cy="152" r="7" fill="#E9C7AE"/>
+<circle cx="170" cy="206" r="62" fill="#C99A70"/><ellipse cx="170" cy="230" rx="38" ry="25" fill="#F1E6D6"/>
+<circle cx="147" cy="206" r="5.5" fill="#2A2A2A"/><circle cx="193" cy="206" r="5.5" fill="#2A2A2A"/><ellipse cx="170" cy="221" rx="5" ry="3.5" fill="#2A2A2A"/>
+<circle cx="126" cy="226" r="8" fill="#E9A08A" fill-opacity=".4"/><circle cx="214" cy="226" r="8" fill="#E9A08A" fill-opacity=".4"/>
+<path d="M118 258Q170 276 222 258L224 274Q170 294 116 274Z" fill="#0E8465"/>
+</svg>
