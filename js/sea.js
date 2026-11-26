@@ -27,8 +27,9 @@
   function springNeap(d) { const k = LU.springNeap(LU.lunarDay(d)); return [k, SN_TEXT[k]]; }
   const daysToSpring = (d) => LU.daysToSpring(d);
   function mulLabel(lunar) { const x = LU.mul(lunar); return x.name ? t(x.name) : t("{n}물", { n: x.n }); }
-  const RX = /^(\d{4})-?(\d{2})-?(\d{2})[ T]?(\d{2}):?(\d{2})/;
-  function parseTime(s) { const m = RX.exec(String(s).trim()); return m ? new Date(m[1] + "-" + m[2] + "-" + m[3] + "T" + m[4] + ":" + m[5] + ":00+09:00") : null; }
+  // 한 자리 시("9:10")·슬래시 날짜("2026/11/27")도 읽어요 — 못 읽은 줄은 조용히 빠져서 오전 물때가 없는 틀린 그래프가 됐어요 (QA 11-27)
+  const RX = /^(\d{4})[-/.]?(\d{2})[-/.]?(\d{2})[ T]?(\d{1,2}):?(\d{2})/;
+  function parseTime(s) { const m = RX.exec(String(s).trim()); if (!m || +m[4] > 24) return null; const d = new Date(m[1] + "-" + m[2] + "-" + m[3] + "T" + m[4].padStart(2, "0") + ":" + m[5] + ":00+09:00"); return isNaN(d) ? null : d; }
   function collect(v, out) {
     if (Array.isArray(v)) { for (const x of v) if (x && typeof x === "object") out.push(x); }
     else if (v && typeof v === "object") { if ("item" in v) collect(v.item, out); else if ("items" in v) collect(v.items, out); else out.push(v); }
