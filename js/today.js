@@ -199,26 +199,47 @@
     const R = 6371, rad = Math.PI / 180, x = Math.sin(((c - a) * rad) / 2) ** 2 + Math.cos(a * rad) * Math.cos(c * rad) * Math.sin(((d - b) * rad) / 2) ** 2;
     return 2 * R * Math.asin(Math.sqrt(x));
   }
-  function coursesNow(l, k, o) {
+  // 거리로 고르기: 추천(예전처럼) · 1시간 이내 · 1~2시간 · 2~3시간 · 3시간 넘게·제주(비행기)
+  const BANDS = [["auto", "추천"], ["near", "1시간 이내"], ["mid", "1~2시간"], ["far", "2~3시간"], ["trip", "3시간 넘게 · 제주"]];
+  function inBand(band, drive) {
+    if (band === "near") return drive >= 0 && drive <= 60;
+    if (band === "mid") return drive > 60 && drive <= 120;
+    if (band === "far") return drive > 120 && drive <= 180;
+    if (band === "trip") return drive < 0 || drive > 180;
+    return true;
+  }
+  function coursesNow(l, k, o, band) {
+    band = band || "auto";
     const out = [];
     for (const c of COURSES) {
       if (c.months.length && !c.months.includes(k.m)) continue;
-      const drive = Math.round(15 + distKm(l.lat, l.lng, c.lat, c.lng) * 0.85);
-      if (drive > 200 || (c.days === 2 && drive > 240)) continue;
-      const tg = new Set(c.tags), why = [];
+      const tg = new Set(c.tags), why = [], km = distKm(l.lat, l.lng, c.lat, c.lng);
+      // 제주처럼 비행기로 가는 곳: 섬 안이면 차로, 아니면 '3시간 넘게 · 제주'에서만
+      if (tg.has("fly") && km > 80) {
+        if (band !== "trip") continue;
+        let s = c.pop * 12 - 8;
+        if (c.peak.includes(k.m)) { s += 25; why.push(t("지금이 제일 좋을 때")); }
+        if (o.rain && (tg.has("sea") || tg.has("trek"))) s -= 25;
+        out.push({ c, drive: -1, s, why });
+        continue;
+      }
+      const drive = Math.round(15 + km * 0.85);
+      if (band === "auto") { if (drive > 200 || (c.days === 2 && drive > 240)) continue; }
+      else if (!inBand(band, drive)) continue;
       let s = c.pop * 12;
       if (c.peak.includes(k.m)) { s += 25; why.push(t("지금이 제일 좋을 때")); } else if (c.months.length) s += 10;
       if (tg.has("season")) { s += 8; if (!why.length) why.push(t("제철 먹거리")); }
       if (o.rain) { if (tg.has("indoor") || tg.has("spa")) { s += 30; why.push(t("비 와도 괜찮아요")); } if (tg.has("sea") || tg.has("trek") || tg.has("tide")) s -= 25; }
       if (o.cold && tg.has("spa")) { s += 12; why.push(t("추운 날 몸 녹이기")); }
-      if (drive < 40) s -= 10;
+      if (drive < 40 && band === "auto") s -= 10;
       s -= drive / 12;
       out.push({ c, drive, s, why });
     }
     out.sort((a, b) => b.s - a.s);
-    const seen = new Set(), res = [];
-    for (const p of out) { const a = p.c.area.split(" ")[0] + p.c.area.split(" ").slice(-1)[0]; if (!seen.has(a)) { seen.add(a); res.push(p); } }
-    return res;
+    // 같은 지역이 연달아 나오지 않게 (뒤로 보내기만, 빼지는 않아요)
+    const seen = new Set(), res = [], rest = [];
+    for (const p of out) { const a = p.c.area.split(" ")[0] + p.c.area.split(" ").slice(-1)[0]; if (!seen.has(a)) { seen.add(a); res.push(p); } else rest.push(p); }
+    return res.concat(rest);
   }
 
   // ---------- 날씨 ----------
@@ -418,7 +439,8 @@
   const arr = (o, k) => (o && Array.isArray(o[k]) ? o[k] : []);
   const kdt = (s) => { if (typeof s !== "string") return null; const d = new Date(s + ":00+09:00"); return isFinite(d) ? d : null; };
   const fix1 = (v) => (v == null || !isFinite(+v) ? "–" : (+v).toFixed(1));
-  let songCtx = null, songSeed = 1, courseList = [], courseIdx = 0;
+  let songCtx = null, songSeed = 1, courseList = [], courseIdx = 0, courseCtx = null;
+  let courseBand = (() => { try { return localStorage.getItem("zCourseBand") || "auto"; } catch (e) { return "auto"; } })();
   function songHtml() {
     const list = songCtx ? songsNow(songCtx.k, songCtx.o, songSeed) : [];
     if (!list.length) return "";
@@ -428,11 +450,15 @@
       '<div class="chips"><button type="button" data-shuffle>🔀 ' + esc(t("다른 노래")) + "</button></div>";
   }
   function courseHtml() {
+    const bands = '<div class="chips cband" role="group" aria-label="' + esc(t("거리로 고르기")) + '">' +
+      BANDS.map(([id, lb]) => '<button type="button" data-band="' + id + '"' + (id === courseBand ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + ">" + esc(t(lb)) + "</button>").join("") + "</div>";
     const p = courseList[courseIdx % Math.max(1, courseList.length)];
-    if (!p) return "";
+    if (!p) return '<article class="card2 course"><h2>' + esc(t("지금 딱 좋은 코스")) + "</h2>" + bands + '<p class="muted">' + esc(t("이 거리에는 지금 맞는 코스가 없어요. 다른 거리를 골라 보세요.")) + "</p></article>";
     const c = p.c;
     const map = (q) => naverMap(q);
-    return '<article class="card2 course"><h2>' + esc(t("지금 딱 좋은 코스")) + "<small>" + esc(t("차로 약 {n}분", { n: p.drive })) + (c.days === 2 ? " · " + esc(t("1박")) : "") + "</small></h2>" +
+    const how = p.drive < 0 ? t("✈️ 비행기 + 렌터카") : t("차로 약 {n}분", { n: p.drive });
+    return '<article class="card2 course"><h2>' + esc(t("지금 딱 좋은 코스")) + "<small>" + esc(how) + (c.days === 2 ? " · " + esc(t("1박")) : "") +
+      (courseList.length > 1 ? " · " + (courseIdx % courseList.length + 1) + "/" + courseList.length : "") + "</small></h2>" + bands +
       '<div class="ctitle">' + esc(tOpt(c.title)) + ' <span class="muted">' + esc(tOpt(c.area)) + "</span></div>" +
       (c.line ? "<div>" + esc(tOpt(c.line)) + "</div>" : "") +
       (p.why.length ? '<div class="chips">' + p.why.map((w) => '<span class="pill">' + esc(w) + "</span>").join("") + "</div>" : "") +
@@ -440,16 +466,23 @@
       (c.eat ? '<div class="muted">🍽️ ' + esc(c.eat) + "</div>" : "") +
       (c.story ? '<div class="cstory">' + esc(c.story) + "</div>" : "") +
       '<div class="chips">' + (courseList.length > 1 ? '<button type="button" data-course-next>' + esc(t("다른 코스")) + "</button>" : "") +
-      '<a href="https://map.naver.com/p/directions/-/' + c.lng + "," + c.lat + "," + encodeURIComponent(c.stops[0] ? c.stops[0].name : c.title) + ',,/-/car" ' + ext + ">🚗 " + esc(t("길찾기")) + "</a></div></article>";
+      (p.drive < 0 ? "" : '<a href="https://map.naver.com/p/directions/-/' + c.lng + "," + c.lat + "," + encodeURIComponent(c.stops[0] ? c.stops[0].name : c.title) + ',,/-/car" ' + ext + ">🚗 " + esc(t("길찾기")) + "</a>") + "</div></article>";
   }
   function bindExtra(root) {
     if (root.dataset.extra) return; // root 는 그대로라 한 번만 붙여요
     root.dataset.extra = "1";
     root.addEventListener("click", (e) => {
-      const el = e.target.closest("[data-shuffle],[data-course-next]");
+      const el = e.target.closest("[data-shuffle],[data-course-next],[data-band]");
       if (!el) return;
       if (el.hasAttribute("data-shuffle")) { songSeed = (songSeed * 7 + 13) & 0xffff; $("songBox").innerHTML = songHtml(); }
-      else { courseIdx = (courseIdx + 1) % Math.min(courseList.length, 5); $("courseBox").innerHTML = courseHtml(); }
+      else if (el.hasAttribute("data-band")) {
+        courseBand = el.dataset.band;
+        try { localStorage.setItem("zCourseBand", courseBand); } catch (e2) { /* 저장 안 돼도 괜찮아요 */ }
+        if (courseCtx) courseList = coursesNow(courseCtx.l, courseCtx.k, courseCtx.o, courseBand);
+        courseIdx = 0; $("courseBox").innerHTML = courseHtml();
+        const b = $("courseBox").querySelector('[data-band="' + courseBand + '"]'); if (b) b.focus();
+      }
+      else { courseIdx = (courseIdx + 1) % Math.max(1, courseList.length); $("courseBox").innerHTML = courseHtml(); }
     });
   }
   async function render(force) {
@@ -494,7 +527,8 @@
       const cold = tNow != null && isFinite(tNow) && tNow < 5;
       songCtx = { k, o: { isDefault: l.src === "default", region: reg && reg.name, sido: reg && reg.sido, rain, snow, cold, clear: code === 0 || code === 1, sunset: isSunset, night: isNight, dawn: isDawn } };
       if (key !== shownFor) songSeed = Date.now() & 0xffff;
-      courseList = coursesNow(l, k, { rain: rain || snow, cold });
+      courseCtx = { l, k, o: { rain: rain || snow, cold } };
+      courseList = coursesNow(l, k, courseCtx.o, courseBand);
       if (key !== shownFor) courseIdx = 0;
       const foods = DATA.foods.filter((f) => f.months.includes(k.m));
       // 비·눈 오면 실내에서 할 수 있는 것부터
