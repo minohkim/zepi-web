@@ -565,7 +565,7 @@
       try { d.items = (await within(ZAPP.pub("/blog?q=" + encodeURIComponent(q)), 15000)).items || []; } catch (e) { d.err = e.message || String(e); }
       d.busy = false; redraw();
     }
-    if (d.items && d.items.length && ZAPP.signedIn() && !d.sum && !d.sumBusy && !d.sumErr) {
+    if (Array.isArray(d.items) && d.items.length && ZAPP.signedIn() && !d.sum && !d.sumBusy && !d.sumErr) {
       d.sumBusy = true; redraw();
       try { const j = await within(ZAPP.proxy("/blogsum?q=" + encodeURIComponent(q)), 60000); d.sum = j.sum; if (j.items && j.items.length) d.items = j.items; } catch (e) { d.sumErr = e.message || String(e); }
       d.sumBusy = false; redraw();
@@ -579,13 +579,13 @@
     if (!d) return h + '<div class="muted">' + esc(t("장소를 누르면 다녀온 사람들 글을 모아 보여 줘요.")) + "</div></div>";
     if (d.busy) return h + '<div class="muted">' + esc(t("블로그 찾는 중…")) + "</div></div>";
     if (d.err) return h + '<div class="muted">' + esc(t("블로그를 불러오지 못했어요.")) + " " + esc(d.err) + "</div></div>";
-    if (!d.items || !d.items.length) return h + '<div class="muted">' + esc(t("이 곳은 블로그 글을 찾지 못했어요.")) + "</div></div>";
+    if (!Array.isArray(d.items) || !d.items.length) return h + '<div class="muted">' + esc(t("이 곳은 블로그 글을 찾지 못했어요.")) + "</div></div>";
     if (!ZAPP.signedIn()) h += '<div class="needlogin">' + esc(t("로그인하면 이 글들을 읽고 볼거리·맛집·팁을 요약해 드려요. 무료예요.")) + ' <button class="btn primary" type="button" data-blog-login>' + esc(t("로그인")) + "</button></div>";
     else if (d.sumBusy) h += '<div class="muted">✨ ' + esc(t("글을 읽고 요약하는 중… (10초쯤)")) + "</div>";
     else if (d.sumErr) h += '<div class="muted">' + esc(t("요약하지 못했어요.")) + " " + esc(d.sumErr) + "</div>";
-    else if (d.sum) {
-      const S = d.sum, part = (emoji, label, arr) => arr && arr.length ? '<div class="bsum"><b>' + emoji + " " + esc(t(label)) + "</b><ul>" + arr.map((x) => "<li>" + esc(x) + "</li>").join("") + "</ul></div>" : "";
-      h += '<div class="bsumbox">' + (S.one ? '<div class="bone">✨ ' + esc(S.one) + "</div>" : "") +
+    else if (d.sum && typeof d.sum === "object") {
+      const S = d.sum, part = (emoji, label, arr) => Array.isArray(arr) && arr.length ? '<div class="bsum"><b>' + emoji + " " + esc(t(label)) + "</b><ul>" + arr.map((x) => "<li>" + esc(x) + "</li>").join("") + "</ul></div>" : "";
+      h += '<div class="bsumbox">' + (S.one && typeof S.one === "string" ? '<div class="bone">✨ ' + esc(S.one) + "</div>" : "") +
         part("👀", "볼거리", S.see) + part("🍽️", "먹을 곳", S.eat) + part("💡", "팁", S.tips) + part("⚠️", "아쉬운 점", S.warn) +
         '<div class="muted small">' + esc(t("AI가 아래 블로그 글을 읽고 정리했어요. 숫자는 글 번호예요. 가기 전에 한 번 더 확인하세요.")) + "</div></div>";
     }
