@@ -9273,5 +9273,105 @@
   "I listen to the song of the wind. The winter wind, whistling as it goes, along the road, up the walls, through the trees — and what a lovely tune it plays.",
   "聆听风的歌。呼呼作响的冬风，沿着小路，攀上墙头，穿过林间，那曲调，多么动听。",
   "風の歌を聴いています。ひゅうひゅうと鳴る冬の風、道に沿って、壁をつたい、木々のあいだへ。その調べの、なんと心地よいこと。"
+ ],
+ "오늘 · 날씨와 제철": [
+  "Today · weather & in season",
+  "今天 · 天气与时令",
+  "今日 · 天気と旬"
+ ],
+ "맑음 · 바람 약함": [
+  "Clear · light wind",
+  "晴 · 微风",
+  "晴れ · 風よわい"
+ ],
+ "미세먼지 좋음": [
+  "Fine dust: good",
+  "微尘：良好",
+  "PM2.5：良い"
+ ],
+ "이달의 제철 · 굴 · 방어 · 꼬막": [
+  "In season this month · oysters · yellowtail · cockles",
+  "本月时令 · 生蚝 · 鰤鱼 · 泥蚶",
+  "今月の旬 · 牡蠣 · ブリ · ハイガイ"
+ ],
+ "바다 · 물때": [
+  "Sea · tides",
+  "海 · 潮汐",
+  "海 · 潮汐"
+ ],
+ "🌊 만조": [
+  "🌊 High tide",
+  "🌊 满潮",
+  "🌊 満潮"
+ ],
+ "🏖️ 간조 · 갯벌 걷기 좋은 때": [
+  "🏖️ Low tide · good for mudflat walks",
+  "🏖️ 干潮 · 适合走滩涂",
+  "🏖️ 干潮 · 干潟歩きにいい時間"
+ ],
+ "사리 · 물이 많이 빠지는 날": [
+  "Spring tide · water goes far out",
+  "大潮 · 潮水退得很远的日子",
+  "大潮 · よく潮が引く日"
+ ],
+ "올해 새로 정복": [
+  "New this year",
+  "今年新征服",
+  "今年新たに制覇"
+ ],
+ "14곳": [
+  "14",
+  "14 处",
+  "14か所"
+ ],
+ "올해 다닌 거리": [
+  "Distance this year",
+  "今年走过的距离",
+  "今年の移動距離"
+ ],
+ "칭호 · 전국 방랑자": [
+  "Title · Nationwide wanderer",
+  "称号 · 全国流浪者",
+  "称号 · 全国の放浪者"
+ ],
+ "주말 계획": [
+  "Weekend plan",
+  "周末计划",
+  "週末プラン"
+ ],
+ "🚗 출발 · 운전 2시간 10분": [
+  "🚗 Leave · 2 h 10 min drive",
+  "🚗 出发 · 驾车 2 小时 10 分",
+  "🚗 出発 · 運転 2時間10分"
+ ],
+ "🌊 간조 맞춰 갯벌 걷기": [
+  "🌊 Mudflat walk at low tide",
+  "🌊 趁干潮走滩涂",
+  "🌊 干潮に合わせて干潟歩き"
+ ],
+ "🏅 백년가게 칼국수": [
+  "🏅 Century-old noodle shop",
+  "🏅 百年老店刀削面",
+  "🏅 百年店のカルグクス"
+ ],
+ "🌅 노을 보고 집으로": [
+  "🌅 Watch the sunset, head home",
+  "🌅 看完晚霞回家",
+  "🌅 夕焼けを見て家へ"
+ ],
+ "여행 계획 · 텃밭": [
+  "Trip plans · garden",
+  "旅行计划 · 菜园",
+  "旅行プラン · 家庭菜園"
+ ],
+ "하고 싶은 것을 고르면 날씨·물때·제철에 맞춰 주말 일정을 짜 줘요. 텃밭은 우리 지역 1년 달력과 이번 주말 할 일을 알려줘요.": [
+  "Pick what you feel like doing and it builds a weekend plan around the weather, tides and what's in season. For your garden, it shows a year-round calendar for your area and this weekend's tasks.",
+  "选好想做的事，就会按天气、潮汐和时令安排周末行程。菜园会告诉你本地区的全年日历和本周末要做的事。",
+  "やりたいことを選ぶと、天気・潮汐・旬に合わせて週末の予定を組みます。家庭菜園は地域に合わせた1年のカレンダーと今週末にやることを教えます。"
+ ],
+ "로그인하면 폰과 맞춰져요": [
+  "Syncs with your phone when logged in",
+  "登录后与手机同步",
+  "ログインするとスマホと同期"
  ]
 }

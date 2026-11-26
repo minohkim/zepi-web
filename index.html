@@ -121,6 +121,13 @@ header nav .btn { min-height: 44px; padding: 0 14px; font-size: 14px; }
 :root:lang(ko) .poem-tr { display: none; }
 /* 오른쪽: 하루 지도 그림 */
 .mock { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 14px; box-shadow: 0 20px 60px -30px rgba(23, 32, 26, .35); }
+.mock .pages { display: grid; }
+.mock .pg { grid-area: 1 / 1; opacity: 0; visibility: hidden; transition: opacity .6s ease, visibility .6s; }
+.mock .pg.on { opacity: 1; visibility: visible; }
+.mock .lab { display: inline-block; margin-bottom: 8px; padding: 2px 10px; border-radius: 999px; background: var(--leaf-soft); color: var(--leaf-ink); font-size: 12px; font-weight: 700; }
+.mock .dots { display: flex; justify-content: center; gap: 8px; margin-top: 12px; }
+.mock .dot { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 999px; background: var(--line); cursor: pointer; transition: width .3s, background .3s; }
+.mock .dot.on { width: 22px; background: var(--leaf); }
 .mock svg { width: 100%; height: auto; display: block; border-radius: 10px; }
 .mock .tl { display: grid; gap: 6px; margin-top: 12px; font-size: 14px; }
 .mock .tl div { display: grid; grid-template-columns: 52px 1fr auto; gap: 8px; align-items: center; }
@@ -131,7 +138,9 @@ header nav .btn { min-height: 44px; padding: 0 14px; font-size: 14px; }
 section { padding-block: 56px; }
 section h2 { font-family: var(--font-display); font-size: clamp(26px, 4vw, 36px); }
 section .sub { color: var(--muted); margin: 8px 0 28px; max-width: 40em; }
-.feat { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.feat { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 900px) { .feat { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .feat { grid-template-columns: minmax(0, 1fr); } }
 .feat article { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 .feat .ic { font-size: 28px; }
 .feat h3 { font-size: 18px; }
@@ -200,7 +209,8 @@ footer .in { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: spa
         <div class="small">가입 없이 예시 기록으로 먼저 써 볼 수 있어요. 내 기록은 폰 앱에서 만든 백업 파일(.db)을 열어서 봐요.</div>
       </div>
       <div class="mock" aria-hidden="true">
-        <svg viewBox="0 0 400 240">
+        <div class="pages">
+          <div class="pg on"><div class="lab">하루 지도</div><svg viewBox="0 0 400 240">
           <rect width="400" height="240" fill="var(--leaf-soft)"/>
           <path d="M0 175 C60 160 90 200 150 185 S250 150 300 170 S370 205 400 190 V240 H0Z" fill="color-mix(in srgb, var(--sea) 30%, transparent)"/>
           <path d="M40 60 C90 70 110 40 160 70 S230 130 260 110 S330 60 360 90" fill="none" stroke="var(--leaf)" stroke-width="4" stroke-linecap="round" stroke-dasharray="1 0"/>
@@ -208,13 +218,13 @@ footer .in { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: spa
           <circle cx="160" cy="70" r="10" fill="var(--pepper)"/>
           <circle cx="260" cy="110" r="10" fill="var(--pepper)"/>
           <circle cx="360" cy="90" r="8" fill="var(--leaf)"/>
-        </svg>
-        <div class="tl">
-          <div><span>09:10</span><b>집에서 출발</b><span>0 km</span></div>
-          <div><span>10:40</span><b>☕ 바닷가 카페 · 1시간 20분</b><span>58 km</span></div>
-          <div><span>13:05</span><b>🍲 바다 앞 칼국수 · 50분</b><span>72 km</span></div>
-          <div><span>16:30</span><b>🌅 해변 산책</b><span>81 km</span></div>
+        </svg><div class="tl"><div><span>09:10</span><b>집에서 출발</b><span>0 km</span></div><div><span>10:40</span><b>☕ 바닷가 카페 · 1시간 20분</b><span>58 km</span></div><div><span>13:05</span><b>🍲 바다 앞 칼국수 · 50분</b><span>72 km</span></div><div><span>16:30</span><b>🌅 해변 산책</b><span>81 km</span></div></div></div>
+          <div class="pg"><div class="lab">오늘 · 날씨와 제철</div><svg viewBox="0 0 400 240"><rect width="400" height="240" fill="var(--sun-soft)"/><path d="M40 200 Q200 20 360 200" fill="none" stroke="var(--sun-ink)" stroke-width="2" stroke-dasharray="4 6"/><circle cx="248" cy="118" r="22" fill="var(--sun)"/><circle cx="104" cy="142" r="10" fill="var(--surface)" stroke="var(--muted)" stroke-width="2"/><path d="M0 200 C80 185 140 210 220 196 S340 182 400 198 V240 H0Z" fill="color-mix(in srgb, var(--leaf) 35%, transparent)"/><text x="20" y="34" font-size="22" font-weight="700" fill="var(--ink)">4° / 11°</text></svg><div class="tl"><div><span>☀️</span><b>맑음 · 바람 약함</b><span>4° / 11°</span></div><div><span>😊</span><b>미세먼지 좋음</b><span>18㎍</span></div><div><span>🌅</span><b>해 지는 시각</b><span>17:14</span></div><div><span>🦪</span><b>이달의 제철 · 굴 · 방어 · 꼬막</b><span></span></div></div></div>
+          <div class="pg"><div class="lab">바다 · 물때</div><svg viewBox="0 0 400 240"><rect width="400" height="240" fill="color-mix(in srgb, var(--sea) 12%, var(--surface))"/><polyline points="0,54.0 10,43.2 20,40.0 30,44.6 40,56.6 50,74.8 60,97.4 70,122.3 80,146.9 90,168.8 100,186.0 110,196.8 120,200.0 130,195.4 140,183.4 150,165.2 160,142.6 170,117.7 180,93.1 190,71.2 200,54.0 210,43.2 220,40.0 230,44.6 240,56.6 250,74.8 260,97.4 270,122.3 280,146.9 290,168.8 300,186.0 310,196.8 320,200.0 330,195.4 340,183.4 350,165.2 360,142.6 370,117.7 380,93.1 390,71.2 400,54.0" fill="none" stroke="var(--sea)" stroke-width="4" stroke-linejoin="round"/><path d="M0 240 L0,54.0 L10,43.2 L20,40.0 L30,44.6 L40,56.6 L50,74.8 L60,97.4 L70,122.3 L80,146.9 L90,168.8 L100,186.0 L110,196.8 L120,200.0 L130,195.4 L140,183.4 L150,165.2 L160,142.6 L170,117.7 L180,93.1 L190,71.2 L200,54.0 L210,43.2 L220,40.0 L230,44.6 L240,56.6 L250,74.8 L260,97.4 L270,122.3 L280,146.9 L290,168.8 L300,186.0 L310,196.8 L320,200.0 L330,195.4 L340,183.4 L350,165.2 L360,142.6 L370,117.7 L380,93.1 L390,71.2 L400,54.0 L400 240Z" fill="color-mix(in srgb, var(--sea) 22%, transparent)"/><line x1="170" y1="20" x2="170" y2="220" stroke="var(--pepper)" stroke-width="2" stroke-dasharray="4 4"/><circle cx="170" cy="117.7" r="7" fill="var(--pepper)"/></svg><div class="tl"><div><span>05:42</span><b>🌊 만조</b><span>642 cm</span></div><div><span>11:58</span><b>🏖️ 간조 · 갯벌 걷기 좋은 때</b><span>89 cm</span></div><div><span>18:10</span><b>🌊 만조</b><span>655 cm</span></div><div><span>🎣</span><b>사리 · 물이 많이 빠지는 날</b><span></span></div></div></div>
+          <div class="pg"><div class="lab">정복 지도</div><svg viewBox="0 0 400 240"><rect width="400" height="240" fill="var(--leaf-soft)"/><rect x="22" y="14" width="30" height="30" rx="6" fill="var(--leaf)"/><rect x="58" y="14" width="30" height="30" rx="6" fill="var(--leaf)"/><rect x="94" y="14" width="30" height="30" rx="6" fill="color-mix(in srgb, var(--ink) 8%, transparent)"/><rect x="130" y="14" width="30" height="30" rx="6" fill="var(--leaf)"/><rect x="166" y="14" width="30" height="30" rx="6" fill="color-mix(in srgb, var(--ink) 8%, transparent)"/><rect x="202" y="14" width="30" height="30" rx="6" fill="var(--leaf)"/><rect x="238" y="14" width="30" height="30" rx="6" fill="var(--leaf)"/><rect x="274" y="14" width="30" height="30" rx="6" fill="color-mix(in srgb, var(--ink) 8%, transparent)"/><rect x="310" y="14" width="30" height="30" rx="6" fill="var(--leaf)"/><rect x="346" y="14" width="30" height="30" rx="6" fill="var(--pepper)"/><rect x="22" y="50" width="30" height="30" rx="6" fill="var(--leaf)"/><rect x="58" y="50" width="30" height="30" rx="6" fill="var(--leaf)"/><rect x="94" y="50" width="30" height="30" rx="6" fill="var(--pepper)"/><rect x="130" y="50" width="30" height="30" rx="6" fill="color-mix(in srgb, var(--ink) 8%, transparent)"/><rect x="166" y="50" width="30" height="30" rx="6" fill="var(--leaf)"/><rect x="202" y="50" width="30" height="30" rx="6" fill="var(--leaf)"/><rect x="238" y="50" width="30" height="30" rx="6" fill="color-mix(in srgb, var(--ink) 8%, transparent)"/><rect x="274" y="50" width="30" height="30" rx="6" fill="color-mix(in srgb, var(--ink) 8%, transparent)"/><rect x="310" y="50" width="30" height="30" rx="6" fill="color-mix(in srgb, var(--ink) 8%, transparent)"/><rect x="346" y="50" width="30" height="30" rx="6" fill="var(--pepper)"/><rect x="22" y="86" width="30" height="30" rx="6" fill="color-mix(in srgb, var(--ink) 8%, transparent)"/><rect x="58" y="86" width="30" height="30" rx="6" fill="var(--leaf)"/><rect x="94" y="86" width="30" height="30" rx="6" fill="color-mix(in srgb, var(--ink) 8%, transparent)"/><rect x="130" y="86" width="30" height="30" rx="6" fill="var(--leaf)"/><rect x="166" y="86" width="30" height="30" rx="6" fill="var(--leaf)"/><rect x="202" y="86" width="30" height="30" rx="6" fill="var(--leaf)"/><rect x="238" y="86" width="30" height="30" rx="6" fill="var(--leaf)"/><rect x="274" y="86" width="30" height="30" rx="6" fill="color-mix(in srgb, var(--ink) 8%, transparent)"/><rect x="310" y="86" width="30" height="30" rx="6" fill="var(--leaf)"/><rect x="346" y="86" width="30" height="30" rx="6" fill="color-mix(in srgb, var(--ink) 8%, transparent)"/><rect x="22" y="122" width="30" height="30" rx="6" fill="color-mix(in srgb, var(--ink) 8%, transparent)"/><rect x="58" y="122" width="30" height="30" rx="6" fill="var(--leaf)"/><rect x="94" y="122" width="30" height="30" rx="6" fill="color-mix(in srgb, var(--ink) 8%, transparent)"/><rect x="130" y="122" width="30" height="30" rx="6" fill="var(--leaf)"/><rect x="166" y="122" width="30" height="30" rx="6" fill="var(--leaf)"/><rect x="202" y="122" width="30" height="30" rx="6" fill="var(--leaf)"/><rect x="238" y="122" width="30" height="30" rx="6" fill="color-mix(in srgb, var(--ink) 8%, transparent)"/><rect x="274" y="122" width="30" height="30" rx="6" fill="var(--pepper)"/><rect x="310" y="122" width="30" height="30" rx="6" fill="var(--leaf)"/><rect x="346" y="122" width="30" height="30" rx="6" fill="color-mix(in srgb, var(--ink) 8%, transparent)"/><rect x="22" y="158" width="30" height="30" rx="6" fill="var(--pepper)"/><rect x="58" y="158" width="30" height="30" rx="6" fill="var(--leaf)"/><rect x="94" y="158" width="30" height="30" rx="6" fill="color-mix(in srgb, var(--ink) 8%, transparent)"/><rect x="130" y="158" width="30" height="30" rx="6" fill="color-mix(in srgb, var(--ink) 8%, transparent)"/><rect x="166" y="158" width="30" height="30" rx="6" fill="var(--leaf)"/><rect x="202" y="158" width="30" height="30" rx="6" fill="color-mix(in srgb, var(--ink) 8%, transparent)"/><rect x="238" y="158" width="30" height="30" rx="6" fill="color-mix(in srgb, var(--ink) 8%, transparent)"/><rect x="274" y="158" width="30" height="30" rx="6" fill="color-mix(in srgb, var(--ink) 8%, transparent)"/><rect x="310" y="158" width="30" height="30" rx="6" fill="color-mix(in srgb, var(--ink) 8%, transparent)"/><rect x="346" y="158" width="30" height="30" rx="6" fill="var(--leaf)"/><rect x="22" y="194" width="30" height="30" rx="6" fill="color-mix(in srgb, var(--ink) 8%, transparent)"/><rect x="58" y="194" width="30" height="30" rx="6" fill="var(--leaf)"/><rect x="94" y="194" width="30" height="30" rx="6" fill="var(--pepper)"/><rect x="130" y="194" width="30" height="30" rx="6" fill="color-mix(in srgb, var(--ink) 8%, transparent)"/><rect x="166" y="194" width="30" height="30" rx="6" fill="var(--leaf)"/><rect x="202" y="194" width="30" height="30" rx="6" fill="color-mix(in srgb, var(--ink) 8%, transparent)"/><rect x="238" y="194" width="30" height="30" rx="6" fill="var(--leaf)"/><rect x="274" y="194" width="30" height="30" rx="6" fill="color-mix(in srgb, var(--ink) 8%, transparent)"/><rect x="310" y="194" width="30" height="30" rx="6" fill="color-mix(in srgb, var(--ink) 8%, transparent)"/><rect x="346" y="194" width="30" height="30" rx="6" fill="color-mix(in srgb, var(--ink) 8%, transparent)"/></svg><div class="tl"><div><span>🏁</span><b>정복한 시군구</b><span>87 / 229</span></div><div><span>✨</span><b>올해 새로 정복</b><span>14곳</span></div><div><span>👣</span><b>올해 다닌 거리</b><span>6,420 km</span></div><div><span>🏷️</span><b>칭호 · 전국 방랑자</b><span></span></div></div></div>
+          <div class="pg"><div class="lab">주말 계획</div><svg viewBox="0 0 400 240"><rect width="400" height="240" fill="var(--leaf-soft)"/><path d="M0 170 C70 150 120 200 190 178 S320 140 400 165 V240 H0Z" fill="color-mix(in srgb, var(--sea) 30%, transparent)"/><path d="M40 50 C110 60 120 120 180 120 S290 70 350 140" fill="none" stroke="var(--leaf)" stroke-width="4" stroke-linecap="round" stroke-dasharray="10 8"/><circle cx="40" cy="50" r="8" fill="var(--surface)" stroke="var(--leaf)" stroke-width="3"/><circle cx="180" cy="120" r="10" fill="var(--sun)"/><circle cx="270" cy="96" r="10" fill="var(--pepper)"/><circle cx="350" cy="140" r="10" fill="var(--pepper)"/><circle cx="340" cy="44" r="16" fill="var(--sun)" opacity=".8"/></svg><div class="tl"><div><span>08:30</span><b>🚗 출발 · 운전 2시간 10분</b><span></span></div><div><span>11:00</span><b>🌊 간조 맞춰 갯벌 걷기</b><span></span></div><div><span>13:00</span><b>🏅 백년가게 칼국수</b><span></span></div><div><span>17:14</span><b>🌅 노을 보고 집으로</b><span></span></div></div></div>
         </div>
+        <div class="dots"><button type="button" class="dot on" tabindex="-1" aria-label="1"></button><button type="button" class="dot" tabindex="-1" aria-label="2"></button><button type="button" class="dot" tabindex="-1" aria-label="3"></button><button type="button" class="dot" tabindex="-1" aria-label="4"></button><button type="button" class="dot" tabindex="-1" aria-label="5"></button></div>
       </div>
     </div>
   </div>
@@ -236,6 +246,7 @@ footer .in { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: spa
         <article><span class="ic">🌊</span><h3>바다</h3><p>가까운 관측소의 만조·간조 시각과 물높이 그래프, 사리·조금, 파도와 바닷물 온도.</p><span class="tag">물때표는 로그인</span></article>
         <article><span class="ic">🗺️</span><h3>하루 지도</h3><p>그날 다닌 길과 머문 곳을 시간 순서대로. 머문 곳마다 별점·태그·메모를 남겨요.</p><span class="tag">백업 파일(.db)로</span></article>
         <article><span class="ic">🏁</span><h3>정복 지도 · 올해의 발자취</h3><p>가 본 시군구를 색칠하고, 한 해 동안 얼마나, 어디를 다녔는지 한눈에.</p><span class="tag">백업 파일(.db)로</span></article>
+        <article><span class="ic">🧭</span><h3>여행 계획 · 텃밭</h3><p>하고 싶은 것을 고르면 날씨·물때·제철에 맞춰 주말 일정을 짜 줘요. 텃밭은 우리 지역 1년 달력과 이번 주말 할 일을 알려줘요.</p><span class="tag">로그인하면 폰과 맞춰져요</span></article>
         <article><span class="ic">⇄</span><h3>가져오기 · 내보내기</h3><p>구글 지도와 네이버 지도에 저장한 장소를 가져오고, 내 장소를 구글 내 지도용 파일로 내보내요.</p><span class="tag">웹 전용</span></article>
       </div>
     </div>
@@ -318,6 +329,21 @@ footer .in { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: spa
       so.srcset = so.dataset.srcset; im.src = im.dataset.src;
     });
   });
+</script>
+<script>
+  // 첫 화면 오른쪽 그림: 5장을 5초마다 넘겨요 (마우스를 올리면 멈춤, 움직임 줄이기 설정이면 자동으로 안 넘김)
+  (function () {
+    var m = document.querySelector(".hero .mock"); if (!m) return;
+    var pgs = m.querySelectorAll(".pg"), dots = m.querySelectorAll(".dot"), i = 0, hold = false;
+    function show(n) { i = (n + pgs.length) % pgs.length;
+      pgs.forEach(function (p, k) { p.classList.toggle("on", k === i); });
+      dots.forEach(function (d, k) { d.classList.toggle("on", k === i); }); }
+    dots.forEach(function (d, k) { d.addEventListener("click", function () { show(k); }); });
+    m.addEventListener("mouseenter", function () { hold = true; });
+    m.addEventListener("mouseleave", function () { hold = false; });
+    if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    setInterval(function () { if (!hold && !document.hidden) show(i + 1); }, 5000);
+  })();
 </script>
 </body>
 </html>
