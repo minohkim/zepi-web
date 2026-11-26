@@ -854,7 +854,11 @@
   // 켜 둔 채 자정·시간이 바뀌면 다시 그려요 (key 에 날짜·시가 들어 있어 같은 시간엔 그대로, QA 11-26)
   setInterval(() => { const v = document.getElementById("view-today"); if (window.ZAPP_READY && v && !v.hidden && !document.hidden) render(false); }, 60e3);
   // 로그인 상태가 바뀌면 다시
-  window.addEventListener("zapp-auth", () => { shownFor = ""; if (window.ZAPP_READY && !$("view-today").hidden) render(true); });
+  window.addEventListener("zapp-auth", () => {
+    shownFor = ""; if (window.ZAPP_READY && !$("view-today").hidden) render(true);
+    // 블로그를 열어 둔 채 '로그인'을 눌러 로그인했으면 요약을 바로 받아요 (목록만 남고 아무 일도 없던 것, QA 11-27)
+    if (blogQ && ZAPP.signedIn()) blogLoad(blogQ);
+  });
   // app.html 준비가 이 파일보다 먼저 끝났으면(예: CDN 실패) 지금 그려요
   if (window.ZAPP_READY && !$("view-today").hidden) render(false);
 })();
