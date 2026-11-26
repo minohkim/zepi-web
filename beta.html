@@ -128,7 +128,7 @@ footer a { color: inherit; }
   </section>
 
   <footer>
-    <a href="./">바람소리 웹</a> · <a href="terms.html">이용약관</a> · <a href="privacy.html">개인정보처리방침</a> ·
+    <a href="./">바람소리 웹</a> · <a href="tester.html">테스터 안내</a> · <a href="terms.html">이용약관</a> · <a href="privacy.html">개인정보처리방침</a> ·
     <select id="langSel" aria-label="언어 · Language" style="font:inherit;color:inherit;background:transparent;border:0"></select>
   </footer>
 </main>
@@ -239,6 +239,7 @@ footer a { color: inherit; }
         ? '<p class="hint">' + t("10분이 지나도 메일이 없으면 스팸함·프로모션 탭을 봐 주세요. 그래도 없으면 바람소리를 알려 준 분께 카톡으로 말씀해 주세요. 한 시간마다 다시 보내요.") + "</p>"
         : "") +
       '<p class="hint">' + t("기다리는 동안 <a href=\"./\">바람소리 웹</a>에서 이번 주 날씨·물때를 먼저 볼 수 있어요.") + "</p>";
+    h += '<a class="btn" href="tester.html">' + t("설치하고 나서 할 일 보기") + "</a>";
     $("doneBody").innerHTML = h;
     $("formCard").hidden = true;
     $("done").hidden = false;

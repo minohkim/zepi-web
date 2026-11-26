@@ -449,7 +449,13 @@ JSON 하나만 답해:
       return true;
     } catch (e) { return false; }
   }
-  let busy = false, busyMsg = "", errMsg = "";
+  let busy = false, busyMsg = "", errMsg = "", aiStart = 0, aiGen = 0, aiTimer = 0;
+  // AI 기다리는 동안: 진행 막대·지난 초·'그만 기다리기' (QA 11-26 UX⑧)
+  function aiProg() {
+    const sec = Math.floor((Date.now() - aiStart) / 1000), ex = 45;
+    const v = Math.min(0.95, sec < ex ? (sec / ex) * 0.85 : 0.85 + 0.1 * (1 - ex / (sec + 1)));
+    return { pct: Math.round(v * 100), text: sec < 60 ? t("{n}초 · 보통 40~60초 걸려요", { n: sec }) : t("{n}초 · 조금만 더요", { n: sec }) };
+  }
 
   // ---------- 그리기 ----------
   const KIND = { move: "🚗", food: "🍜", stay: "🛏️", free: "🎲", fish: "🎣", walk: "🥾", view: "🌅", cafe: "☕", spot: "📍" };
@@ -546,7 +552,10 @@ JSON 하나만 답해:
     const root = $("planRoot");
     if (!root) return;
     let h = stepper();
-    if (busy) h += '<div class="card2"><div class="loading">' + esc(busyMsg || t("준비하는 중이에요…")) + "</div></div>";
+    if (busy && aiStart) {
+      const p = aiProg();
+      h += '<div class="card2 aiwait"><b>' + esc(t("AI가 일정을 짜는 중이에요")) + '</b><div class="aibar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + p.pct + '"><i id="aiBar" style="width:' + p.pct + '%"></i></div><div class="muted" id="aiSec">' + esc(p.text) + '</div><button class="btn" type="button" data-act="cancel">' + esc(t("그만 기다리기")) + "</button></div>";
+    } else if (busy) h += '<div class="card2"><div class="loading">' + esc(busyMsg || t("준비하는 중이에요…")) + "</div></div>";
     else if (st.step === "regions") h += viewRegions();
     else if (st.step === "plan" && st.plan && normPlan(st.plan).days.length) h += viewPlan(); // 날이 하나도 없는 일정이면 빈 화면 대신 처음으로
     else { st.step = "wants"; h += viewWants(); }
@@ -578,22 +587,33 @@ JSON 하나만 답해:
     let n = 0;
     busyMsg = t("관광공사 장소·숙소·날씨·물때를 모으는 중이에요… ({n}/{total})", { n, total: picks.length }); render();
     await Promise.all(picks.map((c) => enrich(c, st, day, () => { n++; busyMsg = t("관광공사 장소·숙소·날씨·물때를 모으는 중이에요… ({n}/{total})", { n, total: picks.length }); render(); })));
-    busyMsg = t("AI가 일정을 짜는 중이에요… 30초쯤 걸려요"); render();
+    const gen = ++aiGen;
+    aiStart = Date.now(); render();
+    clearInterval(aiTimer);
+    aiTimer = setInterval(() => {
+      const b = $("aiBar"), x = $("aiSec");
+      if (!b || !busy || gen !== aiGen) { clearInterval(aiTimer); return; }
+      const p = aiProg(); b.style.width = p.pct + "%"; b.parentNode.setAttribute("aria-valuenow", p.pct); x.textContent = p.text;
+    }, 1000);
     let plan;
     try {
-      const j = extractJson(await askClaude(context(st, picks, day)));
+      const ans = await askClaude(context(st, picks, day));
+      if (gen !== aiGen) return; // 그만 기다리기를 눌렀어요: 늦게 온 답은 버려요
+      const j = extractJson(ans);
       if (!j || !Array.isArray(j.days) || !j.days.length) throw new Error(t("AI 답을 읽지 못했어요"));
       plan = normPlan({ ...j, byAi: true });
       if (!plan.days.length) throw new Error(t("AI 답을 읽지 못했어요"));
     } catch (e) {
+      if (gen !== aiGen) return;
       // 이미 AI 일정이 있으면(다시 짜기) 간단 일정으로 덮지 않고 그대로 둬요. 폰 쪽 일정도 지켜요 (QA 11-23)
       if (keepAi && st.plan && st.plan.byAi) {
         errMsg = t("AI 일정을 받지 못했어요.") + " " + (e.message || e);
-        busy = false; render(); return;
+        busy = false; aiStart = 0; render(); return;
       }
       plan = { ...localPlan(st, picks, day), byAi: false };
       errMsg = t("AI 일정을 받지 못해서 간단히 짰어요.") + " " + (e.message || e);
     }
+    aiStart = 0; clearInterval(aiTimer);
     plan.start = ymd(day);
     st.plan = plan; st.done = []; st.day = 0; st.step = "plan";
     busy = false; planChanged(); render();
@@ -620,6 +640,7 @@ JSON 하나만 답해:
     if (d.act === "rank") { st.roll = 0; return doRank(); }
     if (d.act === "reroll") { st.roll = (st.roll || 0) + 1; return doRank(); }
     if (d.act === "remake" && st.plan && st.plan.fromPhone) { errMsg = t("폰 앱에서 짠 일정은 폰 앱에서 다시 짜 주세요."); render(); return; } // 웹의 옛 후보로 폰 일정을 덮지 않게 (QA 11-23)
+    if (d.act === "cancel") { aiGen++; aiStart = 0; busy = false; clearInterval(aiTimer); errMsg = t("일정 짜기를 그만뒀어요. 다시 누르면 새로 짜요."); render(); return; }
     if (d.act === "make" || d.act === "remake") return doMake();
     if (d.act === "new") { st = { step: "wants", when: st.when, wants: [], maxMin: st.maxMin, from: st.from, cands: [], picks: [], plan: null, done: [], day: 0, dismissed: st.planUpdated || st.dismissed || 0 }; errMsg = ""; save(); render(); return; }
   });

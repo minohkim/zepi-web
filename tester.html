@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="theme-color" content="#0E8465">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>바람소리 베타 테스터 안내</title>
+<meta name="description" content="바람소리 베타 설치부터 일주일 동안 봐 주실 것, 의견 보내는 법까지 한 장에.">
+<meta property="og:title" content="바람소리 베타 테스터 안내">
+<meta property="og:description" content="설치 → 처음 설정 3가지 → 일주일 동안 봐 주실 것 → 의견 보내기">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://baramsori.kr/tester.html">
+<meta property="og:image" content="https://baramsori.kr/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap">
+<style>
+:root {
+  --bg: #F4F8F5; --surface: #FFFFFF; --ink: #17201A; --muted: #56615A; --line: #D5E0DA;
+  --leaf: #0E8465; --leaf-soft: #D5EDE5; --pepper: #A8402A;
+  --sun: #F2B705; --sun-ink: #8A6A00; --sun-soft: #FFF1C2; --on-sun: #1B1A12; --radius: 20px;
+  --font-display: "Gowun Dodum", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0F1411; --surface: #161D18; --ink: #E5EBE3; --muted: #9AA69D; --line: #29332C;
+    --leaf: #4FC9A4; --leaf-soft: #163329; --pepper: #E5805F; --sun-ink: #F2C94C; --sun-soft: #3A3114; color-scheme: dark; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.6; word-break: keep-all; overflow-wrap: anywhere;
+  padding: 28px max(18px, env(safe-area-inset-left, 0px)) 48px; }
+.wrap { max-width: 560px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand svg { width: 44px; height: 44px; flex: none; }
+h1 { font-family: var(--font-display); font-size: 30px; margin: 0; line-height: 1.25; text-wrap: balance; }
+.sub { margin: 4px 0 0; color: var(--muted); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; }
+/* 중국어·일본어는 그 나라 글꼴로 (한국어 글꼴은 한자를 한국식 모양으로 그려요) */
+:root:lang(zh) { --font-display: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif; --font-body: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif; }
+:root:lang(ja) { --font-display: "Hiragino Sans", "Yu Gothic UI", "Meiryo", "Noto Sans JP", system-ui, sans-serif; --font-body: "Hiragino Sans", "Yu Gothic UI", "Meiryo", "Noto Sans JP", system-ui, sans-serif; }
+:root:lang(en) { --font-display: "Gowun Dodum", system-ui, sans-serif; }
+footer { color: var(--muted); font-size: 13px; text-align: center; }
+footer a { color: inherit; }
+
+h2 { font-family: var(--font-display); font-size: 22px; margin: 0 0 10px; }
+.card ol, .card ul { margin: 0; padding-left: 22px; display: grid; gap: 8px; }
+.path { display: inline-block; background: var(--leaf-soft); border-radius: 8px; padding: 0 8px; font-weight: 600; }
+.tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+.tabs button { min-height: 48px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--ink); font: inherit; font-weight: 600; cursor: pointer; }
+.tabs button[aria-selected="true"] { border-color: var(--leaf); background: var(--leaf-soft); }
+.check li { list-style: none; margin-left: -22px; display: grid; grid-template-columns: 32px 1fr; align-items: start; }
+.check input { width: 22px; height: 22px; margin-top: 3px; accent-color: var(--leaf); }
+.check small { display: block; color: var(--muted); }
+.note { background: var(--sun-soft); border-radius: 12px; padding: 12px 14px; font-size: 15px; }
+a.btn { display: inline-flex; min-height: 48px; align-items: center; padding: 0 18px; border-radius: 999px; background: var(--sun); color: var(--on-sun); text-decoration: none; font-weight: 600; }
+.prog { color: var(--muted); font-size: 14px; margin-top: 10px; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="brand">
+    <svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#0E8465"/><g fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" transform="translate(6,6) scale(0.75)"><path d="M5 24h11a5 5 0 1 0-5-5"/><path d="M5 32h14"/><path d="M27 18v12"/><path d="M34 13v22"/><path d="M41 20v8"/></g></svg>
+    <div>
+      <h1>베타 테스터 안내</h1>
+      <p class="sub">함께해 주셔서 고마워요. 이 한 장이면 돼요.</p>
+    </div>
+  </div>
+
+  <section class="card">
+    <h2>① 설치</h2>
+    <div class="tabs" role="tablist" aria-label="쓰는 폰">
+      <button type="button" role="tab" id="t-and" aria-selected="true" aria-controls="p-and">갤럭시 · 안드로이드</button>
+      <button type="button" role="tab" id="t-ios" aria-selected="false" aria-controls="p-ios">iPhone</button>
+    </div>
+    <div id="p-and" role="tabpanel" aria-labelledby="t-and">
+      <ol>
+        <li>신청한 Gmail로 온 <b>Firebase App Distribution 초대 메일</b>을 열고 <b>시작하기</b>를 눌러요. (안 보이면 스팸함·프로모션함도)</li>
+        <li>안내대로 <b>App Tester</b> 앱을 받고, 거기서 <b>바람소리 → 다운로드</b>.</li>
+        <li>"출처를 알 수 없는 앱" 안내가 뜨면 <span class="path">설정 → 허용</span>을 켜고 설치해요.</li>
+      </ol>
+    </div>
+    <div id="p-ios" role="tabpanel" aria-labelledby="t-ios" hidden>
+      <ol>
+        <li>App Store에서 <b>TestFlight</b> 앱을 먼저 받아요.</li>
+        <li>아래 버튼(또는 초대 메일의 링크)을 눌러 <b>수락 → 설치</b>.</li>
+      </ol>
+      <p style="margin:12px 0 0"><a class="btn" href="https://testflight.apple.com/join/K4vm2seY" target="_blank" rel="noopener">TestFlight로 설치</a></p>
+    </div>
+    <p class="prog">아직 신청 전이면 <a href="beta.html?from=tester">베타 신청</a>부터 해 주세요.</p>
+  </section>
+
+  <section class="card">
+    <h2>② 처음 설정 3가지 (1분)</h2>
+    <ol>
+      <li><b>위치 '항상 허용'</b> — 처음 물어볼 때 "앱 사용 중에만"이 아니라 <b>항상</b>으로. 그래야 주머니 속에서도 다닌 길이 남아요.</li>
+      <li><b>기록이 끊기지 않게</b> — <span class="path">설정 → 기록이 끊길 때 → 기록이 끊기지 않게 설정하기</span>. 갤럭시는 배터리 절전 예외가 꼭 필요해요.</li>
+      <li><b>위치기반서비스 약관 동의</b> — 기록을 켤 때 한 번 물어봐요.</li>
+    </ol>
+    <p class="note" style="margin:12px 0 0">최근 앱 목록에서 바람소리를 <b>밀어서 닫으면 기록이 멈춰요.</b> 홈 버튼으로만 나가 주세요.</p>
+  </section>
+
+  <section class="card">
+    <h2>③ 일주일 동안 봐 주실 것</h2>
+    <p style="margin:0 0 10px;color:var(--muted)">다 안 하셔도 돼요. 해 본 것만 체크해 두면 의견 보낼 때 편해요. (이 폰에만 저장돼요)</p>
+    <ul class="check" id="chk">
+      <li><input type="checkbox" id="c1"><label for="c1">하루 다닌 길이 끊기지 않고 남는지<small>지도 탭 · 타임라인 탭에서 어제 길 보기</small></label></li>
+      <li><input type="checkbox" id="c2"><label for="c2">오늘 탭이 지금 날씨·계절에 맞는지<small>노래·즐길 거리·딱 좋은 코스가 엉뚱하면 알려 주세요</small></label></li>
+      <li><input type="checkbox" id="c3"><label for="c3">새 시군구에 가면 정복 지도가 칠해지는지<small>정복 탭</small></label></li>
+      <li><input type="checkbox" id="c4"><label for="c4">걷기·달리기·자전거·트레킹 기록 한 번<small>오늘 탭 → 운동 기록</small></label></li>
+      <li><input type="checkbox" id="c5"><label for="c5">주말 여행 일정 한 번 짜 보기<small>오늘 탭 → ⛺ 이번 주말</small></label></li>
+      <li><input type="checkbox" id="c6"><label for="c6">바닷가라면 물때·'오늘 낚시' 한 줄<small>오늘 탭 → 🌊 물때</small></label></li>
+      <li><input type="checkbox" id="c7"><label for="c7">백업 파일 만들어 웹에서 열어 보기<small>설정 → 백업 → 백업 파일 만들기 → <a href="app.html">웹</a>의 '백업 파일 열기'</small></label></li>
+      <li><input type="checkbox" id="c8"><label for="c8">배터리가 하루에 얼마나 줄었는지<small>평소보다 눈에 띄게 줄면 꼭 알려 주세요</small></label></li>
+    </ul>
+    <p class="prog" id="cnt" aria-live="polite"></p>
+  </section>
+
+  <section class="card">
+    <h2>④ 의견 보내기</h2>
+    <ul>
+      <li>앱에서 <span class="path">설정 → 베타 · 약관 → 의견 보내기</span>. 한 줄도 좋아요.</li>
+      <li>"언제, 어디서, 무엇을 눌렀더니, 어떻게 됐다"면 최고예요. 화면 캡처는 알려 준 분께 카톡으로 보내 주세요.</li>
+      <li>앱이 꺼지거나 멈췄다면 그 시각만 적어 주셔도 찾을 수 있어요.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>⑤ 알아 두실 것</h2>
+    <ul>
+      <li><b>다닌 길·머문 곳은 폰에만 있어요.</b> 서버로 보내지 않아요. 폰을 바꾸거나 웹에서 보려면 백업 파일로 옮겨요.</li>
+      <li>새 버전이 나오면 갤럭시는 초대 메일·App Tester, 아이폰은 TestFlight에서 <b>업데이트</b>를 눌러요. 기록은 그대로예요.</li>
+      <li>그만두고 싶으면 앱을 지우면 돼요. 계정까지 지우려면 <span class="path">설정 → 맨 위 내 계정 → 탈퇴하기</span>.</li>
+      <li>베타 동안은 무료예요.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <a href="./">바람소리 웹</a> · <a href="beta.html">베타 신청</a> · <a href="terms.html">이용약관</a> · <a href="privacy.html">개인정보처리방침</a>
+  </footer>
+</main>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  // 폰 종류 탭: 아이폰이면 아이폰 먼저
+  const tabs = [["t-and", "p-and"], ["t-ios", "p-ios"]];
+  const pick = (i) => tabs.forEach(([tb, pn], j) => { $(tb).setAttribute("aria-selected", String(i === j)); $(pn).hidden = i !== j; });
+  tabs.forEach(([tb], i) => $(tb).addEventListener("click", () => pick(i)));
+  if (/iPhone|iPad|iPod/.test(navigator.userAgent)) pick(1);
+  // 체크는 이 브라우저에만 (서버로 안 가요)
+  const KEY = "zepi_tester_chk";
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (_) {}
+  const boxes = [...document.querySelectorAll("#chk input")];
+  const count = () => { const n = boxes.filter((b) => b.checked).length; $("cnt").textContent = n ? n + " / " + boxes.length + " 해 봤어요" + (n === boxes.length ? " 🎉 고마워요!" : "") : ""; };
+  boxes.forEach((b) => {
+    b.checked = !!saved[b.id];
+    b.addEventListener("change", () => { saved[b.id] = b.checked; try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (_) {} count(); });
+  });
+  count();
+})();
+</script>
+</body>
+</html>
