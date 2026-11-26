@@ -153,20 +153,54 @@
   const TAG_MONTHS = { spring: [3, 4, 5], summer: [6, 7, 8], autumn: [9, 10, 11], late: [11, 12], winter: [12, 1, 2], xmas: [12], snow: [11, 12, 1, 2, 3] };
   const WD = ["월", "화", "수", "목", "금", "토", "일"];
   function fitsMonth(s, m) {
-    if (s.months) return s.months.includes(m);
+    if (s.months && s.months.length) return s.months.includes(m);
     const ms = (s.tags || []).flatMap((x) => TAG_MONTHS[x] || []);
     return !ms.length || ms.includes(m);
   }
   function weekdayOf(k) { const w = new Date(Date.UTC(k.y, k.m - 1, k.d)).getUTCDay(); return w === 0 ? 7 : w; }
   function rnd(seed) { let x = seed | 0 || 1; return () => ((x = (x * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff); }
+  // ---------- 술 생각나는 밤 · MBTI (앱 lib/songs.dart 와 같은 셈) ----------
+  const DRINKS = [["whisky", "🥃 위스키"], ["highball", "🧊 하이볼"], ["wine", "🍷 와인"], ["sake", "🍶 사케"], ["makgeolli", "🍚 막걸리"], ["somaek", "🍺 소맥"], ["beer", "🍻 맥주"], ["coffee", "☕ 커피"]];
+  const ALCOHOL = ["whisky", "highball", "wine", "sake", "makgeolli", "somaek", "beer"];
+  const MBTIS = ["ISTJ", "ISFJ", "INFJ", "INTJ", "ISTP", "ISFP", "INFP", "INTP", "ESTP", "ESFP", "ENFP", "ENTP", "ESTJ", "ESFJ", "ENFJ", "ENTJ"];
+  const store = { get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* 저장 안 돼도 괜찮아요 */ } } };
+  let songCheers = false, songDrinks = store.get("zDrinks", []), songMbti = store.get("zMbti", "");
+  function mbtiTags(code) {
+    const c = (code || "").toUpperCase();
+    if (c.length !== 4) return [];
+    return [c[0] === "I" ? "calm" : "singalong", c[1] === "N" ? "dreamy" : "classic", ...(c[2] === "F" ? ["emotional"] : ["groove", "inst"]), c[3] === "P" ? "free" : "classic"];
+  }
+  function drinkNight(k, o) {
+    if (songCheers) return true;
+    const wd = weekdayOf(k), h = k.h, evening = h >= 19 || h < 2;
+    if (((wd === 5 || wd === 6) && h >= 19) || (h < 2 && (wd === 6 || wd === 7))) return true;
+    if ((o.rain || o.snow) && (o.night || evening)) return true;
+    return false;
+  }
   function songsNow(k, o, seed) {
     const wd = weekdayOf(k), r = rnd(seed);
+    const mt = new Set(mbtiTags(songMbti));
+    if (drinkNight(k, o)) {
+      const mine = new Set(songDrinks.length ? songDrinks : ALCOHOL), out = [];
+      for (const s of SONGS) {
+        if (!fitsMonth(s, k.m) || (s.days && s.days.length && !s.days.includes(wd))) continue;
+        const tg = new Set(s.tags || []), hit = [...tg].filter((x) => mine.has(x));
+        if (!hit.length || ((s.places.length || s.sido) && !(o.region && s.places.includes(o.region)))) continue;
+        let sc = 30 + (o.rain && tg.has("rain") ? 12 : 0) + (o.snow && tg.has("snow") ? 12 : 0) + (tg.has("night") ? 3 : 0);
+        sc *= 1 + 0.35 * [...tg].filter((x) => mt.has(x)).length;
+        const dw = (DRINKS.find((d) => d[0] === hit[0]) || ["", ""])[1];
+        out.push({ song: s, why: s.note ? tOpt(s.note) : t("{d} 한 잔과", { d: dw }), sc: sc + r() * 20 });
+      }
+      out.sort((a, b) => b.sc - a.sc);
+      if (out.length) return out.slice(0, 3);
+    }
     const inSido = (s) => !!s.sido && (o.sido || "").includes(s.sido);
     const here = (s) => o.region && !o.isDefault && (s.places.length ? s.places.includes(o.region) && (!s.sido || inSido(s)) : inSido(s));
     const ss = seasonOf(k.m), seasonWord = t("{season}에", { season: t(SEASON_NAMES[k.m - 1]) });
     const out = [];
     for (const s of SONGS) {
-      if (!fitsMonth(s, k.m) || (s.days && !s.days.includes(wd))) continue;
+      if (!fitsMonth(s, k.m) || (s.days && s.days.length && !s.days.includes(wd))) continue;
       const tg = new Set(s.tags || []);
       let sc = 0, why = "";
       const add = (ok, n, w) => { if (ok) { sc += n; if (!why) why = w; } };
@@ -185,6 +219,10 @@
       add(tg.has(ss) || (tg.has("late") && (k.m === 11 || k.m === 12)), 12, seasonWord);
       add(o.clear && !o.rain && !o.snow && tg.has("clear"), 6, t("맑은 날"));
       add(tg.has("memory"), 3, t("문득 떠오르는 노래"));
+      // 술 노래는 술 생각나는 밤에만 (커피·추억 노래는 그대로), MBTI 취향 조금
+      if (ALCOHOL.some((x) => tg.has(x)) && !tg.has("coffee") && !tg.has("memory")) sc *= 0.35;
+      const mh = [...tg].filter((x) => mt.has(x)).length;
+      if (sc && mh) { sc *= 1 + 0.25 * mh; if (!why) why = t("{m} 취향", { m: songMbti }); }
       // 장소 노래는 그곳에서만 (다른 데선 길 노래로도 안 나와요)
       if ((s.places.length || s.sido) && !here(s)) continue;
       if (!sc) continue;
@@ -443,11 +481,18 @@
   let courseBand = (() => { try { return localStorage.getItem("zCourseBand") || "auto"; } catch (e) { return "auto"; } })();
   function songHtml() {
     const list = songCtx ? songsNow(songCtx.k, songCtx.o, songSeed) : [];
-    if (!list.length) return "";
-    return "<h2>" + esc(t("지금 들을 노래")) + "<small>" + esc(list[0].why) + "</small></h2>" +
+    const night = songCtx && drinkNight(songCtx.k, songCtx.o);
+    const head = night ? (songDrinks.length === 1 ? t("{d} 한 잔 생각나는 밤", { d: (DRINKS.find((d) => d[0] === songDrinks[0]) || ["", ""])[1] }) : t("🥃 술 생각나는 밤")) : (list[0] ? list[0].why : "");
+    const tools = '<div class="chips">' +
+      '<button type="button" data-shuffle>🔀 ' + esc(t("다른 노래")) + "</button>" +
+      '<button type="button" data-cheers aria-pressed="' + songCheers + '"' + (songCheers ? ' class="on"' : "") + ">🥃 " + esc(t("한잔")) + "</button>" +
+      '<label class="mbtisel"><span class="muted">MBTI</span> <select data-mbti aria-label="' + esc(t("내 MBTI")) + '"><option value="">' + esc(t("선택 안 함")) + "</option>" +
+      MBTIS.map((m) => '<option' + (m === songMbti ? " selected" : "") + ">" + m + "</option>").join("") + "</select></label></div>" +
+      (night ? '<div class="chips" role="group" aria-label="' + esc(t("마실거리")) + '">' + DRINKS.map(([id, lb]) => '<button type="button" data-drink="' + id + '" aria-pressed="' + songDrinks.includes(id) + '"' + (songDrinks.includes(id) ? ' class="on"' : "") + ">" + esc(t(lb)) + "</button>").join("") + "</div>" : "");
+    if (!list.length) return "<h2>" + esc(t("지금 들을 노래")) + "</h2>" + tools;
+    return "<h2>" + esc(t("지금 들을 노래")) + "<small>" + esc(head) + "</small></h2>" +
       list.map((x, i) => '<div class="songrow"><div><span aria-hidden="true">🎵</span> <b' + (i ? "" : ' style="font-size:18px"') + ">" + esc(x.song.title) + "</b> · " + esc(x.song.artist) +
-        (i ? ' <span class="muted">· ' + esc(x.why) + "</span>" : "") + '</div><a class="btn" href="' + youtube(x.song.artist + " " + x.song.title) + '" ' + ext + ' aria-label="' + esc(t("유튜브에서 듣기")) + ": " + esc(x.song.title) + '">▶</a></div>').join("") +
-      '<div class="chips"><button type="button" data-shuffle>🔀 ' + esc(t("다른 노래")) + "</button></div>";
+        ((i || night) ? ' <span class="muted">· ' + esc(x.why) + "</span>" : "") + '</div><a class="btn" href="' + youtube(x.song.artist + " " + x.song.title) + '" ' + ext + ' aria-label="' + esc(t("유튜브에서 듣기")) + ": " + esc(x.song.title) + '">▶</a></div>').join("") + tools;
   }
   function courseHtml() {
     const bands = '<div class="chips cband" role="group" aria-label="' + esc(t("거리로 고르기")) + '">' +
@@ -471,9 +516,21 @@
   function bindExtra(root) {
     if (root.dataset.extra) return; // root 는 그대로라 한 번만 붙여요
     root.dataset.extra = "1";
+    root.addEventListener("change", (e) => {
+      const sel = e.target.closest("[data-mbti]");
+      if (!sel) return;
+      songMbti = sel.value; store.set("zMbti", songMbti); $("songBox").innerHTML = songHtml();
+      const s2 = $("songBox").querySelector("[data-mbti]"); if (s2) s2.focus();
+    });
     root.addEventListener("click", (e) => {
-      const el = e.target.closest("[data-shuffle],[data-course-next],[data-band]");
+      const el = e.target.closest("[data-shuffle],[data-course-next],[data-band],[data-cheers],[data-drink]");
       if (!el) return;
+      if (el.hasAttribute("data-cheers")) { songCheers = !songCheers; songSeed = (songSeed * 7 + 13) & 0xffff; $("songBox").innerHTML = songHtml(); const b = $("songBox").querySelector("[data-cheers]"); if (b) b.focus(); return; }
+      if (el.hasAttribute("data-drink")) {
+        const d = el.dataset.drink; songDrinks = songDrinks.includes(d) ? songDrinks.filter((x) => x !== d) : songDrinks.concat(d);
+        store.set("zDrinks", songDrinks); $("songBox").innerHTML = songHtml();
+        const b = $("songBox").querySelector('[data-drink="' + d + '"]'); if (b) b.focus(); return;
+      }
       if (el.hasAttribute("data-shuffle")) { songSeed = (songSeed * 7 + 13) & 0xffff; $("songBox").innerHTML = songHtml(); }
       else if (el.hasAttribute("data-band")) {
         courseBand = el.dataset.band;
