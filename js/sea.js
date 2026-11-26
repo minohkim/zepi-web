@@ -75,11 +75,13 @@
     return null;
   }
   const cache = new Map();
+  // 응답이 오지 않으면 10초에 끊어요 — 안 그러면 바다 탭 전체가 '…'에 멈추고 낚시 게임의 날씨 받기도 끝나지 않아요 (QA 11-27, 오늘 탭과 같은 방식)
+  const within = (p, ms) => Promise.race([p, new Promise((_, no) => setTimeout(() => no(Object.assign(new Error("timeout"), { quiet: true })), ms || 10000))]);
   async function tideDay(code, ymd, min) {
     const key = code + ymd + min;
     if (cache.has(key)) return cache.get(key);
     const q = "1192136/tideFcstTime/GetTideFcstTimeApiService?obsCode=" + code + "&reqDate=" + ymd + "&min=" + min + "&numOfRows=300&pageNo=1&type=json";
-    const v = parseTide(await ZAPP.proxy("/datago/" + q));
+    const v = parseTide(await within(ZAPP.proxy("/datago/" + q)));
     if (!v.pts.length) throw new Error(t("물때 정보가 비어 있어요."));
     cache.set(key, v);
     return v;
@@ -91,7 +93,7 @@
     const u = "https://marine-api.open-meteo.com/v1/marine?latitude=" + lat.toFixed(3) + "&longitude=" + lng.toFixed(3) +
       "&current=wave_height,wave_direction,wave_period,sea_surface_temperature&daily=wave_height_max&timezone=Asia%2FSeoul&forecast_days=4";
     const w = "https://api.open-meteo.com/v1/forecast?latitude=" + lat.toFixed(3) + "&longitude=" + lng.toFixed(3) + "&current=wind_speed_10m,wind_direction_10m,wind_gusts_10m&timezone=Asia%2FSeoul&wind_speed_unit=ms";
-    const [a, b] = await Promise.all([fetch(u).then((r) => r.json()), fetch(w).then((r) => r.json()).catch(() => null)]);
+    const [a, b] = await Promise.all([within(fetch(u).then((r) => r.json())), within(fetch(w).then((r) => r.json())).catch(() => null)]);
     const v = { sea: a, wind: b };
     cache.set(key, { at: Date.now(), v });
     return v;
@@ -209,7 +211,7 @@
           const lo = Math.min(...a.pts.map((p) => p.level)), hi = Math.max(...a.pts.map((p) => p.level));
           h += '<div class="muted">' + esc(t("오늘 물높이 차이 {n} cm", { n: Math.round(hi - lo) })) + " · " + esc(t("높이는 그 지역 기준면에서 잰 값이에요.")) + "</div>";
         } catch (e) {
-          h += '<div class="muted">' + esc(t("물때를 불러오지 못했어요.")) + " " + esc(e.message || e) + "</div>";
+          h += '<div class="muted">' + esc(t("물때를 불러오지 못했어요.")) + (e && e.quiet ? "" : " " + esc(e.message || e)) + "</div>";
         }
       }
       h += "</article>";
