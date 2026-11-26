@@ -165,7 +165,7 @@
   const MBTIS = ["ISTJ", "ISFJ", "INFJ", "INTJ", "ISTP", "ISFP", "INFP", "INTP", "ESTP", "ESFP", "ENFP", "ENTP", "ESTJ", "ESFJ", "ENFJ", "ENTJ"];
   const store = { get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* 저장 안 돼도 괜찮아요 */ } } };
-  let songCheers = false, songFire = false, songDrinks = store.get("zDrinks", []), songMbti = store.get("zMbti", "");
+  let songCheers = false, songFire = false, songRetro = false, songDrinks = store.get("zDrinks", []), songMbti = store.get("zMbti", "");
   let songLiked = store.get("zSongLiked", []), songBan = store.get("zSongBan", []);
   const songKey = (s) => s.title + "/" + s.artist;
   // ♥ 누른 곡들로 취향 배우기 (앱 lib/songs.dart 와 같은 셈)
@@ -192,6 +192,12 @@
     if ((o.rain || o.snow) && (o.night || evening)) return true;
     return false;
   }
+  // 📻 옛 노래: 버튼, 또는 옛 노래에 ♥ 누른 사람의 막걸리 밤 (앱 lib/songs.dart retroNight 와 같은 셈)
+  function retroNight(k, o) {
+    if (songRetro) return true;
+    return !songFire && drinkNight(k, o) && songDrinks.includes("makgeolli") && tasteTop().has("retro");
+  }
+  const yearNote = (s, d) => (s.year ? t("{y}년", { y: s.year }) + " · " : "") + (s.note ? tOpt(s.note) : d);
   function songsNow(k, o, seed) {
     const wd = weekdayOf(k), r = rnd(seed);
     const mt = new Set(mbtiTags(songMbti)), top = tasteTop(), banned = (x) => songBan.includes(songKey(x));
@@ -203,6 +209,20 @@
         let sc = 30 + (tg.has("night") ? 3 : 0);
         sc *= (1 + 0.35 * [...tg].filter((x) => mt.has(x)).length) * likeW(s, top);
         out.push({ song: s, why: s.note ? tOpt(s.note) : t("모닥불 앞에서"), sc: sc + r() * 20 });
+      }
+      out.sort((a, b) => b.sc - a.sc);
+      if (out.length) return out.slice(0, 3);
+    }
+    if (!songFire && retroNight(k, o)) {
+      const out = [];
+      for (const s of SONGS) {
+        if (banned(s) || !(s.tags || []).includes("retro") || !fitsMonth(s, k.m)) continue;
+        const tg = new Set(s.tags);
+        // 이 동네 옛 노래는 크게, 다른 동네 노래도 옛 노래 모드에선 나와요
+        const local = o.region && !o.isDefault && s.places.length && s.places.includes(o.region) && (!s.sido || (o.sido || "").includes(s.sido));
+        let sc = 30 + (local ? 30 : 0) + (tg.has("makgeolli") ? 4 : 0) + (o.rain && tg.has("rain") ? 10 : 0) + (tg.has("night") ? 2 : 0);
+        sc *= (1 + 0.35 * [...tg].filter((x) => mt.has(x)).length) * likeW(s, top);
+        out.push({ song: s, why: local ? t("{place}에 왔으니까", { place: o.region }) : yearNote(s, t("그 시절 노래")), sc: sc + r() * 20 });
       }
       out.sort((a, b) => b.sc - a.sc);
       if (out.length) return out.slice(0, 3);
@@ -509,10 +529,12 @@
   function songHtml() {
     const list = songCtx ? songsNow(songCtx.k, songCtx.o, songSeed) : [];
     const night = !songFire && songCtx && drinkNight(songCtx.k, songCtx.o);
-    const head = songFire ? t("🔥 불멍하며 듣는 노래") : night ? (songDrinks.length === 1 ? t("{d} 한 잔 생각나는 밤", { d: (DRINKS.find((d) => d[0] === songDrinks[0]) || ["", ""])[1] }) : t("🥃 술 생각나는 밤")) : (list[0] ? list[0].why : "");
+    const retro = !songFire && songCtx && retroNight(songCtx.k, songCtx.o);
+    const head = songFire ? t("🔥 불멍하며 듣는 노래") : retro ? (night && songDrinks.includes("makgeolli") ? t("🍚 막걸리 한 잔에 옛 노래") : t("📻 그 시절 옛 노래")) : night ? (songDrinks.length === 1 ? t("{d} 한 잔 생각나는 밤", { d: (DRINKS.find((d) => d[0] === songDrinks[0]) || ["", ""])[1] }) : t("🥃 술 생각나는 밤")) : (list[0] ? list[0].why : "");
     const tools = '<div class="chips">' +
       '<button type="button" data-shuffle>🔀 ' + esc(t("다른 노래")) + "</button>" +
       '<button type="button" data-fire aria-pressed="' + songFire + '"' + (songFire ? ' class="on"' : "") + ">🔥 " + esc(t("불멍")) + "</button>" +
+      '<button type="button" data-retro aria-pressed="' + songRetro + '"' + (songRetro ? ' class="on"' : "") + ">📻 " + esc(t("옛 노래")) + "</button>" +
       '<button type="button" data-cheers aria-pressed="' + songCheers + '"' + (songCheers ? ' class="on"' : "") + ">🥃 " + esc(t("한잔")) + "</button>" +
       '<label class="mbtisel"><span class="muted">MBTI</span> <select data-mbti aria-label="' + esc(t("내 MBTI")) + '"><option value="">' + esc(t("선택 안 함")) + "</option>" +
       MBTIS.map((m) => '<option' + (m === songMbti ? " selected" : "") + ">" + m + "</option>").join("") + "</select></label></div>" +
@@ -520,7 +542,7 @@
     if (!list.length) return "<h2>" + esc(t("지금 들을 노래")) + "</h2>" + tools;
     return "<h2>" + esc(t("지금 들을 노래")) + "<small>" + esc(head) + "</small></h2>" +
       list.map((x, i) => '<div class="songrow"><div><span aria-hidden="true">🎵</span> <b' + (i ? "" : ' style="font-size:18px"') + ">" + esc(x.song.title) + "</b> · " + esc(x.song.artist) +
-        ((i || night || songFire) ? ' <span class="muted">· ' + esc(x.why) + "</span>" : "") + '</div><span class="songact">' +
+        ((i || night || songFire || retro) ? ' <span class="muted">· ' + esc(x.why) + "</span>" : "") + '</div><span class="songact">' +
         '<button type="button" class="btn" data-like="' + esc(songKey(x.song)) + '" aria-pressed="' + songLiked.includes(songKey(x.song)) + '" aria-label="' + esc(t("좋아요")) + ": " + esc(x.song.title) + '">' + (songLiked.includes(songKey(x.song)) ? "♥" : "♡") + "</button>" +
         '<button type="button" class="btn" data-ban="' + esc(songKey(x.song)) + '" aria-label="' + esc(t("이 노래 그만")) + ": " + esc(x.song.title) + '">✕</button>' +
         '<a class="btn" href="' + youtube(x.song.artist + " " + x.song.title) + '" ' + ext + ' aria-label="' + esc(t("유튜브에서 듣기")) + ": " + esc(x.song.title) + '">▶</a></span></div>').join("") + tools;
@@ -554,9 +576,10 @@
       const s2 = $("songBox").querySelector("[data-mbti]"); if (s2) s2.focus();
     });
     root.addEventListener("click", (e) => {
-      const el = e.target.closest("[data-shuffle],[data-course-next],[data-band],[data-cheers],[data-drink],[data-fire],[data-like],[data-ban]");
+      const el = e.target.closest("[data-shuffle],[data-course-next],[data-band],[data-cheers],[data-drink],[data-fire],[data-retro],[data-like],[data-ban]");
       if (!el) return;
-      if (el.hasAttribute("data-fire")) { songFire = !songFire; songSeed = (songSeed * 7 + 13) & 0xffff; $("songBox").innerHTML = songHtml(); const b = $("songBox").querySelector("[data-fire]"); if (b) b.focus(); return; }
+      if (el.hasAttribute("data-retro")) { songRetro = !songRetro; if (songRetro) songFire = false; songSeed = (songSeed * 7 + 13) & 0xffff; $("songBox").innerHTML = songHtml(); const b = $("songBox").querySelector("[data-retro]"); if (b) b.focus(); return; }
+      if (el.hasAttribute("data-fire")) { songFire = !songFire; if (songFire) songRetro = false; songSeed = (songSeed * 7 + 13) & 0xffff; $("songBox").innerHTML = songHtml(); const b = $("songBox").querySelector("[data-fire]"); if (b) b.focus(); return; }
       if (el.hasAttribute("data-like")) {
         const key = el.dataset.like; songLiked = songLiked.includes(key) ? songLiked.filter((x) => x !== key) : songLiked.concat(key);
         store.set("zSongLiked", songLiked); $("songBox").innerHTML = songHtml();

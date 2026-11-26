@@ -9583,5 +9583,30 @@
   "A little songbird. It never forgets a place you've been and quietly writes it down.",
   "一只爱唱歌的小鸟。去过的地方一个都不忘，静静记下来。",
   "歌う小さな鳥。行った場所をひとつも忘れず、そっと書き留めます。"
+ ],
+ "옛 노래": [
+  "Oldies",
+  "老歌",
+  "懐メロ"
+ ],
+ "{y}년": [
+  "{y}",
+  "{y}年",
+  "{y}年"
+ ],
+ "그 시절 노래": [
+  "A song from those days",
+  "那个年代的歌",
+  "あの頃の歌"
+ ],
+ "📻 그 시절 옛 노래": [
+  "📻 Old Korean songs",
+  "📻 那个年代的老歌",
+  "📻 あの頃の懐メロ"
+ ],
+ "🍚 막걸리 한 잔에 옛 노래": [
+  "🍚 Oldies with a bowl of makgeolli",
+  "🍚 一碗米酒配老歌",
+  "🍚 マッコリ一杯に懐メロ"
  ]
 }
