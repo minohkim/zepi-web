@@ -147,13 +147,14 @@
     const wh = c && typeof c.wave_height === "number" ? c.wave_height : null;
     const ws = w && typeof w.wind_speed_10m === "number" ? w.wind_speed_10m : null;
     let say;
-    if ((wh != null && wh >= 2) || (ws != null && ws >= 12)) say = t("오늘은 쉬어요 · 파도·바람이 세요");
+    const rest = (wh != null && wh >= 2) || (ws != null && ws >= 12); // 쉬자고 한 날엔 '좋은 때'를 붙이지 않아요 (바람만 셀 때 "쉬어요 · 좋은 때 …"가 같이 나왔어요, QA 11-27)
+    if (rest) say = t("오늘은 쉬어요 · 파도·바람이 세요");
     else if ((wh != null && wh >= 1.2) || (ws != null && ws >= 8)) say = t("방파제 안쪽만 · 바람을 등지고");
     else if (snKey === "조금") say = t("물이 약해 입질이 느릴 수 있어요");
     else if (snKey === "사리") say = t("물살이 세요 · 채비는 무겁게");
     else say = t("물때 좋아요 · 나가 볼 만해요");
     let when = "";
-    if (high && !(wh != null && wh >= 2)) {
+    if (high && !rest) {
       const a = new Date(Math.max(now.getTime(), high.time.getTime() - 2 * 3600e3)), b = new Date(high.time.getTime() + 3600e3);
       when = " · " + t("좋은 때 {from}~{to}", { from: fmtTime.format(a), to: fmtTime.format(b) });
     } else if (!ZAPP.signedIn()) when = " · " + t("로그인하면 좋은 시각까지 알려 줘요");
