@@ -926,6 +926,9 @@ body { margin: 0; }
       setNotice(t("바람소리 백업 파일이 아니에요. 앱의 <strong>설정 → 백업</strong>에서 만든 <strong>.db</strong> 파일을 골라 주세요."), true);
       return;
     }
+    // 안드로이드가 앱 DB를 WAL 방식으로 열면 머리말 18·19번째 값이 2예요. 브라우저용 sqlite(sql.js)는 WAL 파일을 못 열 수 있어서
+    // 옛 방식(1)으로 바꿔 읽어요. 백업은 본 파일 하나뿐이라(-wal 없음) 읽는 내용은 같아요. (QA 11-27, 추정 방어)
+    if (bytes[18] === 2 || bytes[19] === 2) { bytes[18] = 1; bytes[19] = 1; }
     let db, data;
     try {
       db = new SQL.Database(bytes);
