@@ -130,6 +130,7 @@
     if (!window.ZAPP || !ZAPP.signedIn()) return false;
     let remote = null;
     try { remote = await ZAPP.docGet("farm"); } catch (e) { console.warn("farm merge", e); return false; }
+    if (remote != null && typeof remote !== "string") remote = JSON.stringify(remote); // 서버 data 가 객체(jsonb)로 와도 합치게 (docs.js 와 같게, QA 11-27)
     let r = null;
     try { r = remote ? normFarm(JSON.parse(remote)) : null; } catch (e) {}
     const done = () => { try { localStorage.setItem(KEY, JSON.stringify(farm)); localStorage.removeItem(MERGE); } catch (e) {} picking = !farm.crops.length; };
