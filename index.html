@@ -71,13 +71,32 @@ header nav .btn { min-height: 44px; padding: 0 14px; font-size: 14px; }
 .langsel { appearance: auto; padding: 0 10px; }
 @media (max-width: 560px) { header nav .hide-s { display: none; } header .in { flex-wrap: nowrap; } header nav { flex-wrap: nowrap; } .langsel { max-width: 92px; } .logo b { font-size: 20px; } }
 /* 첫 화면 */
-.hero .in { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 40px; align-items: center; padding-block: 64px 56px; }
+.hero .in { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 40px; align-items: center; padding-block: 96px 88px; }
 .eyebrow { font-size: 13px; letter-spacing: .08em; color: var(--leaf-ink); font-weight: 600; }
 .hero h1 { font-family: var(--font-display); font-size: clamp(36px, 6vw, 60px); line-height: 1.15; letter-spacing: -0.01em; margin-top: 10px; }
 .hero p.lead { font-size: 18px; color: var(--muted); max-width: 32em; margin: 18px 0 26px; }
 .cta { display: flex; flex-wrap: wrap; gap: 10px; }
 .cta .btn { min-height: 50px; padding: 0 22px; font-size: 16px; }
 .small { font-size: 13px; color: var(--muted); margin-top: 12px; }
+/* 첫 화면 사진 배경 (직접 찍은 동해 바닷가) */
+.hero { position: relative; isolation: isolate; overflow: hidden; color: #fff; background: #0B3B2E; }
+.hero-bg, .hero-bg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 60% 55%; z-index: -2; }
+.hero::after { content: ""; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(90deg, rgba(6,32,24,.66) 0%, rgba(6,32,24,.4) 42%, rgba(6,32,24,.06) 78%, rgba(6,32,24,0) 100%),
+              linear-gradient(0deg, rgba(6,32,24,.35) 0%, rgba(6,32,24,0) 30%); }
+.hero .in { min-height: min(680px, 82vh); }
+.hero .eyebrow { color: #A8EBD3; }
+.hero h1 { color: #fff; text-shadow: 0 2px 24px rgba(0,0,0,.25); }
+.hero p.lead { color: rgba(255,255,255,.92); }
+.hero .small { color: rgba(255,255,255,.82); }
+.hero .btn:not(.primary) { background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.55); color: #fff; backdrop-filter: blur(6px); }
+.hero .btn:not(.primary):hover { background: rgba(255,255,255,.24); border-color: #fff; }
+.hero .mock { color: var(--ink); box-shadow: 0 30px 80px -30px rgba(0,0,0,.55); }
+@media (max-width: 860px) {
+  .hero-bg img { object-position: 72% 50%; }
+  .hero::after { background: linear-gradient(180deg, rgba(6,32,24,.5) 0%, rgba(6,32,24,.36) 50%, rgba(6,32,24,.7) 100%); }
+  .hero .in { min-height: 0; }
+}
 /* 오른쪽: 하루 지도 그림 */
 .mock { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 14px; box-shadow: 0 20px 60px -30px rgba(23, 32, 26, .35); }
 .mock svg { width: 100%; height: auto; display: block; border-radius: 10px; }
@@ -85,7 +104,7 @@ header nav .btn { min-height: 44px; padding: 0 14px; font-size: 14px; }
 .mock .tl div { display: grid; grid-template-columns: 52px 1fr auto; gap: 8px; align-items: center; }
 .mock .tl span:first-child { font-family: var(--font-num); color: var(--muted); font-size: 13px; }
 .mock .tl span:last-child { color: var(--muted); font-size: 13px; font-family: var(--font-num); }
-@media (max-width: 860px) { .hero .in { grid-template-columns: minmax(0, 1fr); padding-block: 36px 32px; } }
+@media (max-width: 860px) { .hero .in { grid-template-columns: minmax(0, 1fr); padding-block: 56px 40px; } }
 /* 기능 */
 section { padding-block: 56px; }
 section h2 { font-family: var(--font-display); font-size: clamp(26px, 4vw, 36px); }
@@ -141,6 +160,10 @@ footer .in { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: spa
 
 <main>
   <div class="hero band">
+    <picture class="hero-bg" aria-hidden="true">
+      <source type="image/webp" srcset="img/hero-800.webp 800w, img/hero-1280.webp 1280w, img/hero-2400.webp 2400w" sizes="100vw">
+      <img src="img/hero-1280.jpg" alt="" width="1280" height="720" fetchpriority="high" decoding="async">
+    </picture>
     <div class="in">
       <div>
         <div class="eyebrow">바람 따라 걷고, 소리처럼 남기고</div>
