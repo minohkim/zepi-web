@@ -1,10 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="306 116 150 234" role="img" aria-label="소리송이">
-<path d="M410 300L446 286L440 302L414 312Z" fill="#0E8465"/>
-<ellipse cx="370" cy="294" rx="50" ry="44" fill="#E5B547"/><ellipse cx="370" cy="306" rx="30" ry="24" fill="#F6E7C1"/>
-<path d="M324 272q-20 16-8 38q18-8 16-30z" fill="#D9A33A"/>
-<path d="M358 336v10M382 336v10" stroke="#D9772B" stroke-width="4" stroke-linecap="round"/>
-<path d="M356 162V142M370 158V126M384 162V146" stroke="#0E8465" stroke-width="10" stroke-linecap="round"/>
-<circle cx="370" cy="206" r="50" fill="#EEC45A"/>
-<circle cx="353" cy="202" r="5.5" fill="#2A2A2A"/><circle cx="387" cy="202" r="5.5" fill="#2A2A2A"/><path d="M362 216L372 211L382 216L372 230Z" fill="#D9772B"/>
-<circle cx="336" cy="220" r="7" fill="#E9A08A" fill-opacity=".4"/><circle cx="404" cy="220" r="7" fill="#E9A08A" fill-opacity=".4"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-6.6 -16 186.6 256" role="img" aria-label="소리송이"><g transform="translate(-290 -122)"><path d="M408 298L454 276L450 292ZM410 305L460 300L450 314ZM408 312L450 324L438 330Z" fill="#0E8465"/>
+<path d="M370 148C318 148 306 192 310 242Q340 252 370 248Q400 252 430 242C434 192 422 148 370 148Z" fill="#2B2523"/>
+<ellipse cx="370" cy="296" rx="50" ry="44" fill="#E5B547"/><ellipse cx="370" cy="306" rx="30" ry="24" fill="#F6E7C1"/>
+<path d="M326 266C298 270 286 300 298 326C318 320 332 302 334 280Z" fill="#D9A33A"/>
+<path d="M414 268C440 266 456 244 454 216C434 222 418 242 410 262Z" fill="#D9A33A"/>
+<path d="M358 334v12M382 334v12M349 351l9-5 9 5M358 346v6M373 351l9-5 9 5M382 346v6" fill="none" stroke="#D9772B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M356 150V132M370 146V116M384 150V134" stroke="#0E8465" stroke-width="10" stroke-linecap="round"/>
+<circle cx="370" cy="208" r="50" fill="#F2CB6A"/>
+<path d="M369 152C334 152 318 178 318 214L321 240C324 212 334 182 367 166Z" fill="#2B2523"/>
+<path d="M371 152C406 152 422 178 422 214L419 240C416 212 406 182 373 166Z" fill="#2B2523"/>
+<path d="M345 207q7-10 14 0M381 207q7-10 14 0" fill="none" stroke="#2A2A2A" stroke-width="3.5" stroke-linecap="round"/><path d="M357 219L371 210L385 219Z" fill="#D9772B"/><path d="M357 224Q371 244 385 224Z" fill="#D9772B"/><path d="M361 225Q371 234 381 225Z" fill="#FFFFFF"/>
+<circle cx="338" cy="222" r="8" fill="#E9A08A" fill-opacity=".55"/><circle cx="402" cy="222" r="8" fill="#E9A08A" fill-opacity=".55"/></g></svg>

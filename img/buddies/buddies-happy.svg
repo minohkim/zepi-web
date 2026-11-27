@@ -1,16 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="76 116 384 234" role="img" aria-label="신난 바람돌이와 소리송이">
-<path d="M220 300C290 300 300 220 258 200C226 186 206 222 230 236C246 245 260 228 250 218" fill="none" stroke="#B98A63" stroke-width="26" stroke-linecap="round"/>
-<ellipse cx="170" cy="294" rx="60" ry="46" fill="#B98A63"/><ellipse cx="170" cy="306" rx="32" ry="24" fill="#F1E6D6"/>
-<circle cx="128" cy="152" r="16" fill="#C99A70"/><circle cx="212" cy="152" r="16" fill="#C99A70"/><circle cx="128" cy="152" r="7" fill="#E9C7AE"/><circle cx="212" cy="152" r="7" fill="#E9C7AE"/>
-<circle cx="170" cy="206" r="62" fill="#C99A70"/><ellipse cx="170" cy="230" rx="38" ry="25" fill="#F1E6D6"/>
-<path d="M140 209q7-10 14 0M186 209q7-10 14 0" fill="none" stroke="#2A2A2A" stroke-width="3.5" stroke-linecap="round"/><ellipse cx="170" cy="221" rx="5" ry="3.5" fill="#2A2A2A"/><path d="M163 229q7 9 14 0z" fill="#2A2A2A"/>
-<circle cx="126" cy="226" r="8" fill="#E9A08A" fill-opacity=".4"/><circle cx="214" cy="226" r="8" fill="#E9A08A" fill-opacity=".4"/>
-<path d="M118 258Q170 276 222 258L224 274Q170 294 116 274Z" fill="#0E8465"/><path d="M410 300L446 286L440 302L414 312Z" fill="#0E8465"/>
-<ellipse cx="370" cy="294" rx="50" ry="44" fill="#E5B547"/><ellipse cx="370" cy="306" rx="30" ry="24" fill="#F6E7C1"/>
-<path d="M324 272q-20 16-8 38q18-8 16-30z" fill="#D9A33A"/>
-<path d="M358 336v10M382 336v10" stroke="#D9772B" stroke-width="4" stroke-linecap="round"/>
-<path d="M356 162V142M370 158V126M384 162V146" stroke="#0E8465" stroke-width="10" stroke-linecap="round"/>
-<circle cx="370" cy="206" r="50" fill="#EEC45A"/>
-<path d="M346 205q7-10 14 0M380 205q7-10 14 0" fill="none" stroke="#2A2A2A" stroke-width="3.5" stroke-linecap="round"/><path d="M362 214L372 208L382 214Z" fill="#D9772B"/><path d="M362 219L382 219L372 231Z" fill="#D9772B"/>
-<circle cx="336" cy="220" r="7" fill="#E9A08A" fill-opacity=".4"/><circle cx="404" cy="220" r="7" fill="#E9A08A" fill-opacity=".4"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 388.1 256" role="img" aria-label="신난 바람돌이와 소리송이"><svg x="0" y="26.3" width="193.5" height="229.7" viewBox="18.9 9.3 193.5 229.7"><g transform="translate(-80 -116)"><g transform="translate(80 116) scale(1.07) translate(-20 -40)"><path d="M150 222C204 224 222 168 200 144C182 126 158 138 164 156C170 170 188 164 186 152" fill="none" stroke="#B98A63" stroke-width="16" stroke-linecap="round"/>
+<ellipse cx="110" cy="208" rx="52" ry="42" fill="#B98A63"/><ellipse cx="110" cy="218" rx="30" ry="24" fill="#F1E6D6"/>
+<ellipse cx="86" cy="248" rx="14" ry="6" fill="#B98A63"/><ellipse cx="134" cy="248" rx="14" ry="6" fill="#B98A63"/>
+<circle cx="62" cy="74" r="15" fill="#C99A70"/><circle cx="62" cy="74" r="7" fill="#E9C7AE"/><circle cx="158" cy="74" r="15" fill="#C99A70"/><circle cx="158" cy="74" r="7" fill="#E9C7AE"/>
+<path d="M110 58C150 58 174 88 173 120C172 154 144 178 110 178C76 178 48 154 47 120C46 88 70 58 110 58Z" fill="#C99A70"/>
+<ellipse cx="110" cy="144" rx="36" ry="24" fill="#F1E6D6"/>
+<path d="M98 64q-4 18 8 26q-2-14 10-24q-2 14 10 22q-4-16-6-26z" fill="#33271F"/>
+<path d="M80 121q8-9 16 0M124 121q8-9 16 0" fill="none" stroke="#2A2A2A" stroke-width="3.5" stroke-linecap="round"/><ellipse cx="110" cy="134" rx="5" ry="3.6" fill="#2A2A2A"/><path d="M102 143q8 11 16 0z" fill="#2A2A2A"/>
+<circle cx="64" cy="138" r="8" fill="#E9A08A" fill-opacity=".45"/><circle cx="156" cy="138" r="8" fill="#E9A08A" fill-opacity=".45"/>
+<g fill="none" stroke="#6E7379" stroke-width="2.6"><circle cx="88" cy="119" r="15"/><circle cx="132" cy="119" r="15"/><path d="M103 118q7-5 14 0M73 116l-14-3M147 116l14-3"/></g>
+<path d="M62 168Q110 184 158 168L160 182Q110 200 60 182Z" fill="#0E8465"/></g></g></svg><svg x="201.5" y="0" width="186.6" height="256" viewBox="-6.6 -16 186.6 256"><g transform="translate(-290 -122)"><path d="M408 298L454 276L450 292ZM410 305L460 300L450 314ZM408 312L450 324L438 330Z" fill="#0E8465"/>
+<path d="M370 148C318 148 306 192 310 242Q340 252 370 248Q400 252 430 242C434 192 422 148 370 148Z" fill="#2B2523"/>
+<ellipse cx="370" cy="296" rx="50" ry="44" fill="#E5B547"/><ellipse cx="370" cy="306" rx="30" ry="24" fill="#F6E7C1"/>
+<path d="M326 266C298 270 286 300 298 326C318 320 332 302 334 280Z" fill="#D9A33A"/>
+<path d="M414 268C440 266 456 244 454 216C434 222 418 242 410 262Z" fill="#D9A33A"/>
+<path d="M358 334v12M382 334v12M349 351l9-5 9 5M358 346v6M373 351l9-5 9 5M382 346v6" fill="none" stroke="#D9772B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M356 150V132M370 146V116M384 150V134" stroke="#0E8465" stroke-width="10" stroke-linecap="round"/>
+<circle cx="370" cy="208" r="50" fill="#F2CB6A"/>
+<path d="M369 152C334 152 318 178 318 214L321 240C324 212 334 182 367 166Z" fill="#2B2523"/>
+<path d="M371 152C406 152 422 178 422 214L419 240C416 212 406 182 373 166Z" fill="#2B2523"/>
+<path d="M345 207q7-10 14 0M381 207q7-10 14 0" fill="none" stroke="#2A2A2A" stroke-width="3.5" stroke-linecap="round"/><path d="M357 219L371 210L385 219Z" fill="#D9772B"/><path d="M357 224Q371 244 385 224Z" fill="#D9772B"/><path d="M361 225Q371 234 381 225Z" fill="#FFFFFF"/>
+<circle cx="338" cy="222" r="8" fill="#E9A08A" fill-opacity=".55"/><circle cx="402" cy="222" r="8" fill="#E9A08A" fill-opacity=".55"/></g></svg></svg>
