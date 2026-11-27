@@ -714,6 +714,8 @@
       const acts = actsNow(k).sort((a, b) => (rain || snow ? (b.indoor ? 1 : 0) - (a.indoor ? 1 : 0) : 0)).slice(0, 9);
 
       let h = locBar(l, reg);
+      // 실험실: 오늘의 사진 + 한 줄 (js/today-line.js, ?line=1 로 켠 브라우저만)
+      if (window.ZLINE && ZLINE.enabled()) h += '<div id="lineBox"></div>';
       // 계절 머리
       h += '<div class="seasonhead" style="background:linear-gradient(160deg,' + (dk ? lk.dtop : lk.top) + "," + (dk ? lk.dbottom : lk.bottom) + ");color:" + (dk ? lk.dink : lk.ink) + '">' +
         '<div class="muted" style="color:inherit;opacity:.8">' + esc(fmtDate.format(now)) + "</div>" +
@@ -837,6 +839,13 @@
       h += '<article class="card2" id="songBox">' + songHtml() + "</article>";
       h += "</div>";
       root.innerHTML = h;
+      if (window.ZLINE && $("lineBox")) {
+        const lsky = snow ? "눈" : rain ? "비" : code === 45 || code === 48 ? "안개" : code === 0 || code === 1 ? "맑음" : code >= 0 ? "흐림" : "";
+        const lwind = kma && isFinite(kma.WSD) ? kma.WSD : cur ? cur.wind_speed_10m : 0;
+        const lair = [];
+        if (air && ((air.pm10 != null && air.pm10 > 80) || (air.pm25 != null && air.pm25 > 35))) lair.push("미세먼지");
+        ZLINE.mount($("lineBox"), { k, sky: lsky, windy: lwind >= 7, air: lair, places: [], specials: [], region: reg && reg.name, sido: reg && reg.sido }, SONGS);
+      }
       bindLoc(root);
       bindExtra(root);
       root.querySelectorAll('[data-act="sky"]').forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); $("skyCard").scrollIntoView({ behavior: "smooth", block: "center" }); }));
