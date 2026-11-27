@@ -165,8 +165,11 @@
   const MBTIS = ["ISTJ", "ISFJ", "INFJ", "INTJ", "ISTP", "ISFP", "INFP", "INTP", "ESTP", "ESFP", "ENFP", "ENTP", "ESTJ", "ESFJ", "ENFJ", "ENTJ"];
   const store = { get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* 저장 안 돼도 괜찮아요 */ } } };
-  let songCheers = false, songFire = false, songRetro = false, songDrinks = store.get("zDrinks", []), songMbti = store.get("zMbti", "");
-  let songLiked = store.get("zSongLiked", []), songBan = store.get("zSongBan", []);
+  // 저장값이 깨져 있으면(배열·글자가 아님) 버려요 — 그대로 쓰면 오늘 탭 전체가 영구히 오류 화면이 돼요 (QA 11-27)
+  const strList = (k) => { const v = store.get(k, []); return Array.isArray(v) ? v.filter((x) => typeof x === "string") : []; };
+  const strOf = (k) => { const v = store.get(k, ""); return typeof v === "string" ? v : ""; };
+  let songCheers = false, songFire = false, songRetro = false, songDrinks = strList("zDrinks"), songMbti = strOf("zMbti");
+  let songLiked = strList("zSongLiked"), songBan = strList("zSongBan");
   const songKey = (s) => s.title + "/" + s.artist;
   // ♥ 누른 곡들로 취향 배우기 (앱 lib/songs.dart 와 같은 셈)
   const STYLE = ["retro", "campfire", "whisky", "highball", "wine", "sake", "makgeolli", "somaek", "beer", "coffee", "calm", "singalong", "dreamy", "emotional", "groove", "classic", "free", "inst", "memory", "sea", "night", "rain"];
@@ -525,7 +528,7 @@
   const kdt = (s) => { if (typeof s !== "string") return null; const d = new Date(s + ":00+09:00"); return isFinite(d) ? d : null; };
   const fix1 = (v) => (v == null || !isFinite(+v) ? "–" : (+v).toFixed(1));
   let songCtx = null, songSeed = 1, courseList = [], courseIdx = 0, courseCtx = null;
-  let courseBand = (() => { try { return localStorage.getItem("zCourseBand") || "auto"; } catch (e) { return "auto"; } })();
+  let courseBand = (() => { try { const b = localStorage.getItem("zCourseBand"); return BANDS.some((x) => x[0] === b) ? b : "auto"; } catch (e) { return "auto"; } })();
   function songHtml() {
     const list = songCtx ? songsNow(songCtx.k, songCtx.o, songSeed) : [];
     const night = !songFire && songCtx && drinkNight(songCtx.k, songCtx.o);
@@ -558,14 +561,16 @@
   async function blogLoad(q) {
     const d = blogData[q] || (blogData[q] = {});
     const redraw = () => { if (blogQ === q && $("courseBox")) $("courseBox").innerHTML = courseHtml(); };
+    // 응답이 오지 않으면 끊어요 — 안 그러면 '찾는 중…'·'요약하는 중…'에서 영영 멈춰요 (QA 11-27)
+    const within = (p, ms) => Promise.race([p, new Promise((_, no) => setTimeout(() => no(new Error(t("서버가 잠시 대답하지 않아요. 잠시 뒤 다시 해 주세요."))), ms))]);
     if (!d.items && !d.busy) {
-      d.busy = true; d.err = "";
-      try { d.items = (await ZAPP.pub("/blog?q=" + encodeURIComponent(q))).items || []; } catch (e) { d.err = e.message || String(e); }
+      d.busy = true; d.err = ""; redraw(); // 누르자마자 '블로그 찾는 중…'이 보이게
+      try { d.items = (await within(ZAPP.pub("/blog?q=" + encodeURIComponent(q)), 15000)).items || []; } catch (e) { d.err = e.message || String(e); }
       d.busy = false; redraw();
     }
-    if (d.items && d.items.length && ZAPP.signedIn() && !d.sum && !d.sumBusy && !d.sumErr) {
+    if (Array.isArray(d.items) && d.items.length && ZAPP.signedIn() && !d.sum && !d.sumBusy && !d.sumErr) {
       d.sumBusy = true; redraw();
-      try { const j = await ZAPP.proxy("/blogsum?q=" + encodeURIComponent(q)); d.sum = j.sum; if (j.items && j.items.length) d.items = j.items; } catch (e) { d.sumErr = e.message || String(e); }
+      try { const j = await within(ZAPP.proxy("/blogsum?q=" + encodeURIComponent(q)), 60000); d.sum = j.sum; if (j.items && j.items.length) d.items = j.items; } catch (e) { d.sumErr = e.message || String(e); }
       d.sumBusy = false; redraw();
     }
   }
@@ -577,13 +582,13 @@
     if (!d) return h + '<div class="muted">' + esc(t("장소를 누르면 다녀온 사람들 글을 모아 보여 줘요.")) + "</div></div>";
     if (d.busy) return h + '<div class="muted">' + esc(t("블로그 찾는 중…")) + "</div></div>";
     if (d.err) return h + '<div class="muted">' + esc(t("블로그를 불러오지 못했어요.")) + " " + esc(d.err) + "</div></div>";
-    if (!d.items || !d.items.length) return h + '<div class="muted">' + esc(t("이 곳은 블로그 글을 찾지 못했어요.")) + "</div></div>";
+    if (!Array.isArray(d.items) || !d.items.length) return h + '<div class="muted">' + esc(t("이 곳은 블로그 글을 찾지 못했어요.")) + "</div></div>";
     if (!ZAPP.signedIn()) h += '<div class="needlogin">' + esc(t("로그인하면 이 글들을 읽고 볼거리·맛집·팁을 요약해 드려요. 무료예요.")) + ' <button class="btn primary" type="button" data-blog-login>' + esc(t("로그인")) + "</button></div>";
     else if (d.sumBusy) h += '<div class="muted">✨ ' + esc(t("글을 읽고 요약하는 중… (10초쯤)")) + "</div>";
     else if (d.sumErr) h += '<div class="muted">' + esc(t("요약하지 못했어요.")) + " " + esc(d.sumErr) + "</div>";
-    else if (d.sum) {
-      const S = d.sum, part = (emoji, label, arr) => arr && arr.length ? '<div class="bsum"><b>' + emoji + " " + esc(t(label)) + "</b><ul>" + arr.map((x) => "<li>" + esc(x) + "</li>").join("") + "</ul></div>" : "";
-      h += '<div class="bsumbox">' + (S.one ? '<div class="bone">✨ ' + esc(S.one) + "</div>" : "") +
+    else if (d.sum && typeof d.sum === "object") {
+      const S = d.sum, part = (emoji, label, arr) => Array.isArray(arr) && arr.length ? '<div class="bsum"><b>' + emoji + " " + esc(t(label)) + "</b><ul>" + arr.map((x) => "<li>" + esc(x) + "</li>").join("") + "</ul></div>" : "";
+      h += '<div class="bsumbox">' + (S.one && typeof S.one === "string" ? '<div class="bone">✨ ' + esc(S.one) + "</div>" : "") +
         part("👀", "볼거리", S.see) + part("🍽️", "먹을 곳", S.eat) + part("💡", "팁", S.tips) + part("⚠️", "아쉬운 점", S.warn) +
         '<div class="muted small">' + esc(t("AI가 아래 블로그 글을 읽고 정리했어요. 숫자는 글 번호예요. 가기 전에 한 번 더 확인하세요.")) + "</div></div>";
     }
@@ -861,7 +866,11 @@
   // 켜 둔 채 자정·시간이 바뀌면 다시 그려요 (key 에 날짜·시가 들어 있어 같은 시간엔 그대로, QA 11-26)
   setInterval(() => { const v = document.getElementById("view-today"); if (window.ZAPP_READY && v && !v.hidden && !document.hidden) render(false); }, 60e3);
   // 로그인 상태가 바뀌면 다시
-  window.addEventListener("zapp-auth", () => { shownFor = ""; if (window.ZAPP_READY && !$("view-today").hidden) render(true); });
+  window.addEventListener("zapp-auth", () => {
+    shownFor = ""; if (window.ZAPP_READY && !$("view-today").hidden) render(true);
+    // 블로그를 열어 둔 채 '로그인'을 눌러 로그인했으면 요약을 바로 받아요 (목록만 남고 아무 일도 없던 것, QA 11-27)
+    if (blogQ && ZAPP.signedIn()) blogLoad(blogQ);
+  });
   // app.html 준비가 이 파일보다 먼저 끝났으면(예: CDN 실패) 지금 그려요
   if (window.ZAPP_READY && !$("view-today").hidden) render(false);
 })();

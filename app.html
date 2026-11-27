@@ -769,7 +769,7 @@ body { margin: 0; }
 <!-- 밤하늘 계산용(없어도 됨): 느린 CDN이 화면 전체를 막지 않게 async, 늦게 오면 오늘 탭을 다시 그려요 (QA 11-26) -->
 <script async src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js" onload="window.ZTODAY && window.ZAPP_READY && ZTODAY.refresh()"></script>
 <script src="js/season-data.js?v=20261126b"></script>
-<script src="js/app-data.js?v=20261126b"></script>
+<script src="js/app-data.js?v=20261127a"></script>
 <script>
 (function () {
   "use strict";
@@ -939,6 +939,9 @@ body { margin: 0; }
       setNotice(t("바람소리 백업 파일이 아니에요. 앱의 <strong>설정 → 백업</strong>에서 만든 <strong>.db</strong> 파일을 골라 주세요."), true);
       return;
     }
+    // 안드로이드가 앱 DB를 WAL 방식으로 열면 머리말 18·19번째 값이 2예요. 브라우저용 sqlite(sql.js)는 WAL 파일을 못 열 수 있어서
+    // 옛 방식(1)으로 바꿔 읽어요. 백업은 본 파일 하나뿐이라(-wal 없음) 읽는 내용은 같아요. (QA 11-27, 추정 방어)
+    if (bytes[18] === 2 || bytes[19] === 2) { bytes[18] = 1; bytes[19] = 1; }
     let db, data;
     try {
       db = new SQL.Database(bytes);
@@ -1108,14 +1111,15 @@ body { margin: 0; }
     try { owner = localStorage.getItem("jepi.owner") || ""; } catch (e) {}
     if (owner && session.uid && owner !== session.uid) {
       clearLocalDocs();
-      try { localStorage.setItem("jepi.owner", session.uid); sessionStorage.setItem("jepi.notice", t("로그인됐어요.")); } catch (e) {}
+      try { localStorage.setItem("jepi.owner", session.uid); localStorage.setItem("jepi.farm.merge", "1"); sessionStorage.setItem("jepi.notice", t("로그인됐어요.")); } catch (e) {}
       location.reload();
       return true;
     }
     // 이 브라우저에서 처음 로그인: 로그인 전에 만든 텃밭이 폰의 텃밭을 통째로 덮지 않게, 서버에 있으면 서버 것을 받아요 (QA 11-26)
     if (!owner && session.uid) {
       // 서버에 폰 텃밭이 있으면 서버 것에 웹 작물·메모를 더해요(합치기 전에는 올리지 않아요). 서버에 없거나 비어 있으면 웹 것이 올라가요 (QA 11-26 B7)
-      try { const f = JSON.parse(localStorage.getItem("jepi.farm.v1") || "null"); if (f && typeof f === "object" && ((Array.isArray(f.crops) && f.crops.length) || (f.notes && Object.keys(f.notes).length))) localStorage.setItem("jepi.farm.merge", "1"); } catch (e) {}
+      // 작물을 골랐다 빼거나 위치만 고른 웹 텃밭(작물 0)·첫 받기가 실패한 뒤 고른 것도 폰 텃밭을 덮지 않게, 첫 로그인은 늘 합치기부터 해요 (QA 11-27)
+      try { localStorage.setItem("jepi.farm.merge", "1"); } catch (e) {}
       // 여행 계획도 같아요: 로그인 전 웹 일정은 가장 오래된 것으로 — 폰 일정이 있으면 폰 것을 받아요
       try { const p = JSON.parse(localStorage.getItem("jepi.plan.v1") || "null"); if (p && typeof p === "object") { p.planUpdated = 0; p.dismissed = 0; localStorage.setItem("jepi.plan.v1", JSON.stringify(p)); } } catch (e) {}
     }
@@ -2395,17 +2399,17 @@ body { margin: 0; }
 <script src="js/lunar.js?v=20261126a"></script>
 <script src="js/report.js?v=20261126a"></script>
 <script src="js/today-line.js?v=20261127a"></script>
-<script src="js/today.js?v=20261127a"></script>
-<script src="js/sea.js?v=20261126b"></script>
+<script src="js/today.js?v=20261127b"></script>
+<script src="js/sea.js?v=20261127a"></script>
 <script src="js/docs.js?v=20261126a"></script>
 <script src="js/plan.js?v=20261126c"></script>
 <script src="js/farm-data.js?v=20261126a"></script>
-<script src="js/farm.js?v=20261126a"></script>
+<script src="js/farm.js?v=20261127a"></script>
 <script src="js/more.js?v=20261126a"></script>
 <script src="js/play.js?v=20261126a"></script>
 <script src="js/game.js?v=20261126a"></script>
 <script src="js/game-mount.js?v=20261126a"></script>
 <script src="js/game-farm.js?v=20261126a"></script>
-<script src="js/game-star.js?v=20261126a"></script>
+<script src="js/game-star.js?v=20261127a"></script>
 </body>
 </html>

@@ -16,7 +16,8 @@
   ];
   const NOTES = [523, 587, 659, 784, 880, 1047, 1175, 1319, 1568, 1760, 2093, 2349];
   const month = () => new Date(Date.now() + 9 * 3600e3).getUTCMonth() + 1;
-  function load() { try { const s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s && s.v === 1) return s; } catch (e) {} return { v: 1, done: {}, wish: 0, sel: null }; }
+  // 깨진 저장값(done 없음·숫자 아닌 wish)으로 게임이 안 열리지 않게 모양을 맞춰서 읽어요
+  function load() { try { const s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s && s.v === 1) return { v: 1, done: s.done && typeof s.done === "object" && !Array.isArray(s.done) ? s.done : {}, wish: Math.max(0, Math.floor(+s.wish)) || 0, sel: typeof s.sel === "string" ? s.sel : null }; } catch (e) {} return { v: 1, done: {}, wish: 0, sel: null }; }
   let save = load();
   function store() { try { localStorage.setItem(KEY, JSON.stringify(save)); } catch (e) {} }
   function ordered() { const m = month(); return CONS.slice().sort((a, b) => b.mon.includes(m) - a.mon.includes(m)); }

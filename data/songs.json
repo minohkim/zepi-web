@@ -1454,6 +1454,9 @@
     "winter",
     "xmas"
    ],
+   "months": [
+    12
+   ],
    "lang": "ko"
   },
   {
@@ -1541,6 +1544,9 @@
     "singalong",
     "snow",
     "xmas"
+   ],
+   "months": [
+    12
    ],
    "lang": "en"
   },
@@ -2435,6 +2441,9 @@
     "night",
     "snow",
     "xmas"
+   ],
+   "months": [
+    12
    ],
    "lang": "ja",
    "note": "일본 크리스마스의 대표곡"

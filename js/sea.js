@@ -27,8 +27,9 @@
   function springNeap(d) { const k = LU.springNeap(LU.lunarDay(d)); return [k, SN_TEXT[k]]; }
   const daysToSpring = (d) => LU.daysToSpring(d);
   function mulLabel(lunar) { const x = LU.mul(lunar); return x.name ? t(x.name) : t("{n}물", { n: x.n }); }
-  const RX = /^(\d{4})-?(\d{2})-?(\d{2})[ T]?(\d{2}):?(\d{2})/;
-  function parseTime(s) { const m = RX.exec(String(s).trim()); return m ? new Date(m[1] + "-" + m[2] + "-" + m[3] + "T" + m[4] + ":" + m[5] + ":00+09:00") : null; }
+  // 한 자리 시("9:10")·슬래시 날짜("2026/11/27")도 읽어요 — 못 읽은 줄은 조용히 빠져서 오전 물때가 없는 틀린 그래프가 됐어요 (QA 11-27)
+  const RX = /^(\d{4})[-/.]?(\d{2})[-/.]?(\d{2})[ T]?(\d{1,2}):?(\d{2})/;
+  function parseTime(s) { const m = RX.exec(String(s).trim()); if (!m || +m[4] > 24) return null; const d = new Date(m[1] + "-" + m[2] + "-" + m[3] + "T" + m[4].padStart(2, "0") + ":" + m[5] + ":00+09:00"); return isNaN(d) ? null : d; }
   function collect(v, out) {
     if (Array.isArray(v)) { for (const x of v) if (x && typeof x === "object") out.push(x); }
     else if (v && typeof v === "object") { if ("item" in v) collect(v.item, out); else if ("items" in v) collect(v.items, out); else out.push(v); }
@@ -75,11 +76,13 @@
     return null;
   }
   const cache = new Map();
+  // 응답이 오지 않으면 10초에 끊어요 — 안 그러면 바다 탭 전체가 '…'에 멈추고 낚시 게임의 날씨 받기도 끝나지 않아요 (QA 11-27, 오늘 탭과 같은 방식)
+  const within = (p, ms) => Promise.race([p, new Promise((_, no) => setTimeout(() => no(Object.assign(new Error("timeout"), { quiet: true })), ms || 10000))]);
   async function tideDay(code, ymd, min) {
     const key = code + ymd + min;
     if (cache.has(key)) return cache.get(key);
     const q = "1192136/tideFcstTime/GetTideFcstTimeApiService?obsCode=" + code + "&reqDate=" + ymd + "&min=" + min + "&numOfRows=300&pageNo=1&type=json";
-    const v = parseTide(await ZAPP.proxy("/datago/" + q));
+    const v = parseTide(await within(ZAPP.proxy("/datago/" + q)));
     if (!v.pts.length) throw new Error(t("물때 정보가 비어 있어요."));
     cache.set(key, v);
     return v;
@@ -91,7 +94,7 @@
     const u = "https://marine-api.open-meteo.com/v1/marine?latitude=" + lat.toFixed(3) + "&longitude=" + lng.toFixed(3) +
       "&current=wave_height,wave_direction,wave_period,sea_surface_temperature&daily=wave_height_max&timezone=Asia%2FSeoul&forecast_days=4";
     const w = "https://api.open-meteo.com/v1/forecast?latitude=" + lat.toFixed(3) + "&longitude=" + lng.toFixed(3) + "&current=wind_speed_10m,wind_direction_10m,wind_gusts_10m&timezone=Asia%2FSeoul&wind_speed_unit=ms";
-    const [a, b] = await Promise.all([fetch(u).then((r) => r.json()), fetch(w).then((r) => r.json()).catch(() => null)]);
+    const [a, b] = await Promise.all([within(fetch(u).then((r) => r.json())), within(fetch(w).then((r) => r.json())).catch(() => null)]);
     const v = { sea: a, wind: b };
     cache.set(key, { at: Date.now(), v });
     return v;
@@ -145,13 +148,14 @@
     const wh = c && typeof c.wave_height === "number" ? c.wave_height : null;
     const ws = w && typeof w.wind_speed_10m === "number" ? w.wind_speed_10m : null;
     let say;
-    if ((wh != null && wh >= 2) || (ws != null && ws >= 12)) say = t("오늘은 쉬어요 · 파도·바람이 세요");
+    const rest = (wh != null && wh >= 2) || (ws != null && ws >= 12); // 쉬자고 한 날엔 '좋은 때'를 붙이지 않아요 (바람만 셀 때 "쉬어요 · 좋은 때 …"가 같이 나왔어요, QA 11-27)
+    if (rest) say = t("오늘은 쉬어요 · 파도·바람이 세요");
     else if ((wh != null && wh >= 1.2) || (ws != null && ws >= 8)) say = t("방파제 안쪽만 · 바람을 등지고");
     else if (snKey === "조금") say = t("물이 약해 입질이 느릴 수 있어요");
     else if (snKey === "사리") say = t("물살이 세요 · 채비는 무겁게");
     else say = t("물때 좋아요 · 나가 볼 만해요");
     let when = "";
-    if (high && !(wh != null && wh >= 2)) {
+    if (high && !rest) {
       const a = new Date(Math.max(now.getTime(), high.time.getTime() - 2 * 3600e3)), b = new Date(high.time.getTime() + 3600e3);
       when = " · " + t("좋은 때 {from}~{to}", { from: fmtTime.format(a), to: fmtTime.format(b) });
     } else if (!ZAPP.signedIn()) when = " · " + t("로그인하면 좋은 시각까지 알려 줘요");
@@ -209,7 +213,7 @@
           const lo = Math.min(...a.pts.map((p) => p.level)), hi = Math.max(...a.pts.map((p) => p.level));
           h += '<div class="muted">' + esc(t("오늘 물높이 차이 {n} cm", { n: Math.round(hi - lo) })) + " · " + esc(t("높이는 그 지역 기준면에서 잰 값이에요.")) + "</div>";
         } catch (e) {
-          h += '<div class="muted">' + esc(t("물때를 불러오지 못했어요.")) + " " + esc(e.message || e) + "</div>";
+          h += '<div class="muted">' + esc(t("물때를 불러오지 못했어요.")) + (e && e.quiet ? "" : " " + esc(e.message || e)) + "</div>";
         }
       }
       h += "</article>";
