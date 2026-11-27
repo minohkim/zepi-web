@@ -286,6 +286,19 @@ nav.tabs.side .navgroup { font-size: 11px; letter-spacing: .06em; color: var(--m
 .locbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
 .locbar .where { font-family: var(--font-display); font-size: 20px; }
 .locbar select { font: inherit; font-size: 14px; min-height: 44px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 0 12px; max-width: 100%; }
+/* 실험실: 오늘의 사진 + 한 줄 (js/today-line.js) */
+.lineCard { border-radius: var(--radius); padding: 18px 18px 12px; display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--line); background: linear-gradient(160deg, #f3efe4, #fbf8f1); background-size: cover; background-position: center; color: var(--ink, #1f2a24); }
+.lineCard.photo { color: #fff; min-height: 260px; justify-content: flex-end; text-shadow: 0 1px 8px rgba(0,0,0,.55); border: 0; }
+.lineCard .lineHead { font-size: 12.5px; font-weight: 800; opacity: .9; }
+.lineCard .lineText { all: unset; cursor: pointer; font-size: 22px; line-height: 1.5; font-weight: 800; word-break: keep-all; }
+.lineCard .lineText:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+.lineCard .lineSub { font-size: 14px; line-height: 1.5; opacity: .92; word-break: keep-all; }
+.lineCard .lineFoot { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.lineCard .lineBuddy { display: inline-flex; align-items: flex-start; font-size: 18px; }
+.lineCard .lineBuddy img { height: 40px; }
+.lineCard .lineSong { flex: 1; min-width: 120px; font-weight: 800; font-size: 14px; color: inherit; text-decoration: none; }
+.lineCard .btn { min-width: 44px; min-height: 44px; background: rgba(255,255,255,.75); color: #1f2a24; text-shadow: none; }
+.lineCard .lineHint { font-size: 11.5px; opacity: .75; }
 .seasonhead { border-radius: var(--radius); padding: 18px; display: flex; flex-direction: column; gap: 6px; border: 1px solid var(--line); }
 .seasonhead .t { font-family: var(--font-display); font-size: 24px; }
 #todayRoot { display: flex; flex-direction: column; gap: 12px; } /* 위치·계절 머리·카드가 붙어 보이던 것 */
@@ -2381,7 +2394,8 @@ body { margin: 0; }
 </script>
 <script src="js/lunar.js?v=20261126a"></script>
 <script src="js/report.js?v=20261126a"></script>
-<script src="js/today.js?v=20261126b"></script>
+<script src="js/today-line.js?v=20261127a"></script>
+<script src="js/today.js?v=20261127a"></script>
 <script src="js/sea.js?v=20261126b"></script>
 <script src="js/docs.js?v=20261126a"></script>
 <script src="js/plan.js?v=20261126c"></script>
