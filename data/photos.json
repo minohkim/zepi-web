@@ -1,0 +1,15 @@
+{
+ "version": 1,
+ "updated": "2026-11-27",
+ "about": "오늘의 사진 — 한 줄과 같은 태그로 골라요. 직접 찍은 사진이나 사용 허락받은 사진만 (license: own = 운영자가 찍음, allowed = 허락받음). src는 baramsori.kr 아래 주소. 태그를 안 적으면 아무 때나.",
+ "photos": [
+  {"id": "sea-winter", "src": "img/sea-1280.jpg", "license": "own", "caption": "맑은 날 동해 바위 바닷가",
+   "tags": {"sky": ["맑음", "바람"], "place": ["바다"], "season": ["늦가을", "겨울", "봄"]}},
+  {"id": "terrace-dusk", "src": "img/terrace-1280.jpg", "license": "own", "caption": "해 질 녘 산비탈 계단 논과 바다",
+   "tags": {"sky": ["맑음", "흐림"], "time": ["아침", "낮", "저녁"], "season": ["봄", "여름", "가을", "늦가을"]}},
+  {"id": "snow-trees", "src": "img/snow-1280.jpg", "license": "own", "caption": "눈 내린 호숫가 메타세쿼이아",
+   "tags": {"sky": ["눈", "맑음", "흐림"], "season": ["겨울"]}},
+  {"id": "birds-dusk", "src": "img/birds-1280.jpg", "license": "own", "caption": "노을 하늘을 건너는 철새",
+   "tags": {"time": ["저녁", "새벽"], "season": ["가을", "늦가을", "겨울"]}}
+ ]
+}
