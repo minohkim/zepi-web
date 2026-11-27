@@ -499,7 +499,8 @@ body { margin: 0; }
         <button role="tab" id="tab-notes" aria-selected="false" aria-controls="view-notes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>장소 메모</span></button>
         <span class="navgroup" aria-hidden="true">도구</span>
         <button role="tab" id="tab-routes" aria-selected="false" aria-controls="view-routes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 19c4-1 3-6 8-7s4-6 8-7"/><path d="M12 3v6M9 6l3 3 3-3"/></svg><span>경로 가져오기</span></button>
-        <button role="tab" id="tab-io" aria-selected="false" aria-controls="view-io"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><path d="M9 9.5h6M12 6.5v6"/></svg><span>장소 가져오기 · 내보내기</span></button>
+        <!-- 장소 가져오기는 웹에서도 아직 저장까지 안 돼서 베타 동안 메뉴에서 숨겨요 (결정 11-27). 다시 열 때 hidden만 지우면 돼요 -->
+        <button role="tab" id="tab-io" aria-selected="false" aria-controls="view-io" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><path d="M9 9.5h6M12 6.5v6"/></svg><span>장소 가져오기 · 내보내기</span></button>
       </nav>
       <div class="content">
       <section class="stats" id="stats" aria-label="요약" hidden></section>
@@ -591,7 +592,7 @@ body { margin: 0; }
       <section id="view-routes" role="tabpanel" aria-labelledby="tab-routes" hidden>
         <div class="iohead">
           <h2>경로 가져오기</h2>
-          <p>폰에 쌓인 <b>다닌 길(경로)</b>을 웹에서 보는 방법이에요. 장소 리스트는 <a href="#io">장소 가져오기</a>에서 해요.</p>
+          <p>폰에 쌓인 <b>다닌 길(경로)</b>을 웹에서 보는 방법이에요.</p>
         </div>
         <div class="io" style="grid-template-columns:minmax(0,1fr);max-width:640px">
           <div class="panel card">

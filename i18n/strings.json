@@ -3494,11 +3494,6 @@
   "将 Google 地图·Naver 地图中<b>保存的地点</b>（想去的地方、美食清单等）导入为风吟地点备注，或把我的地点导出到 Google 我的地图。走过的路线请在<a href=\"#routes\">导入路线</a>中操作。",
   "Googleマップ・NAVERマップに<b>保存した場所</b>（行きたい所、グルメリストなど）をバラムソリの場所メモに取り込んだり、自分の場所をGoogleマイマップに書き出します。歩いた道（ルート）は<a href=\"#routes\">ルートを取り込む</a>で行います。"
  ],
- "폰에 쌓인 <b>다닌 길(경로)</b>을 웹에서 보는 방법이에요. 장소 리스트는 <a href=\"#io\">장소 가져오기</a>에서 해요.": [
-  "How to see the <b>routes</b> recorded on your phone here on the web. For saved place lists, use <a href=\"#io\">Import places</a>.",
-  "在网页上查看手机记录的<b>路线</b>的方法。地点清单请在<a href=\"#io\">导入地点</a>中操作。",
-  "スマホに記録された<b>道のり（ルート）</b>をウェブで見る方法です。場所リストは<a href=\"#io\">場所を取り込む</a>で行います。"
- ],
  "폰의 바람소리 앱 → <b>설정 → 기록 백업</b>으로 .db 파일 만들기": [
   "In the BaramSori phone app, make a .db file with <b>Settings → Backup</b>",
   "在手机风吟应用中通过<b>设置 → 记录备份</b>生成 .db 文件",
@@ -9723,5 +9718,10 @@
   "Tap the line for the next one (3 a day)",
   "点句子换下一句（每天3次）",
   "ひとことをタップで次へ（1日3回）"
+ ],
+ "폰에 쌓인 <b>다닌 길(경로)</b>을 웹에서 보는 방법이에요.": [
+  "How to see the <b>routes</b> recorded on your phone here on the web.",
+  "在网页上查看手机记录的<b>路线</b>的方法。",
+  "スマホに記録された<b>道のり（ルート）</b>をウェブで見る方法です。"
  ]
 }
